@@ -1,0 +1,5 @@
+<synapses>
+    <input layer="0" neuron="0">
+        <output layer="1" neuron="0"/>
+    </input>
+</synapses>
