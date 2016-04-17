@@ -6,6 +6,23 @@
 #include <math.h>
 #include <time.h>
 
+typedef struct Connection
+{
+    int _input_neuron;
+    int _input_layer;
+    int _output_neuron;
+    int _output_layer;
+} Connection;
+
+typedef struct NetworkDescriptor
+{
+    Connection* _connections;
+    int   _number_of_connections;
+    int   _number_of_layers;
+    int*  _number_of_neuron_per_layers;
+    int** _number_of_input_per_neuron;
+} NetworkDescriptor;
+
 typedef struct Neuron
 {
     double *_in;

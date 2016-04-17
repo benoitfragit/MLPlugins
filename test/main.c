@@ -13,5 +13,6 @@ main(int argc, char** argv)
 
     deleteDescriptor(descriptor);
     deleteNetwork(network);
+
     return EXIT_SUCCESS;
 }

@@ -164,7 +164,7 @@ brain_from_file(const char* xml_file)
                             output_layer  = xmlGetProp(node_connect, "layer");
                             output_neuron = xmlGetProp(node_connect, "neuron");
 
-                            if (output_layer && output_neuron)
+                            if (output_layer && output_neuron && layer_id != -1 && neuron_id != -1)
                             {
                                 ++descriptor->_number_of_connections;
 
@@ -174,12 +174,22 @@ brain_from_file(const char* xml_file)
                                                     atoi(output_layer),
                                                     atoi(output_neuron));
                             }
+
+                            xmlFree(output_layer);
+                            xmlFree(output_neuron);
                         }
+
+                        xmlFree(node_connect);
                     }
+
+                    xmlFree(neuron_id_str);
+                    xmlFree(neuron_inputs);
                 }
 
                 xmlFree(node_neuron);
             }
+
+            xmlFree(layer_id_str);
         }
 
         xmlFree(node_layer);
