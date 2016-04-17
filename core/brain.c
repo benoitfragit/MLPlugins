@@ -14,7 +14,7 @@ neuron_activate(Neuron *neuron)
             sum += neuron->_in[j] * neuron->_w[j];
         }
 
-        neuron->_out = (double)((1.0 / (1.0 + exp(-sum))) > 0);
+        neuron->_out = (double)((1.0 / (1.0 + exp(-sum))) > 0.5);
 
         neuron->_delta = 0.0;
     }

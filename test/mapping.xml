@@ -1,5 +1,5 @@
 <synapses>
-    <input layer="0" neuron="0">
-        <output layer="1" neuron="0"/>
-    </input>
+    <connect input_layer="0" input_neuron="0" output_layer="1" output_neuron="0"/>
+    <connect input_layer="0" input_neuron="1" output_layer="1" output_neuron="1"/>
+    <connect input_layer="0" input_neuron="0" output_layer="1" output_neuron="2"/>
 </synapses>
