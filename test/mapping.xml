@@ -1,5 +1,32 @@
-<synapses>
-    <connect input_layer="0" input_neuron="0" output_layer="1" output_neuron="0"/>
-    <connect input_layer="0" input_neuron="1" output_layer="1" output_neuron="1"/>
-    <connect input_layer="0" input_neuron="0" output_layer="1" output_neuron="2"/>
-</synapses>
+<network>
+    <layer id="0">
+        <neuron id="0" inputs="2">
+            <connect layer="1" neuron="0"/>
+            <connect layer="1" neuron="1"/>
+            <connect layer="1" neuron="2"/>
+        </neuron>
+        <neuron id="1" inputs="2">
+            <connect layer="1" neuron="0"/>
+            <connect layer="1" neuron="1"/>
+            <connect layer="1" neuron="2"/>
+        </neuron>
+    </layer>
+    <layer id="1">
+        <neuron id="0" inputs="2">
+            <connect layer="2" neuron="0"/>
+            <connect layer="2" neuron="1"/>
+        </neuron>
+        <neuron id="1" inputs="2">
+            <connect layer="2" neuron="0"/>
+            <connect layer="2" neuron="1"/>
+        </neuron>
+        <neuron id="2" inputs="2">
+            <connect layer="2" neuron="0"/>
+            <connect layer="2" neuron="1"/>
+        </neuron>
+    </layer>
+    <layer id="2">
+        <neuron id="0" inputs="3"/>
+        <neuron id="1" inputs="3"/>
+    </layer>
+</network>

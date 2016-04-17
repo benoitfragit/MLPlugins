@@ -7,8 +7,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 find_package(LIBXML2)
 
 set(SOURCES brain.c
-            brain_mapper.c
-            brain_mapper.h
+            brain_descriptor.c
+            brain_descriptor.h
             brain.h
             brain_type.h)
 

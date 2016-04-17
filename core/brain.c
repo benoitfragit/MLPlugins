@@ -213,7 +213,7 @@ delete_layer(Layer* layer)
 }
 
 Network*
-create_network(const int m, const int n[], const int *o[])
+createNetwork(const int m, int *n, int **o)
 {
     int i;
 
@@ -235,7 +235,7 @@ create_network(const int m, const int n[], const int *o[])
 }
 
 void
-delete_network(Network *network)
+deleteNetwork(Network *network)
 {
     if (network != NULL)
     {
@@ -443,7 +443,7 @@ forward(Network *network, const int number_of_output, const double *desired)
 }
 
 void
-set_input(Network* network, const int number_of_input, const double *in)
+setInput(Network* network, const int number_of_input, const double *in)
 {
     int j, k;
 
@@ -472,7 +472,7 @@ set_input(Network* network, const int number_of_input, const double *in)
 }
 
 const double*
-get_output(const Network* network)
+getOutput(const Network* network)
 {
     if (network != NULL)
     {
