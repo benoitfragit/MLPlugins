@@ -99,7 +99,7 @@ brain_from_file(const char* xml_file)
     xmlNodePtr root, node_layer, node_neuron, node_connect;
     NetworkDescriptor* descriptor = NULL;
     int layer_index = 0, neuron_index = 0, connect_index = 0, layer_id = -1, neuron_id = -1, tmp_connect;
-    xmlChar *layer_id_str, *neuron_id_str, *neuron_inputs, *output_layer, *output_neuron;
+    xmlChar *layer_id_str, *neuron_id_str, *neuron_inputs, *output_layer, *output_neuron, *output_input;
 
     doc = xmlParseFile (xml_file);
     if (!doc)
@@ -163,8 +163,9 @@ brain_from_file(const char* xml_file)
                         {
                             output_layer  = xmlGetProp(node_connect, "layer");
                             output_neuron = xmlGetProp(node_connect, "neuron");
+                            output_input = xmlGetProp(node_connect, "in");
 
-                            if (output_layer && output_neuron && layer_id != -1 && neuron_id != -1)
+                            if (output_layer && output_neuron && outputinput && layer_id != -1 && neuron_id != -1)
                             {
                                 ++descriptor->_number_of_connections;
 
