@@ -12,6 +12,7 @@ typedef struct Connection
     int _input_layer;
     int _output_neuron;
     int _output_layer;
+    int _output_input;
 } Connection;
 
 typedef struct NetworkDescriptor

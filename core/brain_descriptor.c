@@ -72,7 +72,8 @@ appendNewConnection(NetworkDescriptor* descriptor,
                     const int input_layer,
                     const int input_neuron,
                     const int output_layer,
-                    const int output_neuron)
+                    const int output_neuron,
+                   const int output_input)
 {
     if (descriptor)
     {
@@ -173,11 +174,14 @@ brain_from_file(const char* xml_file)
                                                     layer_id,
                                                     neuron_id,
                                                     atoi(output_layer),
-                                                    atoi(output_neuron));
+                                                    atoi(output_neuron),
+                                                   atoi(output_input));
                             }
 
                             xmlFree(output_layer);
                             xmlFree(output_neuron);
+                          xmlFree(output_input);
+                          
                         }
 
                         xmlFree(node_connect);
