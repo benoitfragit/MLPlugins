@@ -51,6 +51,16 @@ delete_network(Network *network)
     if (network != NULL)
     {
         int i;
+        if (network->_number_of_synapse > 0)
+        {
+            for (i = 0; i < network->_number_of_synapse; ++i)
+            {
+                delete_synapse(network->_synapses[i]);
+            }
+
+            free(network->_synapses);
+        }
+
         if (network->_layers != NULL)
         {
             for (i = 0; i < network->_number_of_layer; ++i)
@@ -59,17 +69,6 @@ delete_network(Network *network)
             }
 
             free(network->_layers);
-        }
-
-        if (network->_synapses != NULL)
-        {
-            //synapse is not the owner of its content;
-            for (i = 0; i < network->_number_of_synapse; ++i)
-            {
-                delete_synapse(network->_synapses[i]);
-            }
-
-            free(network->_synapses);
         }
 
         if (network->_output)
@@ -84,8 +83,6 @@ delete_network(Network *network)
 void
 set_network_input(Network* network, const int number_of_input, const double *in)
 {
-    int j, k;
-
     if (in != NULL )
     {
         Layer* input_layer = layer(network, 0);
@@ -109,7 +106,7 @@ new_network_from_context(Context context)
 
     _network = (Network *)malloc(sizeof(Network));
     _network->_number_of_layer   = get_number_of_node_with_name(context, "layer");
-    _network->_number_of_synapse = get_number_of_node_with_name(context, "synapse");
+    _network->_number_of_synapse = get_number_of_node_with_name(context, "connect");
 
     if (_network->_number_of_layer)
     {
@@ -122,15 +119,9 @@ new_network_from_context(Context context)
             if (subcontext)
             {
                 _network->_layers[index] = new_layer_from_context(subcontext);
-
-                xmlFree(subcontext);
             }
         }
     }
-
-    number_of_outputs = layer(_network, _network->_number_of_layer - 1)->_number_of_neuron;
-    _network->_output = (double *)malloc( number_of_outputs * sizeof(double));
-    memset(_network->_output, 0, number_of_outputs * sizeof(double));
 
     if (_network->_number_of_synapse)
     {
@@ -143,11 +134,13 @@ new_network_from_context(Context context)
             if (subcontext)
             {
                 _network->_synapses[index] = new_synapse_from_context(subcontext);
-
-                xmlFree(subcontext);
             }
         }
     }
+
+    number_of_outputs = layer(_network, _network->_number_of_layer - 1)->_number_of_neuron;
+    _network->_output = (double *)malloc( number_of_outputs * sizeof(double));
+    memset(_network->_output, 0, number_of_outputs * sizeof(double));
 
     return _network;
 }

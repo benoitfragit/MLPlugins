@@ -11,7 +11,7 @@ is_node_with_name(Context node, const char* name)
     return 0;
 }
 
-xmlNodePtr
+Context
 get_node_with_name_and_index(Context node, const char* name, const int i)
 {
     int index = 0;
@@ -60,8 +60,6 @@ get_number_of_node_with_name(Context node, const char* node_name)
 
             child = child->next;
         }
-
-        xmlFree(child);
     }
 
     return number_of_node;
@@ -74,7 +72,7 @@ node_get_prop(Context node, const char* key)
 
     if (node)
     {
-        res = xmlGetProp(node, key);
+        res = xmlGetProp(node, (const xmlChar*)key);
     }
 
     return res;
@@ -88,7 +86,7 @@ node_get_double(Context node, const char* key, const double _default)
 
     if (res)
     {
-        sscanf(res, "%lf", &value);
+        sscanf((char *)res, "%lf", &value);
 
         xmlFree(res);
     }
@@ -105,10 +103,41 @@ node_get_int(Context node, const char* key, const int _default)
 
     if (res)
     {
-        sscanf(res, "%d", &value);
+        sscanf((char *)res, "%d", &value);
 
         xmlFree(res);
     }
 
     return value;
+}
+
+Document
+open_document(const char *doc)
+{
+    if (doc)
+    {
+        return xmlParseFile(doc);
+    }
+
+    return NULL;
+}
+
+void
+close_document(Document doc)
+{
+    if (doc)
+    {
+        xmlFreeDoc(doc);
+    }
+}
+
+Context
+get_root_node(Document doc)
+{
+    if (doc)
+    {
+        return xmlDocGetRootElement(doc);
+    }
+
+    return NULL;
 }

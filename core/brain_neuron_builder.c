@@ -134,7 +134,6 @@ delete_neuron(Neuron* neuron)
 Neuron*
 new_neuron_from_context(Context context)
 {
-    int number_of_inputs = -1;
     int index = 0;
     Context weight_context;
     Neuron* _neuron = (Neuron *)malloc(sizeof(Neuron));
@@ -166,8 +165,6 @@ new_neuron_from_context(Context context)
         if (weight_context)
         {
             _neuron->_w[index] = node_get_double(weight_context, "value", rand() / (double)RAND_MAX);
-
-            xmlFree(weight_context);
         }
     }
 

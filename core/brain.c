@@ -106,9 +106,9 @@ feedforward(Network *network)
     {
         for (synapse_index = 0; synapse_index < network->_number_of_synapse; ++synapse_index)
         {
-            Synapse* synapse = network->_synapses[synapse_index];
-            Layer* input_layer     = layer(network, synapse->_input_layer);
-            Layer* output_layer    = layer(network, synapse->_output_layer);
+            synapse      = network->_synapses[synapse_index];
+            input_layer  = layer(network, synapse->_input_layer);
+            output_layer = layer(network, synapse->_output_layer);
 
             if (input_layer && output_layer)
             {

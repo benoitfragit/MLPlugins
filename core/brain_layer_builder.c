@@ -75,8 +75,6 @@ new_layer_from_context(Context context)
             if (neuron_context)
             {
                 _layer->_neurons[index] = new_neuron_from_context(neuron_context);
-
-                xmlFree(neuron_context);
             }
         }
     }
