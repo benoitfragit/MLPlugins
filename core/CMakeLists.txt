@@ -7,20 +7,27 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 find_package(LIBXML2)
 
 set(SOURCES brain.c
-            brain_descriptor.c
-            brain_descriptor.h
             brain.h
-            brain_type.h)
+            brain_network_builder.c
+            brain_network_builder.h
+            brain_layer_builder.c
+            brain_layer_builder.h
+            brain_neuron_builder.c
+            brain_neuron_builder.h
+            brain_synapse_builder.c
+            brain_synapse_builder.h
+            brain_xml_utils.c
+            brain_xml_utils.h)
 
 #Generate the shared library from the sources
 add_library(Brain SHARED ${SOURCES})
 
-target_link_libraries(Brain "-lm")
+include_directories(${LIBXML2_INCLUDE_DIR})
 
-if (LIBXML2_FOUND)
-    include_directories(${LIBXML2_INCLUDE_DIR})
-    target_link_libraries(Brain ${LIBXML2_LIBRARIES})
-endif()
+target_link_libraries(Brain ${LIBXML2_LIBRARIES} "-lm")
+
+
+
 
 # add a .pc file
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/brain.pc.in
