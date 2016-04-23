@@ -17,6 +17,8 @@ set(SOURCES brain.c
             brain_neuron_builder.h
             brain_synapse_builder.c
             brain_synapse_builder.h
+            brain_data_reader.c
+            brain_data_reader.h
             brain_xml_utils.c
             brain_xml_utils.h)
 
