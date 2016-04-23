@@ -42,7 +42,7 @@ new_data_from_context(Context context)
 
     // generate subset random index to break data in 2 parts
     // one for the training process and the other one for the evaluation process
-    memset(_data->_subset, 0, (_data->_subset_length) * sizeof(int));
+    memset(_data->_subset, -1, (_data->_subset_length) * sizeof(int));
 
     for (i = 0; i < _data->_subset_length; ++i)
     {
