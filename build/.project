@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>Project-Debug@build</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.cdt.make.core.makeBuilder</name>
+			<triggers>clean,full,incremental,</triggers>
+			<arguments>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.cleanBuildTarget</key>
+					<value>clean</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.enableCleanBuild</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.append_environment</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.stopOnError</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.enabledIncrementalBuild</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.build.command</key>
+					<value>/usr/bin/make</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.contents</key>
+					<value>org.eclipse.cdt.make.core.activeConfigSettings</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.build.target.inc</key>
+					<value>all</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.build.arguments</key>
+					<value>-j4</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.buildLocation</key>
+					<value>/home/benoit/Documents/projets/C/libBrain/build</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.useDefaultBuildCmd</key>
+					<value>false</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.environment</key>
+					<value>VERBOSE=1|CMAKE_NO_VERBOSE=1|</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.enableFullBuild</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.build.target.auto</key>
+					<value>all</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.enableAutoBuild</key>
+					<value>false</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.build.target.clean</key>
+					<value>clean</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.fullBuildTarget</key>
+					<value>all</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.buildArguments</key>
+					<value></value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.build.location</key>
+					<value>/home/benoit/Documents/projets/C/libBrain/build</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.autoBuildTarget</key>
+					<value>all</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.core.errorOutputParser</key>
+					<value>org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GASErrorParser;org.eclipse.cdt.core.GLDErrorParser;</value>
+				</dictionary>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.cdt.make.core.ScannerConfigBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.cdt.make.core.makeNature</nature>
+		<nature>org.eclipse.cdt.make.core.ScannerConfigNature</nature>
+		<nature>org.eclipse.cdt.core.ccnature</nature>
+		<nature>org.eclipse.cdt.core.cnature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>[Subprojects]</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Subprojects]/Brain</name>
+			<type>2</type>
+			<location>/home/benoit/Documents/projets/C/libBrain/core</location>
+		</link>
+		<link>
+			<name>[Subprojects]/test_brain</name>
+			<type>2</type>
+			<location>/home/benoit/Documents/projets/C/libBrain/test</location>
+		</link>
+		<link>
+			<name>[Targets]</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[lib] Brain</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[lib] Brain/</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[lib] Brain/Source Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[lib] Brain/Source Files/brain.c</name>
+			<type>1</type>
+			<location>/home/benoit/Documents/projets/C/libBrain/core/brain.c</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] Brain/Source Files/brain_network_builder.c</name>
+			<type>1</type>
+			<location>/home/benoit/Documents/projets/C/libBrain/core/brain_network_builder.c</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] Brain/Source Files/brain_layer_builder.c</name>
+			<type>1</type>
+			<location>/home/benoit/Documents/projets/C/libBrain/core/brain_layer_builder.c</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] Brain/Source Files/brain_neuron_builder.c</name>
+			<type>1</type>
+			<location>/home/benoit/Documents/projets/C/libBrain/core/brain_neuron_builder.c</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] Brain/Source Files/brain_synapse_builder.c</name>
+			<type>1</type>
+			<location>/home/benoit/Documents/projets/C/libBrain/core/brain_synapse_builder.c</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] Brain/Source Files/brain_data_reader.c</name>
+			<type>1</type>
+			<location>/home/benoit/Documents/projets/C/libBrain/core/brain_data_reader.c</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] Brain/Source Files/brain_xml_utils.c</name>
+			<type>1</type>
+			<location>/home/benoit/Documents/projets/C/libBrain/core/brain_xml_utils.c</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] Brain/Header Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[lib] Brain/Header Files/brain.h</name>
+			<type>1</type>
+			<location>/home/benoit/Documents/projets/C/libBrain/core/brain.h</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] Brain/Header Files/brain_network_builder.h</name>
+			<type>1</type>
+			<location>/home/benoit/Documents/projets/C/libBrain/core/brain_network_builder.h</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] Brain/Header Files/brain_layer_builder.h</name>
+			<type>1</type>
+			<location>/home/benoit/Documents/projets/C/libBrain/core/brain_layer_builder.h</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] Brain/Header Files/brain_neuron_builder.h</name>
+			<type>1</type>
+			<location>/home/benoit/Documents/projets/C/libBrain/core/brain_neuron_builder.h</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] Brain/Header Files/brain_synapse_builder.h</name>
+			<type>1</type>
+			<location>/home/benoit/Documents/projets/C/libBrain/core/brain_synapse_builder.h</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] Brain/Header Files/brain_data_reader.h</name>
+			<type>1</type>
+			<location>/home/benoit/Documents/projets/C/libBrain/core/brain_data_reader.h</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] Brain/Header Files/brain_xml_utils.h</name>
+			<type>1</type>
+			<location>/home/benoit/Documents/projets/C/libBrain/core/brain_xml_utils.h</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] Brain/CMake Rules</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[lib] Brain/Resources</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[lib] Brain/Object Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] test_brain</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] test_brain/</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] test_brain/Source Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] test_brain/Source Files/main.c</name>
+			<type>1</type>
+			<location>/home/benoit/Documents/projets/C/libBrain/test/main.c</location>
+		</link>
+		<link>
+			<name>[Targets]/[exe] test_brain/Header Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] test_brain/CMake Rules</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] test_brain/Resources</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] test_brain/Object Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+	</linkedResources>
+</projectDescription>
