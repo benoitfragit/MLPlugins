@@ -1,6 +1,8 @@
 #include "brain_data_reader.h"
 #include <string.h>
 #include <time.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 Data*
 new_data_from_context(Context context)
@@ -88,12 +90,12 @@ get_next_random_subset_index(const int* subset,
     int i = 0;
     int random_number = -1;
 
-    srand(time(NULL));
-
     if (subset && length > 0 && 0 <= max_index)
     {
         do {
-            random_number = rand() % max_index;
+            srand(time(NULL));
+            random_number = (int)(rand() % max_index);
+            //printf("%d ", random_number);
             is_already_in_subset = 0;
 
             for (i = 0; i < length; ++i)
