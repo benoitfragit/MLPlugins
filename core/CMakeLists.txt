@@ -54,3 +54,6 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/brain.pc.in
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/brain.pc
         DESTINATION lib/pkgconfig/)
+
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/schemas/ DESTINATION ${CMAKE_INSTALL_PREFIX}/schemas
+          FILES_MATCHING PATTERN "*.xsd"  PATTERN "*.xsd")
