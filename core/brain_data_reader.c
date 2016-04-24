@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "brain_logging_utils.h"
+
 Data*
 new_data_from_context(Context context)
 {
@@ -13,20 +15,28 @@ new_data_from_context(Context context)
 
     if (context && !is_node_with_name(context, "data"))
     {
-        fprintf(stderr, "<%s, %d>: Receive an invalid context\n", __FILE__, __LINE__);
+        BRAIN_LOG("Data", "critical", "<%s, %d>: Receive an invalid context\n", __FILE__, __LINE__);
         return NULL;
     }
 
     _data = (Data *)malloc(sizeof(Data));
-    _data->_number_of_signal = get_number_of_node_with_name(context, "signal");
-    _data->_signal_length    = node_get_int(context, "signal-length", 0);
-    _data->_signals          = (Signal *)malloc(_data->_number_of_signal * sizeof(Signal));
-    _data->_subset_length    = (int)(_data->_number_of_signal / 2);
-    _data->_subset           = (int *)malloc(_data->_subset_length * sizeof(int));
+    _data->_number_of_signal   = get_number_of_node_with_name(context, "signal");
+    _data->_signal_length      = node_get_int(context, "signal-length", 0);
+    _data->_observation_length = node_get_int(context, "observation-length", 0);
+
+    _data->_signals            = (Signal *)malloc(_data->_number_of_signal * sizeof(Signal));
+    _data->_observations       = (Observation *)malloc(_data->_number_of_signal * sizeof(Observation));
+
+    _data->_subset_length      = (int)(_data->_number_of_signal / 2);
+    _data->_subset             = (int *)malloc(_data->_subset_length * sizeof(int));
+
+    BRAIN_LOG("Data", "info", "Number of signal : %d, signal length : %d", _data->_number_of_signal,
+                                                                           _data->_signal_length);
 
     for (i = 0; i < _data->_number_of_signal; ++i)
     {
         Context signal_context = get_node_with_name_and_index(context, "signal", i);
+        Context observation_context = get_node_with_name_and_index(context, "observation", i);
 
         if (signal_context)
         {
@@ -36,6 +46,21 @@ new_data_from_context(Context context)
             {
                 sprintf(buff, "v%d", j);
                 _data->_signals[i][j] = node_get_double(signal_context, buff, 0.0);
+
+                BRAIN_LOG("Data", "info", "signal[%d][%d] : %lf", i, j, _data->_signals[i][j]);
+            }
+        }
+
+        if (observation_context)
+        {
+            _data->_observations[i] = (Observation)malloc(_data->_observation_length * sizeof(double));
+
+            for (j = 0; j < _data->_observation_length; ++j)
+            {
+                sprintf(buff, "v%d", j);
+                _data->_observations[i][j] = node_get_double(observation_context, buff, 0.0);
+
+                BRAIN_LOG("Data", "info", "observation[%d][%d] : %lf", i, j, _data->_observations[i][j]);
             }
         }
     }
@@ -46,7 +71,9 @@ new_data_from_context(Context context)
 
     for (i = 0; i < _data->_subset_length; ++i)
     {
-        _data->_subset[i] = get_next_random_subset_index(_data->_subset, _data->_subset_length, _data->_signal_length);
+        _data->_subset[i] = get_next_random_subset_index(_data->_subset, _data->_subset_length, _data->_number_of_signal);
+
+        BRAIN_LOG("Data", "info", "Subset index %d : %d", i, _data->_subset[i]);
     }
 
     return _data;
@@ -72,11 +99,25 @@ delete_data(Data* data)
             free(data->_signals);
         }
 
+        if (data->_observations)
+        {
+            for (i = 0; i < data->_number_of_signal; ++i)
+            {
+                if (data->_observations[i])
+                {
+                    free(data->_observations[i]);
+                }
+            }
+
+            free(data->_observations);
+        }
+
         if (data->_subset)
         {
             free(data->_subset);
         }
 
+        BRAIN_LOG("Data", "debug", "data has been deleted");
         free(data);
     }
 }
@@ -113,8 +154,19 @@ get_next_random_subset_index(const int* subset,
 }
 
 
+const Observation
+get_observation(Data* data, const int index)
+{
+    if (data != NULL && 0 <= index && index < data->_number_of_signal)
+    {
+        return data->_observations[index];
+    }
+
+    return NULL;
+}
+
 const Signal
-signal(Data* data, const int index)
+get_signal(Data* data, const int index)
 {
     if (data && 0 <= index && index < data->_number_of_signal)
     {

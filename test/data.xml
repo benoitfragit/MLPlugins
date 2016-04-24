@@ -1,8 +1,15 @@
-<data signal-length="6">
+<data signal-length="3" observation-length="2">
     <signal v0="0.0" v1="1.0" v2="0.0"/>
     <signal v0="1.0" v1="1.0" v2="0.0"/>
     <signal v0="1.0" v1="0.0" v2="1.0"/>
     <signal v0="1.0" v1="0.0" v2="0.0"/>
     <signal v0="0.0" v1="1.0" v2="1.0"/>
     <signal v0="0.0" v1="1.0" v2="1.0"/>
+
+    <observation v0="0.0"  v1="0.25"/>
+    <observation v0="0.01" v1="0.0"/>
+    <observation v0="0.0"  v1="0.25"/>
+    <observation v0="0.0"  v1="0.25"/>
+    <observation v0="0.01" v1="0.0"/>
+    <observation v0="0.0"  v1="0.25"/>
 </data>

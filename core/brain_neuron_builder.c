@@ -126,7 +126,10 @@ delete_neuron(Neuron* neuron)
             free(neuron->_correction);
         }
 
+        BRAIN_LOG("Neuron", "debug", "Neuron %d has been deleted", neuron->_id);
+
         free(neuron);
+
     }
 }
 
@@ -142,7 +145,7 @@ new_neuron_from_context(Context context)
 
     if (!context || !is_node_with_name(context, "neuron"))
     {
-        fprintf (stderr, "<%s:%d> Context is not valid !\n",  __FILE__, __LINE__);
+        BRAIN_LOG ("Neuron", "critical", "<%s:%d> Context is not valid !\n",  __FILE__, __LINE__);
         return NULL;
     }
 
@@ -158,14 +161,25 @@ new_neuron_from_context(Context context)
 
     memset(_neuron->_correction, 0, (_neuron->_number_of_input + 1) * sizeof(double));
 
+    BRAIN_LOG("Neuron", "info", "id: %d, inputs = %d, learning-rate=%lf, inertie=%lf", _neuron->_id,
+                                                                                       _neuron->_number_of_input,
+                                                                                       _neuron->_learning_rate,
+                                                                                       _neuron->_inertial_factor);
+
     for (index = 0; index < _neuron->_number_of_input + 1; ++index)
     {
         weight_context = get_node_with_name_and_index(context, "weight", index);
 
         if (weight_context)
         {
-            _neuron->_w[index] = node_get_double(weight_context, "value", rand() / (double)RAND_MAX);
+            _neuron->_w[index] = node_get_double(weight_context, "value", (double)rand() / (double)RAND_MAX);
         }
+        else
+        {
+            _neuron->_w[index] = (double)rand() / (double)RAND_MAX;
+        }
+
+        BRAIN_LOG("Neuron", "info", "weight %d : %lf", index, _neuron->_w[index]);
     }
 
     return _neuron;

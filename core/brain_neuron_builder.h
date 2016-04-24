@@ -2,6 +2,7 @@
 #define BRAIN_NEURON_BUILDER_H
 
 #include "brain_xml_utils.h"
+#include "brain_logging_utils.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -31,7 +32,7 @@ double  input(Neuron* neuron, const int input_index);
 double  weight(Neuron* neuron, const int weight_index);
 void    set_neuron_input(Neuron* neuron, const int number_of_inputs, const double* in);
 void    propagate(Neuron* neuron, const double out, const int input_index);
-void append_delta(Neuron* neuron, const double delta);
-double get_weighted_delta(Neuron *neuron, const int index);
+void    append_delta(Neuron* neuron, const double delta);
+double  get_weighted_delta(Neuron *neuron, const int index);
 
 #endif /* BRAIN_NEURON_BUILDER_H */

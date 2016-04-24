@@ -170,5 +170,7 @@ backpropagate(Network *network, const int number_of_output, const double *desire
         }
     }
 
+    BRAIN_LOG("Brain", "info", "Brain quadratic error id %lf", error);
+
     return error;
 }
