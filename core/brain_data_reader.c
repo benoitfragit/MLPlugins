@@ -9,9 +9,10 @@
 Data*
 new_data_from_context(Context context)
 {
-    Data* _data = NULL;
+	char* buffer = NULL;
+    char* part = NULL;
+   	Data* _data = NULL;
     int i = 0, j = 0;
-    char buff[100];
 
     if (context && !is_node_with_name(context, "data"))
     {
@@ -35,30 +36,37 @@ new_data_from_context(Context context)
 
     for (i = 0; i < _data->_number_of_signal; ++i)
     {
-        Context signal_context = get_node_with_name_and_index(context, "signal", i);
-        Context observation_context = get_node_with_name_and_index(context, "observation", i);
+        Context signal_context      = get_node_with_name_and_index(context, "signal", i);
 
         if (signal_context)
         {
-            _data->_signals[i] = (Signal)malloc(_data->_signal_length * sizeof(double));
+            _data->_signals[i]      = (Signal)malloc(_data->_signal_length * sizeof(double));
+			_data->_observations[i] = (Observation)malloc(_data->_observation_length * sizeof(double));
+			
+			buffer = (char *)node_get_prop(signal_context, "input");
+			part = strtok(buffer, ", ");
 
             for (j = 0; j < _data->_signal_length; ++j)
             {
-                sprintf(buff, "v%d", j);
-                _data->_signals[i][j] = node_get_double(signal_context, buff, 0.0);
+				if (part != NULL)
+				{
+					sscanf(part, "%lf", &_data->_signals[i][j]);
+					part = strtok(NULL, ", ");
+				}
 
                 BRAIN_LOG("Data", "info", "signal[%d][%d] : %lf", i, j, _data->_signals[i][j]);
             }
-        }
 
-        if (observation_context)
-        {
-            _data->_observations[i] = (Observation)malloc(_data->_observation_length * sizeof(double));
+			buffer = (char *)node_get_prop(signal_context, "output");
+			part = strtok(buffer, ", ");
 
             for (j = 0; j < _data->_observation_length; ++j)
             {
-                sprintf(buff, "v%d", j);
-                _data->_observations[i][j] = node_get_double(observation_context, buff, 0.0);
+				if (part != NULL)
+				{
+					sscanf(part, "%lf", &_data->_observations[i][j]);
+					part = strtok(NULL, ", ");
+				}
 
                 BRAIN_LOG("Data", "info", "observation[%d][%d] : %lf", i, j, _data->_observations[i][j]);
             }
