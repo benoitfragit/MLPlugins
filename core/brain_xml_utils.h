@@ -16,5 +16,6 @@ double   node_get_double(Context node, const char* key, const double _default);
 Document open_document(const char *doc);
 void     close_document(Document doc);
 Context  get_root_node(Document doc);
+int      validate_with_xsd(const char* xml_file, const char* xsd_file);
 
 #endif /*BRAIN_XML_UTILS_H*/
