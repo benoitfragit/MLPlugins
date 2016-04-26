@@ -165,7 +165,7 @@ validate_with_xsd(const char* xml_file, const char* xsd_file)
 
 	if (doc == NULL)
 	{
-		BRAIN_LOG("XSD", "critical", "Unable to open %s", xml_file);
+		BRAIN_CRITICAL("Unable to open %s", xml_file);
 		return 0;
 	}
 	else
@@ -177,17 +177,17 @@ validate_with_xsd(const char* xml_file, const char* xsd_file)
 		ret = xmlSchemaValidateDoc(ctxt, doc);
 		if (ret == 0)
 		{
-			BRAIN_LOG("XSD", "debug", "%s validates\n", xml_file);
+			BRAIN_DEBUG("%s validates\n", xml_file);
 			ret = 1;
 		}
 		else if (ret > 0)
 		{
-			BRAIN_LOG("XSD", "debug","%s fails to validate\n", xml_file);
+			BRAIN_DEBUG("%s fails to validate\n", xml_file);
 			ret = 0;
 		}
 		else
 		{
-			BRAIN_LOG("XSD", "critical", "%s validation generated an internal error\n", xml_file);
+			BRAIN_CRITICAL("%s validation generated an internal error\n", xml_file);
 			ret = 0;
 		}
 	

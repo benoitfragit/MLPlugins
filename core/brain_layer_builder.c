@@ -56,7 +56,7 @@ new_layer_from_context(Context context)
 
     if (!context || !is_node_with_name(context, "layer"))
     {
-        BRAIN_LOG ("Layer", "critical", "<%s:%d> Context is not valid !\n",  __FILE__, __LINE__);
+        BRAIN_CRITICAL ("Layer",  "<%s:%d> Context is not valid !\n",  __FILE__, __LINE__);
         return NULL;
     }
 
@@ -64,7 +64,7 @@ new_layer_from_context(Context context)
     _layer->_id               = node_get_int(context, "id", 0);
     _layer->_number_of_neuron = get_number_of_node_with_name(context, "neuron");
 
-    BRAIN_LOG("Layer", "info", "layer id : %d, number of neuron : %d", _layer->_id,
+    BRAIN_INFO("layer id : %d, number of neuron : %d", _layer->_id,
                                                                        _layer->_number_of_neuron);
 
     if (_layer->_number_of_neuron > 0)

@@ -1,3 +1,4 @@
 #cmakedefine ENABLE_GLIB_EXTRA
 #define DATA_XSD_FILE "${CMAKE_INSTALL_PREFIX}/schemas/data.xsd"
 #define NETWORK_XSD_FILE "${CMAKE_INSTALL_PREFIX}/schemas/network.xsd"
+#define BRAIN_DOMAIN "brain"

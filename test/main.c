@@ -13,7 +13,7 @@ main(int argc, char** argv)
 
     if (argc <= 2)
     {
-        BRAIN_LOG("Main", "critical", "<%s, %d>: you should pass the network xml file and the data xml file\n", __FILE__, __LINE__);
+        BRAIN_CRITICAL("Main", "critical", "<%s, %d>: you should pass the network xml file and the data xml file\n", __FILE__, __LINE__);
         return EXIT_FAILURE;
     }
 

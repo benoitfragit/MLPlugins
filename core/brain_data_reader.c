@@ -16,7 +16,7 @@ new_data_from_context(Context context)
 
     if (context && !is_node_with_name(context, "data"))
     {
-        BRAIN_LOG("Data", "critical", "<%s, %d>: Receive an invalid context\n", __FILE__, __LINE__);
+        BRAIN_CRITICAL("<%s, %d>: Receive an invalid context\n", __FILE__, __LINE__);
         return NULL;
     }
 
@@ -31,7 +31,7 @@ new_data_from_context(Context context)
     _data->_subset_length      = (int)(_data->_number_of_signal / 2);
     _data->_subset             = (int *)malloc(_data->_subset_length * sizeof(int));
 
-    BRAIN_LOG("Data", "info", "Number of signal : %d, signal length : %d", _data->_number_of_signal,
+    BRAIN_INFO("Number of signal : %d, signal length : %d", _data->_number_of_signal,
                                                                            _data->_signal_length);
 
     for (i = 0; i < _data->_number_of_signal; ++i)
@@ -54,7 +54,7 @@ new_data_from_context(Context context)
 					part = strtok(NULL, ", ");
 				}
 
-                BRAIN_LOG("Data", "info", "signal[%d][%d] : %lf", i, j, _data->_signals[i][j]);
+                BRAIN_INFO("signal[%d][%d] : %lf", i, j, _data->_signals[i][j]);
             }
 
 			buffer = (char *)node_get_prop(signal_context, "output");
@@ -68,7 +68,7 @@ new_data_from_context(Context context)
 					part = strtok(NULL, ", ");
 				}
 
-                BRAIN_LOG("Data", "info", "observation[%d][%d] : %lf", i, j, _data->_observations[i][j]);
+                BRAIN_INFO("observation[%d][%d] : %lf", i, j, _data->_observations[i][j]);
             }
         }
     }
@@ -81,7 +81,7 @@ new_data_from_context(Context context)
     {
         _data->_subset[i] = get_next_random_subset_index(_data->_subset, _data->_subset_length, _data->_number_of_signal);
 
-        BRAIN_LOG("Data", "info", "Subset index %d : %d", i, _data->_subset[i]);
+        BRAIN_INFO("Subset index %d : %d", i, _data->_subset[i]);
     }
 
     return _data;
@@ -125,7 +125,7 @@ delete_data(Data* data)
             free(data->_subset);
         }
 
-        BRAIN_LOG("Data", "debug", "data has been deleted");
+        BRAIN_DEBUG("data has been deleted");
         free(data);
     }
 }

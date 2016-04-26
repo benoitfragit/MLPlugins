@@ -6,9 +6,8 @@
 #include <stdarg.h>
 #include "brain_config.h"
 
-void BRAIN_LOG(const char *log_domain,
-               const char* level,
-               const char* format,
-               ...);
+void BRAIN_CRITICAL(const char* format, ...);
+void BRAIN_DEBUG   (const char* format, ...);
+void BRAIN_INFO    (const char* format, ...);
 
 #endif /* BRAIN_LOGGING_UTILS_H */

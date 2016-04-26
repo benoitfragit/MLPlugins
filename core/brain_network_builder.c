@@ -100,7 +100,7 @@ new_network_from_context(Context context)
 
     if (!context || !is_node_with_name(context, "network"))
     {
-        BRAIN_LOG("Network", "critical", "<%s:%d> Context is not valid !\n",  __FILE__, __LINE__);
+        BRAIN_CRITICAL("Network", "<%s:%d> Context is not valid !\n",  __FILE__, __LINE__);
         return NULL;
     }
 
@@ -108,7 +108,7 @@ new_network_from_context(Context context)
     _network->_number_of_layer   = get_number_of_node_with_name(context, "layer");
     _network->_number_of_synapse = get_number_of_node_with_name(context, "connect");
 
-    BRAIN_LOG("Network", "info", "Number of layer : %d, Number of synapse : %d", _network->_number_of_layer,
+    BRAIN_INFO("Number of layer : %d, Number of synapse : %d", _network->_number_of_layer,
                                                                                  _network->_number_of_synapse);
 
     if (_network->_number_of_layer)
