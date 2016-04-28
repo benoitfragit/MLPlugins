@@ -16,7 +16,7 @@ append_delta(Neuron* neuron, const double delta)
 {
     if (neuron != NULL)
     {
-        neuron->_delta += neuron->_out * (1.0 - neuron->_out) * delta;
+        neuron->_delta += neuron->_derivative(neuron->_out) * delta;
     }
 }
 
@@ -84,7 +84,7 @@ activate(Neuron *neuron)
             sum += neuron->_in[j] * neuron->_w[j];
         }
 
-        neuron->_out = 1.0 / (1.0 + exp(-sum));
+        neuron->_out = neuron->_activation(sum);
         neuron->_delta = 0.0;
     }
 }
