@@ -3,6 +3,7 @@
 
 #include "brain_xml_utils.h"
 #include "brain_logging_utils.h"
+#include "brain_activation.h"
 
 #include <stdlib.h>
 #include <stdio.h>

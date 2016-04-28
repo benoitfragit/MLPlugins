@@ -96,7 +96,7 @@ update(Neuron* neuron)
 
     if (neuron != NULL)
     {
-        for (index = 0; index < neuron->_number_of_input; ++index)
+        for (index = 0; index < neuron->_number_of_input+1; ++index)
         {
             double correction = - neuron->_learning_rate * neuron->_delta * neuron->_in[index] + neuron->_inertial_factor * neuron->_correction[index];
 
@@ -165,6 +165,8 @@ new_neuron_from_context(Context context)
                                                                                        _neuron->_number_of_input,
                                                                                        _neuron->_learning_rate,
                                                                                        _neuron->_inertial_factor);
+
+    _neuron->_in[_neuron->_number_of_input] = -1.0;
 
     for (index = 0; index < _neuron->_number_of_input + 1; ++index)
     {

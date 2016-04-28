@@ -39,7 +39,9 @@ set(SOURCES brain.c
             brain_xml_utils.c
             brain_xml_utils.h
             brain_logging_utils.c
-            brain_logging_utils.h)
+            brain_logging_utils.h
+            brain_activation.h
+            brain_activation.c)
 
 #Generate the shared library from the sources
 add_library(Brain SHARED ${SOURCES})
