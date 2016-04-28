@@ -1,5 +1,15 @@
 #include "brain_activation.h"
 #include <math.h>
+#include <string.h>
+
+static const char* activation_name[] = {
+    "identity",
+    "sigmoid",
+    "tanh",
+    "arctan",
+    "softplus",
+    "sinus"
+};
 
 static double
 identity(const double value)
@@ -117,4 +127,23 @@ derivative(const ActivationType type)
     }
 
     return &sigmoid_derivative;
+}
+
+ActivationType
+get_activation_type(const char* activation_type_name)
+{
+    int i = 0;
+
+    if (activation_type_name)
+    {
+        for (i = First_Activation; i < Last_Activation; ++i)
+        {
+            if (i != Invalid && !strcmp(activation_name[i], activation_type_name))
+            {
+                return i;
+            }
+        }
+    }
+
+    return Invalid;
 }
