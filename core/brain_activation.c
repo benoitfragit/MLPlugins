@@ -136,7 +136,7 @@ get_activation_type(const char* activation_type_name)
 
     if (activation_type_name)
     {
-        for (i = First_Activation; i < Last_Activation; ++i)
+        for (i = First_Activation; i <= Last_Activation; ++i)
         {
             if (i != Invalid && !strcmp(activation_name[i - First_Activation], activation_type_name))
             {
@@ -146,4 +146,19 @@ get_activation_type(const char* activation_type_name)
     }
 
     return Invalid;
+}
+
+const char*
+get_activation_name(const ActivationType activation_type)
+{
+	int i = 0;
+	for (i = First_Activation; i <= Last_Activation; ++i)
+	{
+		if (i == activation_type)
+		{
+			return activation_name[i - First_Activation];
+		}
+	}
+
+	return NULL;
 }

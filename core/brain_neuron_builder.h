@@ -13,17 +13,18 @@
 
 typedef struct Neuron
 {
-    double* _in;
-    double* _w;
-    double  _out;
-    double  _learning_rate;
-    double  _inertial_factor;
-    double  _delta;
-    double* _correction;
-    PtrFunc _activation;
-    PtrFunc _derivative;
-    int     _id;
-    int     _number_of_input;
+    double*        _in;
+    double*        _w;
+    double         _out;
+    double         _learning_rate;
+    double         _inertial_factor;
+    double         _delta;
+    double*        _correction;
+    PtrFunc        _activation;
+    PtrFunc        _derivative;
+    int            _id;
+    int            _number_of_input;
+	ActivationType _activation_type;
 } Neuron;
 
 Neuron* new_neuron_from_context(Context context);

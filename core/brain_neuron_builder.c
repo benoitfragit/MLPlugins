@@ -140,7 +140,6 @@ new_neuron_from_context(Context context)
     int index = 0;
     Context weight_context;
     Neuron* _neuron = (Neuron *)malloc(sizeof(Neuron));
-	ActivationType activation_type = Invalid;
 
     srand(time(NULL));
 
@@ -160,9 +159,9 @@ new_neuron_from_context(Context context)
     _neuron->_correction      = (double *)malloc((_neuron->_number_of_input + 1) * sizeof(double)) ;
     _neuron->_id              = node_get_int(context, "id", 0);
 
-	activation_type           = get_activation_type((char *)node_get_prop(context, "activation-type"));
-	_neuron->_activation      = activation(activation_type);
-    _neuron->_derivative      = derivative(activation_type);
+	_neuron->_activation_type  = get_activation_type((char *)node_get_prop(context, "activation-type"));
+	_neuron->_activation      = activation(_neuron->_activation_type);
+    _neuron->_derivative      = derivative(_neuron->_activation_type);
 
     memset(_neuron->_correction, 0, (_neuron->_number_of_input + 1) * sizeof(double));
 
@@ -170,7 +169,7 @@ new_neuron_from_context(Context context)
                                                                                      _neuron->_number_of_input,
                                                                                      _neuron->_learning_rate,
                                                                                      _neuron->_inertial_factor,
-																					 activation_type);
+																					 _neuron->_activation_type);
 
     _neuron->_in[_neuron->_number_of_input] = -1.0;
 
@@ -199,11 +198,23 @@ dump_neuron(Neuron* neuron, FILE* file)
 	int i;
 	if (neuron && file)
 	{
+		const char* activation_name = get_activation_name(neuron->_activation_type);
+
 		fprintf(file, "\t\t<neuron");
 		fprintf(file, " id=\"%d\"",               neuron->_id);
 		fprintf(file, " input=\"%d\"",            neuron->_number_of_input);
 		fprintf(file, " learning-rate=\"%lf\"",   neuron->_learning_rate);
 		fprintf(file, " inertial-factor=\"%lf\"", neuron->_inertial_factor);
+
+		if (!activation_name)
+		{
+			fprintf(file, " activation-type=\"%s\"", "sigmoid");
+		}
+		else
+		{
+			fprintf(file, " activation-type=\"%s\"", activation_name);
+		}
+
 		fprintf(file, ">\n");
 
 		//don't forget the bias
