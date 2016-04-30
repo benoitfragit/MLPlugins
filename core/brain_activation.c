@@ -138,7 +138,7 @@ get_activation_type(const char* activation_type_name)
     {
         for (i = First_Activation; i < Last_Activation; ++i)
         {
-            if (i != Invalid && !strcmp(activation_name[i], activation_type_name))
+            if (i != Invalid && !strcmp(activation_name[i - First_Activation], activation_type_name))
             {
                 return i;
             }
