@@ -1,29 +1,6 @@
 #include "brain.h"
 #include <string.h>
 
-const Synapse*
-find_synapse(Network* network, const int layer_id, const int neuron_id)
-{
-    int i;
-
-    if (!network || !network->_synapses)
-    {
-        return NULL;
-    }
-
-    for (i = 0; i < network->_number_of_synapse; ++i)
-    {
-        const Synapse* synapse = network->_synapses[i];
-
-        if (synapse->_input_layer == layer_id && synapse->_input_neuron == neuron_id)
-        {
-            return synapse;
-        }
-    }
-
-    return NULL;
-}
-
 double
 backpropagate_output_layer(Network* network, const int number_of_output, const double* desired)
 {
@@ -72,19 +49,19 @@ backpropagate_hidden_layer(Network* network, const int layer_index)
 
                 if (pNeuron)
                 {
-                    const Synapse *synapse = find_synapse(network, pLayer->_id, pNeuron->_id);
+                    const Synapse* neural_synapse = synapse(network, pLayer->_id, pNeuron->_id);
 
-                    if (synapse)
+                    if (neural_synapse)
                     {
-                        Layer* nLayer = layer(network, synapse->_output_layer);
+                        Layer* nLayer = layer(network, neural_synapse->_output_layer);
 
                         if (nLayer)
                         {
-                            Neuron* nNeuron = neuron(nLayer, synapse->_output_neuron);
+                            Neuron* nNeuron = neuron(nLayer, neural_synapse->_output_neuron);
 
                             if (nNeuron)
                             {
-                                append_delta(pNeuron, get_weighted_delta(nNeuron, synapse->_input_index));
+                                append_delta(pNeuron, get_weighted_delta(nNeuron, neural_synapse->_input_index));
                             }
                         }
                     }
