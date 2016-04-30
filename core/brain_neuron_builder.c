@@ -140,6 +140,7 @@ new_neuron_from_context(Context context)
     int index = 0;
     Context weight_context;
     Neuron* _neuron = (Neuron *)malloc(sizeof(Neuron));
+	ActivationType activation_type = Invalid;
 
     srand(time(NULL));
 
@@ -159,12 +160,17 @@ new_neuron_from_context(Context context)
     _neuron->_correction      = (double *)malloc((_neuron->_number_of_input + 1) * sizeof(double)) ;
     _neuron->_id              = node_get_int(context, "id", 0);
 
+	activation_type = get_activation_type((char *)node_get_prop(context, "activation-type"));
+	_neuron->_activation      = activation(activation_type);
+    _neuron->_derivative      = derivative(activation_type);
+
     memset(_neuron->_correction, 0, (_neuron->_number_of_input + 1) * sizeof(double));
 
-    BRAIN_INFO("id: %d, inputs = %d, learning-rate=%lf, inertie=%lf", _neuron->_id,
-                                                                                       _neuron->_number_of_input,
-                                                                                       _neuron->_learning_rate,
-                                                                                       _neuron->_inertial_factor);
+    BRAIN_INFO("id: %d, inputs = %d, learning-rate=%lf, inertie=%lf, activation=%d", _neuron->_id,
+                                                                                     _neuron->_number_of_input,
+                                                                                     _neuron->_learning_rate,
+                                                                                     _neuron->_inertial_factor,
+																					 activation_type);
 
     _neuron->_in[_neuron->_number_of_input] = -1.0;
 

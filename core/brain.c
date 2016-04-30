@@ -139,7 +139,6 @@ feedforward(Network *network)
     }
 }
 
-
 double
 backpropagate(Network *network, const int number_of_output, const double *desired)
 {
@@ -173,4 +172,42 @@ backpropagate(Network *network, const int number_of_output, const double *desire
     BRAIN_INFO("Brain quadratic error id %lf", error);
 
     return error;
+}
+
+int
+train(Network *network, const Data* data, const double target_error, const int max_iter)
+{
+	int iteration = 0, subset_index = 0, index = 0;
+	double error = target_error + 1.0;
+
+	if (network && data && target_error >= 0 && max_iter >= 1)
+	{
+		do 
+		{
+			for (subset_index = 0; subset_index < data->_subset_length; ++subset_index)
+			{
+				index = data->_subset[subset_index];
+				
+				set_network_input(network, data->_signal_length, data->_signals[index]);
+				feedforward(network);
+				error = backpropagate(network, data->_observation_length, data->_observations[index]);
+
+				if (target_error <= error)
+				{
+					BRAIN_INFO("Network has beene successfully trained");
+					return 1;
+				}
+			}
+			
+			++iteration;
+		} while ((iteration < max_iter) && (target_error > error));
+	}
+	
+	if (error > target_error)
+	{
+		BRAIN_CRITICAL("Unable to train the neural network, target error = %lf, error = %lf", target_error, error);
+		return 0;
+	}
+	
+	return 1;
 }

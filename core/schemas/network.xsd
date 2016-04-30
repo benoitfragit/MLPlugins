@@ -8,11 +8,12 @@
         <xs:sequence minOccurs="0" maxOccurs="unbounded">
             <xs:element name="weight" type="WeightType"/>
         </xs:sequence>
-        <xs:attribute name="id"              type="xs:integer" use="required"/>
+		<xs:attribute name="id"              type="xs:integer" use="required"/>
         <xs:attribute name="input"           type="xs:integer" use="required"/>
         <xs:attribute name="learning-rate"   type="xs:decimal" use="optional"/>
         <xs:attribute name="inertial-factor" type="xs:decimal" use="optional"/>
-    </xs:complexType>
+		<xs:attribute name="activation-type" type="xs:string"  use="optional"/>
+	</xs:complexType>
 
     <xs:complexType name="ConnectType">
         <xs:attribute name="input-layer"   type="xs:integer" use="required"/>
