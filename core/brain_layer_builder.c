@@ -64,8 +64,7 @@ new_layer_from_context(Context context)
     _layer->_id               = node_get_int(context, "id", 0);
     _layer->_number_of_neuron = get_number_of_node_with_name(context, "neuron");
 
-    BRAIN_INFO("layer id : %d, number of neuron : %d", _layer->_id,
-                                                                       _layer->_number_of_neuron);
+    BRAIN_INFO("layer id : %d, number of neuron : %d", _layer->_id, _layer->_number_of_neuron);
 
     if (_layer->_number_of_neuron > 0)
     {
@@ -83,4 +82,19 @@ new_layer_from_context(Context context)
     }
 
     return _layer;
+}
+
+void
+dump_layer(Layer* layer, FILE* file)
+{
+	int i;
+	if (layer && file)
+	{
+		fprintf(file, "\t<layer id=\"%d\">\n",layer->_id);
+
+		for (i = 0; i < layer->_number_of_neuron; ++i)
+		{
+			dump_neuron(layer->_neurons[i], file);
+		}
+	}
 }

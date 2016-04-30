@@ -1,6 +1,7 @@
 #ifndef BRAIN_XML_UTILS_H
 #define BRAIN_XML_UTILS_H
 
+#include <stdio.h>
 #include <libxml/tree.h>
 #include <libxml/xpath.h>
 

@@ -10,6 +10,8 @@ typedef struct Network
     Synapse **_synapses;
     double* _output;
 
+	int _is_trained;
+
     int _number_of_synapse;
     int _number_of_layer;
 } Network;
@@ -20,5 +22,7 @@ Layer*   layer(Network* network, const int layer_index);
 Synapse* synapse(Network* network, const int layer_id, const int neuron_id);
 const double* getoutput(const Network* network);
 void set_network_input(Network* network, const int number_of_input, const double *in);
+void dump_network(const Network* network, const char* filename);
+
 
 #endif /* BRAIN_NETWORK_BUILDER_H */

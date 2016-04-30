@@ -36,5 +36,6 @@ void    set_neuron_input(Neuron* neuron, const int number_of_inputs, const doubl
 void    propagate(Neuron* neuron, const double out, const int input_index);
 void    append_delta(Neuron* neuron, const double delta);
 double  get_weighted_delta(Neuron *neuron, const int index);
+void    dump_neuron(Neuron* neuron, FILE* file);
 
 #endif /* BRAIN_NEURON_BUILDER_H */

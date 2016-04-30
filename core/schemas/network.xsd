@@ -35,7 +35,8 @@
             <xs:element name="layer"   type="LayerType"   minOccurs="1" maxOccurs="unbounded"/>
             <xs:element name="connect" type="ConnectType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
-    </xs:complexType>
+		<xs:attribute name="trained" type="xs:integer" use="optional"/>
+	</xs:complexType>
 
     <xs:element name="network" type="NetworkType"/>
 </xs:schema>

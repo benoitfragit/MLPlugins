@@ -107,6 +107,7 @@ new_network_from_context(Context context)
     _network = (Network *)malloc(sizeof(Network));
     _network->_number_of_layer   = get_number_of_node_with_name(context, "layer");
     _network->_number_of_synapse = get_number_of_node_with_name(context, "connect");
+	_network->_is_trained        = node_get_int(context, "trained", 0);
 
     BRAIN_INFO("Number of layer : %d, Number of synapse : %d", _network->_number_of_layer,
                                                                                  _network->_number_of_synapse);
@@ -146,4 +147,40 @@ new_network_from_context(Context context)
     memset(_network->_output, 0, number_of_outputs * sizeof(double));
 
     return _network;
+}
+
+void
+dump_network(const Network* network, const char* filename)
+{
+	int i;
+
+	if (network && filename)
+	{
+		FILE* file = fopen(filename, "w");
+		if (file)
+		{
+			fprintf(file, "<network\n");
+			fprintf(file, " trained=\"%d\"", network->_is_trained);
+			fprintf(file, ">\n");
+
+			for (i = 0; i < network->_number_of_layer; ++i)
+			{
+				dump_layer(network->_layers[i], file);
+			}
+		
+			fprintf(file, "\n");
+
+			for (i = 0; i < network->_number_of_synapse;++i)
+			{
+				dump_synapse(network->_synapses[i], file);
+			}
+
+			fprintf(file, "</network>\n");
+			fclose(file);
+		}
+	}
+	else
+	{
+		BRAIN_CRITICAL("Please give a valid file for dumping network content");
+	}
 }

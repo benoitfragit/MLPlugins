@@ -160,7 +160,7 @@ new_neuron_from_context(Context context)
     _neuron->_correction      = (double *)malloc((_neuron->_number_of_input + 1) * sizeof(double)) ;
     _neuron->_id              = node_get_int(context, "id", 0);
 
-	activation_type = get_activation_type((char *)node_get_prop(context, "activation-type"));
+	activation_type           = get_activation_type((char *)node_get_prop(context, "activation-type"));
 	_neuron->_activation      = activation(activation_type);
     _neuron->_derivative      = derivative(activation_type);
 
@@ -191,4 +191,25 @@ new_neuron_from_context(Context context)
     }
 
     return _neuron;
+}
+
+void
+dump_neuron(Neuron* neuron, FILE* file)
+{
+	int i;
+	if (neuron && file)
+	{
+		fprintf(file, "\t\t<neuron");
+		fprintf(file, " id=\"%d\"",               neuron->_id);
+		fprintf(file, " input=\"%d\"",            neuron->_number_of_input);
+		fprintf(file, " learning-rate=\"%lf\"",   neuron->_learning_rate);
+		fprintf(file, " inertial-factor=\"%lf\"", neuron->_inertial_factor);
+		fprintf(file, ">\n");
+
+		//don't forget the bias
+		for (i = 0; i < neuron->_number_of_input + 1; ++i)
+		{
+			fprintf(file, "\t\t\t<weight value=\"%lf\"/>\n", neuron->_w[i]);
+		}
+	}
 }

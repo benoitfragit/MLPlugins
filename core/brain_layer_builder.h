@@ -15,5 +15,7 @@ Layer*  new_layer_from_context(Context context);
 Neuron* neuron(Layer* layer, const int index);
 void    delete_layer(Layer *layer);
 void    set_layer_input(Layer* layer, const int number_of_inputs, const double* in);
+void    dump_layer(Layer* layer, FILE* file);
+
 
 #endif /* BRAIN_LAYER_BUILDER_H */

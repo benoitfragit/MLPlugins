@@ -151,7 +151,7 @@ backpropagate(Network *network, const int number_of_output, const double *desire
     return error;
 }
 
-int
+void
 train(Network *network, const Data* data, const double target_error, const int max_iter)
 {
 	int iteration = 0, subset_index = 0, index = 0;
@@ -172,7 +172,8 @@ train(Network *network, const Data* data, const double target_error, const int m
 				if (target_error <= error)
 				{
 					BRAIN_INFO("Network has beene successfully trained");
-					return 1;
+					network->_is_trained = 1;
+					return;
 				}
 			}
 			
@@ -183,8 +184,9 @@ train(Network *network, const Data* data, const double target_error, const int m
 	if (error > target_error)
 	{
 		BRAIN_CRITICAL("Unable to train the neural network, target error = %lf, error = %lf", target_error, error);
-		return 0;
+		network->_is_trained = 0;
+		return;
 	}
-	
-	return 1;
+
+	network->_is_trained = 1;
 }

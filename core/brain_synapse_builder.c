@@ -30,3 +30,16 @@ delete_synapse(Synapse* synapse)
         free(synapse);
     }
 }
+
+void
+dump_synapse(Synapse* synapse, FILE* file)
+{
+	if (synapse && file)
+	{
+		fprintf(file, "\t<connect input-layer=\"%d\" input-neuron=\"%d\" output-layer=\"%d\" output-neuron=\"%d\" input-index=\"%d\">\n", synapse->_input_layer,
+																																  synapse->_input_neuron,
+																																  synapse->_output_layer,
+																																  synapse->_output_neuron,
+																																  synapse->_input_index);
+	}
+}

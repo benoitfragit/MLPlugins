@@ -14,6 +14,7 @@ typedef struct Synapse
 
 Synapse* new_synapse_from_context(Context context);
 void delete_synapse(Synapse* synapse);
+void dump_synapse(Synapse* synapse, FILE* file);
 
 
 #endif /* BRAIN_SYNAPSE_BUILDER_H */
