@@ -2,7 +2,7 @@
 #include <string.h>
 
 double
-backpropagate_output_layer(Network* network, const int number_of_output, const double* desired)
+backpropagate_output_layer(Network_t network, const int number_of_output, const double* desired)
 {
     double error = 0.0;
 	int number_of_neuron = 0;
@@ -10,7 +10,7 @@ backpropagate_output_layer(Network* network, const int number_of_output, const d
     if (network && desired)
     {
         //backpropagate the error to the output layer
-        Layer_t output_layer = layer(network, network->_number_of_layer - 1);
+        Layer_t output_layer = layer(network, get_number_of_layer(network) - 1);
 		
 		number_of_neuron = get_number_of_neuron(output_layer);
 
@@ -36,12 +36,12 @@ backpropagate_output_layer(Network* network, const int number_of_output, const d
 }
 
 void
-backpropagate_hidden_layer(Network* network, const int layer_index)
+backpropagate_hidden_layer(Network_t network, const int layer_index)
 {
     int j;
 	int number_of_neuron = 0;
 
-    if (network && 0 <= layer_index && layer_index < network->_number_of_layer)
+    if (network && 0 <= layer_index && layer_index < get_number_of_layer(network))
     {
         Layer_t pLayer = layer(network, layer_index);
 		number_of_neuron = get_number_of_neuron(pLayer);
@@ -77,7 +77,7 @@ backpropagate_hidden_layer(Network* network, const int layer_index)
 }
 
 void
-feedforward(Network *network)
+feedforward(Network_t network)
 {
     int synapse_index = 0, i;
     Synapse_t synapse = NULL;
@@ -87,9 +87,9 @@ feedforward(Network *network)
 
     if (network != NULL)
     {
-        for (synapse_index = 0; synapse_index < network->_number_of_synapse; ++synapse_index)
+        for (synapse_index = 0; synapse_index < get_number_of_synapse(network); ++synapse_index)
         {
-            synapse      = network->_synapses[synapse_index];
+            synapse      = synapse_with_index(network, synapse_index);;
             input_layer  = layer(network, get_input_layer(synapse));
             output_layer = layer(network, get_output_layer(synapse));
 
@@ -106,7 +106,7 @@ feedforward(Network *network)
             }
         }
 
-        output_layer = layer(network, network->_number_of_layer - 1);
+        output_layer = layer(network, get_number_of_layer(network) - 1);
         if (output_layer)
         {
             for (i = 0; i < get_number_of_neuron(output_layer); ++i)
@@ -115,7 +115,7 @@ feedforward(Network *network)
 
                 if (output_neuron)
                 {
-                    network->_output[i] = output_neuron->_out;
+                    set_output(network, i, output_neuron->_out);
                 }
             }
         }
@@ -123,18 +123,18 @@ feedforward(Network *network)
 }
 
 double
-backpropagate(Network *network, const int number_of_output, const double *desired)
+backpropagate(Network_t network, const int number_of_output, const double *desired)
 {
     int i, j;
     const double error = backpropagate_output_layer(network, number_of_output, desired);
 
-    for (i = network->_number_of_layer - 2; i >= 0; --i)
+    for (i = get_number_of_layer(network) - 2; i >= 0; --i)
     {
         backpropagate_hidden_layer(network, i);
     }
 
     // now update all weight
-    for (i = network->_number_of_layer - 1; i >= 0; --i)
+    for (i = get_number_of_layer(network) - 1; i >= 0; --i)
     {
         Layer_t pLayer = layer(network, i);
 
@@ -158,11 +158,13 @@ backpropagate(Network *network, const int number_of_output, const double *desire
 }
 
 void
-train(Network *network, const Data* data, const double target_error, const int max_iter)
+train(Network_t network, const Data* data, const double target_error, const int max_iter)
 {
 	int iteration = 0, subset_index = 0, index = 0;
 	double error = target_error + 1.0;
-
+	
+	set_trained(network, 0);
+	
 	if (network && data && target_error >= 0 && max_iter >= 1)
 	{
 		do 
@@ -178,7 +180,7 @@ train(Network *network, const Data* data, const double target_error, const int m
 				if (target_error <= error)
 				{
 					BRAIN_INFO("Network has beene successfully trained");
-					network->_is_trained = 1;
+					set_trained(network, 1);
 					return;
 				}
 			}
@@ -190,9 +192,9 @@ train(Network *network, const Data* data, const double target_error, const int m
 	if (error > target_error)
 	{
 		BRAIN_CRITICAL("Unable to train the neural network, target error = %lf, error = %lf", target_error, error);
-		network->_is_trained = 0;
+		set_trained(network, 0);
 		return;
 	}
 
-	network->_is_trained = 1;
+	set_trained(network, 1);
 }

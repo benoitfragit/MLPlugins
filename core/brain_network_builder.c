@@ -1,7 +1,50 @@
 #include "brain_network_builder.h"
 
+struct Network
+{
+    Layer_t   *_layers;
+    Synapse_t *_synapses;
+    double    *_output;
+
+	int _is_trained;
+
+    int _number_of_synapse;
+    int _number_of_layer;
+} Network;
+
+void
+set_trained(Network_t network, const int trained)
+{
+	if (network)
+	{
+		network->_is_trained = trained;
+	}
+}
+
+int
+is_trained(const Network_t network)
+{
+	if (network)
+	{
+		return network->_is_trained;
+	}
+
+	return 0;
+}
+
+void
+set_output(Network_t network, const int index, const double value)
+{
+	if (network
+	&&  (0 <= index)
+	&&  (index < network->_number_of_layer))
+	{
+		network->_output[index] = value;
+	}
+}
+
 const double*
-getoutput(const Network* network)
+getoutput(const Network_t network)
 {
     if (network != NULL)
     {
@@ -11,9 +54,8 @@ getoutput(const Network* network)
     return NULL;
 }
 
-
 Layer_t
-layer(Network* network, const int layer_index)
+layer(Network_t network, const int layer_index)
 {
     if (network != NULL
     && network->_layers != NULL
@@ -27,7 +69,7 @@ layer(Network* network, const int layer_index)
 }
 
 Synapse_t
-synapse(Network* network, const int layer_id, const int neuron_id)
+synapse(Network_t network, const int layer_id, const int neuron_id)
 {
     int i;
 
@@ -45,8 +87,21 @@ synapse(Network* network, const int layer_id, const int neuron_id)
     return NULL;
 }
 
+Synapse_t
+synapse_with_index(Network_t network, const int index)
+{
+	if (network
+	&& (0 <= index)
+	&& (index < network->_number_of_synapse))
+	{
+		return network->_synapses[index];
+	}
+
+	return NULL;
+}
+
 void
-delete_network(Network *network)
+delete_network(Network_t network)
 {
     if (network != NULL)
     {
@@ -81,7 +136,7 @@ delete_network(Network *network)
 }
 
 void
-set_network_input(Network* network, const int number_of_input, const double *in)
+set_network_input(Network_t network, const int number_of_input, const double *in)
 {
     if (in != NULL )
     {
@@ -91,11 +146,11 @@ set_network_input(Network* network, const int number_of_input, const double *in)
     }
 }
 
-Network*
+Network_t
 new_network_from_context(Context context)
 {
     Context subcontext;
-    Network* _network = NULL;
+    Network_t _network = NULL;
     int index = 0, number_of_outputs;
 
     if (!context || !is_node_with_name(context, "network"))
@@ -104,7 +159,7 @@ new_network_from_context(Context context)
         return NULL;
     }
 
-    _network = (Network *)malloc(sizeof(Network));
+    _network = (Network_t)malloc(sizeof(Network));
     _network->_number_of_layer   = get_number_of_node_with_name(context, "layer");
     _network->_number_of_synapse = get_number_of_node_with_name(context, "connect");
 	_network->_is_trained        = node_get_int(context, "trained", 0);
@@ -149,8 +204,30 @@ new_network_from_context(Context context)
     return _network;
 }
 
+int
+get_number_of_layer(const Network_t network)
+{
+	if (network)
+	{
+		return network->_number_of_layer;
+	}
+
+	return 0;
+}
+
+int
+get_number_of_synapse(const Network_t network)
+{
+	if (network)
+	{
+		return network->_number_of_synapse;
+	}
+
+	return 0;
+}
+
 void
-dump_network(const Network* network, const char* filename)
+dump_network(const Network_t network, const char* filename)
 {
 	int i;
 

@@ -7,9 +7,9 @@
 int
 main(int argc, char** argv)
 {
-    Network* network = NULL;
-    Data*    data    = NULL;
-	Document network_document, data_document;
+    Network_t network = NULL;
+    Data*     data    = NULL;
+	Document  network_document, data_document;
 
     if (argc <= 2)
     {

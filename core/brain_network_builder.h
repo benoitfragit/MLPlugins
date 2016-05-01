@@ -4,24 +4,19 @@
 #include "brain_layer_builder.h"
 #include "brain_synapse_builder.h"
 
-typedef struct Network
-{
-    Layer_t   *_layers;
-    Synapse_t *_synapses;
-    double    *_output;
+typedef struct Network* Network_t;
 
-	int _is_trained;
-
-    int _number_of_synapse;
-    int _number_of_layer;
-} Network;
-
-Network*  new_network_from_context(Context context);
-void      delete_network(Network *network);
-Layer_t   layer(Network* network, const int layer_index);
-Synapse_t synapse(Network* network, const int layer_id, const int neuron_id);
-const double* getoutput(const Network* network);
-void set_network_input(Network* network, const int number_of_input, const double *in);
-void dump_network(const Network* network, const char* filename);
-
+Network_t  new_network_from_context(Context context);
+void      delete_network(Network_t network);
+Layer_t   layer(Network_t network, const int layer_index);
+Synapse_t synapse(Network_t network, const int layer_id, const int neuron_id);
+Synapse_t synapse_with_index(Network_t network, const int index);
+void set_output(Network_t network, const int output_index, const double value);
+const double* getoutput(const Network_t network);
+void set_network_input(Network_t network, const int number_of_input, const double *in);
+void dump_network(const Network_t network, const char* filename);
+int get_number_of_layer(const Network_t network);
+int get_number_of_synapse(const Network_t network);
+void set_trained(Network_t network, const int trained);
+int  is_trained(const Network_t network);
 #endif /* BRAIN_NETWORK_BUILDER_H */
