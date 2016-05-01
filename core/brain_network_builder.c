@@ -44,7 +44,7 @@ set_output(Network_t network, const int index, const double value)
 }
 
 const double*
-getoutput(const Network_t network)
+get_output(const Network_t network)
 {
     if (network != NULL)
     {
