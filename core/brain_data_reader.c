@@ -6,12 +6,69 @@
 
 #include "brain_logging_utils.h"
 
-Data*
+struct Data
+{
+    Signal*      _signals;
+    Observation* _observations;
+    int*         _subset;
+    int          _subset_length;
+    int          _signal_length;
+    int          _observation_length;
+    int          _number_of_signal;
+} Data;
+
+int
+get_observation_length(const Data_t data)
+{
+	if (data)
+	{
+		return data->_observation_length;
+	}
+
+	return 0;
+}
+
+int
+get_signal_length(const Data_t data)
+{
+	if (data)
+	{
+		return data->_signal_length;
+	}
+
+	return 0;
+}
+
+int
+get_subset_length(const Data_t data)
+{
+	if (data)
+	{
+		return data->_subset_length;
+	}
+
+	return 0;
+}
+
+int
+get_subset_index(const Data_t data, const int subset_index)
+{
+	if (data
+	&& (0 <= subset_index)
+	&& (subset_index < data->_subset_length))
+	{
+		return data->_subset[subset_index];
+	}
+
+	return -1;
+}
+
+Data_t
 new_data_from_context(Context context)
 {
 	char* buffer = NULL;
     char* part = NULL;
-   	Data* _data = NULL;
+   	Data_t _data = NULL;
     int i = 0, j = 0;
 
     if (context && !is_node_with_name(context, "data"))
@@ -20,7 +77,7 @@ new_data_from_context(Context context)
         return NULL;
     }
 
-    _data = (Data *)malloc(sizeof(Data));
+    _data = (Data_t)malloc(sizeof(Data));
     _data->_number_of_signal   = get_number_of_node_with_name(context, "signal");
     _data->_signal_length      = node_get_int(context, "signal-length", 0);
     _data->_observation_length = node_get_int(context, "observation-length", 0);
@@ -88,7 +145,7 @@ new_data_from_context(Context context)
 }
 
 void
-delete_data(Data* data)
+delete_data(Data_t data)
 {
     int i = 0;
 
@@ -163,7 +220,7 @@ get_next_random_subset_index(const int* subset,
 
 
 const Observation
-get_observation(Data* data, const int index)
+get_observation(Data_t data, const int index)
 {
     if (data != NULL && 0 <= index && index < data->_number_of_signal)
     {
@@ -174,7 +231,7 @@ get_observation(Data* data, const int index)
 }
 
 const Signal
-get_signal(Data* data, const int index)
+get_signal(Data_t data, const int index)
 {
     if (data && 0 <= index && index < data->_number_of_signal)
     {

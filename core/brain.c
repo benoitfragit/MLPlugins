@@ -158,7 +158,7 @@ backpropagate(Network_t network, const int number_of_output, const double *desir
 }
 
 void
-train(Network_t network, const Data* data, const double target_error, const int max_iter)
+train(Network_t network, const Data_t data, const double target_error, const int max_iter)
 {
 	int iteration = 0, subset_index = 0, index = 0;
 	double error = target_error + 1.0;
@@ -169,13 +169,13 @@ train(Network_t network, const Data* data, const double target_error, const int 
 	{
 		do 
 		{
-			for (subset_index = 0; subset_index < data->_subset_length; ++subset_index)
+			for (subset_index = 0; subset_index < get_subset_length(data); ++subset_index)
 			{
-				index = data->_subset[subset_index];
+				index = get_subset_index(data, subset_index);
 				
-				set_network_input(network, data->_signal_length, data->_signals[index]);
+				set_network_input(network, get_signal_length(data), get_signal(data, index));
 				feedforward(network);
-				error = backpropagate(network, data->_observation_length, data->_observations[index]);
+				error = backpropagate(network, get_observation_length(data), get_observation(data, index));
 
 				if (target_error <= error)
 				{
