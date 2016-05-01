@@ -6,9 +6,9 @@
 
 typedef struct Network
 {
-    Layer_t  *_layers;
-    Synapse **_synapses;
-    double   *_output;
+    Layer_t   *_layers;
+    Synapse_t *_synapses;
+    double    *_output;
 
 	int _is_trained;
 
@@ -16,13 +16,12 @@ typedef struct Network
     int _number_of_layer;
 } Network;
 
-Network* new_network_from_context(Context context);
-void     delete_network(Network *network);
-Layer_t  layer(Network* network, const int layer_index);
-Synapse* synapse(Network* network, const int layer_id, const int neuron_id);
+Network*  new_network_from_context(Context context);
+void      delete_network(Network *network);
+Layer_t   layer(Network* network, const int layer_index);
+Synapse_t synapse(Network* network, const int layer_id, const int neuron_id);
 const double* getoutput(const Network* network);
 void set_network_input(Network* network, const int number_of_input, const double *in);
 void dump_network(const Network* network, const char* filename);
-
 
 #endif /* BRAIN_NETWORK_BUILDER_H */

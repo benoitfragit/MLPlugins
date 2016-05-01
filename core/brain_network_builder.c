@@ -26,7 +26,7 @@ layer(Network* network, const int layer_index)
     return NULL;
 }
 
-Synapse*
+Synapse_t
 synapse(Network* network, const int layer_id, const int neuron_id)
 {
     int i;
@@ -35,7 +35,7 @@ synapse(Network* network, const int layer_id, const int neuron_id)
     {
         for (i = 0; i < network->_number_of_synapse; ++i)
         {
-            if (network->_synapses[i]->_input_layer == layer_id && network->_synapses[i]->_input_neuron == neuron_id)
+            if (get_input_layer(network->_synapses[i]) == layer_id && get_input_neuron(network->_synapses[i]) == neuron_id)
             {
                 return network->_synapses[i];
             }
@@ -129,7 +129,7 @@ new_network_from_context(Context context)
 
     if (_network->_number_of_synapse)
     {
-        _network->_synapses = (Synapse **)malloc(_network->_number_of_synapse * sizeof(Synapse *));
+        _network->_synapses = (Synapse_t *)malloc(_network->_number_of_synapse * sizeof(Synapse_t));
 
         for (index = 0; index < _network->_number_of_synapse; ++index)
         {

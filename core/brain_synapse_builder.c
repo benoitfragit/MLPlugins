@@ -1,9 +1,18 @@
 #include "brain_synapse_builder.h"
 
-Synapse*
+struct Synapse
+{
+	int _input_layer;
+	int _output_layer;
+	int _input_neuron;
+	int _output_neuron;
+	int _input_index;
+} Synapse;
+
+Synapse_t
 new_synapse_from_context(Context context)
 {
-    Synapse* _synapse = NULL;
+    Synapse_t _synapse = NULL;
 
     if (!context || !is_node_with_name(context, "connect"))
     {
@@ -11,7 +20,7 @@ new_synapse_from_context(Context context)
         return NULL;
     }
 
-    _synapse = (Synapse *)malloc(sizeof(Synapse));
+    _synapse = (Synapse_t)malloc(sizeof(Synapse));
 
     _synapse->_input_layer   = node_get_int(context, "input-layer",   0);
     _synapse->_output_layer  = node_get_int(context, "output-layer",  0);
@@ -23,7 +32,7 @@ new_synapse_from_context(Context context)
 }
 
 void
-delete_synapse(Synapse* synapse)
+delete_synapse(Synapse_t synapse)
 {
     if (synapse)
     {
@@ -31,8 +40,63 @@ delete_synapse(Synapse* synapse)
     }
 }
 
+int
+get_input_layer(Synapse_t synapse)
+{
+	if (synapse)
+	{
+		return synapse->_input_layer;
+	}
+	
+	return -1;
+}
+
+int
+get_input_neuron(Synapse_t synapse)
+{
+	if (synapse)
+	{
+		return synapse->_input_neuron;
+	}
+
+	return -1;
+}
+
+int
+get_output_layer(Synapse_t synapse)
+{
+	if (synapse)
+	{
+		return synapse->_output_layer;
+	}
+	
+	return -1;
+}
+
+int
+get_output_neuron(Synapse_t synapse)
+{
+	if (synapse)
+	{
+		return synapse->_output_neuron;
+	}
+
+	return -1;
+}
+
+int
+get_input_index(Synapse_t synapse)
+{
+	if (synapse)
+	{
+		return synapse->_input_index;
+	}
+
+	return -1;
+}
+
 void
-dump_synapse(Synapse* synapse, FILE* file)
+dump_synapse(Synapse_t synapse, FILE* file)
 {
 	if (synapse && file)
 	{
