@@ -1,7 +1,25 @@
 #include "brain_layer_builder.h"
 
+struct Layer 
+{
+	Neuron **_neurons;
+	int _number_of_neuron;
+	int _id;
+} Layer;
+
+int
+get_layer_id(Layer_t layer)
+{
+	if (layer)
+	{
+		return layer->_id;
+	}
+
+	return -1;
+}
+
 void
-set_layer_input(Layer* layer, const int number_of_inputs, const double* in)
+set_layer_input(Layer_t layer, const int number_of_inputs, const double* in)
 {
     int j = 0;
     if (layer)
@@ -15,7 +33,7 @@ set_layer_input(Layer* layer, const int number_of_inputs, const double* in)
 }
 
 Neuron*
-neuron(Layer* layer, const int neuron_index)
+neuron(Layer_t layer, const int neuron_index)
 {
     if (layer != NULL
     &&  0 <= neuron_index
@@ -28,7 +46,7 @@ neuron(Layer* layer, const int neuron_index)
 }
 
 void
-delete_layer(Layer* layer)
+delete_layer(Layer_t layer)
 {
     int i;
 
@@ -47,11 +65,11 @@ delete_layer(Layer* layer)
     }
 }
 
-Layer*
+Layer_t
 new_layer_from_context(Context context)
 {
     Context neuron_context;
-    Layer* _layer = NULL;
+    Layer_t _layer = NULL;
     int index = 0;
 
     if (!context || !is_node_with_name(context, "layer"))
@@ -60,7 +78,7 @@ new_layer_from_context(Context context)
         return NULL;
     }
 
-    _layer                    = (Layer *)malloc(sizeof(Layer));
+    _layer                    = (Layer_t)malloc(sizeof(Layer));
     _layer->_id               = node_get_int(context, "id", 0);
     _layer->_number_of_neuron = get_number_of_node_with_name(context, "neuron");
 
@@ -84,8 +102,19 @@ new_layer_from_context(Context context)
     return _layer;
 }
 
+int
+get_number_of_neuron(Layer_t layer)
+{
+	if (layer)
+	{
+		return layer->_number_of_neuron;
+	}
+
+	return 0;
+}
+
 void
-dump_layer(Layer* layer, FILE* file)
+dump_layer(Layer_t layer, FILE* file)
 {
 	int i;
 	if (layer && file)

@@ -6,9 +6,9 @@
 
 typedef struct Network
 {
-    Layer **_layers;
+    Layer_t  *_layers;
     Synapse **_synapses;
-    double* _output;
+    double   *_output;
 
 	int _is_trained;
 
@@ -18,7 +18,7 @@ typedef struct Network
 
 Network* new_network_from_context(Context context);
 void     delete_network(Network *network);
-Layer*   layer(Network* network, const int layer_index);
+Layer_t  layer(Network* network, const int layer_index);
 Synapse* synapse(Network* network, const int layer_id, const int neuron_id);
 const double* getoutput(const Network* network);
 void set_network_input(Network* network, const int number_of_input, const double *in);

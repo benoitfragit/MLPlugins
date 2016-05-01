@@ -12,7 +12,7 @@ getoutput(const Network* network)
 }
 
 
-Layer*
+Layer_t
 layer(Network* network, const int layer_index)
 {
     if (network != NULL
@@ -85,7 +85,7 @@ set_network_input(Network* network, const int number_of_input, const double *in)
 {
     if (in != NULL )
     {
-        Layer* input_layer = layer(network, 0);
+        Layer_t input_layer = layer(network, 0);
 
         set_layer_input(input_layer, number_of_input, in);
     }
@@ -114,7 +114,7 @@ new_network_from_context(Context context)
 
     if (_network->_number_of_layer)
     {
-        _network->_layers = (Layer **)malloc(_network->_number_of_layer * sizeof(Layer *));
+        _network->_layers = (Layer_t *)malloc(_network->_number_of_layer * sizeof(Layer_t));
 
         for (index = 0; index < _network->_number_of_layer; ++index)
         {
@@ -142,7 +142,7 @@ new_network_from_context(Context context)
         }
     }
 
-    number_of_outputs = layer(_network, _network->_number_of_layer - 1)->_number_of_neuron;
+    number_of_outputs = get_number_of_neuron(layer(_network, _network->_number_of_layer - 1));
     _network->_output = (double *)malloc( number_of_outputs * sizeof(double));
     memset(_network->_output, 0, number_of_outputs * sizeof(double));
 
