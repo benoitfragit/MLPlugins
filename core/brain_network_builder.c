@@ -236,7 +236,7 @@ dump_network(const Network_t network, const char* filename)
 		FILE* file = fopen(filename, "w");
 		if (file)
 		{
-			fprintf(file, "<network\n");
+			fprintf(file, "<network");
 			fprintf(file, " trained=\"%d\"", network->_is_trained);
 			fprintf(file, ">\n");
 

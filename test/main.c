@@ -36,6 +36,7 @@ main(int argc, char** argv)
 
 		if (network)
 		{
+			dump_network(network, "test.xml");
 			delete_network(network);
 		}
 

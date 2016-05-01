@@ -260,5 +260,7 @@ dump_neuron(Neuron_t neuron, FILE* file)
 		{
 			fprintf(file, "\t\t\t<weight value=\"%lf\"/>\n", neuron->_w[i]);
 		}
+
+		fprintf(file, "\t\t</neuron>\n");
 	}
 }

@@ -125,5 +125,7 @@ dump_layer(Layer_t layer, FILE* file)
 		{
 			dump_neuron(layer->_neurons[i], file);
 		}
+
+		fprintf(file, "\t</layer>\n");
 	}
 }
