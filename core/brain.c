@@ -20,13 +20,13 @@ backpropagate_output_layer(Network_t network, const int number_of_output, const 
 
             for (neuron_index = 0; neuron_index < number_of_neuron; ++neuron_index)
             {
-                Neuron* oNeuron = neuron(output_layer, neuron_index);
+                Neuron_t oNeuron = neuron(output_layer, neuron_index);
 
                 if (oNeuron != NULL)
                 {
-                    append_delta(oNeuron, oNeuron->_out - desired[neuron_index]);
+                    append_delta(oNeuron, output(oNeuron) - desired[neuron_index]);
 
-                    error += ((desired[neuron_index] - oNeuron->_out) * (desired[neuron_index] - oNeuron->_out)) / 2.0;
+                    error += ((desired[neuron_index] - output(oNeuron)) * (desired[neuron_index] - output(oNeuron))) / 2.0;
                 }
             }
         }
@@ -50,11 +50,11 @@ backpropagate_hidden_layer(Network_t network, const int layer_index)
         {
             for (j = 0; j < number_of_neuron; ++j)
             {
-                Neuron *pNeuron = neuron(pLayer, j);
+                Neuron_t pNeuron = neuron(pLayer, j);
 
                 if (pNeuron)
                 {
-                    const Synapse_t neural_synapse = synapse(network, get_layer_id(pLayer), pNeuron->_id);
+                    const Synapse_t neural_synapse = synapse(network, get_layer_id(pLayer), get_neuron_id(pNeuron));
 
                     if (neural_synapse)
                     {
@@ -62,7 +62,7 @@ backpropagate_hidden_layer(Network_t network, const int layer_index)
 
                         if (nLayer)
                         {
-                            Neuron* nNeuron = neuron(nLayer, get_output_neuron(neural_synapse));
+                            Neuron_t nNeuron = neuron(nLayer, get_output_neuron(neural_synapse));
 
                             if (nNeuron)
                             {
@@ -80,10 +80,12 @@ void
 feedforward(Network_t network)
 {
     int synapse_index = 0, i;
-    Synapse_t synapse = NULL;
-    Layer_t input_layer = NULL;
-	Layer_t output_layer = NULL;
-    Neuron *input_neuron = NULL, *output_neuron = NULL;
+    
+	Synapse_t synapse       = NULL;
+    Layer_t   input_layer   = NULL;
+	Layer_t   output_layer  = NULL;
+    Neuron_t  input_neuron  = NULL;
+	Neuron_t  output_neuron = NULL;
 
     if (network != NULL)
     {
@@ -100,7 +102,7 @@ feedforward(Network_t network)
 
                 if (input_neuron && output_neuron)
                 {
-                    propagate(output_neuron, input_neuron->_out, get_input_index(synapse));
+                    propagate(output_neuron, output(input_neuron), get_input_index(synapse));
                     activate(output_neuron);
                 }
             }
@@ -115,7 +117,7 @@ feedforward(Network_t network)
 
                 if (output_neuron)
                 {
-                    set_output(network, i, output_neuron->_out);
+                    set_output(network, i, output(output_neuron));
                 }
             }
         }
@@ -142,7 +144,7 @@ backpropagate(Network_t network, const int number_of_output, const double *desir
         {
             for (j = 0; j < get_number_of_neuron(pLayer); ++j)
             {
-                Neuron *pNeuron = neuron(pLayer, j);
+                Neuron_t pNeuron = neuron(pLayer, j);
 
                 if (pNeuron)
                 {

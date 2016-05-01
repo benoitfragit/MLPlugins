@@ -1,7 +1,45 @@
 #include "brain_neuron_builder.h"
 
+struct Neuron
+{
+    double*        _in;
+    double*        _w;
+    double         _out;
+    double         _learning_rate;
+    double         _inertial_factor;
+    double         _delta;
+    double*        _correction;
+    PtrFunc        _activation;
+    PtrFunc        _derivative;
+    int            _id;
+    int            _number_of_input;
+	ActivationType _activation_type;
+} Neuron;
+
+int
+get_neuron_id(Neuron_t neuron)
+{
+	if (neuron)
+	{
+		return neuron->_id;
+	}
+
+	return -1;
+}
+
 double
-get_weighted_delta(Neuron *neuron, const int index)
+output(Neuron_t neuron)
+{
+	if (neuron)
+	{
+		return neuron->_out;
+	}
+
+	return 0.0;
+}
+
+double
+get_weighted_delta(Neuron_t neuron, const int index)
 {
     if (neuron && 0 <= index && index < neuron->_number_of_input)
     {
@@ -12,7 +50,7 @@ get_weighted_delta(Neuron *neuron, const int index)
 }
 
 void
-append_delta(Neuron* neuron, const double delta)
+append_delta(Neuron_t neuron, const double delta)
 {
     if (neuron != NULL)
     {
@@ -21,7 +59,7 @@ append_delta(Neuron* neuron, const double delta)
 }
 
 void
-propagate(Neuron* neuron, const double out, const int input_index)
+propagate(Neuron_t neuron, const double out, const int input_index)
 {
     if (neuron && 0 <= input_index && input_index < neuron->_number_of_input)
     {
@@ -30,7 +68,7 @@ propagate(Neuron* neuron, const double out, const int input_index)
 }
 
 void
-set_neuron_input(Neuron* neuron, const int number_of_inputs, const double* in)
+set_neuron_input(Neuron_t neuron, const int number_of_inputs, const double* in)
 {
     int k = 0;
 
@@ -46,7 +84,7 @@ set_neuron_input(Neuron* neuron, const int number_of_inputs, const double* in)
 }
 
 double
-weight(Neuron* neuron, const int weight_index)
+weight(Neuron_t neuron, const int weight_index)
 {
     if (neuron != NULL
     && 0 <= weight_index
@@ -59,7 +97,7 @@ weight(Neuron* neuron, const int weight_index)
 }
 
 double
-input(Neuron* neuron, const int input_index)
+input(Neuron_t neuron, const int input_index)
 {
     if (neuron != NULL
     && 0 <= input_index
@@ -72,7 +110,7 @@ input(Neuron* neuron, const int input_index)
 }
 
 void
-activate(Neuron *neuron)
+activate(Neuron_t neuron)
 {
     int j;
     if (neuron != NULL)
@@ -90,7 +128,7 @@ activate(Neuron *neuron)
 }
 
 void
-update(Neuron* neuron)
+update(Neuron_t neuron)
 {
     int index = 0;
 
@@ -107,7 +145,7 @@ update(Neuron* neuron)
 }
 
 void
-delete_neuron(Neuron* neuron)
+delete_neuron(Neuron_t neuron)
 {
     if (neuron)
     {
@@ -134,12 +172,12 @@ delete_neuron(Neuron* neuron)
 }
 
 
-Neuron*
+Neuron_t
 new_neuron_from_context(Context context)
 {
     int index = 0;
     Context weight_context;
-    Neuron* _neuron = (Neuron *)malloc(sizeof(Neuron));
+    Neuron_t _neuron = (Neuron_t)malloc(sizeof(Neuron));
 
     srand(time(NULL));
 
@@ -193,7 +231,7 @@ new_neuron_from_context(Context context)
 }
 
 void
-dump_neuron(Neuron* neuron, FILE* file)
+dump_neuron(Neuron_t neuron, FILE* file)
 {
 	int i;
 	if (neuron && file)

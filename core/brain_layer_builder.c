@@ -2,7 +2,7 @@
 
 struct Layer 
 {
-	Neuron **_neurons;
+	Neuron_t* _neurons;
 	int _number_of_neuron;
 	int _id;
 } Layer;
@@ -26,13 +26,13 @@ set_layer_input(Layer_t layer, const int number_of_inputs, const double* in)
     {
         for (j = 0; j < layer->_number_of_neuron; ++j)
         {
-            Neuron* input_neuron = neuron(layer, j);
+            Neuron_t input_neuron = neuron(layer, j);
             set_neuron_input(input_neuron, number_of_inputs, in);
         }
     }
 }
 
-Neuron*
+Neuron_t
 neuron(Layer_t layer, const int neuron_index)
 {
     if (layer != NULL
@@ -86,7 +86,7 @@ new_layer_from_context(Context context)
 
     if (_layer->_number_of_neuron > 0)
     {
-        _layer->_neurons = (Neuron **)malloc(_layer->_number_of_neuron * sizeof(Neuron *));
+        _layer->_neurons = (Neuron_t *)malloc(_layer->_number_of_neuron * sizeof(Neuron_t));
 
         for (index = 0; index < _layer->_number_of_neuron; ++index)
         {
