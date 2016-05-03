@@ -152,22 +152,22 @@ train(Network_t network, const Data_t data, const double target_error, const int
 	
 	if (network && data && target_error >= 0 && max_iter >= 1)
 	{
+		srand(time(NULL));
+
 		do 
 		{
-			for (subset_index = 0; subset_index < get_subset_length(data); ++subset_index)
-			{
-				index = get_subset_index(data, subset_index);
-				
-				set_network_input(network, get_signal_length(data), get_signal(data, index));
-				feedforward(network);
-				error = backpropagate(network, get_observation_length(data), get_observation(data, index));
+			subset_index = rand() % get_subset_length(data);
+			index        = get_subset_index(data, subset_index);
 
-				if (target_error <= error)
-				{
-					BRAIN_INFO("Network has beene successfully trained");
-					set_trained(network, 1);
-					return;
-				}
+			set_network_input(network, get_signal_length(data), get_signal(data, index));
+			feedforward(network);
+			error = backpropagate(network, get_observation_length(data), get_observation(data, index));
+
+			if (target_error <= error)
+			{
+				BRAIN_INFO("Network has beene successfully trained");
+				set_trained(network, 1);
+				return;
 			}
 			
 			++iteration;
