@@ -127,32 +127,15 @@ feedforward(Network_t network)
 double
 backpropagate(Network_t network, const int number_of_output, const double *desired)
 {
-    int i, j;
-    const double error = backpropagate_output_layer(network, number_of_output, desired);
+    int i;
+	const double error = backpropagate_output_layer(network, number_of_output, desired);
 
     for (i = get_number_of_layer(network) - 2; i >= 0; --i)
     {
         backpropagate_hidden_layer(network, i);
     }
 
-    // now update all weight
-    for (i = get_number_of_layer(network) - 1; i >= 0; --i)
-    {
-        Layer_t pLayer = layer(network, i);
-
-        if (pLayer != NULL)
-        {
-            for (j = 0; j < get_number_of_neuron(pLayer); ++j)
-            {
-                Neuron_t pNeuron = neuron(pLayer, j);
-
-                if (pNeuron)
-                {
-                    update(pNeuron);
-                }
-            }
-        }
-    }
+	update_network_weight(network);
 
     BRAIN_INFO("Brain quadratic error id %lf", error);
 

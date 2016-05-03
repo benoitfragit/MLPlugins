@@ -227,6 +227,24 @@ get_number_of_synapse(const Network_t network)
 }
 
 void
+update_network_weight(Network_t network)
+{
+	int i;
+	Layer_t pLayer = NULL;
+	
+	for (i = get_number_of_layer(network) - 1; i >= 0; --i)
+    {
+        pLayer = layer(network, i);
+
+        if (pLayer != NULL)
+        {
+			update_layer_weight(pLayer);
+        }
+    }
+}
+
+
+void
 dump_network(const Network_t network, const char* filename)
 {
 	int i;

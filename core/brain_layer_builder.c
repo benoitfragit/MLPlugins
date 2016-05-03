@@ -114,6 +114,26 @@ get_number_of_neuron(Layer_t layer)
 }
 
 void
+update_layer_weight(Layer_t layer)
+{
+	int j = 0;
+	Neuron_t pNeuron = NULL;
+
+	if (layer != NULL)
+	{
+		for (j = 0; j < get_number_of_neuron(layer); ++j)
+		{
+			pNeuron = neuron(layer, j);
+
+			if (pNeuron)
+			{
+				update(pNeuron);
+			}
+		}
+	}
+}
+
+void
 dump_layer(Layer_t layer, FILE* file)
 {
 	int i;

@@ -19,5 +19,7 @@ int           get_number_of_layer(const Network_t network);
 int           get_number_of_synapse(const Network_t network);
 void          set_trained(Network_t network, const int trained);
 int           is_trained(const Network_t network);
+void          update_network_weight(Network_t network);
+
 
 #endif /* BRAIN_NETWORK_BUILDER_H */
