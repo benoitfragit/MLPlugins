@@ -20,6 +20,8 @@ int           get_number_of_synapse(const Network_t network);
 void          set_trained(Network_t network, const int trained);
 int           is_trained(const Network_t network);
 void          update_network_weight(Network_t network);
+void          network_propagate_synapse(Network_t network);
+void          network_update_output(Network_t network);
 
 
 #endif /* BRAIN_NETWORK_BUILDER_H */

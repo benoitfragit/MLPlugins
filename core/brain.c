@@ -79,48 +79,10 @@ backpropagate_hidden_layer(Network_t network, const int layer_index)
 void
 feedforward(Network_t network)
 {
-    int synapse_index = 0, i;
-    
-	Synapse_t synapse       = NULL;
-    Layer_t   input_layer   = NULL;
-	Layer_t   output_layer  = NULL;
-    Neuron_t  input_neuron  = NULL;
-	Neuron_t  output_neuron = NULL;
-
     if (network != NULL)
     {
-        for (synapse_index = 0; synapse_index < get_number_of_synapse(network); ++synapse_index)
-        {
-            synapse      = synapse_with_index(network, synapse_index);;
-            input_layer  = layer(network, get_input_layer(synapse));
-            output_layer = layer(network, get_output_layer(synapse));
-
-            if (input_layer && output_layer)
-            {
-                input_neuron  = neuron(input_layer, get_input_neuron(synapse));
-                output_neuron = neuron(output_layer, get_output_neuron(synapse));
-
-                if (input_neuron && output_neuron)
-                {
-                    propagate(output_neuron, output(input_neuron), get_input_index(synapse));
-                    activate(output_neuron);
-                }
-            }
-        }
-
-        output_layer = layer(network, get_number_of_layer(network) - 1);
-        if (output_layer)
-        {
-            for (i = 0; i < get_number_of_neuron(output_layer); ++i)
-            {
-                output_neuron = neuron(output_layer, i);
-
-                if (output_neuron)
-                {
-                    set_output(network, i, output(output_neuron));
-                }
-            }
-        }
+		network_propagate_synapse(network);
+		network_update_output(network);
     }
 }
 
