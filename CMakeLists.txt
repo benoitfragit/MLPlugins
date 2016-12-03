@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 2.8.9)
-add_subdirectory(core)
-add_subdirectory(test)
+
+add_subdirectory(src)
+
+# install all xsd files
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/schemas/ DESTINATION ${CMAKE_INSTALL_PREFIX}/schemas
+        FILES_MATCHING PATTERN "*.xsd"  PATTERN "*.xsd")
 
 # add a tar archive
 set(DIST_DIR "Brain")
