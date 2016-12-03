@@ -34,3 +34,5 @@
 # Build dir
 build
 *.out
+.project
+.cproject
