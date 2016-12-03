@@ -11,24 +11,12 @@ struct Neuron
     double*        _correction;
     PtrFunc        _activation;
     PtrFunc        _derivative;
-    int            _id;
     int            _number_of_input;
     ActivationType _activation_type;
 } Neuron;
 
-int
-get_neuron_id(Neuron_t neuron)
-{
-    if (neuron)
-    {
-        return neuron->_id;
-    }
-
-    return -1;
-}
-
 double
-output(Neuron_t neuron)
+get_neuron_output(Neuron_t neuron)
 {
     if (neuron)
     {
@@ -39,7 +27,7 @@ output(Neuron_t neuron)
 }
 
 double
-get_weighted_delta(Neuron_t neuron, const int index)
+get_neuron_weighted_delta(Neuron_t neuron, const int index)
 {
     if (neuron && 0 <= index && index < neuron->_number_of_input)
     {
@@ -50,7 +38,7 @@ get_weighted_delta(Neuron_t neuron, const int index)
 }
 
 void
-append_delta(Neuron_t neuron, const double delta)
+append_neuron_delta(Neuron_t neuron, const double delta)
 {
     if (neuron != NULL)
     {
@@ -59,7 +47,7 @@ append_delta(Neuron_t neuron, const double delta)
 }
 
 void
-propagate(Neuron_t neuron, const double out, const int input_index)
+propagate_neuron(Neuron_t neuron, const double out, const int input_index)
 {
     if (neuron && 0 <= input_index && input_index < neuron->_number_of_input)
     {
@@ -79,12 +67,12 @@ set_neuron_input(Neuron_t neuron, const int number_of_inputs, const double* in)
             neuron->_in[k] = in[k];
         }
 
-        activate(neuron);
+        activate_neuron(neuron);
     }
 }
 
 double
-weight(Neuron_t neuron, const int weight_index)
+get_neuron_weight(Neuron_t neuron, const int weight_index)
 {
     if (neuron != NULL
     && 0 <= weight_index
@@ -97,7 +85,7 @@ weight(Neuron_t neuron, const int weight_index)
 }
 
 double
-input(Neuron_t neuron, const int input_index)
+get_neuron_input(Neuron_t neuron, const int input_index)
 {
     if (neuron != NULL
     && 0 <= input_index
@@ -110,7 +98,7 @@ input(Neuron_t neuron, const int input_index)
 }
 
 void
-activate(Neuron_t neuron)
+activate_neuron(Neuron_t neuron)
 {
     int j;
     if (neuron != NULL)
@@ -128,7 +116,7 @@ activate(Neuron_t neuron)
 }
 
 void
-update(Neuron_t neuron)
+update_neuron(Neuron_t neuron)
 {
     int index = 0;
 
@@ -164,8 +152,6 @@ delete_neuron(Neuron_t neuron)
             free(neuron->_correction);
         }
 
-        BRAIN_DEBUG("Neuron %d has been deleted", neuron->_id);
-
         free(neuron);
 
     }
@@ -194,7 +180,6 @@ new_neuron_from_context(Context context)
     _neuron->_in              = (double *)malloc((_neuron->_number_of_input + 1) * sizeof(double));
     _neuron->_w               = (double *)malloc((_neuron->_number_of_input + 1) * sizeof(double));
     _neuron->_correction      = (double *)malloc((_neuron->_number_of_input + 1) * sizeof(double)) ;
-    _neuron->_id              = node_get_int(context, "id", 0);
 
     _neuron->_activation_type  = get_activation_type((char *)node_get_prop(context, "activation-type"));
     _neuron->_activation      = activation(_neuron->_activation_type);
@@ -202,11 +187,10 @@ new_neuron_from_context(Context context)
 
     memset(_neuron->_correction, 0, (_neuron->_number_of_input + 1) * sizeof(double));
 
-    BRAIN_INFO("id: %d, inputs = %d, learning-rate=%lf, inertie=%lf, activation=%d", _neuron->_id,
-                                                                                     _neuron->_number_of_input,
-                                                                                     _neuron->_learning_rate,
-                                                                                     _neuron->_inertial_factor,
-                                                                                     _neuron->_activation_type);
+    BRAIN_INFO("inputs = %d, learning-rate=%lf, inertie=%lf, activation=%d", _neuron->_number_of_input,
+                                                                             _neuron->_learning_rate,
+                                                                             _neuron->_inertial_factor,
+                                                                             _neuron->_activation_type);
 
     _neuron->_in[_neuron->_number_of_input] = -1.0;
 
@@ -236,7 +220,7 @@ dump_neuron(Neuron_t neuron, const int layer_idx, const int neuron_idx, FILE* fi
 }
 
 int
-get_number_of_inputs(Neuron_t neuron)
+get_neuron_number_of_inputs(Neuron_t neuron)
 {
     if (neuron != NULL)
     {

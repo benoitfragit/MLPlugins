@@ -1,17 +1,17 @@
 <?xml version="1.0"?>
 <network>
-    <layer id="0">
-        <neuron id="0" input="2" learning-rate="1.0" inertial-factor="0.0"/>
-        <neuron id="1" input="2" learning-rate="1.0" inertial-factor="0.0"/>
+    <layer>
+        <neuron input="2" learning-rate="1.0" inertial-factor="0.0"/>
+        <neuron input="2" learning-rate="1.0" inertial-factor="0.0"/>
     </layer>
-    <layer id="1">
-        <neuron id="0" input="2" learning-rate="1.0" inertial-factor="0.0"/>
-        <neuron id="1" input="2" learning-rate="1.0" inertial-factor="0.0"/>
-        <neuron id="2" input="2" learning-rate="1.0" inertial-factor="0.0"/>
+    <layer>
+        <neuron input="2" learning-rate="1.0" inertial-factor="0.0"/>
+        <neuron input="2" learning-rate="1.0" inertial-factor="0.0"/>
+        <neuron input="2" learning-rate="1.0" inertial-factor="0.0"/>
     </layer>
-    <layer id="2">
-        <neuron id="0" input="3" learning-rate="1.0" inertial-factor="0.0"/>
-        <neuron id="1" input="3" learning-rate="1.0" inertial-factor="0.0" activation-type="sigmoid"/>
+    <layer>
+        <neuron input="3" learning-rate="1.0" inertial-factor="0.0"/>
+        <neuron input="3" learning-rate="1.0" inertial-factor="0.0" activation-type="sigmoid"/>
     </layer>
 
     <connect input-layer="0" input-neuron="0" output-layer="1" output-neuron="0" input-index="0"/>

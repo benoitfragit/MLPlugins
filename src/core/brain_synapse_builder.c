@@ -2,31 +2,22 @@
 
 struct Synapse
 {
-	int _input_layer;
-	int _output_layer;
-	int _input_neuron;
-	int _output_neuron;
-	int _input_index;
+    int      _input_layer_index;
+    int      _input_neuron_index;
+    int      _output_neuron_index;
+    int      _output_layer_index;
+    int      _input_index;
+
+    Neuron_t _input_neuron;
+    Neuron_t _output_neuron;
 } Synapse;
 
 Synapse_t
-new_synapse_from_context(Context context)
+new_synapse()
 {
     Synapse_t _synapse = NULL;
 
-    if (!context || !is_node_with_name(context, "connect"))
-    {
-        fprintf (stderr, "<%s:%d> Context is not valid !\n",  __FILE__, __LINE__);
-        return NULL;
-    }
-
     _synapse = (Synapse_t)malloc(sizeof(Synapse));
-
-    _synapse->_input_layer   = node_get_int(context, "input-layer",   0);
-    _synapse->_output_layer  = node_get_int(context, "output-layer",  0);
-    _synapse->_input_neuron  = node_get_int(context, "input-neuron",  0);
-    _synapse->_output_neuron = node_get_int(context, "output-neuron", 0);
-    _synapse->_input_index   = node_get_int(context, "input-index",   0);
 
     return _synapse;
 }
@@ -40,70 +31,165 @@ delete_synapse(Synapse_t synapse)
     }
 }
 
-int
-get_input_layer(Synapse_t synapse)
+void
+set_synapse_input_neuron(Synapse_t synapse, Neuron_t neuron)
 {
-	if (synapse)
-	{
-		return synapse->_input_layer;
-	}
-	
-	return -1;
-}
-
-int
-get_input_neuron(Synapse_t synapse)
-{
-	if (synapse)
-	{
-		return synapse->_input_neuron;
-	}
-
-	return -1;
-}
-
-int
-get_output_layer(Synapse_t synapse)
-{
-	if (synapse)
-	{
-		return synapse->_output_layer;
-	}
-	
-	return -1;
-}
-
-int
-get_output_neuron(Synapse_t synapse)
-{
-	if (synapse)
-	{
-		return synapse->_output_neuron;
-	}
-
-	return -1;
-}
-
-int
-get_input_index(Synapse_t synapse)
-{
-	if (synapse)
-	{
-		return synapse->_input_index;
-	}
-
-	return -1;
+    if (synapse)
+        synapse->_input_neuron = neuron;
 }
 
 void
-dump_synapse(Synapse_t synapse, FILE* file)
+set_synapse_output_neuron(Synapse_t synapse, Neuron_t neuron)
 {
-	if (synapse && file)
-	{
-		fprintf(file, "\t<connect input-layer=\"%d\" input-neuron=\"%d\" output-layer=\"%d\" output-neuron=\"%d\" input-index=\"%d\">\n", synapse->_input_layer,
-																																  synapse->_input_neuron,
-																																  synapse->_output_layer,
-																																  synapse->_output_neuron,
-																																  synapse->_input_index);
-	}
+    if (synapse)
+        synapse->_output_neuron = neuron;
+}
+
+void
+set_synapse_input_index(Synapse_t synapse, const int input_index)
+{
+    if (synapse)
+        synapse->_input_index = input_index;
+}
+
+Neuron_t
+get_synapse_input_neuron(Synapse_t synapse)
+{
+    if (synapse)
+    {
+        return synapse->_input_neuron;
+    }
+
+    return NULL;
+}
+
+Neuron_t
+get_synapse_output_neuron(Synapse_t synapse)
+{
+    if (synapse)
+    {
+        return synapse->_output_neuron;
+    }
+
+    return NULL;
+}
+
+int
+get_synapse_input_index(Synapse_t synapse)
+{
+    if (synapse)
+    {
+        return synapse->_input_index;
+    }
+
+    return -1;
+}
+
+int
+get_synapse_input_layer_index(const Synapse_t synapse)
+{
+    if (synapse)
+        return synapse->_input_layer_index;
+
+    return -1;
+}
+
+int
+get_synapse_output_layer_index(const Synapse_t synapse)
+{
+    if (synapse)
+        return synapse->_output_layer_index;
+
+    return -1;
+}
+
+int
+get_synapse_input_neuron_index (const Synapse_t synapse)
+{
+    if (synapse)
+        return synapse->_input_neuron_index;
+
+    return -1;
+}
+
+int
+get_synapse_output_neuron_index(const Synapse_t synapse)
+{
+    if (synapse)
+        return synapse->_output_neuron_index;
+
+    return -1;
+}
+
+void
+set_synapse_input_layer_index  (Synapse_t synapse, const int input_layer_index)
+{
+    if (synapse)
+        synapse->_input_layer_index = input_layer_index;
+}
+
+void
+set_synapse_output_layer_index (Synapse_t synapse, const int output_layer_index)
+{
+    if (synapse)
+        synapse->_output_layer_index = output_layer_index;
+}
+
+void
+set_synapse_input_neuron_index (Synapse_t synapse, const int input_neuron_index)
+{
+    if (synapse)
+        synapse->_input_neuron_index = input_neuron_index;
+}
+
+void
+set_synapse_output_neuron_index(Synapse_t synapse, const int output_neuron_index)
+{
+    if (synapse)
+        synapse->_output_neuron_index = output_neuron_index;
+}
+
+int
+is_synapse_valid(Synapse_t synapse)
+{
+    if ((synapse != NULL) && (get_synapse_input_neuron(synapse) != NULL) && (get_synapse_output_neuron(synapse) != NULL))
+    {
+        return 1;
+    }
+
+    return 0;
+}
+
+void
+activate_synapse(Synapse_t synapse)
+{
+    Neuron_t  input_neuron  = NULL;
+    Neuron_t  output_neuron = NULL;
+    int input_index = -1;
+
+    if (is_synapse_valid(synapse))
+    {
+        input_neuron  = get_synapse_input_neuron(synapse);
+        output_neuron = get_synapse_output_neuron(synapse);
+
+        input_index   = get_synapse_input_index(synapse);
+
+        propagate_neuron(output_neuron, get_neuron_output(input_neuron), input_index);
+        activate_neuron(output_neuron);
+    }
+}
+
+void
+backpropagate_synapse(Synapse_t synapse)
+{
+    if (is_synapse_valid(synapse))
+    {
+        const Neuron_t output       = get_synapse_output_neuron(synapse);
+        const int    input_index    = get_synapse_input_index(synapse);
+        const double weighted_delta = get_neuron_weighted_delta(output, input_index);
+
+        Neuron_t input              = get_synapse_input_neuron(synapse);
+
+        append_neuron_delta(input, weighted_delta);
+    }
 }

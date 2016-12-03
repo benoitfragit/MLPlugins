@@ -8,7 +8,6 @@
         <xs:sequence minOccurs="0" maxOccurs="unbounded">
             <xs:element name="weight" type="WeightType"/>
         </xs:sequence>
-        <xs:attribute name="id"              type="xs:integer" use="required"/>
         <xs:attribute name="input"           type="xs:integer" use="required"/>
         <xs:attribute name="learning-rate"   type="xs:decimal" use="optional"/>
         <xs:attribute name="inertial-factor" type="xs:decimal" use="optional"/>
@@ -27,7 +26,6 @@
         <xs:sequence minOccurs="1" maxOccurs="unbounded">
             <xs:element name="neuron" type="NeuronType"/>
         </xs:sequence>
-        <xs:attribute name="id" type="xs:integer" use="required"/>
     </xs:complexType>
 
     <xs:complexType name="NetworkType">
