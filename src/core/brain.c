@@ -14,7 +14,7 @@ backpropagate_output_layer(Network_t network,
         //backpropagate the error to the output layer
         Layer_t output_layer = layer(network, get_number_of_layer(network) - 1);
 
-        number_of_neuron = get_number_of_neuron(output_layer);
+        number_of_neuron = get_layer_number_of_neuron(output_layer);
 
         if (output_layer != NULL && number_of_neuron == number_of_output)
         {
@@ -22,7 +22,7 @@ backpropagate_output_layer(Network_t network,
 
             for (neuron_index = 0; neuron_index < number_of_neuron; ++neuron_index)
             {
-                Neuron_t oNeuron = neuron(output_layer, neuron_index);
+                Neuron_t oNeuron = get_layer_neuron(output_layer, neuron_index);
 
                 if (oNeuron != NULL)
                 {
@@ -48,7 +48,7 @@ backpropagate_hidden_layer(Network_t network, const int layer_index)
     if (network && 0 <= layer_index && layer_index < get_number_of_layer(network))
     {
         Layer_t pLayer = layer(network, layer_index);
-        number_of_neuron = get_number_of_neuron(pLayer);
+        number_of_neuron = get_layer_number_of_neuron(pLayer);
 
         if (pLayer != NULL)
         {
@@ -67,7 +67,7 @@ feedforward(Network_t network)
 {
     if (network != NULL)
     {
-        network_propagate_synapse(network);
+        network_activate_synapse(network);
         network_update_output(network);
     }
 }

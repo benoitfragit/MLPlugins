@@ -18,7 +18,7 @@ void          dump_network(const Network_t network, const char* filename);
 int           get_number_of_layer(const Network_t network);
 int           get_number_of_synapse(const Network_t network);
 void          update_network_weight(Network_t network);
-void          network_propagate_synapse(Network_t network);
+void          network_activate_synapse(Network_t network);
 void          network_update_output(Network_t network);
 void          initialize_network_from_context(Network_t network, Context context);
 Synapse_t     new_synapse_from_context(Network_t network, Context context);

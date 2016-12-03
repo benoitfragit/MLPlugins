@@ -23,9 +23,9 @@ network_update_output(Network_t network)
 
         if (output_layer)
         {
-            for (i = 0; i < get_number_of_neuron(output_layer); ++i)
+            for (i = 0; i < get_layer_number_of_neuron(output_layer); ++i)
             {
-                output_neuron = neuron(output_layer, i);
+                output_neuron = get_layer_neuron(output_layer, i);
 
                 if (output_neuron)
                 {
@@ -37,7 +37,7 @@ network_update_output(Network_t network)
 }
 
 void
-network_propagate_synapse(Network_t network)
+network_activate_synapse(Network_t network)
 {
     int synapse_index       = 0;
     Synapse_t synapse       = NULL;;
@@ -220,7 +220,7 @@ new_network_from_context(Context context)
         }
     }
 
-    number_of_outputs = get_number_of_neuron(layer(_network, _network->_number_of_layer - 1));
+    number_of_outputs = get_layer_number_of_neuron(layer(_network, _network->_number_of_layer - 1));
     _network->_output = (double *)malloc( number_of_outputs * sizeof(double));
     memset(_network->_output, 0, number_of_outputs * sizeof(double));
 
@@ -321,7 +321,7 @@ initialize_network_from_context(Network_t network, Context context)
 
             if (internal_layer != NULL)
             {
-                internal_neuron = neuron(internal_layer, neuron_idx);
+                internal_neuron = get_layer_neuron(internal_layer, neuron_idx);
 
                 if (internal_neuron != NULL)
                 {
@@ -383,8 +383,8 @@ new_synapse_from_context(Network_t network, Context context)
 
         input_layer   = layer(network, input_layer_idx);
         output_layer  = layer(network, output_layer_idx);
-        input_neuron  = neuron(input_layer, input_neuron_idx);
-        output_neuron = neuron(output_layer, output_neuron_idx);
+        input_neuron  = get_layer_neuron(input_layer, input_neuron_idx);
+        output_neuron = get_layer_neuron(output_layer, output_neuron_idx);
 
         if (input_layer && output_layer && input_neuron && output_neuron)
         {

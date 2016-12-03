@@ -14,14 +14,14 @@ set_layer_input(Layer_t layer, const int number_of_inputs, const double* in)
     {
         for (j = 0; j < layer->_number_of_neuron; ++j)
         {
-            Neuron_t input_neuron = neuron(layer, j);
+            Neuron_t input_neuron = get_layer_neuron(layer, j);
             set_neuron_input(input_neuron, number_of_inputs, in);
         }
     }
 }
 
 Neuron_t
-neuron(Layer_t layer, const int neuron_index)
+get_layer_neuron(Layer_t layer, const int neuron_index)
 {
     if (layer != NULL
     &&  0 <= neuron_index
@@ -88,7 +88,7 @@ new_layer_from_context(Context context)
 }
 
 int
-get_number_of_neuron(Layer_t layer)
+get_layer_number_of_neuron(Layer_t layer)
 {
     if (layer)
     {
@@ -106,9 +106,9 @@ update_layer_weight(Layer_t layer)
 
     if (layer != NULL)
     {
-        for (j = 0; j < get_number_of_neuron(layer); ++j)
+        for (j = 0; j < get_layer_number_of_neuron(layer); ++j)
         {
-            pNeuron = neuron(layer, j);
+            pNeuron = get_layer_neuron(layer, j);
 
             if (pNeuron)
             {
