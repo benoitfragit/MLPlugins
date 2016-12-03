@@ -36,3 +36,5 @@ build
 *.out
 .project
 .cproject
+.settings
+.metadata
