@@ -11,7 +11,7 @@ struct Network
 } Network;
 
 void
-network_update_output(Network_t network)
+update_network_output(Network_t network)
 {
     int i = 0;
     Layer_t  output_layer = NULL;
@@ -19,7 +19,7 @@ network_update_output(Network_t network)
 
     if (network != NULL)
     {
-        output_layer = layer(network, get_number_of_layer(network) - 1);
+        output_layer = get_network_layer(network, get_network_number_of_layer(network) - 1);
 
         if (output_layer)
         {
@@ -29,7 +29,7 @@ network_update_output(Network_t network)
 
                 if (output_neuron)
                 {
-                    set_output(network, i, get_neuron_output(output_neuron));
+                    set_network_output(network, i, get_neuron_output(output_neuron));
                 }
             }
         }
@@ -37,16 +37,16 @@ network_update_output(Network_t network)
 }
 
 void
-network_activate_synapse(Network_t network)
+activate_network_synapse(Network_t network)
 {
     int synapse_index       = 0;
     Synapse_t synapse       = NULL;;
 
     if (network != NULL)
     {
-        for (synapse_index = 0; synapse_index < get_number_of_synapse(network); ++synapse_index)
+        for (synapse_index = 0; synapse_index < get_network_number_of_synapse(network); ++synapse_index)
         {
-            synapse = synapse_with_index(network, synapse_index);;
+            synapse = get_network_synapse_with_index(network, synapse_index);;
 
             activate_synapse(synapse);
         }
@@ -54,7 +54,7 @@ network_activate_synapse(Network_t network)
 }
 
 void
-set_output(Network_t network, const int index, const double value)
+set_network_output(Network_t network, const int index, const double value)
 {
     if (network
     &&  (0 <= index)
@@ -65,7 +65,7 @@ set_output(Network_t network, const int index, const double value)
 }
 
 const double*
-get_output(const Network_t network)
+get_network_output(const Network_t network)
 {
     if (network != NULL)
     {
@@ -76,7 +76,7 @@ get_output(const Network_t network)
 }
 
 Layer_t
-layer(Network_t network, const int layer_index)
+get_network_layer(Network_t network, const int layer_index)
 {
     if (network != NULL
     && network->_layers != NULL
@@ -90,7 +90,7 @@ layer(Network_t network, const int layer_index)
 }
 
 Synapse_t
-synapse(Network_t network, const int layer_idx, const int neuron_idx)
+get_network_synapse(Network_t network, const int layer_idx, const int neuron_idx)
 {
     int i;
 
@@ -111,7 +111,7 @@ synapse(Network_t network, const int layer_idx, const int neuron_idx)
 }
 
 Synapse_t
-synapse_with_index(Network_t network, const int index)
+get_network_synapse_with_index(Network_t network, const int index)
 {
     if (network
     && (0 <= index)
@@ -164,7 +164,7 @@ set_network_input(Network_t network, const int number_of_input, const double *in
 {
     if (in != NULL )
     {
-        Layer_t input_layer = layer(network, 0);
+        Layer_t input_layer = get_network_layer(network, 0);
 
         set_layer_input(input_layer, number_of_input, in);
     }
@@ -201,6 +201,8 @@ new_network_from_context(Context context)
             if (subcontext)
             {
                 _network->_layers[index] = new_layer_from_context(subcontext);
+
+                number_of_outputs = get_layer_number_of_neuron(_network->_layers[index]);
             }
         }
     }
@@ -215,12 +217,11 @@ new_network_from_context(Context context)
 
             if (subcontext)
             {
-                _network->_synapses[index] = new_synapse_from_context(_network, subcontext);
+                _network->_synapses[index] = new_network_synapse_from_context(_network, subcontext);
             }
         }
     }
 
-    number_of_outputs = get_layer_number_of_neuron(layer(_network, _network->_number_of_layer - 1));
     _network->_output = (double *)malloc( number_of_outputs * sizeof(double));
     memset(_network->_output, 0, number_of_outputs * sizeof(double));
 
@@ -228,7 +229,7 @@ new_network_from_context(Context context)
 }
 
 int
-get_number_of_layer(const Network_t network)
+get_network_number_of_layer(const Network_t network)
 {
     if (network)
     {
@@ -239,7 +240,7 @@ get_number_of_layer(const Network_t network)
 }
 
 int
-get_number_of_synapse(const Network_t network)
+get_network_number_of_synapse(const Network_t network)
 {
     if (network)
     {
@@ -255,9 +256,9 @@ update_network_weight(Network_t network)
     int i;
     Layer_t pLayer = NULL;
 
-    for (i = get_number_of_layer(network) - 1; i >= 0; --i)
+    for (i = get_network_number_of_layer(network) - 1; i >= 0; --i)
     {
-        pLayer = layer(network, i);
+        pLayer = get_network_layer(network, i);
 
         if (pLayer != NULL)
         {
@@ -317,7 +318,7 @@ initialize_network_from_context(Network_t network, Context context)
             input_idx  = node_get_int   (subcontext, "input",  -1);
             weight     = node_get_double(subcontext, "value",  0.0);
 
-            internal_layer     = layer(network, layer_idx);
+            internal_layer     = get_network_layer(network, layer_idx);
 
             if (internal_layer != NULL)
             {
@@ -352,7 +353,7 @@ initialize_network_from_context(Network_t network, Context context)
 }
 
 Synapse_t
-new_synapse_from_context(Network_t network, Context context)
+new_network_synapse_from_context(Network_t network, Context context)
 {
     int input_layer_idx;
     int input_neuron_idx;
@@ -381,8 +382,8 @@ new_synapse_from_context(Network_t network, Context context)
         output_neuron_idx = node_get_int(context, "output-neuron", 0);
         input_index       = node_get_int(context, "input-index",   0);
 
-        input_layer   = layer(network, input_layer_idx);
-        output_layer  = layer(network, output_layer_idx);
+        input_layer   = get_network_layer(network, input_layer_idx);
+        output_layer  = get_network_layer(network, output_layer_idx);
         input_neuron  = get_layer_neuron(input_layer, input_neuron_idx);
         output_neuron = get_layer_neuron(output_layer, output_neuron_idx);
 
