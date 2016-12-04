@@ -11,7 +11,6 @@ backpropagate_output_layer(Network_t network,
 
     if (network && desired)
     {
-        //backpropagate the error to the output layer
         Layer_t output_layer = get_network_layer(network, get_network_number_of_layer(network) - 1);
 
         number_of_neuron = get_layer_number_of_neuron(output_layer);

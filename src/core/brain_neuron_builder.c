@@ -163,6 +163,7 @@ new_neuron_from_context(Context context)
 {
     int index = 0;
     Neuron_t _neuron = (Neuron_t)malloc(sizeof(Neuron));
+    char* buffer = NULL;
 
     srand(time(NULL));
 
@@ -181,7 +182,9 @@ new_neuron_from_context(Context context)
     _neuron->_w               = (double *)malloc((_neuron->_number_of_input + 1) * sizeof(double));
     _neuron->_correction      = (double *)malloc((_neuron->_number_of_input + 1) * sizeof(double)) ;
 
-    _neuron->_activation_type  = get_activation_type((char *)node_get_prop(context, "activation-type"));
+    buffer = (char *)node_get_prop(context, "activation-type");
+
+    _neuron->_activation_type  = get_activation_type(buffer);
     _neuron->_activation      = activation(_neuron->_activation_type);
     _neuron->_derivative      = derivative(_neuron->_activation_type);
 
@@ -199,6 +202,8 @@ new_neuron_from_context(Context context)
         _neuron->_w[index] = (double)rand() / (double)RAND_MAX;
     }
 
+    free(buffer);
+
     return _neuron;
 }
 
@@ -208,7 +213,6 @@ dump_neuron(Neuron_t neuron, const int layer_idx, const int neuron_idx, FILE* fi
     int i;
     if (neuron && file)
     {
-        //don't forget the bias
         for (i = 0; i < neuron->_number_of_input + 1; ++i)
         {
             fprintf(file, "\t<weight value=\"%lf\"", neuron->_w[i]);

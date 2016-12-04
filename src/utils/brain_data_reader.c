@@ -20,55 +20,55 @@ struct Data
 int
 get_observation_length(const Data_t data)
 {
-	if (data)
-	{
-		return data->_observation_length;
-	}
+    if (data)
+    {
+        return data->_observation_length;
+    }
 
-	return 0;
+    return 0;
 }
 
 int
 get_signal_length(const Data_t data)
 {
-	if (data)
-	{
-		return data->_signal_length;
-	}
+    if (data)
+    {
+        return data->_signal_length;
+    }
 
-	return 0;
+    return 0;
 }
 
 int
 get_subset_length(const Data_t data)
 {
-	if (data)
-	{
-		return data->_subset_length;
-	}
+    if (data)
+    {
+        return data->_subset_length;
+    }
 
-	return 0;
+    return 0;
 }
 
 int
 get_subset_index(const Data_t data, const int subset_index)
 {
-	if (data
-	&& (0 <= subset_index)
-	&& (subset_index < data->_subset_length))
-	{
-		return data->_subset[subset_index];
-	}
+    if (data
+    && (0 <= subset_index)
+    && (subset_index < data->_subset_length))
+    {
+        return data->_subset[subset_index];
+    }
 
-	return -1;
+    return -1;
 }
 
 Data_t
 new_data_from_context(Context context)
 {
-	char* buffer = NULL;
+    char* buffer = NULL;
     char* part = NULL;
-   	Data_t _data = NULL;
+    Data_t _data = NULL;
     int i = 0, j = 0;
 
     if (context && !is_node_with_name(context, "data"))
@@ -98,40 +98,44 @@ new_data_from_context(Context context)
         if (signal_context)
         {
             _data->_signals[i]      = (Signal)malloc(_data->_signal_length * sizeof(double));
-			_data->_observations[i] = (Observation)malloc(_data->_observation_length * sizeof(double));
-			
-			buffer = (char *)node_get_prop(signal_context, "input");
-			part = strtok(buffer, ", ");
+            _data->_observations[i] = (Observation)malloc(_data->_observation_length * sizeof(double));
+
+            buffer = (char *)node_get_prop(signal_context, "input");
+            part = strtok(buffer, ", ");
 
             for (j = 0; j < _data->_signal_length; ++j)
             {
-				if (part != NULL)
-				{
-					sscanf(part, "%lf", &_data->_signals[i][j]);
-					part = strtok(NULL, ", ");
-				}
+                if (part != NULL)
+                {
+                    sscanf(part, "%lf", &_data->_signals[i][j]);
+                    part = strtok(NULL, ", ");
+                }
 
                 BRAIN_INFO("signal[%d][%d] : %lf", i, j, _data->_signals[i][j]);
             }
 
-			buffer = (char *)node_get_prop(signal_context, "output");
-			part = strtok(buffer, ", ");
+            if (buffer)
+                free(buffer);
+
+            buffer = (char *)node_get_prop(signal_context, "output");
+            part = strtok(buffer, ", ");
 
             for (j = 0; j < _data->_observation_length; ++j)
             {
-				if (part != NULL)
-				{
-					sscanf(part, "%lf", &_data->_observations[i][j]);
-					part = strtok(NULL, ", ");
-				}
+                if (part != NULL)
+                {
+                    sscanf(part, "%lf", &_data->_observations[i][j]);
+                    part = strtok(NULL, ", ");
+                }
 
                 BRAIN_INFO("observation[%d][%d] : %lf", i, j, _data->_observations[i][j]);
             }
+
+            if (buffer)
+                free(buffer);
         }
     }
 
-    // generate subset random index to break data in 2 parts
-    // one for the training process and the other one for the evaluation process
     memset(_data->_subset, -1, (_data->_subset_length) * sizeof(int));
 
     for (i = 0; i < _data->_subset_length; ++i)
@@ -201,7 +205,7 @@ get_next_random_subset_index(const int* subset,
         do {
             srand(time(NULL));
             random_number = (int)(rand() % max_index);
-            //printf("%d ", random_number);
+
             is_already_in_subset = 0;
 
             for (i = 0; i < length; ++i)
@@ -219,7 +223,7 @@ get_next_random_subset_index(const int* subset,
 }
 
 
-const Observation
+Observation
 get_observation(Data_t data, const int index)
 {
     if (data != NULL && 0 <= index && index < data->_number_of_signal)
@@ -230,7 +234,7 @@ get_observation(Data_t data, const int index)
     return NULL;
 }
 
-const Signal
+Signal
 get_signal(Data_t data, const int index)
 {
     if (data && 0 <= index && index < data->_number_of_signal)
@@ -240,4 +244,3 @@ get_signal(Data_t data, const int index)
 
     return NULL;
 }
-

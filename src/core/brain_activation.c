@@ -20,6 +20,9 @@ identity(const double value)
 static double
 identity_derivative(const double value)
 {
+    if (value != 0)
+        return value / value;
+
     return 1.0;
 }
 
@@ -132,7 +135,7 @@ derivative(const ActivationType type)
 ActivationType
 get_activation_type(const char* activation_type_name)
 {
-    int i = 0;
+    unsigned int i = 0;
 
     if (activation_type_name)
     {
@@ -151,14 +154,14 @@ get_activation_type(const char* activation_type_name)
 const char*
 get_activation_name(const ActivationType activation_type)
 {
-	int i = 0;
-	for (i = First_Activation; i <= Last_Activation; ++i)
-	{
-		if (i == activation_type)
-		{
-			return activation_name[i - First_Activation];
-		}
-	}
+    unsigned int i = 0;
+    for (i = First_Activation; i <= Last_Activation; ++i)
+    {
+        if (i == activation_type)
+        {
+            return activation_name[i - First_Activation];
+        }
+    }
 
-	return NULL;
+    return NULL;
 }

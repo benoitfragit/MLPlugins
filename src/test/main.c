@@ -43,6 +43,7 @@ main(int argc, char** argv)
                 if (init_document)
                 {
                     initialize_network_from_context(network, get_root_node(init_document));
+                    close_document(init_document);
                 }
             }
 

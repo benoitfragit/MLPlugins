@@ -148,62 +148,61 @@ get_root_node(Document doc)
 int
 validate_with_xsd(const char* xml_file, const char* xsd_file)
 {
-	int ret = 0;
-	Document doc;
-	xmlSchemaPtr schema = NULL;
-	xmlSchemaParserCtxtPtr ctxt;
+    int ret = 0;
+    Document doc;
+    xmlSchemaPtr schema = NULL;
+    xmlSchemaParserCtxtPtr ctxt;
 
-	xmlLineNumbersDefault(1);
+    xmlLineNumbersDefault(1);
 
-	ctxt = xmlSchemaNewParserCtxt(xsd_file);
+    ctxt = xmlSchemaNewParserCtxt(xsd_file);
 
-	xmlSchemaSetParserErrors(ctxt, (xmlSchemaValidityErrorFunc) fprintf, (xmlSchemaValidityWarningFunc) fprintf, stderr);
-	schema = xmlSchemaParse(ctxt);
-	xmlSchemaFreeParserCtxt(ctxt);
+    xmlSchemaSetParserErrors(ctxt, (xmlSchemaValidityErrorFunc) fprintf, (xmlSchemaValidityWarningFunc) fprintf, stderr);
+    schema = xmlSchemaParse(ctxt);
+    xmlSchemaFreeParserCtxt(ctxt);
 
-	doc = xmlReadFile(xml_file, NULL, 0);
+    doc = xmlReadFile(xml_file, NULL, 0);
 
-	if (doc == NULL)
-	{
-		BRAIN_CRITICAL("Unable to open %s", xml_file);
-		return 0;
-	}
-	else
-	{
-		xmlSchemaValidCtxtPtr ctxt;
+    if (doc == NULL)
+    {
+        BRAIN_CRITICAL("Unable to open %s", xml_file);
+        return 0;
+    }
+    else
+    {
+        xmlSchemaValidCtxtPtr ctxt;
 
-		ctxt = xmlSchemaNewValidCtxt(schema);
-		xmlSchemaSetValidErrors(ctxt, (xmlSchemaValidityErrorFunc) fprintf, (xmlSchemaValidityWarningFunc) fprintf, stderr);
-		ret = xmlSchemaValidateDoc(ctxt, doc);
-		if (ret == 0)
-		{
-			BRAIN_DEBUG("%s validates\n", xml_file);
-			ret = 1;
-		}
-		else if (ret > 0)
-		{
-			BRAIN_DEBUG("%s fails to validate\n", xml_file);
-			ret = 0;
-		}
-		else
-		{
-			BRAIN_CRITICAL("%s validation generated an internal error\n", xml_file);
-			ret = 0;
-		}
-	
-		xmlSchemaFreeValidCtxt(ctxt);
-		xmlFreeDoc(doc);
-	}
+        ctxt = xmlSchemaNewValidCtxt(schema);
+        xmlSchemaSetValidErrors(ctxt, (xmlSchemaValidityErrorFunc) fprintf, (xmlSchemaValidityWarningFunc) fprintf, stderr);
+        ret = xmlSchemaValidateDoc(ctxt, doc);
+        if (ret == 0)
+        {
+            BRAIN_DEBUG("%s validates\n", xml_file);
+            ret = 1;
+        }
+        else if (ret > 0)
+        {
+            BRAIN_DEBUG("%s fails to validate\n", xml_file);
+            ret = 0;
+        }
+        else
+        {
+            BRAIN_CRITICAL("%s validation generated an internal error\n", xml_file);
+            ret = 0;
+        }
 
-	// free the resource
-	if(schema != NULL)
-	{
-		xmlSchemaFree(schema);
-	}
+        xmlSchemaFreeValidCtxt(ctxt);
+        xmlFreeDoc(doc);
+    }
 
-	xmlSchemaCleanupTypes();
-	xmlCleanupParser();
-	xmlMemoryDump();
+    if(schema != NULL)
+    {
+        xmlSchemaFree(schema);
+    }
 
-	return ret;
+    xmlSchemaCleanupTypes();
+    xmlCleanupParser();
+    xmlMemoryDump();
+
+    return ret;
 }
