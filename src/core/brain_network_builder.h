@@ -18,7 +18,6 @@ BrainInt     get_network_number_of_synapse   (const BrainNetwork network);
 BrainDouble* get_network_output              (const BrainNetwork network);
 BrainSynapse get_network_synapse             (const BrainNetwork network, const BrainInt layer_idx, const BrainInt neuron_idx);
 BrainLayer   get_network_layer               (const BrainNetwork network, const BrainInt layer_index);
-BrainDouble  backpropagate(BrainNetwork network, const BrainInt number_of_output, const BrainDouble *desired);
 BrainResult  train(BrainNetwork network, const BrainData data, const BrainDouble target_error, const BrainInt max_iter);
 
 #endif /* BRAIN_NETWORK_BUILDER_H */

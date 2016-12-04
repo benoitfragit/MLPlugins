@@ -212,6 +212,24 @@ new_network_synapse_from_context(BrainNetwork network, Context context)
     return NULL;
 }
 
+static BrainDouble
+backpropagate(BrainNetwork network,
+              const BrainInt number_of_output,
+              const BrainDouble *desired)
+{
+    BrainInt i;
+    const BrainDouble error = backpropagate_output_layer(network, number_of_output, desired);
+
+    for (i = get_network_number_of_layer(network) - 2; i >= 0; --i)
+    {
+        backpropagate_hidden_layer(network, i);
+    }
+
+    update_network_weight(network);
+
+    return error;
+}
+
 BrainDouble*
 get_network_output(const BrainNetwork network)
 {
@@ -458,24 +476,6 @@ feedforward(BrainNetwork network)
         activate_network_synapse(network);
         update_network_output(network);
     }
-}
-
-BrainDouble
-backpropagate(BrainNetwork network,
-              const BrainInt number_of_output,
-              const BrainDouble *desired)
-{
-    BrainInt i;
-    const BrainDouble error = backpropagate_output_layer(network, number_of_output, desired);
-
-    for (i = get_network_number_of_layer(network) - 2; i >= 0; --i)
-    {
-        backpropagate_hidden_layer(network, i);
-    }
-
-    update_network_weight(network);
-
-    return error;
 }
 
 BrainResult
