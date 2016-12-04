@@ -10,7 +10,18 @@ struct Network
     BrainInt _number_of_layer;
 } Network;
 
-void
+static void
+set_network_output(BrainNetwork network, const BrainInt index, const BrainDouble value)
+{
+    if (network
+    &&  (0 <= index)
+    &&  (index < network->_number_of_layer))
+    {
+        network->_output[index] = value;
+    }
+}
+
+static void
 update_network_output(BrainNetwork network)
 {
     BrainInt i = 0;
@@ -36,7 +47,21 @@ update_network_output(BrainNetwork network)
     }
 }
 
-void
+static BrainSynapse
+get_network_synapse_with_index(BrainNetwork network, const BrainInt index)
+{
+    if (network
+    && (0 <= index)
+    && (index < network->_number_of_synapse)
+    && is_synapse_valid(network->_synapses[index]))
+    {
+        return network->_synapses[index];
+    }
+
+    return NULL;
+}
+
+static void
 activate_network_synapse(BrainNetwork network)
 {
     BrainInt synapse_index       = 0;
@@ -53,15 +78,138 @@ activate_network_synapse(BrainNetwork network)
     }
 }
 
-void
-set_network_output(BrainNetwork network, const BrainInt index, const BrainDouble value)
+static void
+update_network_weight(BrainNetwork network)
 {
-    if (network
-    &&  (0 <= index)
-    &&  (index < network->_number_of_layer))
+    BrainInt i;
+    BrainLayer pLayer = NULL;
+
+    for (i = get_network_number_of_layer(network) - 1; i >= 0; --i)
     {
-        network->_output[index] = value;
+        pLayer = get_network_layer(network, i);
+
+        if (pLayer != NULL)
+        {
+            update_layer_weight(pLayer);
+        }
     }
+}
+
+static BrainDouble
+backpropagate_output_layer(BrainNetwork network,
+                           const BrainInt number_of_output,
+                           const BrainDouble* desired)
+{
+    BrainDouble error = 0.0;
+    BrainInt number_of_neuron = 0;
+
+    if (network && desired)
+    {
+        BrainLayer output_layer = get_network_layer(network, get_network_number_of_layer(network) - 1);
+
+        number_of_neuron = get_layer_number_of_neuron(output_layer);
+
+        if (output_layer != NULL && number_of_neuron == number_of_output)
+        {
+            BrainInt neuron_index = 0;
+
+            for (neuron_index = 0; neuron_index < number_of_neuron; ++neuron_index)
+            {
+                BrainNeuron oNeuron = get_layer_neuron(output_layer, neuron_index);
+
+                if (oNeuron != NULL)
+                {
+                    const BrainDouble loss = get_neuron_output(oNeuron) - desired[neuron_index];
+
+                    append_neuron_delta(oNeuron, loss);
+
+                    error += loss / 2.0;
+                }
+            }
+        }
+    }
+
+    return error;
+}
+
+static void
+backpropagate_hidden_layer(BrainNetwork network, const BrainInt layer_index)
+{
+    BrainInt j;
+    BrainInt number_of_neuron = 0;
+
+    if (network && 0 <= layer_index && layer_index < get_network_number_of_layer(network))
+    {
+        BrainLayer pLayer = get_network_layer(network, layer_index);
+        number_of_neuron = get_layer_number_of_neuron(pLayer);
+
+        if (pLayer != NULL)
+        {
+            for (j = 0; j < number_of_neuron; ++j)
+            {
+                const BrainSynapse neural_synapse = get_network_synapse(network, layer_index, j);
+
+                backpropagate_synapse(neural_synapse);
+            }
+        }
+    }
+}
+
+static BrainSynapse
+new_network_synapse_from_context(BrainNetwork network, Context context)
+{
+    BrainInt input_layer_idx;
+    BrainInt input_neuron_idx;
+    BrainInt output_layer_idx;
+    BrainInt output_neuron_idx;
+    BrainInt input_index;
+
+    BrainLayer  input_layer   = NULL;
+    BrainLayer  output_layer  = NULL;
+    BrainNeuron input_neuron  = NULL;
+    BrainNeuron output_neuron = NULL;
+
+    if (network != NULL)
+    {
+        BrainSynapse _synapse = NULL;
+
+        if (!context || !is_node_with_name(context, "connect"))
+        {
+            return NULL;
+        }
+
+        input_layer_idx   = node_get_int(context, "input-layer",   0);
+        output_layer_idx  = node_get_int(context, "output-layer",  0);
+        input_neuron_idx  = node_get_int(context, "input-neuron",  0);
+        output_neuron_idx = node_get_int(context, "output-neuron", 0);
+        input_index       = node_get_int(context, "input-index",   0);
+
+        input_layer   = get_network_layer(network, input_layer_idx);
+        output_layer  = get_network_layer(network, output_layer_idx);
+        input_neuron  = get_layer_neuron(input_layer, input_neuron_idx);
+        output_neuron = get_layer_neuron(output_layer, output_neuron_idx);
+
+        if (input_layer && output_layer && input_neuron && output_neuron)
+        {
+            _synapse = new_synapse();
+
+            set_synapse_input_index        (_synapse, input_index);
+            set_synapse_input_neuron       (_synapse, input_neuron);
+            set_synapse_output_neuron      (_synapse, output_neuron);
+            set_synapse_input_layer_index  (_synapse, input_layer_idx);
+            set_synapse_output_layer_index (_synapse, output_layer_idx);
+            set_synapse_input_neuron_index (_synapse, input_neuron_idx);
+            set_synapse_output_neuron_index(_synapse, output_neuron_idx);
+
+            return _synapse;
+        }
+        else
+        {
+            delete_synapse(_synapse);
+        }
+    }
+
+    return NULL;
 }
 
 BrainDouble*
@@ -105,20 +253,6 @@ get_network_synapse(BrainNetwork network, const BrainInt layer_idx, const BrainI
                 return network->_synapses[i];
             }
         }
-    }
-
-    return NULL;
-}
-
-BrainSynapse
-get_network_synapse_with_index(BrainNetwork network, const BrainInt index)
-{
-    if (network
-    && (0 <= index)
-    && (index < network->_number_of_synapse)
-    && is_synapse_valid(network->_synapses[index]))
-    {
-        return network->_synapses[index];
     }
 
     return NULL;
@@ -249,23 +383,6 @@ get_network_number_of_synapse(const BrainNetwork network)
 }
 
 void
-update_network_weight(BrainNetwork network)
-{
-    BrainInt i;
-    BrainLayer pLayer = NULL;
-
-    for (i = get_network_number_of_layer(network) - 1; i >= 0; --i)
-    {
-        pLayer = get_network_layer(network, i);
-
-        if (pLayer != NULL)
-        {
-            update_layer_weight(pLayer);
-        }
-    }
-}
-
-void
 dump_network(const BrainNetwork network, BrainString filename)
 {
     BrainInt i;
@@ -330,123 +447,6 @@ initialize_network_from_context(BrainNetwork network, Context context)
     }
 }
 
-BrainSynapse
-new_network_synapse_from_context(BrainNetwork network, Context context)
-{
-    BrainInt input_layer_idx;
-    BrainInt input_neuron_idx;
-    BrainInt output_layer_idx;
-    BrainInt output_neuron_idx;
-    BrainInt input_index;
-
-    BrainLayer  input_layer   = NULL;
-    BrainLayer  output_layer  = NULL;
-    BrainNeuron input_neuron  = NULL;
-    BrainNeuron output_neuron = NULL;
-
-    if (network != NULL)
-    {
-        BrainSynapse _synapse = NULL;
-
-        if (!context || !is_node_with_name(context, "connect"))
-        {
-            return NULL;
-        }
-
-        input_layer_idx   = node_get_int(context, "input-layer",   0);
-        output_layer_idx  = node_get_int(context, "output-layer",  0);
-        input_neuron_idx  = node_get_int(context, "input-neuron",  0);
-        output_neuron_idx = node_get_int(context, "output-neuron", 0);
-        input_index       = node_get_int(context, "input-index",   0);
-
-        input_layer   = get_network_layer(network, input_layer_idx);
-        output_layer  = get_network_layer(network, output_layer_idx);
-        input_neuron  = get_layer_neuron(input_layer, input_neuron_idx);
-        output_neuron = get_layer_neuron(output_layer, output_neuron_idx);
-
-        if (input_layer && output_layer && input_neuron && output_neuron)
-        {
-            _synapse = new_synapse();
-
-            set_synapse_input_index        (_synapse, input_index);
-            set_synapse_input_neuron       (_synapse, input_neuron);
-            set_synapse_output_neuron      (_synapse, output_neuron);
-            set_synapse_input_layer_index  (_synapse, input_layer_idx);
-            set_synapse_output_layer_index (_synapse, output_layer_idx);
-            set_synapse_input_neuron_index (_synapse, input_neuron_idx);
-            set_synapse_output_neuron_index(_synapse, output_neuron_idx);
-
-            return _synapse;
-        }
-        else
-        {
-            delete_synapse(_synapse);
-        }
-    }
-
-    return NULL;
-}
-
-BrainDouble
-backpropagate_output_layer(BrainNetwork network,
-                           const BrainInt number_of_output,
-                           const BrainDouble* desired)
-{
-    BrainDouble error = 0.0;
-    BrainInt number_of_neuron = 0;
-
-    if (network && desired)
-    {
-        BrainLayer output_layer = get_network_layer(network, get_network_number_of_layer(network) - 1);
-
-        number_of_neuron = get_layer_number_of_neuron(output_layer);
-
-        if (output_layer != NULL && number_of_neuron == number_of_output)
-        {
-            BrainInt neuron_index = 0;
-
-            for (neuron_index = 0; neuron_index < number_of_neuron; ++neuron_index)
-            {
-                BrainNeuron oNeuron = get_layer_neuron(output_layer, neuron_index);
-
-                if (oNeuron != NULL)
-                {
-                    const BrainDouble loss = get_neuron_output(oNeuron) - desired[neuron_index];
-
-                    append_neuron_delta(oNeuron, loss);
-
-                    error += loss / 2.0;
-                }
-            }
-        }
-    }
-
-    return error;
-}
-
-void
-backpropagate_hidden_layer(BrainNetwork network, const BrainInt layer_index)
-{
-    BrainInt j;
-    BrainInt number_of_neuron = 0;
-
-    if (network && 0 <= layer_index && layer_index < get_network_number_of_layer(network))
-    {
-        BrainLayer pLayer = get_network_layer(network, layer_index);
-        number_of_neuron = get_layer_number_of_neuron(pLayer);
-
-        if (pLayer != NULL)
-        {
-            for (j = 0; j < number_of_neuron; ++j)
-            {
-                const BrainSynapse neural_synapse = get_network_synapse(network, layer_index, j);
-
-                backpropagate_synapse(neural_synapse);
-            }
-        }
-    }
-}
-
 void
 feedforward(BrainNetwork network)
 {
@@ -477,23 +477,21 @@ backpropagate(BrainNetwork network,
 
 BrainResult
 train(BrainNetwork network,
-      const Data_t data,
+      const BrainData data,
       const BrainDouble target_error,
       const BrainInt max_iter)
 {
-    BrainInt iteration = 0, subset_index = 0, index = 0;
+    BrainInt iteration = 0, index = 0;
     BrainDouble error = target_error + 1.0;
 
     if (network && data && target_error >= 0 && max_iter >= 1)
     {
         do
         {
-            subset_index = rand() % get_subset_length(data);
-            index        = get_subset_index(data, subset_index);
-
-            set_network_input(network, get_signal_length(data), get_signal(data, index));
+            index = get_data_random_subset_index(data);
+            set_network_input(network, get_data_input_length(data), get_data_input(data, index));
             feedforward(network);
-            error = backpropagate(network, get_observation_length(data), get_observation(data, index));
+            error = backpropagate(network, get_data_output_length(data), get_data_output(data, index));
 
             ++iteration;
         } while ((iteration < max_iter) && (target_error > error));

@@ -11,6 +11,8 @@ typedef float         BrainFloat;
 typedef double        BrainDouble;
 typedef const char*   BrainString;
 typedef char          BrainChar;
+typedef BrainDouble*  BrainInput;
+typedef BrainDouble*  BrainOutput;
 
 typedef enum BrainResult
 {
@@ -34,6 +36,7 @@ typedef enum BrainActivationType
 
 typedef BrainDouble (*PtrFunc)(const BrainDouble value);
 
+typedef struct Data*    BrainData;
 typedef struct Neuron*  BrainNeuron;
 typedef struct Layer*   BrainLayer;
 typedef struct Synapse* BrainSynapse;

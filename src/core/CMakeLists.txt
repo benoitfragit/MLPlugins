@@ -16,7 +16,8 @@ set(SOURCES brain_network_builder.c
             brain_layer_builder.c
             brain_neuron_builder.c
             brain_synapse_builder.c
-            brain_activation.c)
+            brain_activation.c
+            brain_data_reader.c)
 
 #Generate the shared library from the sources
 add_library(Brain SHARED ${SOURCES})

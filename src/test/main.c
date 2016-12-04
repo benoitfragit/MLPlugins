@@ -2,13 +2,12 @@
 #include <stdio.h>
 
 #include "brain_network_builder.h"
-#include "brain_data_reader.h"
 
 int
 main(int argc, char** argv)
 {
     BrainNetwork network = NULL;
-    Data_t       data    = NULL;
+    BrainData    data    = NULL;
     Document network_document, data_document, init_document;
 
     if (argc <= 2)

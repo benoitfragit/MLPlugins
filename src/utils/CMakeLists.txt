@@ -15,8 +15,7 @@ configure_file (
     ${PROJECT_BINARY_DIR}/brain_utils_config.h
 )
 
-set(SOURCES brain_data_reader.c
-            brain_xml_utils.c
+set(SOURCES brain_xml_utils.c
             brain_logging_utils.c)
 
 #Generate the shared library from the sources

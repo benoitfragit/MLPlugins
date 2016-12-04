@@ -8,17 +8,48 @@
 
 struct Data
 {
-    Signal*      _signals;
-    Observation* _observations;
-    int*         _subset;
-    int          _subset_length;
-    int          _signal_length;
-    int          _observation_length;
-    int          _number_of_signal;
+    BrainInput*  _signals;
+    BrainOutput* _observations;
+    BrainInt*    _subset;
+    BrainInt     _subset_length;
+    BrainInt     _signal_length;
+    BrainInt     _observation_length;
+    BrainInt     _number_of_signal;
 } Data;
 
-int
-get_observation_length(const Data_t data)
+BrainInt
+get_data_next_random_subset_index(const BrainInt* subset,
+                             const BrainInt length,
+                             const BrainInt max_index)
+{
+    BrainBool is_already_in_subset = BRAIN_FALSE;
+    BrainInt i = 0;
+    BrainInt random_number = -1;
+
+    if (subset && length > 0 && 0 <= max_index)
+    {
+        do
+        {
+            random_number = (int)(rand() % max_index);
+
+            is_already_in_subset = BRAIN_FALSE;
+
+            for (i = 0; i < length; ++i)
+            {
+                if (subset[i] == random_number)
+                {
+                    is_already_in_subset = BRAIN_TRUE;
+                    break;
+                }
+            }
+        } while (is_already_in_subset);
+    }
+
+    return random_number;
+}
+
+BrainInt
+get_data_output_length(const BrainData data)
 {
     if (data)
     {
@@ -28,8 +59,8 @@ get_observation_length(const Data_t data)
     return 0;
 }
 
-int
-get_signal_length(const Data_t data)
+BrainInt
+get_data_input_length(const BrainData data)
 {
     if (data)
     {
@@ -39,8 +70,8 @@ get_signal_length(const Data_t data)
     return 0;
 }
 
-int
-get_subset_length(const Data_t data)
+static BrainInt
+get_data_subset_length(const BrainData data)
 {
     if (data)
     {
@@ -50,8 +81,9 @@ get_subset_length(const Data_t data)
     return 0;
 }
 
-int
-get_subset_index(const Data_t data, const int subset_index)
+static BrainInt
+get_data_subset_index(const BrainData data,
+                      const BrainInt subset_index)
 {
     if (data
     && (0 <= subset_index)
@@ -63,13 +95,13 @@ get_subset_index(const Data_t data, const int subset_index)
     return -1;
 }
 
-Data_t
+BrainData
 new_data_from_context(Context context)
 {
-    char* buffer = NULL;
-    char* part = NULL;
-    Data_t _data = NULL;
-    int i = 0, j = 0;
+    BrainChar* buffer = NULL;
+    BrainChar* part = NULL;
+    BrainData _data = NULL;
+    BrainInt i = 0, j = 0;
 
     if (context && !is_node_with_name(context, "data"))
     {
@@ -77,19 +109,21 @@ new_data_from_context(Context context)
         return NULL;
     }
 
-    _data = (Data_t)malloc(sizeof(Data));
+    srand(time(NULL));
+
+    _data = (BrainData)malloc(sizeof(Data));
     _data->_number_of_signal   = get_number_of_node_with_name(context, "signal");
     _data->_signal_length      = node_get_int(context, "signal-length", 0);
     _data->_observation_length = node_get_int(context, "observation-length", 0);
 
-    _data->_signals            = (Signal *)malloc(_data->_number_of_signal * sizeof(Signal));
-    _data->_observations       = (Observation *)malloc(_data->_number_of_signal * sizeof(Observation));
+    _data->_signals            = (BrainInput *)malloc(_data->_number_of_signal * sizeof(BrainInput));
+    _data->_observations       = (BrainOutput *)malloc(_data->_number_of_signal * sizeof(BrainOutput));
 
-    _data->_subset_length      = (int)(_data->_number_of_signal / 2);
-    _data->_subset             = (int *)malloc(_data->_subset_length * sizeof(int));
+    _data->_subset_length      = (BrainInt)(_data->_number_of_signal / 2);
+    _data->_subset             = (BrainInt *)malloc(_data->_subset_length * sizeof(BrainInt));
 
     BRAIN_INFO("Number of signal : %d, signal length : %d", _data->_number_of_signal,
-                                                                           _data->_signal_length);
+                                                            _data->_signal_length);
 
     for (i = 0; i < _data->_number_of_signal; ++i)
     {
@@ -97,10 +131,10 @@ new_data_from_context(Context context)
 
         if (signal_context)
         {
-            _data->_signals[i]      = (Signal)malloc(_data->_signal_length * sizeof(double));
-            _data->_observations[i] = (Observation)malloc(_data->_observation_length * sizeof(double));
+            _data->_signals[i]      = (BrainInput)malloc(_data->_signal_length * sizeof(BrainDouble));
+            _data->_observations[i] = (BrainOutput)malloc(_data->_observation_length * sizeof(BrainDouble));
 
-            buffer = (char *)node_get_prop(signal_context, "input");
+            buffer = (BrainChar *)node_get_prop(signal_context, "input");
             part = strtok(buffer, ", ");
 
             for (j = 0; j < _data->_signal_length; ++j)
@@ -117,7 +151,7 @@ new_data_from_context(Context context)
             if (buffer)
                 free(buffer);
 
-            buffer = (char *)node_get_prop(signal_context, "output");
+            buffer = (BrainChar *)node_get_prop(signal_context, "output");
             part = strtok(buffer, ", ");
 
             for (j = 0; j < _data->_observation_length; ++j)
@@ -136,11 +170,11 @@ new_data_from_context(Context context)
         }
     }
 
-    memset(_data->_subset, -1, (_data->_subset_length) * sizeof(int));
+    memset(_data->_subset, -1, (_data->_subset_length) * sizeof(BrainInt));
 
     for (i = 0; i < _data->_subset_length; ++i)
     {
-        _data->_subset[i] = get_next_random_subset_index(_data->_subset, _data->_subset_length, _data->_number_of_signal);
+        _data->_subset[i] = get_data_next_random_subset_index(_data->_subset, _data->_subset_length, _data->_number_of_signal);
 
         BRAIN_INFO("Subset index %d : %d", i, _data->_subset[i]);
     }
@@ -149,9 +183,9 @@ new_data_from_context(Context context)
 }
 
 void
-delete_data(Data_t data)
+delete_data(BrainData data)
 {
-    int i = 0;
+    BrainInt i = 0;
 
     if (data)
     {
@@ -191,40 +225,8 @@ delete_data(Data_t data)
     }
 }
 
-int
-get_next_random_subset_index(const int* subset,
-                             const int length,
-                             const int max_index)
-{
-    int is_already_in_subset = 1;
-    int i = 0;
-    int random_number = -1;
-
-    if (subset && length > 0 && 0 <= max_index)
-    {
-        do {
-            srand(time(NULL));
-            random_number = (int)(rand() % max_index);
-
-            is_already_in_subset = 0;
-
-            for (i = 0; i < length; ++i)
-            {
-                if (subset[i] == random_number)
-                {
-                    is_already_in_subset = 1;
-                    break;
-                }
-            }
-        } while (is_already_in_subset);
-    }
-
-    return random_number;
-}
-
-
-Observation
-get_observation(Data_t data, const int index)
+BrainOutput
+get_data_output(const BrainData data, const BrainInt index)
 {
     if (data != NULL && 0 <= index && index < data->_number_of_signal)
     {
@@ -234,8 +236,8 @@ get_observation(Data_t data, const int index)
     return NULL;
 }
 
-Signal
-get_signal(Data_t data, const int index)
+BrainInput
+get_data_input(const BrainData data, const BrainInt index)
 {
     if (data && 0 <= index && index < data->_number_of_signal)
     {
@@ -243,4 +245,16 @@ get_signal(Data_t data, const int index)
     }
 
     return NULL;
+}
+
+BrainInt
+get_data_random_subset_index(const BrainData data)
+{
+    if (data)
+    {
+        const BrainInt subset_index = rand() % get_data_subset_length(data);
+        return get_data_subset_index(data, subset_index);
+    }
+
+    return -1;
 }
