@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "brain.h"
+#include "brain_network_builder.h"
 #include "brain_data_reader.h"
 
 int

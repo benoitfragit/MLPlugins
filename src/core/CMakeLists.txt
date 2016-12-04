@@ -12,8 +12,7 @@ include_directories(${BrainUtils_BINARY_DIR}
                     ${LIBXML2_INCLUDE_DIR}
                     ${PROJECT_BINARY_DIR})
 
-set(SOURCES brain.c
-            brain_network_builder.c
+set(SOURCES brain_network_builder.c
             brain_layer_builder.c
             brain_neuron_builder.c
             brain_synapse_builder.c
