@@ -1,31 +1,31 @@
 #include "brain.h"
 #include <string.h>
 
-double
-backpropagate_output_layer(Network_t network,
-                           const int number_of_output,
-                           const double* desired)
+BrainDouble
+backpropagate_output_layer(BrainNetwork network,
+                           const BrainInt number_of_output,
+                           const BrainDouble* desired)
 {
-    double error = 0.0;
-    int number_of_neuron = 0;
+    BrainDouble error = 0.0;
+    BrainInt number_of_neuron = 0;
 
     if (network && desired)
     {
-        Layer_t output_layer = get_network_layer(network, get_network_number_of_layer(network) - 1);
+        BrainLayer output_layer = get_network_layer(network, get_network_number_of_layer(network) - 1);
 
         number_of_neuron = get_layer_number_of_neuron(output_layer);
 
         if (output_layer != NULL && number_of_neuron == number_of_output)
         {
-            int neuron_index = 0;
+            BrainInt neuron_index = 0;
 
             for (neuron_index = 0; neuron_index < number_of_neuron; ++neuron_index)
             {
-                Neuron_t oNeuron = get_layer_neuron(output_layer, neuron_index);
+                BrainNeuron oNeuron = get_layer_neuron(output_layer, neuron_index);
 
                 if (oNeuron != NULL)
                 {
-                    const double loss = get_neuron_output(oNeuron) - desired[neuron_index];
+                    const BrainDouble loss = get_neuron_output(oNeuron) - desired[neuron_index];
 
                     append_neuron_delta(oNeuron, loss);
 
@@ -39,21 +39,21 @@ backpropagate_output_layer(Network_t network,
 }
 
 void
-backpropagate_hidden_layer(Network_t network, const int layer_index)
+backpropagate_hidden_layer(BrainNetwork network, const BrainInt layer_index)
 {
-    int j;
-    int number_of_neuron = 0;
+    BrainInt j;
+    BrainInt number_of_neuron = 0;
 
     if (network && 0 <= layer_index && layer_index < get_network_number_of_layer(network))
     {
-        Layer_t pLayer = get_network_layer(network, layer_index);
+        BrainLayer pLayer = get_network_layer(network, layer_index);
         number_of_neuron = get_layer_number_of_neuron(pLayer);
 
         if (pLayer != NULL)
         {
             for (j = 0; j < number_of_neuron; ++j)
             {
-                const Synapse_t neural_synapse = get_network_synapse(network, layer_index, j);
+                const BrainSynapse neural_synapse = get_network_synapse(network, layer_index, j);
 
                 backpropagate_synapse(neural_synapse);
             }
@@ -62,7 +62,7 @@ backpropagate_hidden_layer(Network_t network, const int layer_index)
 }
 
 void
-feedforward(Network_t network)
+feedforward(BrainNetwork network)
 {
     if (network != NULL)
     {
@@ -71,13 +71,13 @@ feedforward(Network_t network)
     }
 }
 
-double
-backpropagate(Network_t network,
-              const int number_of_output,
-              const double *desired)
+BrainDouble
+backpropagate(BrainNetwork network,
+              const BrainInt number_of_output,
+              const BrainDouble *desired)
 {
-    int i;
-    const double error = backpropagate_output_layer(network, number_of_output, desired);
+    BrainInt i;
+    const BrainDouble error = backpropagate_output_layer(network, number_of_output, desired);
 
     for (i = get_network_number_of_layer(network) - 2; i >= 0; --i)
     {
@@ -86,24 +86,20 @@ backpropagate(Network_t network,
 
     update_network_weight(network);
 
-    BRAIN_INFO("Brain quadratic error id %lf", error);
-
     return error;
 }
 
-void
-train(Network_t network,
+BrainResult
+train(BrainNetwork network,
       const Data_t data,
-      const double target_error,
-      const int max_iter)
+      const BrainDouble target_error,
+      const BrainInt max_iter)
 {
-    int iteration = 0, subset_index = 0, index = 0;
-    double error = target_error + 1.0;
+    BrainInt iteration = 0, subset_index = 0, index = 0;
+    BrainDouble error = target_error + 1.0;
 
     if (network && data && target_error >= 0 && max_iter >= 1)
     {
-        srand(time(NULL));
-
         do
         {
             subset_index = rand() % get_subset_length(data);
@@ -113,19 +109,14 @@ train(Network_t network,
             feedforward(network);
             error = backpropagate(network, get_observation_length(data), get_observation(data, index));
 
-            if (target_error <= error)
-            {
-                BRAIN_INFO("Network has beene successfully trained");
-                return;
-            }
-
             ++iteration;
         } while ((iteration < max_iter) && (target_error > error));
     }
 
     if (error > target_error)
     {
-        BRAIN_CRITICAL("Unable to train the neural network, target error = %lf, error = %lf", target_error, error);
-        return;
+        return BRAIN_SUCCESS;
     }
+
+    return BRAIN_FAILED;
 }

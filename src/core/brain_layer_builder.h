@@ -4,15 +4,13 @@
 #include "brain_neuron_builder.h"
 #include "brain_xml_utils.h"
 
-typedef struct Layer* Layer_t;
-
-Layer_t  new_layer_from_context    (Context context);
-Neuron_t get_layer_neuron          (Layer_t layer, const int index);
-int      get_layer_number_of_neuron(Layer_t layer);
-void     delete_layer              (Layer_t layer);
-void     set_layer_input           (Layer_t layer, const int number_of_inputs, const double* in);
-void     dump_layer                (Layer_t layer, const int layer_idx, FILE* file);
-void     update_layer_weight       (Layer_t layer);
+BrainLayer  new_layer_from_context    (Context context);
+BrainNeuron get_layer_neuron          (BrainLayer layer, const BrainInt index);
+BrainInt    get_layer_number_of_neuron(BrainLayer layer);
+void        delete_layer              (BrainLayer layer);
+void        set_layer_input           (BrainLayer layer, const BrainInt number_of_inputs, const BrainDouble* in);
+void        dump_layer                (BrainLayer layer, const BrainInt layer_idx, FILE* file);
+void        update_layer_weight       (BrainLayer layer);
 
 
 #endif /* BRAIN_LAYER_BUILDER_H */

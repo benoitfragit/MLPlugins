@@ -2,20 +2,20 @@
 
 struct Network
 {
-    Layer_t   *_layers;
-    Synapse_t *_synapses;
-    double    *_output;
+    BrainLayer   *_layers;
+    BrainSynapse *_synapses;
+    BrainDouble    *_output;
 
-    int _number_of_synapse;
-    int _number_of_layer;
+    BrainInt _number_of_synapse;
+    BrainInt _number_of_layer;
 } Network;
 
 void
-update_network_output(Network_t network)
+update_network_output(BrainNetwork network)
 {
-    int i = 0;
-    Layer_t  output_layer = NULL;
-    Neuron_t output_neuron = NULL;
+    BrainInt i = 0;
+    BrainLayer  output_layer = NULL;
+    BrainNeuron output_neuron = NULL;
 
     if (network != NULL)
     {
@@ -37,10 +37,10 @@ update_network_output(Network_t network)
 }
 
 void
-activate_network_synapse(Network_t network)
+activate_network_synapse(BrainNetwork network)
 {
-    int synapse_index       = 0;
-    Synapse_t synapse       = NULL;;
+    BrainInt synapse_index       = 0;
+    BrainSynapse synapse       = NULL;;
 
     if (network != NULL)
     {
@@ -54,7 +54,7 @@ activate_network_synapse(Network_t network)
 }
 
 void
-set_network_output(Network_t network, const int index, const double value)
+set_network_output(BrainNetwork network, const BrainInt index, const BrainDouble value)
 {
     if (network
     &&  (0 <= index)
@@ -64,8 +64,8 @@ set_network_output(Network_t network, const int index, const double value)
     }
 }
 
-const double*
-get_network_output(const Network_t network)
+const BrainDouble*
+get_network_output(const BrainNetwork network)
 {
     if (network != NULL)
     {
@@ -75,8 +75,8 @@ get_network_output(const Network_t network)
     return NULL;
 }
 
-Layer_t
-get_network_layer(Network_t network, const int layer_index)
+BrainLayer
+get_network_layer(BrainNetwork network, const BrainInt layer_index)
 {
     if (network != NULL
     && network->_layers != NULL
@@ -89,10 +89,10 @@ get_network_layer(Network_t network, const int layer_index)
     return NULL;
 }
 
-Synapse_t
-get_network_synapse(Network_t network, const int layer_idx, const int neuron_idx)
+BrainSynapse
+get_network_synapse(BrainNetwork network, const BrainInt layer_idx, const BrainInt neuron_idx)
 {
-    int i;
+    BrainInt i;
 
     if (network != NULL)
     {
@@ -110,8 +110,8 @@ get_network_synapse(Network_t network, const int layer_idx, const int neuron_idx
     return NULL;
 }
 
-Synapse_t
-get_network_synapse_with_index(Network_t network, const int index)
+BrainSynapse
+get_network_synapse_with_index(BrainNetwork network, const BrainInt index)
 {
     if (network
     && (0 <= index)
@@ -125,11 +125,11 @@ get_network_synapse_with_index(Network_t network, const int index)
 }
 
 void
-delete_network(Network_t network)
+delete_network(BrainNetwork network)
 {
     if (network != NULL)
     {
-        int i;
+        BrainInt i;
         if (network->_number_of_synapse > 0)
         {
             for (i = 0; i < network->_number_of_synapse; ++i)
@@ -160,39 +160,37 @@ delete_network(Network_t network)
 }
 
 void
-set_network_input(Network_t network, const int number_of_input, const double *in)
+set_network_input(BrainNetwork network, const BrainInt number_of_input, const BrainDouble *in)
 {
     if (in != NULL )
     {
-        Layer_t input_layer = get_network_layer(network, 0);
+        BrainLayer input_layer = get_network_layer(network, 0);
 
         set_layer_input(input_layer, number_of_input, in);
     }
 }
 
-Network_t
+BrainNetwork
 new_network_from_context(Context context)
 {
     Context subcontext;
-    Network_t _network = NULL;
-    int index = 0, number_of_outputs;
+    BrainNetwork _network = NULL;
+    BrainInt index = 0, number_of_outputs;
 
     if (!context || !is_node_with_name(context, "network"))
     {
-        BRAIN_CRITICAL("Network", "<%s:%d> Context is not valid !\n",  __FILE__, __LINE__);
         return NULL;
     }
 
-    _network = (Network_t)malloc(sizeof(Network));
+    srand(time(NULL));
+
+    _network = (BrainNetwork)malloc(sizeof(Network));
     _network->_number_of_layer   = get_number_of_node_with_name(context, "layer");
     _network->_number_of_synapse = get_number_of_node_with_name(context, "connect");
 
-    BRAIN_INFO("Number of layer : %d, Number of synapse : %d", _network->_number_of_layer,
-                                                                                 _network->_number_of_synapse);
-
     if (_network->_number_of_layer)
     {
-        _network->_layers = (Layer_t *)malloc(_network->_number_of_layer * sizeof(Layer_t));
+        _network->_layers = (BrainLayer *)malloc(_network->_number_of_layer * sizeof(BrainLayer));
 
         for (index = 0; index < _network->_number_of_layer; ++index)
         {
@@ -209,7 +207,7 @@ new_network_from_context(Context context)
 
     if (_network->_number_of_synapse)
     {
-        _network->_synapses = (Synapse_t *)malloc(_network->_number_of_synapse * sizeof(Synapse_t));
+        _network->_synapses = (BrainSynapse *)malloc(_network->_number_of_synapse * sizeof(BrainSynapse));
 
         for (index = 0; index < _network->_number_of_synapse; ++index)
         {
@@ -222,14 +220,14 @@ new_network_from_context(Context context)
         }
     }
 
-    _network->_output = (double *)malloc( number_of_outputs * sizeof(double));
-    memset(_network->_output, 0, number_of_outputs * sizeof(double));
+    _network->_output = (BrainDouble *)malloc( number_of_outputs * sizeof(BrainDouble));
+    memset(_network->_output, 0, number_of_outputs * sizeof(BrainDouble));
 
     return _network;
 }
 
-int
-get_network_number_of_layer(const Network_t network)
+BrainInt
+get_network_number_of_layer(const BrainNetwork network)
 {
     if (network)
     {
@@ -239,8 +237,8 @@ get_network_number_of_layer(const Network_t network)
     return 0;
 }
 
-int
-get_network_number_of_synapse(const Network_t network)
+BrainInt
+get_network_number_of_synapse(const BrainNetwork network)
 {
     if (network)
     {
@@ -251,10 +249,10 @@ get_network_number_of_synapse(const Network_t network)
 }
 
 void
-update_network_weight(Network_t network)
+update_network_weight(BrainNetwork network)
 {
-    int i;
-    Layer_t pLayer = NULL;
+    BrainInt i;
+    BrainLayer pLayer = NULL;
 
     for (i = get_network_number_of_layer(network) - 1; i >= 0; --i)
     {
@@ -268,9 +266,9 @@ update_network_weight(Network_t network)
 }
 
 void
-dump_network(const Network_t network, const char* filename)
+dump_network(const BrainNetwork network, BrainString filename)
 {
-    int i;
+    BrainInt i;
 
     if (network && filename)
     {
@@ -288,26 +286,22 @@ dump_network(const Network_t network, const char* filename)
             fclose(file);
         }
     }
-    else
-    {
-        BRAIN_CRITICAL("Please give a valid file for dumping network content");
-    }
 }
 
 void
-initialize_network_from_context(Network_t network, Context context)
+initialize_network_from_context(BrainNetwork network, Context context)
 {
     if (network != NULL)
     {
-        int index, layer_idx, neuron_idx, input_idx;
-        double weight;
+        BrainInt index, layer_idx, neuron_idx, input_idx;
+        BrainDouble weight;
 
         Context subcontext;
 
-        Layer_t  internal_layer  = NULL;
-        Neuron_t internal_neuron = NULL;
+        BrainLayer  BrainInternal_layer  = NULL;
+        BrainNeuron BrainInternal_neuron = NULL;
 
-        const int number_of_weights = get_number_of_node_with_name(context, "weight");
+        const BrainInt number_of_weights = get_number_of_node_with_name(context, "weight");
 
         for (index = 0; index < number_of_weights; ++index)
         {
@@ -318,61 +312,44 @@ initialize_network_from_context(Network_t network, Context context)
             input_idx  = node_get_int   (subcontext, "input",  -1);
             weight     = node_get_double(subcontext, "value",  0.0);
 
-            internal_layer     = get_network_layer(network, layer_idx);
+            BrainInternal_layer     = get_network_layer(network, layer_idx);
 
-            if (internal_layer != NULL)
+            if (BrainInternal_layer != NULL)
             {
-                internal_neuron = get_layer_neuron(internal_layer, neuron_idx);
+                BrainInternal_neuron = get_layer_neuron(BrainInternal_layer, neuron_idx);
 
-                if (internal_neuron != NULL)
+                if (BrainInternal_neuron != NULL)
                 {
-                    if (0 <= input_idx && input_idx < get_neuron_number_of_inputs(internal_neuron))
+                    if (0 <= input_idx && input_idx < get_neuron_number_of_inputs(BrainInternal_neuron))
                     {
-                        set_neuron_weight(internal_neuron, input_idx, weight);
-                    }
-                    else
-                    {
-                        BRAIN_CRITICAL("There is no input at idx: ", input_idx);
+                        set_neuron_weight(BrainInternal_neuron, input_idx, weight);
                     }
                 }
-                else
-                {
-                    BRAIN_CRITICAL("There is no neuron at idx: ", neuron_idx);
-                }
-            }
-            else
-            {
-                BRAIN_CRITICAL("There is no layer at idx: ", layer_idx);
             }
         }
     }
-    else
-    {
-        BRAIN_CRITICAL("Network is not valid");
-    }
 }
 
-Synapse_t
-new_network_synapse_from_context(Network_t network, Context context)
+BrainSynapse
+new_network_synapse_from_context(BrainNetwork network, Context context)
 {
-    int input_layer_idx;
-    int input_neuron_idx;
-    int output_layer_idx;
-    int output_neuron_idx;
-    int input_index;
+    BrainInt input_layer_idx;
+    BrainInt input_neuron_idx;
+    BrainInt output_layer_idx;
+    BrainInt output_neuron_idx;
+    BrainInt input_index;
 
-    Layer_t  input_layer   = NULL;
-    Layer_t  output_layer  = NULL;
-    Neuron_t input_neuron  = NULL;
-    Neuron_t output_neuron = NULL;
+    BrainLayer  input_layer   = NULL;
+    BrainLayer  output_layer  = NULL;
+    BrainNeuron input_neuron  = NULL;
+    BrainNeuron output_neuron = NULL;
 
     if (network != NULL)
     {
-        Synapse_t _synapse = NULL;
+        BrainSynapse _synapse = NULL;
 
         if (!context || !is_node_with_name(context, "connect"))
         {
-            fprintf (stderr, "<%s:%d> Context is not valid !\n",  __FILE__, __LINE__);
             return NULL;
         }
 

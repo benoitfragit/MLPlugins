@@ -7,25 +7,22 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <math.h>
 #include <time.h>
 #include <string.h>
 
-typedef struct Neuron* Neuron_t;
-
-Neuron_t new_neuron_from_context    (Context context);
-void     delete_neuron              (Neuron_t neuron);
-void     update_neuron              (Neuron_t neuron);
-void     activate_neuron            (Neuron_t neuron);
-void     propagate_neuron           (Neuron_t neuron, const double out, const int input_index);
-void     append_neuron_delta        (Neuron_t neuron, const double delta);
-void     dump_neuron                (Neuron_t neuron, const int layer_idx, const int neuron_idx, FILE* file);
-double   get_neuron_input           (Neuron_t neuron, const int input_index);
-double   get_neuron_output          (Neuron_t neuron);
-double   get_neuron_weight          (Neuron_t neuron, const int weight_index);
-void     set_neuron_weight          (Neuron_t neuron, const int index, const double weight);
-void     set_neuron_input           (Neuron_t neuron, const int number_of_inputs, const double* in);
-double   get_neuron_weighted_delta  (Neuron_t neuron, const int index);
-int      get_neuron_number_of_inputs(Neuron_t neuron);
+BrainNeuron new_neuron_from_context    (Context context);
+void        delete_neuron              (BrainNeuron neuron);
+void        update_neuron              (BrainNeuron neuron);
+void        activate_neuron            (BrainNeuron neuron);
+void        propagate_neuron           (BrainNeuron neuron, const BrainDouble out, const BrainInt input_index);
+void        append_neuron_delta        (BrainNeuron neuron, const BrainDouble delta);
+void        dump_neuron                (BrainNeuron neuron, const BrainInt layer_idx, const BrainInt neuron_idx, FILE* file);
+void        set_neuron_weight          (BrainNeuron neuron, const BrainInt index, const BrainDouble weight);
+void        set_neuron_input           (BrainNeuron neuron, const BrainInt number_of_inputs, const BrainDouble* in);
+BrainDouble get_neuron_weighted_delta  (BrainNeuron neuron, const BrainInt index);
+BrainDouble get_neuron_input           (BrainNeuron neuron, const BrainInt input_index);
+BrainDouble get_neuron_output          (BrainNeuron neuron);
+BrainDouble get_neuron_weight          (BrainNeuron neuron, const BrainInt weight_index);
+BrainInt    get_neuron_number_of_inputs(BrainNeuron neuron);
 
 #endif /* BRAIN_NEURON_BUILDER_H */

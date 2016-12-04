@@ -2,26 +2,26 @@
 
 struct Layer
 {
-    Neuron_t* _neurons;
-    int _number_of_neuron;
+    BrainNeuron* _neurons;
+    BrainInt _number_of_neuron;
 } Layer;
 
 void
-set_layer_input(Layer_t layer, const int number_of_inputs, const double* in)
+set_layer_input(BrainLayer layer, const BrainInt number_of_inputs, const BrainDouble* in)
 {
-    int j = 0;
+    BrainInt j = 0;
     if (layer)
     {
         for (j = 0; j < layer->_number_of_neuron; ++j)
         {
-            Neuron_t input_neuron = get_layer_neuron(layer, j);
+            BrainNeuron input_neuron = get_layer_neuron(layer, j);
             set_neuron_input(input_neuron, number_of_inputs, in);
         }
     }
 }
 
-Neuron_t
-get_layer_neuron(Layer_t layer, const int neuron_index)
+BrainNeuron
+get_layer_neuron(BrainLayer layer, const BrainInt neuron_index)
 {
     if (layer != NULL
     &&  0 <= neuron_index
@@ -34,9 +34,9 @@ get_layer_neuron(Layer_t layer, const int neuron_index)
 }
 
 void
-delete_layer(Layer_t layer)
+delete_layer(BrainLayer layer)
 {
-    int i;
+    BrainInt i;
 
     if (layer)
     {
@@ -53,25 +53,24 @@ delete_layer(Layer_t layer)
     }
 }
 
-Layer_t
+BrainLayer
 new_layer_from_context(Context context)
 {
     Context neuron_context;
-    Layer_t _layer = NULL;
-    int index = 0;
+    BrainLayer _layer = NULL;
+    BrainInt index = 0;
 
     if (!context || !is_node_with_name(context, "layer"))
     {
-        BRAIN_CRITICAL ("Layer",  "<%s:%d> Context is not valid !\n",  __FILE__, __LINE__);
         return NULL;
     }
 
-    _layer                    = (Layer_t)malloc(sizeof(Layer));
+    _layer                    = (BrainLayer)malloc(sizeof(Layer));
     _layer->_number_of_neuron = get_number_of_node_with_name(context, "neuron");
 
     if (_layer->_number_of_neuron > 0)
     {
-        _layer->_neurons = (Neuron_t *)malloc(_layer->_number_of_neuron * sizeof(Neuron_t));
+        _layer->_neurons = (BrainNeuron *)malloc(_layer->_number_of_neuron * sizeof(BrainNeuron));
 
         for (index = 0; index < _layer->_number_of_neuron; ++index)
         {
@@ -87,8 +86,8 @@ new_layer_from_context(Context context)
     return _layer;
 }
 
-int
-get_layer_number_of_neuron(Layer_t layer)
+BrainInt
+get_layer_number_of_neuron(BrainLayer layer)
 {
     if (layer)
     {
@@ -99,10 +98,10 @@ get_layer_number_of_neuron(Layer_t layer)
 }
 
 void
-update_layer_weight(Layer_t layer)
+update_layer_weight(BrainLayer layer)
 {
-    int j = 0;
-    Neuron_t pNeuron = NULL;
+    BrainInt j = 0;
+    BrainNeuron pNeuron = NULL;
 
     if (layer != NULL)
     {
@@ -119,9 +118,9 @@ update_layer_weight(Layer_t layer)
 }
 
 void
-dump_layer(Layer_t layer, const int layer_idx, FILE* file)
+dump_layer(BrainLayer layer, const BrainInt layer_idx, FILE* file)
 {
-    int i;
+    BrainInt i;
     if (layer && file)
     {
         for (i = 0; i < layer->_number_of_neuron; ++i)

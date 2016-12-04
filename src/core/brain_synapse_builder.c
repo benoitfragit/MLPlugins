@@ -2,28 +2,28 @@
 
 struct Synapse
 {
-    int      _input_layer_index;
-    int      _input_neuron_index;
-    int      _output_neuron_index;
-    int      _output_layer_index;
-    int      _input_index;
+    BrainInt      _input_layer_index;
+    BrainInt      _input_neuron_index;
+    BrainInt      _output_neuron_index;
+    BrainInt      _output_layer_index;
+    BrainInt      _input_index;
 
-    Neuron_t _input_neuron;
-    Neuron_t _output_neuron;
+    BrainNeuron _input_neuron;
+    BrainNeuron _output_neuron;
 } Synapse;
 
-Synapse_t
+BrainSynapse
 new_synapse()
 {
-    Synapse_t _synapse = NULL;
+    BrainSynapse _synapse = NULL;
 
-    _synapse = (Synapse_t)malloc(sizeof(Synapse));
+    _synapse = (BrainSynapse)malloc(sizeof(Synapse));
 
     return _synapse;
 }
 
 void
-delete_synapse(Synapse_t synapse)
+delete_synapse(BrainSynapse synapse)
 {
     if (synapse)
     {
@@ -32,28 +32,28 @@ delete_synapse(Synapse_t synapse)
 }
 
 void
-set_synapse_input_neuron(Synapse_t synapse, Neuron_t neuron)
+set_synapse_input_neuron(BrainSynapse synapse, BrainNeuron neuron)
 {
     if (synapse)
         synapse->_input_neuron = neuron;
 }
 
 void
-set_synapse_output_neuron(Synapse_t synapse, Neuron_t neuron)
+set_synapse_output_neuron(BrainSynapse synapse, BrainNeuron neuron)
 {
     if (synapse)
         synapse->_output_neuron = neuron;
 }
 
 void
-set_synapse_input_index(Synapse_t synapse, const int input_index)
+set_synapse_input_index(BrainSynapse synapse, const BrainInt input_index)
 {
     if (synapse)
         synapse->_input_index = input_index;
 }
 
-Neuron_t
-get_synapse_input_neuron(Synapse_t synapse)
+BrainNeuron
+get_synapse_input_neuron(BrainSynapse synapse)
 {
     if (synapse)
     {
@@ -63,8 +63,8 @@ get_synapse_input_neuron(Synapse_t synapse)
     return NULL;
 }
 
-Neuron_t
-get_synapse_output_neuron(Synapse_t synapse)
+BrainNeuron
+get_synapse_output_neuron(BrainSynapse synapse)
 {
     if (synapse)
     {
@@ -74,8 +74,8 @@ get_synapse_output_neuron(Synapse_t synapse)
     return NULL;
 }
 
-int
-get_synapse_input_index(Synapse_t synapse)
+BrainInt
+get_synapse_input_index(BrainSynapse synapse)
 {
     if (synapse)
     {
@@ -85,8 +85,8 @@ get_synapse_input_index(Synapse_t synapse)
     return -1;
 }
 
-int
-get_synapse_input_layer_index(const Synapse_t synapse)
+BrainInt
+get_synapse_input_layer_index(const BrainSynapse synapse)
 {
     if (synapse)
         return synapse->_input_layer_index;
@@ -94,8 +94,8 @@ get_synapse_input_layer_index(const Synapse_t synapse)
     return -1;
 }
 
-int
-get_synapse_output_layer_index(const Synapse_t synapse)
+BrainInt
+get_synapse_output_layer_index(const BrainSynapse synapse)
 {
     if (synapse)
         return synapse->_output_layer_index;
@@ -103,8 +103,8 @@ get_synapse_output_layer_index(const Synapse_t synapse)
     return -1;
 }
 
-int
-get_synapse_input_neuron_index (const Synapse_t synapse)
+BrainInt
+get_synapse_input_neuron_index (const BrainSynapse synapse)
 {
     if (synapse)
         return synapse->_input_neuron_index;
@@ -112,8 +112,8 @@ get_synapse_input_neuron_index (const Synapse_t synapse)
     return -1;
 }
 
-int
-get_synapse_output_neuron_index(const Synapse_t synapse)
+BrainInt
+get_synapse_output_neuron_index(const BrainSynapse synapse)
 {
     if (synapse)
         return synapse->_output_neuron_index;
@@ -122,50 +122,50 @@ get_synapse_output_neuron_index(const Synapse_t synapse)
 }
 
 void
-set_synapse_input_layer_index  (Synapse_t synapse, const int input_layer_index)
+set_synapse_input_layer_index  (BrainSynapse synapse, const BrainInt input_layer_index)
 {
     if (synapse)
         synapse->_input_layer_index = input_layer_index;
 }
 
 void
-set_synapse_output_layer_index (Synapse_t synapse, const int output_layer_index)
+set_synapse_output_layer_index (BrainSynapse synapse, const BrainInt output_layer_index)
 {
     if (synapse)
         synapse->_output_layer_index = output_layer_index;
 }
 
 void
-set_synapse_input_neuron_index (Synapse_t synapse, const int input_neuron_index)
+set_synapse_input_neuron_index (BrainSynapse synapse, const BrainInt input_neuron_index)
 {
     if (synapse)
         synapse->_input_neuron_index = input_neuron_index;
 }
 
 void
-set_synapse_output_neuron_index(Synapse_t synapse, const int output_neuron_index)
+set_synapse_output_neuron_index(BrainSynapse synapse, const BrainInt output_neuron_index)
 {
     if (synapse)
         synapse->_output_neuron_index = output_neuron_index;
 }
 
-int
-is_synapse_valid(Synapse_t synapse)
+BrainBool
+is_synapse_valid(BrainSynapse synapse)
 {
     if ((synapse != NULL) && (get_synapse_input_neuron(synapse) != NULL) && (get_synapse_output_neuron(synapse) != NULL))
     {
-        return 1;
+        return BRAIN_TRUE;
     }
 
-    return 0;
+    return BRAIN_FALSE;
 }
 
 void
-activate_synapse(Synapse_t synapse)
+activate_synapse(BrainSynapse synapse)
 {
-    Neuron_t  input_neuron  = NULL;
-    Neuron_t  output_neuron = NULL;
-    int input_index = -1;
+    BrainNeuron  input_neuron  = NULL;
+    BrainNeuron  output_neuron = NULL;
+    BrainInt input_index = -1;
 
     if (is_synapse_valid(synapse))
     {
@@ -180,15 +180,15 @@ activate_synapse(Synapse_t synapse)
 }
 
 void
-backpropagate_synapse(Synapse_t synapse)
+backpropagate_synapse(BrainSynapse synapse)
 {
     if (is_synapse_valid(synapse))
     {
-        const Neuron_t output       = get_synapse_output_neuron(synapse);
-        const int    input_index    = get_synapse_input_index(synapse);
-        const double weighted_delta = get_neuron_weighted_delta(output, input_index);
+        const BrainNeuron output       = get_synapse_output_neuron(synapse);
+        const BrainInt    input_index    = get_synapse_input_index(synapse);
+        const BrainDouble weighted_delta = get_neuron_weighted_delta(output, input_index);
 
-        Neuron_t input              = get_synapse_input_neuron(synapse);
+        BrainNeuron input              = get_synapse_input_neuron(synapse);
 
         append_neuron_delta(input, weighted_delta);
     }

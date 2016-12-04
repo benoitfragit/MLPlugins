@@ -11,14 +11,14 @@ static const char* activation_name[] = {
     "sinus"
 };
 
-static double
-identity(const double value)
+static BrainDouble
+identity(const BrainDouble value)
 {
     return value;
 }
 
-static double
-identity_derivative(const double value)
+static BrainDouble
+identity_derivative(const BrainDouble value)
 {
     if (value != 0)
         return value / value;
@@ -26,68 +26,68 @@ identity_derivative(const double value)
     return 1.0;
 }
 
-static double
-sigmoid(const double value)
+static BrainDouble
+sigmoid(const BrainDouble value)
 {
     return 1.0 / (1.0 + exp(-value));
 }
 
-static double
-sigmoid_derivative(const double value)
+static BrainDouble
+sigmoid_derivative(const BrainDouble value)
 {
     return value * (1.0 - value);
 }
 
-static double
-tangeant_hyperbolic(const double value)
+static BrainDouble
+tangeant_hyperbolic(const BrainDouble value)
 {
     return 2.0 / (1.0 + exp (-2.0 * value)) - 1.0;
 }
 
-static double
-tangeant_hyperbolic_derivative(const double value)
+static BrainDouble
+tangeant_hyperbolic_derivative(const BrainDouble value)
 {
     return 1.0 - value*value;
 }
 
-static double
-co_tangeant(const double value)
+static BrainDouble
+co_tangeant(const BrainDouble value)
 {
     return atan(value);
 }
 
-static double
-co_tangeant_derivative(const double value)
+static BrainDouble
+co_tangeant_derivative(const BrainDouble value)
 {
     return 1.0 / (1.0 + tan(value)*tan(value));
 }
 
-static double
-softplus(const double value)
+static BrainDouble
+softplus(const BrainDouble value)
 {
     return log(1 + exp(value));
 }
 
-static double
-softplus_derivative(const double value)
+static BrainDouble
+softplus_derivative(const BrainDouble value)
 {
     return (exp(value) - 1.0) / exp(value);
 }
 
-static double
-sinusoid(const double value)
+static BrainDouble
+sinusoid(const BrainDouble value)
 {
     return sin(value);
 }
 
-static double
-sinusoid_derivative(const double value)
+static BrainDouble
+sinusoid_derivative(const BrainDouble value)
 {
     return sqrt(1.0 - value*value);
 }
 
 PtrFunc
-activation(const ActivationType type)
+activation(const BrainActivationType type)
 {
     switch (type)
     {
@@ -110,7 +110,7 @@ activation(const ActivationType type)
 }
 
 PtrFunc
-derivative(const ActivationType type)
+derivative(const BrainActivationType type)
 {
     switch (type)
     {
@@ -132,10 +132,10 @@ derivative(const ActivationType type)
     return &sigmoid_derivative;
 }
 
-ActivationType
-get_activation_type(const char* activation_type_name)
+BrainActivationType
+get_activation_type(BrainString activation_type_name)
 {
-    unsigned int i = 0;
+    BrainUint i = 0;
 
     if (activation_type_name)
     {
@@ -149,19 +149,4 @@ get_activation_type(const char* activation_type_name)
     }
 
     return Invalid;
-}
-
-const char*
-get_activation_name(const ActivationType activation_type)
-{
-    unsigned int i = 0;
-    for (i = First_Activation; i <= Last_Activation; ++i)
-    {
-        if (i == activation_type)
-        {
-            return activation_name[i - First_Activation];
-        }
-    }
-
-    return NULL;
 }
