@@ -113,8 +113,9 @@ activate_neuron(BrainNeuron neuron)
         }
 
         neuron->_out = neuron->_activation(sum);
+		neuron->_out = (neuron->_out > 0) - (neuron->_out < 0);
         neuron->_delta = 0.0;
-    }
+	}
 }
 
 void
