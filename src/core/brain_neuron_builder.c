@@ -167,14 +167,14 @@ new_neuron_from_context(Context context)
     BrainInt    index = 0;
     BrainDouble random_value_limit = 0.0;
     BrainChar*  buffer = NULL;
-    BrainNeuron    _neuron = (BrainNeuron)malloc(sizeof(Neuron));
+    BrainNeuron _neuron = NULL;
 
     if (!context || !is_node_with_name(context, "neuron"))
     {
-        free(_neuron);
         return NULL;
     }
 
+    _neuron                   = (BrainNeuron)malloc(sizeof(Neuron));
     _neuron->_learning_rate   = node_get_double(context, "learning-rate", 0.0);
     _neuron->_inertial_factor = node_get_double(context, "inertial-factor", 0.0);
     _neuron->_out             = 0.0;
