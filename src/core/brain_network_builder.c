@@ -309,7 +309,7 @@ new_network_from_context(Context context)
 {
     Context subcontext;
     BrainNetwork _network = NULL;
-    BrainInt index = 0, number_of_outputs;
+    BrainInt index = 0, number_of_outputs = 0;
 
     if (!context || !is_node_with_name(context, "network"))
     {
@@ -354,8 +354,11 @@ new_network_from_context(Context context)
         }
     }
 
-    _network->_output = (BrainDouble *)malloc( number_of_outputs * sizeof(BrainDouble));
-    memset(_network->_output, 0, number_of_outputs * sizeof(BrainDouble));
+    if (0 < number_of_outputs)
+    {
+        _network->_output = (BrainDouble *)malloc( number_of_outputs * sizeof(BrainDouble));
+        memset(_network->_output, 0, number_of_outputs * sizeof(BrainDouble));
+    }
 
     return _network;
 }

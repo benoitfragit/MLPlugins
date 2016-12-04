@@ -113,9 +113,9 @@ activate_neuron(BrainNeuron neuron)
         }
 
         neuron->_out = neuron->_activation(sum);
-		neuron->_out = (neuron->_out > 0) - (neuron->_out < 0);
+        neuron->_out = (neuron->_out > 0) - (neuron->_out < 0);
         neuron->_delta = 0.0;
-	}
+    }
 }
 
 void
@@ -171,6 +171,7 @@ new_neuron_from_context(Context context)
 
     if (!context || !is_node_with_name(context, "neuron"))
     {
+        free(_neuron);
         return NULL;
     }
 

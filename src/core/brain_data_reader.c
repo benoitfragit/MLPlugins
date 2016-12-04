@@ -26,7 +26,7 @@ get_data_next_random_subset_index(const BrainInt* subset,
     BrainInt i = 0;
     BrainInt random_number = -1;
 
-    if (subset && length > 0 && 0 <= max_index)
+    if (subset && length > 0 && 0 < max_index)
     {
         do
         {
