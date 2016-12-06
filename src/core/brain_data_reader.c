@@ -8,8 +8,8 @@
 
 struct Data
 {
-    BrainInput*  _signals;
-    BrainOutput* _observations;
+    BrainSignal*  _signals;
+    BrainSignal* _observations;
     BrainInt*    _subset;
     BrainInt     _subset_length;
     BrainInt     _signal_length;
@@ -116,8 +116,8 @@ new_data_from_context(Context context)
     _data->_signal_length      = node_get_int(context, "signal-length", 0);
     _data->_observation_length = node_get_int(context, "observation-length", 0);
 
-    _data->_signals            = (BrainInput *)malloc(_data->_number_of_signal * sizeof(BrainInput));
-    _data->_observations       = (BrainOutput *)malloc(_data->_number_of_signal * sizeof(BrainOutput));
+    _data->_signals            = (BrainSignal *)malloc(_data->_number_of_signal * sizeof(BrainSignal));
+    _data->_observations       = (BrainSignal *)malloc(_data->_number_of_signal * sizeof(BrainSignal));
 
     _data->_subset_length      = (BrainInt)(_data->_number_of_signal / 2);
     _data->_subset             = (BrainInt *)malloc(_data->_subset_length * sizeof(BrainInt));
@@ -131,8 +131,8 @@ new_data_from_context(Context context)
 
         if (signal_context)
         {
-            _data->_signals[i]      = (BrainInput)malloc(_data->_signal_length * sizeof(BrainDouble));
-            _data->_observations[i] = (BrainOutput)malloc(_data->_observation_length * sizeof(BrainDouble));
+            _data->_signals[i]      = (BrainSignal)malloc(_data->_signal_length * sizeof(BrainDouble));
+            _data->_observations[i] = (BrainSignal)malloc(_data->_observation_length * sizeof(BrainDouble));
 
             buffer = (BrainChar *)node_get_prop(signal_context, "input");
             part = strtok(buffer, ", ");
@@ -225,7 +225,7 @@ delete_data(BrainData data)
     }
 }
 
-BrainOutput
+BrainSignal
 get_data_output(const BrainData data, const BrainInt index)
 {
     if (data != NULL && 0 <= index && index < data->_number_of_signal)
@@ -236,7 +236,7 @@ get_data_output(const BrainData data, const BrainInt index)
     return NULL;
 }
 
-BrainInput
+BrainSignal
 get_data_input(const BrainData data, const BrainInt index)
 {
     if (data && 0 <= index && index < data->_number_of_signal)

@@ -2,7 +2,7 @@
 
 struct Neuron
 {
-    BrainDouble*        _in;
+    BrainSignal         _in;
     BrainDouble*        _w;
     BrainDouble         _out;
     BrainDouble         _learning_rate;
@@ -58,7 +58,7 @@ propagate_neuron(BrainNeuron neuron, const BrainDouble out, const BrainInt input
 void
 set_neuron_input(BrainNeuron neuron,
                  const BrainInt number_of_inputs,
-                 const double* in)
+                 const BrainSignal in)
 {
     BrainInt k = 0;
 
@@ -180,7 +180,7 @@ new_neuron_from_context(Context context)
     _neuron->_out             = 0.0;
     _neuron->_delta           = 0.0;
     _neuron->_number_of_input = node_get_int(context, "input", 0);
-    _neuron->_in              = (BrainDouble *)malloc((_neuron->_number_of_input + 1) * sizeof(BrainDouble));
+    _neuron->_in              = (BrainSignal)malloc((_neuron->_number_of_input + 1) * sizeof(BrainDouble));
     _neuron->_w               = (BrainDouble *)malloc((_neuron->_number_of_input + 1) * sizeof(BrainDouble));
     _neuron->_correction      = (BrainDouble *)malloc((_neuron->_number_of_input + 1) * sizeof(BrainDouble)) ;
 

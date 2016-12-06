@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 2.8.9)
 project(Brain)
+set(Brain_VERSION_MAJOR 0)
+set(Brain_VERSION_MINOR 1)
 
 set(CMAKE_BUILD_TYPE debug)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")

@@ -7,7 +7,7 @@ struct Layer
 } Layer;
 
 void
-set_layer_input(BrainLayer layer, const BrainInt number_of_inputs, const BrainDouble* in)
+set_layer_input(BrainLayer layer, const BrainInt number_of_inputs, const BrainSignal in)
 {
     BrainInt j = 0;
     if (layer)

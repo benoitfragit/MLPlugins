@@ -18,7 +18,7 @@ void        propagate_neuron           (BrainNeuron neuron, const BrainDouble ou
 void        append_neuron_delta        (BrainNeuron neuron, const BrainDouble delta);
 void        dump_neuron                (BrainNeuron neuron, const BrainInt layer_idx, const BrainInt neuron_idx, FILE* file);
 void        set_neuron_weight          (BrainNeuron neuron, const BrainInt index, const BrainDouble weight);
-void        set_neuron_input           (BrainNeuron neuron, const BrainInt number_of_inputs, const BrainDouble* in);
+void        set_neuron_input           (BrainNeuron neuron, const BrainInt number_of_inputs, const BrainSignal in);
 BrainDouble get_neuron_weighted_delta  (BrainNeuron neuron, const BrainInt index);
 BrainDouble get_neuron_input           (BrainNeuron neuron, const BrainInt input_index);
 BrainDouble get_neuron_output          (BrainNeuron neuron);

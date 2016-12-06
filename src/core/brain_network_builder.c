@@ -4,7 +4,7 @@ struct Network
 {
     BrainLayer   *_layers;
     BrainSynapse *_synapses;
-    BrainDouble    *_output;
+    BrainSignal   _output;
 
     BrainInt _number_of_synapse;
     BrainInt _number_of_layer;
@@ -230,7 +230,7 @@ backpropagate(BrainNetwork network,
     return error;
 }
 
-BrainDouble*
+BrainSignal
 get_network_output(const BrainNetwork network)
 {
     if (network != NULL)
@@ -312,7 +312,7 @@ delete_network(BrainNetwork network)
 }
 
 void
-set_network_input(BrainNetwork network, const BrainInt number_of_input, const BrainDouble *in)
+set_network_input(BrainNetwork network, const BrainInt number_of_input, const BrainSignal in)
 {
     if (in != NULL )
     {

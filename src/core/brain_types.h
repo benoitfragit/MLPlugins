@@ -11,8 +11,7 @@ typedef float         BrainFloat;
 typedef double        BrainDouble;
 typedef const char*   BrainString;
 typedef char          BrainChar;
-typedef BrainDouble*  BrainInput;
-typedef BrainDouble*  BrainOutput;
+typedef BrainDouble*  BrainSignal;
 
 typedef enum BrainResult
 {
