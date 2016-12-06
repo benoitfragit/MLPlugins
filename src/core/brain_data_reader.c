@@ -247,6 +247,7 @@ get_data_input(const BrainData data, const BrainInt index)
     return NULL;
 }
 
+
 BrainInt
 get_data_random_subset_index(const BrainData data)
 {
