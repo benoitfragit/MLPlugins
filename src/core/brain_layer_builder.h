@@ -7,6 +7,7 @@
 BrainLayer  new_layer_from_context    (Context context);
 BrainNeuron get_layer_neuron          (BrainLayer layer, const BrainInt index);
 BrainInt    get_layer_number_of_neuron(BrainLayer layer);
+BrainSignal get_layer_output          (BrainLayer layer);
 void        delete_layer              (BrainLayer layer);
 void        set_layer_input           (BrainLayer layer, const BrainInt number_of_inputs, const BrainSignal in);
 void        dump_layer                (BrainLayer layer, const BrainInt layer_idx, FILE* file);

@@ -3,7 +3,8 @@
 struct Layer
 {
     BrainNeuron* _neurons;
-    BrainInt _number_of_neuron;
+    BrainSignal  _out;
+    BrainInt     _number_of_neuron;
 } Layer;
 
 void
@@ -49,6 +50,12 @@ delete_layer(BrainLayer layer)
 
             free(layer->_neurons);
         }
+
+        if (layer->_out)
+        {
+            free(layer->_out);
+        }
+
         free(layer);
     }
 }
@@ -71,6 +78,9 @@ new_layer_from_context(Context context)
     if (_layer->_number_of_neuron > 0)
     {
         _layer->_neurons = (BrainNeuron *)malloc(_layer->_number_of_neuron * sizeof(BrainNeuron));
+        _layer->_out     = (BrainSignal)malloc(_layer->_number_of_neuron * sizeof(BrainDouble));
+
+        memset(_layer->_out, 0, _layer->_number_of_neuron * sizeof(BrainDouble));
 
         for (index = 0; index < _layer->_number_of_neuron; ++index)
         {
@@ -78,12 +88,23 @@ new_layer_from_context(Context context)
 
             if (neuron_context)
             {
-                _layer->_neurons[index] = new_neuron_from_context(neuron_context);
+                _layer->_neurons[index] = new_neuron_from_context(neuron_context, &(_layer->_out[index]));
             }
         }
     }
 
     return _layer;
+}
+
+BrainSignal
+get_layer_output(BrainLayer layer)
+{
+    if (layer != NULL)
+    {
+        return layer->_out;
+    }
+
+    return NULL;
 }
 
 BrainInt

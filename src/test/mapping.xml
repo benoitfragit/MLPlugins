@@ -13,18 +13,4 @@
         <neuron input="3" learning-rate="1.0" inertial-factor="0.0"/>
         <neuron input="3" learning-rate="1.0" inertial-factor="0.0" activation-type="sigmoid"/>
     </layer>
-
-    <connect input-layer="0" input-neuron="0" output-layer="1" output-neuron="0" input-index="0"/>
-    <connect input-layer="0" input-neuron="0" output-layer="1" output-neuron="1" input-index="0"/>
-    <connect input-layer="0" input-neuron="0" output-layer="1" output-neuron="2" input-index="0"/>
-    <connect input-layer="0" input-neuron="1" output-layer="1" output-neuron="0" input-index="1"/>
-    <connect input-layer="0" input-neuron="1" output-layer="1" output-neuron="1" input-index="1"/>
-    <connect input-layer="0" input-neuron="1" output-layer="1" output-neuron="2" input-index="1"/>
-    <connect input-layer="1" input-neuron="0" output-layer="2" output-neuron="0" input-index="0"/>
-    <connect input-layer="1" input-neuron="0" output-layer="2" output-neuron="1" input-index="0"/>
-    <connect input-layer="1" input-neuron="1" output-layer="2" output-neuron="0" input-index="1"/>
-    <connect input-layer="1" input-neuron="1" output-layer="2" output-neuron="1" input-index="1"/>
-    <connect input-layer="1" input-neuron="2" output-layer="2" output-neuron="0" input-index="2"/>
-    <connect input-layer="1" input-neuron="2" output-layer="2" output-neuron="1" input-index="2"/>
-
 </network>

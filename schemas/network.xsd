@@ -14,14 +14,6 @@
         <xs:attribute name="activation-type" type="xs:string"  use="optional"/>
     </xs:complexType>
 
-    <xs:complexType name="ConnectType">
-        <xs:attribute name="input-layer"   type="xs:integer" use="required"/>
-        <xs:attribute name="input-neuron"  type="xs:integer" use="required"/>
-        <xs:attribute name="output-layer"  type="xs:integer" use="required"/>
-        <xs:attribute name="output-neuron" type="xs:integer" use="required"/>
-        <xs:attribute name="input-index"   type="xs:integer" use="required"/>
-    </xs:complexType>
-
     <xs:complexType name="LayerType">
         <xs:sequence minOccurs="1" maxOccurs="unbounded">
             <xs:element name="neuron" type="NeuronType"/>
@@ -31,7 +23,6 @@
     <xs:complexType name="NetworkType">
         <xs:sequence>
             <xs:element name="layer"   type="LayerType"   minOccurs="1" maxOccurs="unbounded"/>
-            <xs:element name="connect" type="ConnectType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 

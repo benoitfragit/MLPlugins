@@ -38,7 +38,6 @@ typedef BrainDouble (*PtrFunc)(const BrainDouble value);
 typedef struct Data*    BrainData;
 typedef struct Neuron*  BrainNeuron;
 typedef struct Layer*   BrainLayer;
-typedef struct Synapse* BrainSynapse;
 typedef struct Network* BrainNetwork;
 
 #endif /* BRAIN_TYPES_H */
