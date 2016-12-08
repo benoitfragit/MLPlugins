@@ -12,7 +12,7 @@ void initialize_network_from_context(BrainNetwork network, Context context);
 void feedforward                    (BrainNetwork network);
 void dump_network                   (const BrainNetwork network, BrainString filename);
 
-BrainInt     get_network_number_of_layer(const BrainNetwork network);
+BrainInt    get_network_number_of_layer(const BrainNetwork network);
 BrainSignal  get_network_output         (const BrainNetwork network);
 BrainLayer   get_network_layer          (const BrainNetwork network, const BrainInt layer_index);
 BrainResult  train(BrainNetwork network, const BrainData data, const BrainDouble target_error, const BrainInt max_iter);

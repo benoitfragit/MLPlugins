@@ -6,7 +6,6 @@
 
 typedef unsigned char BrainBool;
 typedef int           BrainInt;
-typedef unsigned int  BrainUint;
 typedef float         BrainFloat;
 typedef double        BrainDouble;
 typedef const char*   BrainString;

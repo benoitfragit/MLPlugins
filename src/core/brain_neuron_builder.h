@@ -23,6 +23,6 @@ BrainDouble get_neuron_input           (BrainNeuron neuron, const BrainInt input
 BrainDouble get_neuron_output          (BrainNeuron neuron);
 BrainDouble get_neuron_weight          (BrainNeuron neuron, const BrainInt weight_index);
 BrainDouble get_neuron_bias            (BrainNeuron neuron);
-BrainInt    get_neuron_number_of_inputs(BrainNeuron neuron);
+BrainInt   get_neuron_number_of_inputs(BrainNeuron neuron);
 
 #endif /* BRAIN_NEURON_BUILDER_H */

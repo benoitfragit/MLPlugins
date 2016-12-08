@@ -12,7 +12,7 @@ struct Neuron
     BrainDouble*        _correction;
     PtrFunc             _activation;
     PtrFunc             _derivative;
-    BrainInt            _number_of_input;
+    BrainInt           _number_of_input;
     BrainActivationType _activation_type;
 } Neuron;
 
@@ -207,9 +207,9 @@ dump_neuron(BrainNeuron neuron,
             const BrainInt neuron_idx,
             FILE* file)
 {
-    BrainInt i;
     if (neuron && file)
     {
+        BrainInt i = 0;
         for (i = 0; i < neuron->_number_of_input + 1; ++i)
         {
             fprintf(file, "\t<weight value=\"%lf\"", neuron->_w[i]);

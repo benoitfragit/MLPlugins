@@ -10,9 +10,10 @@ struct Layer
 void
 set_layer_input(BrainLayer layer, const BrainInt number_of_inputs, const BrainSignal in)
 {
-    BrainInt j = 0;
     if (layer)
     {
+        BrainInt j = 0;
+
         for (j = 0; j < layer->_number_of_neuron; ++j)
         {
             BrainNeuron input_neuron = get_layer_neuron(layer, j);
@@ -37,12 +38,12 @@ get_layer_neuron(BrainLayer layer, const BrainInt neuron_index)
 void
 delete_layer(BrainLayer layer)
 {
-    BrainInt i;
-
     if (layer)
     {
         if (layer->_neurons)
         {
+            BrainInt i;
+
             for (i = 0; i < layer->_number_of_neuron; ++i)
             {
                 delete_neuron(layer->_neurons[i]);
@@ -63,37 +64,38 @@ delete_layer(BrainLayer layer)
 BrainLayer
 new_layer_from_context(Context context)
 {
-    Context neuron_context;
-    BrainLayer _layer = NULL;
-    BrainInt index = 0;
-
-    if (!context || !is_node_with_name(context, "layer"))
+    if (context && is_node_with_name(context, "layer"))
     {
-        return NULL;
-    }
+        BrainLayer _layer = NULL;
 
-    _layer                    = (BrainLayer)malloc(sizeof(Layer));
-    _layer->_number_of_neuron = get_number_of_node_with_name(context, "neuron");
+        _layer                    = (BrainLayer)malloc(sizeof(Layer));
+        _layer->_number_of_neuron = get_number_of_node_with_name(context, "neuron");
 
-    if (_layer->_number_of_neuron > 0)
-    {
-        _layer->_neurons = (BrainNeuron *)malloc(_layer->_number_of_neuron * sizeof(BrainNeuron));
-        _layer->_out     = (BrainSignal)malloc(_layer->_number_of_neuron * sizeof(BrainDouble));
-
-        memset(_layer->_out, 0, _layer->_number_of_neuron * sizeof(BrainDouble));
-
-        for (index = 0; index < _layer->_number_of_neuron; ++index)
+        if (_layer->_number_of_neuron > 0)
         {
-            neuron_context = get_node_with_name_and_index(context, "neuron", index);
+            BrainInt index = 0;
+            Context neuron_context;
 
-            if (neuron_context)
+            _layer->_neurons = (BrainNeuron *)malloc(_layer->_number_of_neuron * sizeof(BrainNeuron));
+            _layer->_out     = (BrainSignal)malloc(_layer->_number_of_neuron * sizeof(BrainDouble));
+
+            memset(_layer->_out, 0, _layer->_number_of_neuron * sizeof(BrainDouble));
+
+            for (index = 0; index < _layer->_number_of_neuron; ++index)
             {
-                _layer->_neurons[index] = new_neuron_from_context(neuron_context, &(_layer->_out[index]));
+                neuron_context = get_node_with_name_and_index(context, "neuron", index);
+
+                if (neuron_context)
+                {
+                    _layer->_neurons[index] = new_neuron_from_context(neuron_context, &(_layer->_out[index]));
+                }
             }
         }
+
+        return _layer;
     }
 
-    return _layer;
+    return NULL;
 }
 
 BrainSignal
@@ -121,14 +123,13 @@ get_layer_number_of_neuron(BrainLayer layer)
 void
 update_layer_weight(BrainLayer layer)
 {
-    BrainInt j = 0;
-    BrainNeuron pNeuron = NULL;
-
     if (layer != NULL)
     {
+        BrainInt j = 0;
+
         for (j = 0; j < get_layer_number_of_neuron(layer); ++j)
         {
-            pNeuron = get_layer_neuron(layer, j);
+            BrainNeuron pNeuron = get_layer_neuron(layer, j);
 
             if (pNeuron)
             {
@@ -141,9 +142,10 @@ update_layer_weight(BrainLayer layer)
 void
 dump_layer(BrainLayer layer, const BrainInt layer_idx, FILE* file)
 {
-    BrainInt i;
     if (layer && file)
     {
+        BrainInt i;
+
         for (i = 0; i < layer->_number_of_neuron; ++i)
         {
             dump_neuron(layer->_neurons[i], layer_idx, i, file);

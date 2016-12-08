@@ -62,7 +62,7 @@ co_tangeant_derivative(const BrainDouble value)
 static BrainDouble
 softplus(const BrainDouble value)
 {
-    return log(1 + exp(value));
+    return log(1.0 + exp(value));
 }
 
 static BrainDouble
@@ -132,10 +132,10 @@ derivative(const BrainActivationType type)
 BrainActivationType
 get_activation_type(BrainString activation_type_name)
 {
-    BrainUint i = 0;
-
     if (activation_type_name)
     {
+        BrainInt i = 0;
+
         for (i = First_Activation; i <= Last_Activation; ++i)
         {
             if (i != Invalid && !strcmp(activation_name[i - First_Activation - 1], activation_type_name))

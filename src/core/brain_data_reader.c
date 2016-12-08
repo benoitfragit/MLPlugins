@@ -22,14 +22,15 @@ get_data_next_random_subset_index(const BrainInt* subset,
                              const BrainInt length,
                              const BrainInt max_index)
 {
-    BrainBool is_already_in_subset = BRAIN_FALSE;
-    BrainInt i = 0;
-    BrainInt random_number = -1;
+    BrainInt  random_number = -1;
 
     if (subset && length > 0 && 0 < max_index)
     {
+        BrainBool is_already_in_subset = BRAIN_FALSE;
+
         do
         {
+            BrainInt i = 0;
             random_number = (int)(rand() % max_index);
 
             is_already_in_subset = BRAIN_FALSE;
@@ -185,10 +186,10 @@ new_data_from_context(Context context)
 void
 delete_data(BrainData data)
 {
-    BrainInt i = 0;
-
     if (data)
     {
+        BrainInt i = 0;
+
         if (data->_signals)
         {
             for (i = 0; i < data->_number_of_signal; ++i)

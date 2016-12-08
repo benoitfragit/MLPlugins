@@ -89,14 +89,13 @@ node_get_double(Context node, const char* key, const double _default)
 
     if (res)
     {
-        sscanf((char *)res, "%lf", &value);
+        value = atof((const char*)res);
 
         xmlFree(res);
     }
 
     return value;
 }
-
 
 int
 node_get_int(Context node, const char* key, const int _default)
@@ -106,7 +105,7 @@ node_get_int(Context node, const char* key, const int _default)
 
     if (res)
     {
-        sscanf((char *)res, "%d", &value);
+        value = atoi((const char*)res);
 
         xmlFree(res);
     }
