@@ -49,15 +49,13 @@ backpropagate_output_layer(BrainNetwork network,
 
                 if (oNeuron != NULL)
                 {
-                    append_neuron_delta(oNeuron, loss);
+                    set_neuron_delta(oNeuron, loss);
                 }
-
-                error += loss / 2.0;
             }
         }
     }
 
-    return error;
+    return (error * 0.5);
 }
 
 static void
@@ -83,6 +81,7 @@ backpropagate_hidden_layer(BrainNetwork network, const BrainInt layer_index)
                 if (current_neuron != NULL)
                 {
                     BrainInt j = 0;
+                    BrainDouble delta = 0;
 
                     //append regular weight delta
                     for (j = 0; j < next_number_of_neuron; ++j)
@@ -91,13 +90,11 @@ backpropagate_hidden_layer(BrainNetwork network, const BrainInt layer_index)
 
                         if (next_neuron != NULL)
                         {
-                            const BrainDouble weighted_delta = get_neuron_weighted_delta(next_neuron, i);
-                            append_neuron_delta(current_neuron, weighted_delta);
+                            delta += get_neuron_weighted_delta(next_neuron, i);
                         }
                     }
 
-                    //append bias delta
-                    append_neuron_delta(current_neuron, get_neuron_weight(current_neuron, current_number_of_neuron) * get_neuron_bias(current_neuron));
+                    set_neuron_delta(current_neuron, delta);
                 }
             }
         }

@@ -3,13 +3,13 @@
 struct Neuron
 {
     BrainSignal  _in;
-    BrainDouble  _bias;
-    BrainDouble* _w;
+    BrainWeight  _w;
     BrainDouble* _out;
+    BrainDouble* _correction;
+    BrainDouble  _bias;
     BrainDouble  _learning_rate;
     BrainDouble  _inertial_factor;
     BrainDouble  _delta;
-    BrainDouble* _correction;
     PtrFunc      _activation;
     PtrFunc      _derivative;
     BrainInt     _number_of_input;
@@ -46,11 +46,11 @@ get_neuron_weighted_delta(BrainNeuron neuron, const BrainInt index)
 }
 
 void
-append_neuron_delta(BrainNeuron neuron, const BrainDouble delta)
+set_neuron_delta(BrainNeuron neuron, const BrainDouble delta)
 {
     if (neuron != NULL)
     {
-        neuron->_delta += neuron->_derivative(*(neuron->_out)) * delta;
+        neuron->_delta = neuron->_derivative(*(neuron->_out)) * delta;
     }
 }
 
@@ -175,7 +175,7 @@ new_neuron_from_context(Context context, BrainDouble* out)
         _neuron->_delta           = 0.0;
         _neuron->_bias            = 1.0;
         _neuron->_number_of_input = node_get_int(context, "input", 0);
-        _neuron->_w               = (BrainDouble *)calloc(_neuron->_number_of_input + 1, sizeof(BrainDouble));
+        _neuron->_w               = (BrainWeight)calloc(_neuron->_number_of_input + 1, sizeof(BrainDouble));
         _neuron->_correction      = (BrainDouble *)calloc(_neuron->_number_of_input + 1, sizeof(BrainDouble)) ;
 
          buffer = (BrainChar *)node_get_prop(context, "activation-type");
