@@ -112,16 +112,16 @@ new_data_from_context(Context context)
 
     srand(time(NULL));
 
-    _data = (BrainData)malloc(sizeof(Data));
+    _data = (BrainData)calloc(1, sizeof(Data));
     _data->_number_of_signal   = get_number_of_node_with_name(context, "signal");
     _data->_signal_length      = node_get_int(context, "signal-length", 0);
     _data->_observation_length = node_get_int(context, "observation-length", 0);
 
-    _data->_signals            = (BrainSignal *)malloc(_data->_number_of_signal * sizeof(BrainSignal));
-    _data->_observations       = (BrainSignal *)malloc(_data->_number_of_signal * sizeof(BrainSignal));
+    _data->_signals            = (BrainSignal *)calloc(_data->_number_of_signal, sizeof(BrainSignal));
+    _data->_observations       = (BrainSignal *)calloc(_data->_number_of_signal, sizeof(BrainSignal));
 
     _data->_subset_length      = (BrainInt)(_data->_number_of_signal / 2);
-    _data->_subset             = (BrainInt *)malloc(_data->_subset_length * sizeof(BrainInt));
+    _data->_subset             = (BrainInt *)calloc(_data->_subset_length, sizeof(BrainInt));
 
     BRAIN_INFO("Number of signal : %d, signal length : %d", _data->_number_of_signal,
                                                             _data->_signal_length);
@@ -132,8 +132,8 @@ new_data_from_context(Context context)
 
         if (signal_context)
         {
-            _data->_signals[i]      = (BrainSignal)malloc(_data->_signal_length * sizeof(BrainDouble));
-            _data->_observations[i] = (BrainSignal)malloc(_data->_observation_length * sizeof(BrainDouble));
+            _data->_signals[i]      = (BrainSignal)calloc(_data->_signal_length, sizeof(BrainDouble));
+            _data->_observations[i] = (BrainSignal)calloc(_data->_observation_length, sizeof(BrainDouble));
 
             buffer = (BrainChar *)node_get_prop(signal_context, "input");
             part = strtok(buffer, ", ");

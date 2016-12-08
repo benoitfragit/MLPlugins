@@ -187,7 +187,7 @@ new_network_from_context(Context context)
     {
         srand(time(NULL));
 
-        BrainNetwork _network      = (BrainNetwork)malloc(sizeof(Network));
+        BrainNetwork _network      = (BrainNetwork)calloc(1, sizeof(Network));
         _network->_number_of_layer = get_number_of_node_with_name(context, "layer");
 
         if (_network->_number_of_layer)
@@ -196,7 +196,7 @@ new_network_from_context(Context context)
             BrainLayer last_layer = NULL;
             const BrainInt last_layer_index = _network->_number_of_layer - 1;
 
-            _network->_layers = (BrainLayer *)malloc(_network->_number_of_layer * sizeof(BrainLayer));
+            _network->_layers = (BrainLayer *)calloc(_network->_number_of_layer, sizeof(BrainLayer));
 
             for (index = 0; index < _network->_number_of_layer; ++index)
             {

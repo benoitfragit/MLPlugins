@@ -2,18 +2,17 @@
 
 struct Neuron
 {
-    BrainSignal         _in;
-    BrainDouble         _bias;
-    BrainDouble*        _w;
-    BrainDouble*        _out;
-    BrainDouble         _learning_rate;
-    BrainDouble         _inertial_factor;
-    BrainDouble         _delta;
-    BrainDouble*        _correction;
-    PtrFunc             _activation;
-    PtrFunc             _derivative;
-    BrainInt           _number_of_input;
-    BrainActivationType _activation_type;
+    BrainSignal  _in;
+    BrainDouble  _bias;
+    BrainDouble* _w;
+    BrainDouble* _out;
+    BrainDouble  _learning_rate;
+    BrainDouble  _inertial_factor;
+    BrainDouble  _delta;
+    BrainDouble* _correction;
+    PtrFunc      _activation;
+    PtrFunc      _derivative;
+    BrainInt     _number_of_input;
 } Neuron;
 
 BrainDouble
@@ -161,44 +160,42 @@ delete_neuron(BrainNeuron neuron)
 BrainNeuron
 new_neuron_from_context(Context context, BrainDouble* out)
 {
-    BrainInt    index = 0;
-    BrainDouble random_value_limit = 0.0;
-    BrainChar*  buffer = NULL;
-    BrainNeuron _neuron = NULL;
-
-    if (!context || !is_node_with_name(context, "neuron") || out == NULL)
+    if (context && is_node_with_name(context, "neuron") && out != NULL)
     {
-        return NULL;
+        BrainInt    index = 0;
+        BrainDouble random_value_limit = 0.0;
+        BrainChar*  buffer = NULL;
+        BrainActivationType activation_type = Invalid;
+
+        BrainNeuron _neuron       = (BrainNeuron)calloc(1, sizeof(Neuron));
+
+        _neuron->_learning_rate   = node_get_double(context, "learning-rate", 0.0);
+        _neuron->_inertial_factor = node_get_double(context, "inertial-factor", 0.0);
+        _neuron->_out             = out;
+        _neuron->_delta           = 0.0;
+        _neuron->_bias            = 1.0;
+        _neuron->_number_of_input = node_get_int(context, "input", 0);
+        _neuron->_w               = (BrainDouble *)calloc(_neuron->_number_of_input + 1, sizeof(BrainDouble));
+        _neuron->_correction      = (BrainDouble *)calloc(_neuron->_number_of_input + 1, sizeof(BrainDouble)) ;
+
+         buffer = (BrainChar *)node_get_prop(context, "activation-type");
+
+        activation_type      = get_activation_type(buffer);
+        _neuron->_activation = activation(activation_type);
+        _neuron->_derivative = derivative(activation_type);
+        random_value_limit   = 1.0/(BrainDouble)(_neuron->_number_of_input);
+
+        for (index = 0; index < _neuron->_number_of_input + 1; ++index)
+        {
+            _neuron->_w[index] = (BrainDouble)rand() / (BrainDouble)RAND_MAX * 2.0 * random_value_limit - random_value_limit;
+        }
+
+        free(buffer);
+
+        return _neuron;
     }
 
-    _neuron                   = (BrainNeuron)malloc(sizeof(Neuron));
-    _neuron->_learning_rate   = node_get_double(context, "learning-rate", 0.0);
-    _neuron->_inertial_factor = node_get_double(context, "inertial-factor", 0.0);
-    _neuron->_out             = out;
-    _neuron->_delta           = 0.0;
-    _neuron->_bias            = 1.0;
-    _neuron->_number_of_input = node_get_int(context, "input", 0);
-    _neuron->_w               = (BrainDouble *)malloc((_neuron->_number_of_input + 1) * sizeof(BrainDouble));
-    _neuron->_correction      = (BrainDouble *)malloc((_neuron->_number_of_input + 1) * sizeof(BrainDouble)) ;
-
-     buffer = (BrainChar *)node_get_prop(context, "activation-type");
-
-    _neuron->_activation_type = get_activation_type(buffer);
-    _neuron->_activation      = activation(_neuron->_activation_type);
-    _neuron->_derivative      = derivative(_neuron->_activation_type);
-
-    memset(_neuron->_correction, 0, (_neuron->_number_of_input + 1) * sizeof(BrainDouble));
-
-    random_value_limit = 1.0/(BrainDouble)(_neuron->_number_of_input);
-
-    for (index = 0; index < _neuron->_number_of_input + 1; ++index)
-    {
-        _neuron->_w[index] = (BrainDouble)rand() / (BrainDouble)RAND_MAX * 2.0 * random_value_limit - random_value_limit;
-    }
-
-    free(buffer);
-
-    return _neuron;
+    return NULL;
 }
 
 void

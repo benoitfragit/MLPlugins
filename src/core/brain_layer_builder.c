@@ -68,7 +68,7 @@ new_layer_from_context(Context context)
     {
         BrainLayer _layer = NULL;
 
-        _layer                    = (BrainLayer)malloc(sizeof(Layer));
+        _layer                    = (BrainLayer)calloc(1, sizeof(Layer));
         _layer->_number_of_neuron = get_number_of_node_with_name(context, "neuron");
 
         if (_layer->_number_of_neuron > 0)
@@ -76,8 +76,8 @@ new_layer_from_context(Context context)
             BrainInt index = 0;
             Context neuron_context;
 
-            _layer->_neurons = (BrainNeuron *)malloc(_layer->_number_of_neuron * sizeof(BrainNeuron));
-            _layer->_out     = (BrainSignal)malloc(_layer->_number_of_neuron * sizeof(BrainDouble));
+            _layer->_neurons = (BrainNeuron *)calloc(_layer->_number_of_neuron, sizeof(BrainNeuron));
+            _layer->_out     = (BrainSignal)calloc(_layer->_number_of_neuron, sizeof(BrainDouble));
 
             memset(_layer->_out, 0, _layer->_number_of_neuron * sizeof(BrainDouble));
 
