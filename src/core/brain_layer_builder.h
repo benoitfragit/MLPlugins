@@ -5,13 +5,20 @@
 #include "brain_xml_utils.h"
 
 BrainLayer  new_layer_from_context    (Context context);
-BrainNeuron get_layer_neuron          (BrainLayer layer, const BrainInt index);
-BrainInt    get_layer_number_of_neuron(BrainLayer layer);
-BrainSignal get_layer_output          (BrainLayer layer);
+BrainNeuron get_layer_neuron          (const BrainLayer layer,
+                                       const BrainInt index);
+BrainInt    get_layer_number_of_neuron(const BrainLayer layer);
+BrainSignal get_layer_output          (const BrainLayer layer);
+BrainDouble get_layer_weighted_delta  (const BrainLayer layer,
+                                       const BrainInt input_index);
 void        delete_layer              (BrainLayer layer);
-void        set_layer_input           (BrainLayer layer, const BrainInt number_of_inputs, const BrainSignal in);
-void        dump_layer                (BrainLayer layer, const BrainInt layer_idx, FILE* file);
+void        set_layer_input           (BrainLayer layer,
+                                       const BrainInt number_of_inputs,
+                                       const BrainSignal in);
+void        dump_layer                (const BrainLayer layer,
+                                       const BrainInt layer_idx,
+                                       FILE* file);
 void        update_layer_weight       (BrainLayer layer);
-
+void        reset_layer_delta         (BrainLayer layer);
 
 #endif /* BRAIN_LAYER_BUILDER_H */

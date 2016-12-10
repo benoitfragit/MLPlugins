@@ -4,13 +4,16 @@ struct Layer
 {
     BrainNeuron* _neurons;
     BrainSignal  _out;
+    BrainWeight  _weighted_deltas;
     BrainInt     _number_of_neuron;
 } Layer;
 
 void
-set_layer_input(BrainLayer layer, const BrainInt number_of_inputs, const BrainSignal in)
+set_layer_input(BrainLayer layer,
+                const BrainInt number_of_inputs,
+                const BrainSignal in)
 {
-    if (layer)
+    if (layer != NULL)
     {
         BrainInt j = 0;
 
@@ -23,11 +26,12 @@ set_layer_input(BrainLayer layer, const BrainInt number_of_inputs, const BrainSi
 }
 
 BrainNeuron
-get_layer_neuron(BrainLayer layer, const BrainInt neuron_index)
+get_layer_neuron(const BrainLayer layer,
+                 const BrainInt neuron_index)
 {
-    if (layer != NULL
-    &&  0 <= neuron_index
-    && neuron_index < layer->_number_of_neuron)
+    if ((layer != NULL)
+    &&  (0 <= neuron_index)
+    &&  (neuron_index < layer->_number_of_neuron))
     {
         return layer->_neurons[neuron_index];
     }
@@ -38,7 +42,7 @@ get_layer_neuron(BrainLayer layer, const BrainInt neuron_index)
 void
 delete_layer(BrainLayer layer)
 {
-    if (layer)
+    if (layer != NULL)
     {
         if (layer->_neurons)
         {
@@ -55,6 +59,11 @@ delete_layer(BrainLayer layer)
         if (layer->_out)
         {
             free(layer->_out);
+        }
+
+        if (layer->_weighted_deltas)
+        {
+            free(layer->_weighted_deltas);
         }
 
         free(layer);
@@ -76,10 +85,9 @@ new_layer_from_context(Context context)
             BrainInt index = 0;
             Context neuron_context;
 
-            _layer->_neurons = (BrainNeuron *)calloc(_layer->_number_of_neuron, sizeof(BrainNeuron));
-            _layer->_out     = (BrainSignal)calloc(_layer->_number_of_neuron, sizeof(BrainDouble));
-
-            memset(_layer->_out, 0, _layer->_number_of_neuron * sizeof(BrainDouble));
+            _layer->_neurons         = (BrainNeuron *)calloc(_layer->_number_of_neuron, sizeof(BrainNeuron));
+            _layer->_out             = (BrainSignal)calloc(_layer->_number_of_neuron, sizeof(BrainDouble));
+            _layer->_weighted_deltas = (BrainWeight)calloc(_layer->_number_of_neuron, sizeof(BrainDouble));
 
             for (index = 0; index < _layer->_number_of_neuron; ++index)
             {
@@ -87,7 +95,9 @@ new_layer_from_context(Context context)
 
                 if (neuron_context)
                 {
-                    _layer->_neurons[index] = new_neuron_from_context(neuron_context, &(_layer->_out[index]));
+                    _layer->_neurons[index] = new_neuron_from_context(neuron_context,
+                                                                      &(_layer->_out[index]),
+                                                                      _layer->_weighted_deltas);
                 }
             }
         }
@@ -99,7 +109,7 @@ new_layer_from_context(Context context)
 }
 
 BrainSignal
-get_layer_output(BrainLayer layer)
+get_layer_output(const BrainLayer layer)
 {
     if (layer != NULL)
     {
@@ -110,7 +120,7 @@ get_layer_output(BrainLayer layer)
 }
 
 BrainInt
-get_layer_number_of_neuron(BrainLayer layer)
+get_layer_number_of_neuron(const BrainLayer layer)
 {
     if (layer)
     {
@@ -140,15 +150,42 @@ update_layer_weight(BrainLayer layer)
 }
 
 void
-dump_layer(BrainLayer layer, const BrainInt layer_idx, FILE* file)
+dump_layer(const BrainLayer layer,
+           const BrainInt layer_idx,
+           FILE* file)
 {
-    if (layer && file)
+    if ((layer != NULL) && file)
     {
+        const BrainInt number_of_neurons = layer->_number_of_neuron;
         BrainInt i;
 
-        for (i = 0; i < layer->_number_of_neuron; ++i)
+        for (i = 0; i < number_of_neurons; ++i)
         {
             dump_neuron(layer->_neurons[i], layer_idx, i, file);
         }
     }
+}
+
+void
+reset_layer_delta(BrainLayer layer)
+{
+    if (layer != NULL && (layer->_weighted_deltas != NULL))
+    {
+        memset(layer->_weighted_deltas, 0, layer->_number_of_neuron * sizeof(BrainDouble));
+    }
+}
+
+BrainDouble
+get_layer_weighted_delta(const BrainLayer layer,
+                         const BrainInt input_index)
+{
+    if ((layer != NULL)
+    &&  (layer->_weighted_deltas != NULL)
+    &&  (0 <= input_index)
+    &&  (input_index < layer->_number_of_neuron))
+    {
+        return layer->_weighted_deltas[input_index];
+    }
+
+    return 0.0;
 }
