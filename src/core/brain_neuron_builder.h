@@ -17,23 +17,23 @@ void        delete_neuron              (BrainNeuron neuron);
 void        update_neuron              (BrainNeuron neuron);
 void        activate_neuron            (BrainNeuron neuron);
 void        dump_neuron                (const BrainNeuron neuron,
-                                        const BrainInt layer_idx,
-                                        const BrainInt neuron_idx,
+                                        const BrainUint layer_idx,
+                                        const BrainUint neuron_idx,
                                         FILE* file);
 void        set_neuron_weight          (BrainNeuron neuron,
-                                        const BrainInt index,
+                                        const BrainUint index,
                                         const BrainDouble weight);
 void        set_neuron_input           (BrainNeuron neuron,
-                                        const BrainInt number_of_inputs,
+                                        const BrainUint number_of_inputs,
                                         const BrainSignal in);
 void        set_neuron_delta           (BrainNeuron neuron,
                                         const BrainDouble delta);
 BrainDouble get_neuron_input           (const BrainNeuron neuron,
-                                        const BrainInt input_index);
+                                        const BrainUint input_index);
 BrainDouble get_neuron_output          (const BrainNeuron neuron);
 BrainDouble get_neuron_weight          (const BrainNeuron neuron,
-                                        const BrainInt weight_index);
+                                        const BrainUint weight_index);
 BrainDouble get_neuron_bias            (const BrainNeuron neuron);
-BrainInt    get_neuron_number_of_inputs(const BrainNeuron neuron);
+BrainUint   get_neuron_number_of_inputs(const BrainNeuron neuron);
 
 #endif /* BRAIN_NEURON_BUILDER_H */
