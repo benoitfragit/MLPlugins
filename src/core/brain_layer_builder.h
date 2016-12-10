@@ -7,7 +7,7 @@
 BrainLayer  new_layer_from_context    (Context context);
 BrainNeuron get_layer_neuron          (const BrainLayer layer,
                                        const BrainUint index);
-BrainUint    get_layer_number_of_neuron(const BrainLayer layer);
+BrainUint   get_layer_number_of_neuron(const BrainLayer layer);
 BrainSignal get_layer_output          (const BrainLayer layer);
 BrainDouble get_layer_weighted_delta  (const BrainLayer layer,
                                        const BrainUint input_index);

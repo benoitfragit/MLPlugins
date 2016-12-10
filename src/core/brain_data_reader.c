@@ -88,8 +88,7 @@ static BrainInt
 get_data_subset_index(const BrainData data,
                       const BrainUint subset_index)
 {
-    if (data
-    && (0 != subset_index)
+    if ((data != NULL)
     && (subset_index < data->_subset_length))
     {
         return data->_subset[subset_index];
@@ -231,7 +230,6 @@ get_data_output(const BrainData data,
                 const BrainUint index)
 {
     if ((data != NULL)
-    &&  (0 != index)
     &&  (index < data->_number_of_signal))
     {
         return data->_observations[index];
@@ -245,7 +243,6 @@ get_data_input(const BrainData data,
                const BrainUint index)
 {
     if ((data != NULL)
-    &&  (0 != index)
     &&  (index < data->_number_of_signal))
     {
         return data->_signals[index];
@@ -253,7 +250,6 @@ get_data_input(const BrainData data,
 
     return NULL;
 }
-
 
 BrainUint
 get_data_random_subset_index(const BrainData data)

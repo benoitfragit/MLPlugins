@@ -131,10 +131,9 @@ BrainLayer
 get_network_layer(const BrainNetwork network,
                   const BrainUint layer_index)
 {
-    if (network != NULL
-    && network->_layers != NULL
-    && 0 != layer_index
-    && layer_index < network->_number_of_layer)
+    if ((network != NULL)
+    &&  (network->_layers != NULL)
+    &&  (layer_index < network->_number_of_layer))
     {
         return network->_layers[layer_index];
     }
@@ -278,7 +277,7 @@ initialize_network_from_context(BrainNetwork network,
                 if (neuron != NULL)
                 {
                     const BrainUint number_of_inputs = get_neuron_number_of_inputs(neuron);
-                    if (0 != input_idx && input_idx < number_of_inputs)
+                    if (input_idx < number_of_inputs)
                     {
                         set_neuron_weight(neuron, input_idx, weight);
                     }
@@ -332,7 +331,7 @@ train(BrainNetwork network,
             error = backpropagate(network, get_data_output_length(data), get_data_output(data, index));
 
             ++iteration;
-        } while ((iteration < max_iter) && (target_error > error));
+        } while ((iteration < max_iter) && (error > target_error));
     }
 
     if (error > target_error)

@@ -5,8 +5,8 @@ struct Neuron
     BrainSignal  _in;
     BrainWeight  _w;
     BrainWeight  _weighted_deltas;
+    BrainWeight  _correction;
     BrainDouble* _out;
-    BrainDouble* _correction;
     BrainDouble  _out_derivative;
     BrainDouble  _bias;
     BrainDouble  _learning_rate;
@@ -75,7 +75,6 @@ get_neuron_weight(const BrainNeuron neuron,
                   const BrainUint weight_index)
 {
     if (neuron != NULL
-    && 0 != weight_index
     && weight_index < neuron->_number_of_input + 1)
     {
         return neuron->_w[weight_index];
@@ -89,7 +88,6 @@ get_neuron_input(const BrainNeuron neuron,
                  const BrainUint input_index)
 {
     if (neuron != NULL
-    && 0 != input_index
     && input_index < neuron->_number_of_input)
     {
         return neuron->_in[input_index];
@@ -187,7 +185,7 @@ new_neuron_from_context(Context context,
         _neuron->_bias            = 1.0;
         _neuron->_number_of_input = node_get_int(context, "input", 0);
         _neuron->_w               = (BrainWeight)calloc(_neuron->_number_of_input + 1, sizeof(BrainDouble));
-        _neuron->_correction      = (BrainDouble *)calloc(_neuron->_number_of_input + 1, sizeof(BrainDouble)) ;
+        _neuron->_correction      = (BrainWeight)calloc(_neuron->_number_of_input + 1, sizeof(BrainDouble)) ;
         _neuron->_weighted_deltas = weighted_delta;
          buffer                   = (BrainChar *)node_get_prop(context, "activation-type");
 
@@ -245,7 +243,6 @@ set_neuron_weight(BrainNeuron neuron,
                   const BrainDouble weight)
 {
     if ((neuron != NULL)
-    &&  (0 != index)
     &&  (index < neuron->_number_of_input + 1))
     {
         neuron->_w[index] = weight;

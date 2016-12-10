@@ -30,7 +30,6 @@ get_layer_neuron(const BrainLayer layer,
                  const BrainUint neuron_index)
 {
     if ((layer != NULL)
-    &&  (0 != neuron_index)
     &&  (neuron_index < layer->_number_of_neuron))
     {
         return layer->_neurons[neuron_index];
@@ -183,7 +182,6 @@ get_layer_weighted_delta(const BrainLayer layer,
 {
     if ((layer != NULL)
     &&  (layer->_weighted_deltas != NULL)
-    &&  (0 != input_index)
     &&  (input_index < layer->_number_of_neuron))
     {
         return layer->_weighted_deltas[input_index];
