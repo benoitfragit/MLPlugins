@@ -24,7 +24,7 @@
         <xs:sequence>
             <xs:element name="layer"   type="LayerType"   minOccurs="1" maxOccurs="unbounded"/>
         </xs:sequence>
-        <xd:attribute name="costfunction-type" type="xs:string" use="optional"/>
+        <xs:attribute name="cost-function-type" type="xs:string" use="optional"/>
     </xs:complexType>
 
     <xs:element name="network" type="NetworkType"/>

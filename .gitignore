@@ -38,3 +38,5 @@ build
 .cproject
 .settings
 .metadata
+
+.geanyproj
