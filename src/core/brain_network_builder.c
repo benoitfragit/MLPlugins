@@ -1,10 +1,13 @@
 #include "brain_network_builder.h"
+#include "brain_costfunction.h"
 
 struct Network
 {
     BrainLayer* _layers;
     BrainSignal _output;
     BrainUint   _number_of_layer;
+    CostPtrFunc _cost_function;
+    CostPtrFunc _cost_function_derivative;
 } Network;
 
 static void
@@ -47,10 +50,10 @@ backpropagate_output_layer(BrainNetwork network,
 
             for (output_index = 0; output_index < number_of_output; ++output_index)
             {
-                const BrainDouble loss = output[output_index] - desired[output_index];
+                const BrainDouble loss = network->_cost_function_derivative(output[output_index], desired[output_index]);
                 BrainNeuron oNeuron = get_layer_neuron(output_layer, output_index);
 
-                error += loss * loss;
+                error += network->_cost_function(output[output_index], desired[output_index]);
 
                 if (oNeuron != NULL)
                 {
@@ -60,7 +63,7 @@ backpropagate_output_layer(BrainNetwork network,
         }
     }
 
-    return (error * 0.5);
+    return error;
 }
 
 static void
@@ -181,10 +184,23 @@ new_network_from_context(Context context)
 {
     if (context && is_node_with_name(context, "network"))
     {
-        srand(time(NULL));
+        BrainChar* buffer = NULL;
+        BrainCostFunctionType cost_function_type = Invalid_CostFunction;
 
         BrainNetwork _network      = (BrainNetwork)calloc(1, sizeof(Network));
         _network->_number_of_layer = get_number_of_node_with_name(context, "layer");
+        buffer                     = (BrainChar *)node_get_prop(context, "cost-function-type");
+
+        cost_function_type                  = get_cost_function_type(buffer);
+        _network->_cost_function            = get_cost_function(cost_function_type);
+        _network->_cost_function_derivative = get_cost_function_derivative(cost_function_type);
+
+        if (buffer != NULL)
+        {
+            free(buffer);
+        }
+
+        srand(time(NULL));
 
         if (_network->_number_of_layer != 0)
         {

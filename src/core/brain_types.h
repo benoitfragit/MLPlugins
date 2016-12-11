@@ -22,7 +22,7 @@ typedef enum BrainResult
 
 typedef enum BrainActivationType
 {
-    Invalid,
+    Invalid_Activation,
     Identity,
     Sigmoid,
     TanH,
@@ -30,12 +30,23 @@ typedef enum BrainActivationType
     SoftPlus,
     Sinusoid,
 
-    First_Activation = Invalid,
-    Last_Activation = Sinusoid
+    First_Activation = Invalid_Activation,
+    Last_Activation  = Sinusoid
 } BrainActivationType;
 
-typedef BrainDouble (*PtrFunc)(const BrainDouble value);
+typedef enum BrainCostFunctionType
+{
+    Invalid_CostFunction,
+    Quadratic,
+    CrossEntropy,
 
+    First_CostFunction = Invalid_CostFunction,
+    Last_CostFunction  = CrossEntropy
+} BrainCostFunctionType;
+
+typedef BrainDouble (*PtrFunc)(const BrainDouble value);
+typedef BrainDouble (*CostPtrFunc)(const BrainDouble output,
+                                   const BrainDouble desired);
 typedef struct Data*    BrainData;
 typedef struct Neuron*  BrainNeuron;
 typedef struct Layer*   BrainLayer;

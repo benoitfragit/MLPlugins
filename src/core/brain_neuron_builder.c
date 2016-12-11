@@ -113,9 +113,6 @@ activate_neuron(BrainNeuron neuron)
 
         *(neuron->_out) = neuron->_activation(sum);
         neuron->_out_derivative = neuron->_derivative(*(neuron->_out));
-
-        //*(neuron->_out) = (*(neuron->_out) > 0) - (*(neuron->_out) < 0);
-
     }
 }
 
@@ -174,7 +171,7 @@ new_neuron_from_context(Context context,
         BrainUint    index = 0;
         BrainDouble random_value_limit = 0.0;
         BrainChar*  buffer = NULL;
-        BrainActivationType activation_type = Invalid;
+        BrainActivationType activation_type = Invalid_Activation;
 
         BrainNeuron _neuron       = (BrainNeuron)calloc(1, sizeof(Neuron));
 

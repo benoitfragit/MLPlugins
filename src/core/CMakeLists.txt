@@ -18,6 +18,7 @@ set(SOURCES brain_network_builder.c
             brain_layer_builder.c
             brain_neuron_builder.c
             brain_activation.c
+            brain_costfunction.c
             brain_data_reader.c)
 
 #Generate the shared library from the sources
