@@ -3,12 +3,12 @@
 #include <string.h>
 
 static BrainString activation_name[] = {
-    "identity",
-    "sigmoid",
-    "tanh",
-    "arctan",
-    "softplus",
-    "sinus"
+    "Identity",
+    "Sigmoid",
+    "TanH",
+    "ArcTan",
+    "SoftPlus",
+    "Sinus"
 };
 
 static BrainDouble

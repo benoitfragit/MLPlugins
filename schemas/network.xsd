@@ -1,17 +1,32 @@
 <?xml version="1.0"?>
 <xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema'>
+    <xs:simpleType name="CostFunctionType">
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="Quadratic"/>
+            <xs:enumeration value="CrossEntropy"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="ActivationFunctionType">
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="Identity"/>
+            <xs:enumeration value="Sigmoid"/>
+            <xs:enumeration value="TanH"/>
+            <xs:enumeration value="ArcTan"/>
+            <xs:enumeration value="SoftPlus"/>
+            <xs:enumeration value="Sinus"/>
+        </xs:restriction>
+    </xs:simpleType>
+
     <xs:complexType name="WeightType">
         <xs:attribute name="value" type="xs:decimal" use="required"/>
     </xs:complexType>
 
     <xs:complexType name="NeuronType">
-        <xs:sequence minOccurs="0" maxOccurs="unbounded">
-            <xs:element name="weight" type="WeightType"/>
-        </xs:sequence>
-        <xs:attribute name="input"           type="xs:integer" use="required"/>
-        <xs:attribute name="learning-rate"   type="xs:decimal" use="optional"/>
-        <xs:attribute name="inertial-factor" type="xs:decimal" use="optional"/>
-        <xs:attribute name="activation-type" type="xs:string"  use="optional"/>
+        <xs:attribute name="input"                    type="xs:integer"             use="required"/>
+        <xs:attribute name="learning-rate"            type="xs:decimal"             use="optional"/>
+        <xs:attribute name="inertial-factor"          type="xs:decimal"             use="optional"/>
+        <xs:attribute name="activation-function-type" type="ActivationFunctionType" use="optional"/>
     </xs:complexType>
 
     <xs:complexType name="LayerType">
@@ -21,10 +36,10 @@
     </xs:complexType>
 
     <xs:complexType name="NetworkType">
-        <xs:sequence>
+        <xs:sequence minOccurs="1" maxOccurs="unbounded">
             <xs:element name="layer"   type="LayerType"   minOccurs="1" maxOccurs="unbounded"/>
         </xs:sequence>
-        <xs:attribute name="cost-function-type" type="xs:string" use="optional"/>
+        <xs:attribute name="cost-function-type" type="CostFunctionType" use="optional"/>
     </xs:complexType>
 
     <xs:element name="network" type="NetworkType"/>

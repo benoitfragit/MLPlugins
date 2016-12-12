@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<network cost-function-type="cross-entropy">
+<network cost-function-type="CrossEntropy">
     <layer>
         <neuron input="2" learning-rate="1.0" inertial-factor="0.0"/>
         <neuron input="2" learning-rate="1.0" inertial-factor="0.0"/>
@@ -11,6 +11,6 @@
     </layer>
     <layer>
         <neuron input="3" learning-rate="1.0" inertial-factor="0.0"/>
-        <neuron input="3" learning-rate="1.0" inertial-factor="0.0" activation-type="sigmoid"/>
+        <neuron input="3" learning-rate="1.0" inertial-factor="0.0" activation-function-type="Sigmoid"/>
     </layer>
 </network>

@@ -4,8 +4,8 @@
 
 static BrainString costfunction_names[] =
 {
-    "quadratic",
-    "cross-entropy"
+    "Quadratic",
+    "CrossEntropy"
 };
 
 static BrainDouble
