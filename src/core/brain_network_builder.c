@@ -109,7 +109,7 @@ backpropagate(BrainNetwork network,
     const BrainUint number_of_layers = get_network_number_of_layer(network);
     const BrainDouble error = backpropagate_output_layer(network, number_of_output, desired);
 
-    for (i = 2; i <= number_of_layers; --i)
+    for (i = 2; i <= number_of_layers; ++i)
     {
         backpropagate_hidden_layer(network, number_of_layers - i);
     }
