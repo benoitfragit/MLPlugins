@@ -13,13 +13,15 @@
 BrainNeuron new_neuron_from_context    (Context context,
                                         BrainDouble* out,
                                         BrainWeight  weighted_deltas);
+void        initialize_neuron_from_context(BrainNeuron neuron,
+                                           Context context);
 void        delete_neuron              (BrainNeuron neuron);
-void        update_neuron              (BrainNeuron neuron);
 void        activate_neuron            (BrainNeuron neuron);
 void        dump_neuron                (const BrainNeuron neuron,
                                         const BrainUint layer_idx,
                                         const BrainUint neuron_idx,
                                         FILE* file);
+
 void        set_neuron_weight          (BrainNeuron neuron,
                                         const BrainUint index,
                                         const BrainDouble weight);
@@ -28,6 +30,8 @@ void        set_neuron_input           (BrainNeuron neuron,
                                         const BrainSignal in);
 void        set_neuron_delta           (BrainNeuron neuron,
                                         const BrainDouble delta);
+void        set_neuron_bias            (BrainNeuron neuron,
+                                        const BrainDouble bias);
 BrainDouble get_neuron_input           (const BrainNeuron neuron,
                                         const BrainUint input_index);
 BrainDouble get_neuron_output          (const BrainNeuron neuron);

@@ -11,6 +11,7 @@ BrainUint   get_layer_number_of_neuron(const BrainLayer layer);
 BrainSignal get_layer_output          (const BrainLayer layer);
 BrainDouble get_layer_weighted_delta  (const BrainLayer layer,
                                        const BrainUint input_index);
+BrainLayer  get_layer_next_layer      (const BrainLayer layer);
 void        delete_layer              (BrainLayer layer);
 void        set_layer_input           (BrainLayer layer,
                                        const BrainUint number_of_inputs,
@@ -18,7 +19,8 @@ void        set_layer_input           (BrainLayer layer,
 void        dump_layer                (const BrainLayer layer,
                                        const BrainUint layer_idx,
                                        FILE* file);
-void        update_layer_weight       (BrainLayer layer);
 void        reset_layer_delta         (BrainLayer layer);
-
+void        set_layer_next_layer      (BrainLayer layer,
+                                       BrainLayer next_layer);
+void        feedforward_layer         (BrainLayer layer);
 #endif /* BRAIN_LAYER_BUILDER_H */

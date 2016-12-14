@@ -6,6 +6,7 @@ struct Layer
     BrainSignal  _out;
     BrainWeight  _weighted_deltas;
     BrainUint    _number_of_neuron;
+    BrainLayer   _next_layer;
 } Layer;
 
 void
@@ -69,6 +70,38 @@ delete_layer(BrainLayer layer)
     }
 }
 
+void
+set_layer_next_layer(BrainLayer layer,
+                     BrainLayer next_layer)
+{
+    if (layer != NULL)
+    {
+        layer->_next_layer = next_layer;
+    }
+}
+
+BrainLayer
+get_layer_next_layer(const BrainLayer layer)
+{
+    if (layer != NULL)
+        return layer->_next_layer;
+
+    return NULL;
+}
+
+void
+feedforward_layer(BrainLayer layer)
+{
+    if (layer != NULL && layer->_next_layer != NULL)
+    {
+        const BrainUint number_of_neurons = get_layer_number_of_neuron(layer);
+
+        set_layer_input(layer->_next_layer,
+                        number_of_neurons,
+                        layer->_out);
+    }
+}
+
 BrainLayer
 new_layer_from_context(Context context)
 {
@@ -77,6 +110,7 @@ new_layer_from_context(Context context)
         BrainLayer _layer = NULL;
 
         _layer                    = (BrainLayer)calloc(1, sizeof(Layer));
+        _layer->_next_layer       = NULL;
         _layer->_number_of_neuron = get_number_of_node_with_name(context, "neuron");
 
         if (0 != _layer->_number_of_neuron)
@@ -127,26 +161,6 @@ get_layer_number_of_neuron(const BrainLayer layer)
     }
 
     return 0;
-}
-
-void
-update_layer_weight(BrainLayer layer)
-{
-    if (layer != NULL)
-    {
-        const BrainUint number_of_neurons = get_layer_number_of_neuron(layer);
-        BrainUint j = 0;
-
-        for (j = 0; j < number_of_neurons; ++j)
-        {
-            BrainNeuron pNeuron = get_layer_neuron(layer, j);
-
-            if (pNeuron != NULL)
-            {
-                update_neuron(pNeuron);
-            }
-        }
-    }
 }
 
 void

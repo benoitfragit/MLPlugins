@@ -10,23 +10,6 @@ struct Network
     CostPtrFunc _cost_function_derivative;
 } Network;
 
-static void
-update_network_weight(BrainNetwork network)
-{
-    BrainUint i;
-    const BrainUint number_of_layers = get_network_number_of_layer(network);
-
-    for (i = 1; i <= number_of_layers ; ++i)
-    {
-        BrainLayer pLayer = get_network_layer(network, number_of_layers - i);
-
-        if (pLayer != NULL)
-        {
-            update_layer_weight(pLayer);
-        }
-    }
-}
-
 static BrainDouble
 backpropagate_output_layer(BrainNetwork network,
                            const BrainUint number_of_output,
@@ -77,7 +60,7 @@ backpropagate_hidden_layer(BrainNetwork network,
     &&  (layer_index < number_of_layers - 1))
     {
         BrainLayer current_layer                = get_network_layer(network, layer_index);
-        const BrainLayer next_layer             = get_network_layer(network, layer_index + 1);
+        const BrainLayer next_layer             = get_layer_next_layer(current_layer);
         const BrainInt current_number_of_neuron = get_layer_number_of_neuron(current_layer);
 
         if (current_layer != NULL && next_layer != NULL)
@@ -113,8 +96,6 @@ backpropagate(BrainNetwork network,
     {
         backpropagate_hidden_layer(network, number_of_layers - i);
     }
-
-    update_network_weight(network);
 
     return error;
 }
@@ -217,6 +198,11 @@ new_network_from_context(Context context)
                 if (subcontext)
                 {
                     _network->_layers[index] = new_layer_from_context(subcontext);
+
+                    if (0 < index && _network->_layers[index] != NULL)
+                    {
+                        set_layer_next_layer(_network->_layers[index - 1], _network->_layers[index]);
+                    }
                 }
             }
 
@@ -272,17 +258,15 @@ initialize_network_from_context(BrainNetwork network,
 {
     if (network != NULL)
     {
-        const BrainUint number_of_weights = get_number_of_node_with_name(context, "weight");
+        const BrainUint number_of_neurons = get_number_of_node_with_name(context, "neuron");
         BrainUint index = 0;
 
-        for (index = 0; index < number_of_weights; ++index)
+        for (index = 0; index < number_of_neurons; ++index)
         {
-            Context subcontext = get_node_with_name_and_index(context, "weight", index);
+            Context subcontext = get_node_with_name_and_index(context, "neuron", index);
 
-            const BrainUint   layer_idx  = node_get_int   (subcontext, "layer",  -1);
-            const BrainUint   neuron_idx = node_get_int   (subcontext, "neuron", -1);
-            const BrainUint   input_idx  = node_get_int   (subcontext, "input",  -1);
-            const BrainDouble weight     = node_get_double(subcontext, "value",  0.0);
+            const BrainUint layer_idx         = node_get_int(subcontext, "layer-index",  -1);
+            const BrainUint neuron_idx        = node_get_int(subcontext, "index",        -1);
 
             BrainLayer layer = get_network_layer(network, layer_idx);
 
@@ -292,11 +276,7 @@ initialize_network_from_context(BrainNetwork network,
 
                 if (neuron != NULL)
                 {
-                    const BrainUint number_of_inputs = get_neuron_number_of_inputs(neuron);
-                    if (input_idx < number_of_inputs)
-                    {
-                        set_neuron_weight(neuron, input_idx, weight);
-                    }
+                    initialize_neuron_from_context(neuron, subcontext);
                 }
             }
         }
@@ -311,12 +291,11 @@ feedforward(BrainNetwork network)
         const BrainUint number_of_layers = get_network_number_of_layer(network);
         BrainUint index = 0;
 
-        for (index = 1; index < number_of_layers; ++index)
+        for (index = 0; index < number_of_layers - 1; ++index)
         {
-            BrainLayer prev = get_network_layer(network, index - 1);
-            BrainLayer next = get_network_layer(network, index);
+            BrainLayer layer = get_network_layer(network, index);
 
-            set_layer_input(next, get_layer_number_of_neuron(prev), get_layer_output(prev));
+            feedforward_layer(layer);
         }
     }
 }

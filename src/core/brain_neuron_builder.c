@@ -5,13 +5,10 @@ struct Neuron
     BrainSignal  _in;
     BrainWeight  _w;
     BrainWeight  _weighted_deltas;
-    BrainWeight  _correction;
     BrainDouble* _out;
     BrainDouble  _out_derivative;
     BrainDouble  _bias;
     BrainDouble  _learning_rate;
-    BrainDouble  _inertial_factor;
-    BrainDouble  _delta;
     PtrFunc      _activation;
     PtrFunc      _derivative;
     BrainUint    _number_of_input;
@@ -43,15 +40,28 @@ set_neuron_delta(BrainNeuron neuron,
 {
     if (neuron != NULL)
     {
-        const BrainUint number_of_inputs = neuron->_number_of_input;
+        const BrainUint   number_of_inputs       = neuron->_number_of_input;
+        const BrainDouble neuron_delta           = neuron->_out_derivative * delta;
+        const BrainDouble neuron_learning_delta  = neuron_delta * neuron->_learning_rate;
         BrainUint i = 0;
 
-        neuron->_delta = neuron->_out_derivative * delta;
+        neuron->_bias -= neuron_learning_delta;
 
         for (i = 0; i < number_of_inputs; ++i)
         {
-            neuron->_weighted_deltas[i] += neuron->_delta * neuron->_w[i];
+            neuron->_weighted_deltas[i] += neuron_delta * neuron->_w[i];
+            neuron->_w[i]               -= (neuron_learning_delta * neuron->_in[i]);
         }
+    }
+}
+
+void
+set_neuron_bias(BrainNeuron neuron,
+                const BrainDouble bias)
+{
+    if (neuron != NULL)
+    {
+        neuron->_bias = bias;
     }
 }
 
@@ -75,7 +85,7 @@ get_neuron_weight(const BrainNeuron neuron,
                   const BrainUint weight_index)
 {
     if (neuron != NULL
-    && weight_index < neuron->_number_of_input + 1)
+    && weight_index < neuron->_number_of_input)
     {
         return neuron->_w[weight_index];
     }
@@ -109,32 +119,10 @@ activate_neuron(BrainNeuron neuron)
             sum += neuron->_in[j] * neuron->_w[j];
         }
 
-        sum += neuron->_w[neuron->_number_of_input] * neuron->_bias;
+        sum += neuron->_bias;
 
         *(neuron->_out) = neuron->_activation(sum);
         neuron->_out_derivative = neuron->_derivative(*(neuron->_out));
-    }
-}
-
-void
-update_neuron(BrainNeuron neuron)
-{
-    if (neuron != NULL)
-    {
-        BrainUint    index     = 0;
-        BrainDouble correction = 0.0;
-
-        for (index = 0; index < neuron->_number_of_input; ++index)
-        {
-            correction = - neuron->_learning_rate * neuron->_delta * neuron->_in[index] + neuron->_inertial_factor * neuron->_correction[index];
-
-            neuron->_w[index] += correction;
-            neuron->_correction[index] = correction;
-        }
-
-        correction = - neuron->_learning_rate * neuron->_delta * neuron->_bias + neuron->_inertial_factor * neuron->_correction[neuron->_number_of_input];
-        neuron->_w[neuron->_number_of_input] += correction;
-        neuron->_correction[neuron->_number_of_input] = correction;
     }
 }
 
@@ -146,11 +134,6 @@ delete_neuron(BrainNeuron neuron)
         if (neuron->_w != NULL)
         {
             free(neuron->_w);
-        }
-
-        if (neuron->_correction != NULL)
-        {
-            free(neuron->_correction);
         }
 
         free(neuron);
@@ -176,25 +159,23 @@ new_neuron_from_context(Context context,
         BrainNeuron _neuron       = (BrainNeuron)calloc(1, sizeof(Neuron));
 
         _neuron->_learning_rate   = node_get_double(context, "learning-rate", 0.0);
-        _neuron->_inertial_factor = node_get_double(context, "inertial-factor", 0.0);
         _neuron->_out             = out;
-        _neuron->_delta           = 0.0;
-        _neuron->_bias            = 1.0;
         _neuron->_number_of_input = node_get_int(context, "input", 0);
-        _neuron->_w               = (BrainWeight)calloc(_neuron->_number_of_input + 1, sizeof(BrainDouble));
-        _neuron->_correction      = (BrainWeight)calloc(_neuron->_number_of_input + 1, sizeof(BrainDouble)) ;
+        _neuron->_w               = (BrainWeight)calloc(_neuron->_number_of_input , sizeof(BrainDouble));
         _neuron->_weighted_deltas = weighted_delta;
          buffer                   = (BrainChar *)node_get_prop(context, "activation-type");
 
         activation_type      = get_activation_type(buffer);
         _neuron->_activation = activation(activation_type);
         _neuron->_derivative = derivative(activation_type);
-        random_value_limit   = 1.0/(BrainDouble)(_neuron->_number_of_input + 1.0);
+        random_value_limit   = 1.0/(BrainDouble)(_neuron->_number_of_input);
 
-        for (index = 0; index < _neuron->_number_of_input + 1; ++index)
+        for (index = 0; index < _neuron->_number_of_input; ++index)
         {
             _neuron->_w[index] = (BrainDouble)rand() / (BrainDouble)RAND_MAX * 2.0 * random_value_limit - random_value_limit;
         }
+
+        _neuron->_bias =  (BrainDouble)rand() / (BrainDouble)RAND_MAX * 2.0 * random_value_limit - random_value_limit;
 
         free(buffer);
 
@@ -213,13 +194,18 @@ dump_neuron(const BrainNeuron neuron,
     if (neuron && file)
     {
         BrainUint i = 0;
-        for (i = 0; i < neuron->_number_of_input + 1; ++i)
+
+        fprintf(file, "\t<neuron index=\"%d\" ", neuron_idx);
+        fprintf(file, "layer-index=\"%d\" ",     layer_idx);
+        fprintf(file, "bias=\"%lf\">\n",        neuron->_bias);
+
+        for (i = 0; i < neuron->_number_of_input; ++i)
         {
-            fprintf(file, "\t<weight value=\"%lf\"", neuron->_w[i]);
-            fprintf(file, " layer=\"%d\"", layer_idx);
-            fprintf(file, " neuron=\"%d\"", neuron_idx);
+            fprintf(file, "\t\t<weight value=\"%lf\"", neuron->_w[i]);
             fprintf(file, " input=\"%d\"/>\n",i);
         }
+
+        fprintf(file, "\t</neuron>\n");
     }
 }
 
@@ -228,7 +214,7 @@ get_neuron_number_of_inputs(const BrainNeuron neuron)
 {
     if (neuron != NULL)
     {
-        return neuron->_number_of_input + 1;
+        return neuron->_number_of_input;
     }
 
     return 0;
@@ -240,8 +226,36 @@ set_neuron_weight(BrainNeuron neuron,
                   const BrainDouble weight)
 {
     if ((neuron != NULL)
-    &&  (index < neuron->_number_of_input + 1))
+    &&  (index < neuron->_number_of_input))
     {
         neuron->_w[index] = weight;
+    }
+}
+
+void
+initialize_neuron_from_context(BrainNeuron neuron,
+                               Context context)
+{
+    if (neuron && context)
+    {
+        const BrainDouble neuron_bias       = node_get_double(context, "bias", 0.0);
+        const BrainUint   number_of_weights = get_number_of_node_with_name(context, "weight");
+        const BrainUint   number_of_inputs  = get_neuron_number_of_inputs(neuron);
+        BrainUint index = 0;
+
+        set_neuron_bias(neuron, neuron_bias);
+
+        for (index = 0; index < number_of_weights; ++index)
+        {
+            Context subcontext = get_node_with_name_and_index(context, "weight", index);
+
+            const BrainUint   input_idx = node_get_int   (subcontext, "input",  -1);
+            const BrainDouble weight    = node_get_double(subcontext, "value",  0.0);
+
+            if (input_idx < number_of_inputs)
+            {
+                set_neuron_weight(neuron, input_idx, weight);
+            }
+        }
     }
 }
