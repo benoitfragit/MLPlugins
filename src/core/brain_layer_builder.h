@@ -15,7 +15,9 @@ BrainLayer  get_layer_next_layer      (const BrainLayer layer);
 void        delete_layer              (BrainLayer layer);
 void        set_layer_input           (BrainLayer layer,
                                        const BrainUint number_of_inputs,
-                                       const BrainSignal in);
+                                       const BrainSignal in,
+                                       const BrainBool use_dropbout,
+                                       const BrainDouble dropout_percent);
 void        dump_layer                (const BrainLayer layer,
                                        const BrainUint layer_idx,
                                        FILE* file);

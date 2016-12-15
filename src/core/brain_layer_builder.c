@@ -10,9 +10,11 @@ struct Layer
 } Layer;
 
 void
-set_layer_input(BrainLayer layer,
-                const BrainUint number_of_inputs,
-                const BrainSignal in)
+set_layer_input(BrainLayer        layer,
+                const BrainUint   number_of_inputs,
+                const BrainSignal in,
+                const BrainBool   use_dropout,
+                const BrainDouble dropout_percent)
 {
     if (layer != NULL)
     {
@@ -22,12 +24,21 @@ set_layer_input(BrainLayer layer,
         for (j = 0; j < number_of_neurons; ++j)
         {
             BrainNeuron input_neuron = get_layer_neuron(layer, j);
-            set_neuron_input(input_neuron, number_of_inputs, in);
+
+            set_neuron_input(input_neuron,
+                             number_of_inputs,
+                             in,
+                             use_dropout,
+                             dropout_percent);
         }
 
         if (layer->_next_layer != NULL)
         {
-            set_layer_input(layer->_next_layer, number_of_neurons, layer->_out);
+            set_layer_input(layer->_next_layer,
+                            number_of_neurons,
+                            layer->_out,
+                            use_dropout,
+                            dropout_percent);
         }
     }
 }

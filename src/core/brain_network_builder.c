@@ -6,6 +6,8 @@ struct Network
     BrainLayer* _layers;
     BrainSignal _output;
     BrainUint   _number_of_layer;
+    BrainDouble _dropout_percent;
+    BrainBool   _use_dropout;
     CostPtrFunc _cost_function;
     CostPtrFunc _cost_function_derivative;
 } Network;
@@ -248,6 +250,9 @@ initialize_network_from_context(BrainNetwork network,
         const BrainUint number_of_neurons = get_number_of_node_with_name(context, "neuron");
         BrainUint index = 0;
 
+        network->_use_dropout     = BRAIN_FALSE;
+        network->_dropout_percent = 0.0;
+
         for (index = 0; index < number_of_neurons; ++index)
         {
             Context subcontext = get_node_with_name_and_index(context, "neuron", index);
@@ -271,15 +276,19 @@ initialize_network_from_context(BrainNetwork network,
 }
 
 void
-feedforward(BrainNetwork network,
-            const BrainUint number_of_input,
+feedforward(BrainNetwork      network,
+            const BrainUint   number_of_input,
             const BrainSignal in)
 {
     if (in != NULL )
     {
         BrainLayer input_layer = get_network_layer(network, 0);
 
-        set_layer_input(input_layer, number_of_input, in);
+        set_layer_input(input_layer,
+                        number_of_input,
+                        in,
+                        network->_use_dropout,
+                        network->_dropout_percent);
     }
 }
 

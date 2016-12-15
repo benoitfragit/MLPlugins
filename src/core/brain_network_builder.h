@@ -9,8 +9,8 @@ BrainNetwork new_network_from_context(Context context);
 void delete_network(BrainNetwork network);
 void initialize_network_from_context(BrainNetwork network,
                                      Context context);
-void feedforward(BrainNetwork network,
-                 const BrainUint number_of_input,
+void feedforward(BrainNetwork      network,
+                 const BrainUint   number_of_input,
                  const BrainSignal in);
 void dump_network(const BrainNetwork network,
                   BrainString filename);

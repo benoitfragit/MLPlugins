@@ -68,15 +68,33 @@ set_neuron_bias(BrainNeuron neuron,
 void
 set_neuron_input(BrainNeuron neuron,
                  const BrainUint number_of_inputs,
-                 const BrainSignal in)
+                 const BrainSignal in,
+                 const BrainBool use_dropout,
+                 const BrainDouble dropout_percent)
 {
     if ((in     != NULL)
     &&  (neuron != NULL)
     &&  (neuron->_number_of_input == number_of_inputs))
     {
         neuron->_in = in;
+        BrainDouble dropout_factor = 1.0;
 
-        activate_neuron(neuron);
+        if (use_dropout
+        && (0 <= dropout_percent)
+        && (dropout_percent < 1.0))
+        {
+
+            if ((BrainDouble)(rand() / RAND_MAX) < dropout_percent)
+            {
+                dropout_factor = 0.0;
+            }
+            else
+            {
+                dropout_factor *= 1.0 / (1.0 - dropout_percent);
+            }
+        }
+
+        activate_neuron(neuron, dropout_factor);
     }
 }
 
@@ -107,22 +125,28 @@ get_neuron_input(const BrainNeuron neuron,
 }
 
 void
-activate_neuron(BrainNeuron neuron)
+activate_neuron(BrainNeuron neuron, const BrainDouble dropout_factor)
 {
     if (neuron != NULL)
     {
         BrainUint     j = 0;
         BrainDouble sum = 0.0;
 
-        for (j = 0; j < neuron->_number_of_input; ++j)
+        *(neuron->_out)         = 0.0;
+        neuron->_out_derivative = 0.0;
+
+        if (dropout_factor != 0.0)
         {
-            sum += neuron->_in[j] * neuron->_w[j];
+            for (j = 0; j < neuron->_number_of_input; ++j)
+            {
+                sum += neuron->_in[j] * neuron->_w[j];
+            }
+
+            sum += neuron->_bias;
+
+            *(neuron->_out) = neuron->_activation(sum) * dropout_factor;
+            neuron->_out_derivative = neuron->_derivative(*(neuron->_out));
         }
-
-        sum += neuron->_bias;
-
-        *(neuron->_out) = neuron->_activation(sum);
-        neuron->_out_derivative = neuron->_derivative(*(neuron->_out));
     }
 }
 
