@@ -16,12 +16,18 @@ set_layer_input(BrainLayer layer,
 {
     if (layer != NULL)
     {
+        const BrainUint number_of_neurons = layer->_number_of_neuron;
         BrainUint j = 0;
 
-        for (j = 0; j < layer->_number_of_neuron; ++j)
+        for (j = 0; j < number_of_neurons; ++j)
         {
             BrainNeuron input_neuron = get_layer_neuron(layer, j);
             set_neuron_input(input_neuron, number_of_inputs, in);
+        }
+
+        if (layer->_next_layer != NULL)
+        {
+            set_layer_input(layer->_next_layer, number_of_neurons, layer->_out);
         }
     }
 }
@@ -87,19 +93,6 @@ get_layer_next_layer(const BrainLayer layer)
         return layer->_next_layer;
 
     return NULL;
-}
-
-void
-feedforward_layer(BrainLayer layer)
-{
-    if (layer != NULL && layer->_next_layer != NULL)
-    {
-        const BrainUint number_of_neurons = get_layer_number_of_neuron(layer);
-
-        set_layer_input(layer->_next_layer,
-                        number_of_neurons,
-                        layer->_out);
-    }
 }
 
 BrainLayer

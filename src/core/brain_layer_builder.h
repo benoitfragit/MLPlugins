@@ -22,5 +22,4 @@ void        dump_layer                (const BrainLayer layer,
 void        reset_layer_delta         (BrainLayer layer);
 void        set_layer_next_layer      (BrainLayer layer,
                                        BrainLayer next_layer);
-void        feedforward_layer         (BrainLayer layer);
 #endif /* BRAIN_LAYER_BUILDER_H */

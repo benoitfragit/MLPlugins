@@ -7,12 +7,11 @@
 BrainNetwork new_network_from_context(Context context);
 
 void delete_network(BrainNetwork network);
-void set_network_input(BrainNetwork network,
-                       const BrainUint number_of_input,
-                       const BrainSignal in);
 void initialize_network_from_context(BrainNetwork network,
                                      Context context);
-void feedforward(BrainNetwork network);
+void feedforward(BrainNetwork network,
+                 const BrainUint number_of_input,
+                 const BrainSignal in);
 void dump_network(const BrainNetwork network,
                   BrainString filename);
 BrainUint   get_network_number_of_layer(const BrainNetwork network);

@@ -147,19 +147,6 @@ delete_network(BrainNetwork network)
     }
 }
 
-void
-set_network_input(BrainNetwork network,
-                  const BrainUint number_of_input,
-                  const BrainSignal in)
-{
-    if (in != NULL )
-    {
-        BrainLayer input_layer = get_network_layer(network, 0);
-
-        set_layer_input(input_layer, number_of_input, in);
-    }
-}
-
 BrainNetwork
 new_network_from_context(Context context)
 {
@@ -284,19 +271,15 @@ initialize_network_from_context(BrainNetwork network,
 }
 
 void
-feedforward(BrainNetwork network)
+feedforward(BrainNetwork network,
+            const BrainUint number_of_input,
+            const BrainSignal in)
 {
-    if (network != NULL)
+    if (in != NULL )
     {
-        const BrainUint number_of_layers = get_network_number_of_layer(network);
-        BrainUint index = 0;
+        BrainLayer input_layer = get_network_layer(network, 0);
 
-        for (index = 0; index < number_of_layers - 1; ++index)
-        {
-            BrainLayer layer = get_network_layer(network, index);
-
-            feedforward_layer(layer);
-        }
+        set_layer_input(input_layer, number_of_input, in);
     }
 }
 
@@ -317,13 +300,14 @@ train(BrainNetwork network,
 
         do
         {
-            const BrainUint index = get_data_random_subset_index(data);
+            const BrainUint   index         = get_data_random_subset_index(data);
+            const BrainUint   input_length  = get_data_input_length(data);
+            const BrainUint   output_length = get_data_output_length(data);
+            const BrainSignal input         = get_data_input(data, index);
+            const BrainSignal output        = get_data_output(data, index);
 
-            set_network_input(network, get_data_input_length(data), get_data_input(data, index));
-
-            feedforward(network);
-
-            error = backpropagate(network, get_data_output_length(data), get_data_output(data, index));
+            feedforward(network, input_length, input);
+            error = backpropagate(network, output_length, output);
 
             ++iteration;
         } while ((iteration < max_iter) && (error > target_error));
