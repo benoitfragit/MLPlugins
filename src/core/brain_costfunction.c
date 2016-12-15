@@ -41,7 +41,7 @@ get_cost_function_type(BrainString name)
 {
     BrainUint i = 0;
 
-    for (i = First_CostFunction; i != Last_CostFunction; ++i)
+    for (i = First_CostFunction; i <= Last_CostFunction; ++i)
     {
         if ((i != First_CostFunction)
         &&  (!strcmp(name, costfunction_names[i - First_CostFunction - 1])))
