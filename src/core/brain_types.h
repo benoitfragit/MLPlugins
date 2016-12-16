@@ -1,6 +1,3 @@
-#ifndef BRAIN_TYPES_H
-#define BRAIN_TYPES_H
-
 /**
  * \file brain_types.h
  * \brief Define all types
@@ -9,7 +6,8 @@
  *
  * This file contains all predefines types used in this library
  */
-
+#ifndef BRAIN_TYPES_H
+#define BRAIN_TYPES_H
 /**
  * \def BRAIN_TRUE
  */
@@ -93,9 +91,21 @@ typedef BrainDouble (*PtrFunc)(const BrainDouble value);
  */
 typedef BrainDouble (*CostPtrFunc)(const BrainDouble output,
                                    const BrainDouble desired);
+/**
+ * \brief opaque pointer on Data struct
+ */
 typedef struct Data*    BrainData;
+/**
+ * \brief opaque pointer on Neuron struct
+ */
 typedef struct Neuron*  BrainNeuron;
+/**
+ * \brief opaque pointer on Layer struct
+ */
 typedef struct Layer*   BrainLayer;
+/**
+ * \brief opaque pointer on Network struct
+ */
 typedef struct Network* BrainNetwork;
 
 #endif /* BRAIN_TYPES_H */

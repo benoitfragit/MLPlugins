@@ -1,15 +1,21 @@
 #include "brain_network_builder.h"
 #include "brain_costfunction.h"
 
+/**
+ * \struct Network
+ * \brief  Internal model for a Network
+ *
+ * All protected fields for a Network
+ */
 struct Network
 {
-    BrainLayer* _layers;
-    BrainSignal _output;
-    BrainUint   _number_of_layer;
-    BrainDouble _dropout_percent;
-    BrainBool   _use_dropout;
-    CostPtrFunc _cost_function;
-    CostPtrFunc _cost_function_derivative;
+    BrainLayer* _layers;                   /*!< An array of Layers             */
+    BrainSignal _output;                   /*!< Output signal of the layer     */
+    BrainUint   _number_of_layer;          /*!< Number of layers               */
+    BrainDouble _dropout_percent;          /*!< Dropout per cent               */
+    BrainBool   _use_dropout;              /*!< Enable or disable dropout      */
+    CostPtrFunc _cost_function;            /*!< CostFunction to use            */
+    CostPtrFunc _cost_function_derivative; /*!< CostFunction derivative to use */
 } Network;
 
 static BrainDouble
