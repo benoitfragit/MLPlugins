@@ -5,6 +5,8 @@
 #include <libxml/tree.h>
 #include <libxml/xpath.h>
 
+#include "brain_utils_config.h"
+
 typedef xmlNodePtr Context;
 typedef xmlDocPtr Document;
 

@@ -10,9 +10,7 @@
 #ifndef BRAIN_NETWORK_BUILDER_H
 #define BRAIN_NETWORK_BUILDER_H
 
-#include "brain_logging_utils.h"
-#include "brain_layer_builder.h"
-#include "brain_data_reader.h"
+#include "brain_types.h"
 
 /**
  * \fn BrainNetwork new_network_from_context(Context context)

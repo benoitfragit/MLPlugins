@@ -1,4 +1,5 @@
 #include "brain_layer_builder.h"
+#include "brain_neuron_builder.h"
 
 /**
  * \struct Layer

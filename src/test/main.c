@@ -2,6 +2,7 @@
 #include <stdio.h>
 
 #include "brain_network_builder.h"
+#include "brain_data_reader.h"
 
 int
 main(int argc, char** argv)

@@ -1,4 +1,5 @@
 #include "brain_logging_utils.h"
+#include "brain_utils_config.h"
 #include <string.h>
 
 

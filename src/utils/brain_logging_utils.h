@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
-#include "brain_utils_config.h"
 
 void BRAIN_CRITICAL(const char* format, ...);
 void BRAIN_DEBUG   (const char* format, ...);

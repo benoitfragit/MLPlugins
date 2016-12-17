@@ -1,5 +1,9 @@
 #include "brain_network_builder.h"
 #include "brain_costfunction.h"
+#include "brain_layer_builder.h"
+#include "brain_neuron_builder.h"
+#include "brain_data_reader.h"
+#include "brain_logging_utils.h"
 
 /**
  * \struct Network

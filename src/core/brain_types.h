@@ -8,6 +8,14 @@
  */
 #ifndef BRAIN_TYPES_H
 #define BRAIN_TYPES_H
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <time.h>
+#include <string.h>
+
+#include "brain_xml_utils.h"
+
 /**
  * \def BRAIN_TRUE
  */

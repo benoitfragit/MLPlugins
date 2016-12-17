@@ -9,8 +9,7 @@
 #ifndef BRAIN_LAYER_BUILDER_H
 #define BRAIN_LAYER_BUILDER_H
 
-#include "brain_neuron_builder.h"
-#include "brain_xml_utils.h"
+#include "brain_types.h"
 
 /**
  * \fn BrainLayer new_layer_from_context(Context context)

@@ -10,12 +10,7 @@
 #define BRAIN_NEURON_BUILDER_H
 
 #include "brain_types.h"
-#include "brain_xml_utils.h"
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <time.h>
-#include <string.h>
 /**
  * \fn BrainNeuron new_neuron_from_context(Context context, BrainDouble* out, BrainWeight weighted_deltas)
  * \brief method to build a neuron
