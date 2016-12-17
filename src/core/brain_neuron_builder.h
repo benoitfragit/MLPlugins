@@ -12,7 +12,7 @@
 #include "brain_types.h"
 
 /**
- * \fn BrainNeuron new_neuron(const BrainUint number_of_inpus, const BrainActivationType activation_type, BrainDouble* out, BrainWeight weighted_delta)
+ * \fn BrainNeuron new_neuron(const BrainUint number_of_inputs, const BrainActivationType activation_type, BrainDouble* out, BrainWeight weighted_delta)
  * \brief method to build a neuron
  *
  * \param number_of_inputs input_signal_size
