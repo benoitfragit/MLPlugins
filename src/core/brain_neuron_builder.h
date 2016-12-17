@@ -12,17 +12,17 @@
 #include "brain_types.h"
 
 /**
- * \fn BrainNeuron new_neuron_from_context(Context context, BrainDouble* out, BrainWeight weighted_deltas)
+ * \fn BrainNeuron new_neuron_from_context(Context context, BrainDouble* out, BrainWeight weighted_delta)
  * \brief method to build a neuron
  *
- * \param context the XML context to use
- * \param out     a pointer to a BrainDouble owned by the BrainLayer
- * \param weighted_deltas an array owned by the BrainLayer to update weighted deltas
+ * \param context        the XML context to use
+ * \param out            a pointer to a BrainDouble owned by the BrainLayer
+ * \param weighted_delta an array owned by the BrainLayer to update weighted deltas
  * \return a BrainNeuron or NULL if it failed
  */
 BrainNeuron new_neuron_from_context    (Context           context,
                                         BrainDouble*      out,
-                                        BrainWeight       weighted_deltas);
+                                        BrainWeight       weighted_delta);
 /**
  * \fn void initialize_neuron_from_context(BrainNeuron neuron, Context context)
  * \brief load all previously trained weights
@@ -43,7 +43,10 @@ void        delete_neuron              (BrainNeuron       neuron);
  * \fn void dump_neuron(const BrainNeuron neuron, const BrainUint layer_idx, const BrainUint neuron_idx, FILE* file)
  * \brief serialize a neuron to an XML file
  *
- * \param
+ * \param neuron     A BrainNeuron
+ * \param layer_idx  the BrainLayer index
+ * \param neuron_idx the BrainNeuron index
+ * \param file       the file to serialize in
  */
 void        dump_neuron                (const BrainNeuron neuron,
                                         const BrainUint   layer_idx,

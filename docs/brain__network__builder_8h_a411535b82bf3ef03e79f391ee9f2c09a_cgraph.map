@@ -1,5 +1,5 @@
 <map id="new_network_from_context" name="new_network_from_context">
 <area shape="rect" id="node2" href="$brain__layer__builder_8h.html#acb750af18cd99f6a5abcd81993673262" title="Fonction to create a BrainLayer from an XML context. " alt="" coords="236,5,400,32"/>
 <area shape="rect" id="node4" href="$brain__layer__builder_8h.html#a98cfc2a491c62f48e3b1862479b4b928" title="get the output of a layer " alt="" coords="259,56,377,83"/>
-<area shape="rect" id="node3" href="$brain__neuron__builder_8h.html#a79fd4b6ff1e73880994a9c6c28bc65b6" title="method to build a neuron " alt="" coords="448,5,623,32"/>
+<area shape="rect" id="node3" href="$brain__neuron__builder_8h.html#a2a50d5f56a17087080c162d07068d3db" title="method to build a neuron " alt="" coords="448,5,623,32"/>
 </map>

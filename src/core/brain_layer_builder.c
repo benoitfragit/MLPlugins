@@ -52,12 +52,12 @@ set_layer_input(BrainLayer        layer,
 
 BrainNeuron
 get_layer_neuron(const BrainLayer layer,
-                 const BrainUint neuron_index)
+                 const BrainUint index)
 {
     if ((layer != NULL)
-    &&  (neuron_index < layer->_number_of_neuron))
+    &&  (index < layer->_number_of_neuron))
     {
-        return layer->_neurons[neuron_index];
+        return layer->_neurons[index];
     }
 
     return NULL;
