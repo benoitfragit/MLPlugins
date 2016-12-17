@@ -1,37 +1,83 @@
 #include "brain_neuron_builder.h"
+#include "brain_activation.h"
 
+/**
+ * \struct Neuron
+ * \brief  Internal model for a BrainNeuron
+ *
+ * All protected fields for a BrainNeuron
+ */
 struct Neuron
 {
-    BrainSignal  _in;
-    BrainWeight  _w;
-    BrainWeight  _weighted_deltas;
-    BrainDouble* _out;
-    BrainDouble  _out_derivative;
-    BrainDouble  _bias;
-    BrainDouble  _learning_rate;
-    PtrFunc      _activation;
-    PtrFunc      _derivative;
-    BrainUint    _number_of_input;
+    BrainSignal  _in;              /*!< Input signal of an BrainNeuron                     */
+    BrainWeight  _w;               /*!< An array of weight without the bias                */
+    BrainWeight  _weighted_deltas; /*!< An array of weighted delta owned by the BrainLayer */
+    BrainDouble* _out;             /*!< An output value pointer owned by the BrainLayer    */
+    BrainDouble  _out_derivative;  /*!< Derivation of the output                           */
+    BrainDouble  _bias;            /*!< Bias of the neuron                                 */
+    BrainDouble  _learning_rate;   /*!< The learning rate of the neuron                    */
+    PtrFunc      _activation;      /*!< Activation functon of the neuron                   */
+    PtrFunc      _derivative;      /*!< Activation derivative function of the neuron       */
+    BrainUint    _number_of_input; /*!< Number of inputs of the neuron                     */
 } Neuron;
 
-BrainDouble
-get_neuron_output(const BrainNeuron neuron)
+static BrainUint
+get_neuron_number_of_inputs(const BrainNeuron neuron)
 {
     if (neuron != NULL)
     {
-        return *(neuron->_out);
+        return neuron->_number_of_input;
     }
 
-    return 0.0;
+    return 0;
 }
 
-BrainDouble
-get_neuron_bias(const BrainNeuron neuron)
+static void
+set_neuron_weight(BrainNeuron neuron,
+                  const BrainUint index,
+                  const BrainDouble weight)
+{
+    if ((neuron != NULL)
+    &&  (index < neuron->_number_of_input))
+    {
+        neuron->_w[index] = weight;
+    }
+}
+
+static void
+set_neuron_bias(BrainNeuron neuron,
+                const BrainDouble bias)
 {
     if (neuron != NULL)
-        return neuron->_bias;
+    {
+        neuron->_bias = bias;
+    }
+}
 
-    return 0.0;
+static void
+activate_neuron(BrainNeuron neuron, const BrainDouble dropout_factor)
+{
+    if (neuron != NULL)
+    {
+        BrainUint     j = 0;
+        BrainDouble sum = 0.0;
+
+        *(neuron->_out)         = 0.0;
+        neuron->_out_derivative = 0.0;
+
+        if (dropout_factor != 0.0)
+        {
+            for (j = 0; j < neuron->_number_of_input; ++j)
+            {
+                sum += neuron->_in[j] * neuron->_w[j];
+            }
+
+            sum += neuron->_bias;
+
+            *(neuron->_out) = neuron->_activation(sum) * dropout_factor;
+            neuron->_out_derivative = neuron->_derivative(*(neuron->_out));
+        }
+    }
 }
 
 void
@@ -52,16 +98,6 @@ set_neuron_delta(BrainNeuron neuron,
             neuron->_weighted_deltas[i] += neuron_delta * neuron->_w[i];
             neuron->_w[i]               -= (neuron_learning_delta * neuron->_in[i]);
         }
-    }
-}
-
-void
-set_neuron_bias(BrainNeuron neuron,
-                const BrainDouble bias)
-{
-    if (neuron != NULL)
-    {
-        neuron->_bias = bias;
     }
 }
 
@@ -98,58 +134,6 @@ set_neuron_input(BrainNeuron neuron,
     }
 }
 
-BrainDouble
-get_neuron_weight(const BrainNeuron neuron,
-                  const BrainUint weight_index)
-{
-    if (neuron != NULL
-    && weight_index < neuron->_number_of_input)
-    {
-        return neuron->_w[weight_index];
-    }
-
-    return 0.0;
-}
-
-BrainDouble
-get_neuron_input(const BrainNeuron neuron,
-                 const BrainUint input_index)
-{
-    if (neuron != NULL
-    && input_index < neuron->_number_of_input)
-    {
-        return neuron->_in[input_index];
-    }
-
-    return 0.0;
-}
-
-void
-activate_neuron(BrainNeuron neuron, const BrainDouble dropout_factor)
-{
-    if (neuron != NULL)
-    {
-        BrainUint     j = 0;
-        BrainDouble sum = 0.0;
-
-        *(neuron->_out)         = 0.0;
-        neuron->_out_derivative = 0.0;
-
-        if (dropout_factor != 0.0)
-        {
-            for (j = 0; j < neuron->_number_of_input; ++j)
-            {
-                sum += neuron->_in[j] * neuron->_w[j];
-            }
-
-            sum += neuron->_bias;
-
-            *(neuron->_out) = neuron->_activation(sum) * dropout_factor;
-            neuron->_out_derivative = neuron->_derivative(*(neuron->_out));
-        }
-    }
-}
-
 void
 delete_neuron(BrainNeuron neuron)
 {
@@ -163,7 +147,6 @@ delete_neuron(BrainNeuron neuron)
         free(neuron);
     }
 }
-
 
 BrainNeuron
 new_neuron_from_context(Context context,
@@ -230,29 +213,6 @@ dump_neuron(const BrainNeuron neuron,
         }
 
         fprintf(file, "\t</neuron>\n");
-    }
-}
-
-BrainUint
-get_neuron_number_of_inputs(const BrainNeuron neuron)
-{
-    if (neuron != NULL)
-    {
-        return neuron->_number_of_input;
-    }
-
-    return 0;
-}
-
-void
-set_neuron_weight(BrainNeuron neuron,
-                  const BrainUint index,
-                  const BrainDouble weight)
-{
-    if ((neuron != NULL)
-    &&  (index < neuron->_number_of_input))
-    {
-        neuron->_w[index] = weight;
     }
 }
 

@@ -1,45 +1,88 @@
+/**
+ * \file brain_neuron_builder.h
+ * \brief Define the API to create an BrainNeuron
+ * \author Benoit F.
+ * \date 16 decembre 2016
+ *
+ * All public methods to create aa BrainNeuron
+ */
 #ifndef BRAIN_NEURON_BUILDER_H
 #define BRAIN_NEURON_BUILDER_H
 
+#include "brain_types.h"
 #include "brain_xml_utils.h"
-#include "brain_logging_utils.h"
-#include "brain_activation.h"
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
 #include <string.h>
-
+/**
+ * \fn BrainNeuron new_neuron_from_context(Context context, BrainDouble* out, BrainWeight weighted_deltas)
+ * \brief method to build a neuron
+ *
+ * \param context the XML context to use
+ * \param out     a pointer to a BrainDouble owned by the BrainLayer
+ * \param weighted_deltas an array owned by the BrainLayer to update weighted deltas
+ * \return a BrainNeuron or NULL if it failed
+ */
 BrainNeuron new_neuron_from_context    (Context           context,
                                         BrainDouble*      out,
                                         BrainWeight       weighted_deltas);
+/**
+ * \fn void initialize_neuron_from_context(BrainNeuron neuron, Context context)
+ * \brief load all previously trained weights
+ *
+ * \param neuron a BrainNeuron
+ * \param context the Context to use
+ */
 void        initialize_neuron_from_context(BrainNeuron    neuron,
                                            Context        context);
+/**
+ * \fn void delete_neuron(BrainNeuron neuron)
+ * \brief free all BrainNeuron memory
+ *
+ * \param neuron a BrainNeuron
+ */
 void        delete_neuron              (BrainNeuron       neuron);
-void        activate_neuron            (BrainNeuron       neuron,
-                                        const BrainDouble dropout_factor);
+/**
+ * \fn void dump_neuron(const BrainNeuron neuron, const BrainUint layer_idx, const BrainUint neuron_idx, FILE* file)
+ * \brief serialize a neuron to an XML file
+ *
+ * \param
+ */
 void        dump_neuron                (const BrainNeuron neuron,
                                         const BrainUint   layer_idx,
                                         const BrainUint   neuron_idx,
                                         FILE*             file);
-void        set_neuron_weight          (BrainNeuron       neuron,
-                                        const BrainUint   index,
-                                        const BrainDouble weight);
+/**
+ * \fn void set_neuron_input(BrainNeuron neuron, const BrainUint number_of_inputs, const BrainSignal in, const BrainBool use_dropout, const BrainDouble dropout_percent)
+ * \brief set the input signal on a neuron
+ *
+ * Each time a new input comes to a Neuron then if the neuron stay activated because of the
+ * dropout selection then we compute the activation
+ *
+ * \param neuron           a BrainNeuron
+ * \param number_of_inputs input signal's length
+ * \param in               the input signal
+ * \param use_dropout      enable or disable dropout
+ * \param dropout_percent  dropout factor
+ */
 void        set_neuron_input           (BrainNeuron       neuron,
                                         const BrainUint   number_of_inputs,
                                         const BrainSignal in,
                                         const BrainBool   use_dropout,
                                         const BrainDouble dropout_percent);
+/**
+ * \fn void set_neuron_delta(BrainNeuron neuron, const BrainDouble delta);
+ * \brief set the delta of the neuron
+ *
+ * We first update the neuron's bias
+ * Then we update the layer weighted deltas
+ * Finally we update neuron's weight
+ *
+ * \param neuron a BrainNeuron
+ * \param delta  the delta
+ */
 void        set_neuron_delta           (BrainNeuron       neuron,
                                         const BrainDouble delta);
-void        set_neuron_bias            (BrainNeuron       neuron,
-                                        const BrainDouble bias);
-BrainDouble get_neuron_input           (const BrainNeuron neuron,
-                                        const BrainUint   input_index);
-BrainDouble get_neuron_output          (const BrainNeuron neuron);
-BrainDouble get_neuron_weight          (const BrainNeuron neuron,
-                                        const BrainUint   weight_index);
-BrainDouble get_neuron_bias            (const BrainNeuron neuron);
-BrainUint   get_neuron_number_of_inputs(const BrainNeuron neuron);
-
 #endif /* BRAIN_NEURON_BUILDER_H */

@@ -3,13 +3,13 @@
 
 /**
  * \struct Network
- * \brief  Internal model for a Network
+ * \brief  Internal model for a BrainNetwork
  *
- * All protected fields for a Network
+ * All protected fields for a BrainNetwork
  */
 struct Network
 {
-    BrainLayer* _layers;                   /*!< An array of Layers             */
+    BrainLayer* _layers;                   /*!< An array of BrainLayer         */
     BrainSignal _output;                   /*!< Output signal of the layer     */
     BrainUint   _number_of_layer;          /*!< Number of layers               */
     BrainDouble _dropout_percent;          /*!< Dropout per cent               */

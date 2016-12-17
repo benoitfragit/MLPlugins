@@ -1,12 +1,18 @@
 #include "brain_layer_builder.h"
 
+/**
+ * \struct Layer
+ * \brief  Internal model for a BrainLayer
+ *
+ * All protected fields for a BrainLayer
+ */
 struct Layer
 {
-    BrainNeuron* _neurons;
-    BrainSignal  _out;
-    BrainWeight  _weighted_deltas;
-    BrainUint    _number_of_neuron;
-    BrainLayer   _next_layer;
+    BrainNeuron* _neurons;          /*!< An array of BrainNeuron       */
+    BrainSignal  _out;              /*!< Output vector of the Layer    */
+    BrainWeight  _weighted_deltas;  /*!< An array of weighted delta    */
+    BrainUint    _number_of_neuron; /*!< The number of BrainNeuron     */
+    BrainLayer   _next_layer;       /*!< The next layer in the network */
 } Layer;
 
 void
