@@ -106,14 +106,14 @@ get_data_subset_index(const BrainData data,
 BrainData
 new_data_from_context(Context context)
 {
-    BrainChar* buffer = NULL;
-    BrainChar*   part = NULL;
-    BrainData   _data = NULL;
-    BrainUint       i = 0;
-    BrainUint       j = 0;
-
     if (context && is_node_with_name(context, "data"))
     {
+        BrainChar* buffer = NULL;
+        BrainChar*   part = NULL;
+        BrainData   _data = NULL;
+        BrainUint       i = 0;
+        BrainUint       j = 0;
+
         srand(time(NULL));
 
         _data = (BrainData)calloc(1, sizeof(Data));
@@ -146,7 +146,7 @@ new_data_from_context(Context context)
                 {
                     if (part != NULL)
                     {
-                        sscanf(part, "%lf", &_data->_signals[i][j]);
+                        sscanf(part, "%lf", &(_data->_signals[i][j]));
                         part = strtok(NULL, ", ");
                     }
 
@@ -163,7 +163,7 @@ new_data_from_context(Context context)
                 {
                     if (part != NULL)
                     {
-                        sscanf(part, "%lf", &_data->_observations[i][j]);
+                        sscanf(part, "%lf", &(_data->_observations[i][j]));
                         part = strtok(NULL, ", ");
                     }
 

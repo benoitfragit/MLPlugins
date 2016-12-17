@@ -59,14 +59,14 @@ activate_neuron(BrainNeuron neuron, const BrainDouble dropout_factor)
 {
     if (neuron != NULL)
     {
-        BrainUint     j = 0;
-        BrainDouble sum = 0.0;
-
         *(neuron->_out)         = 0.0;
         neuron->_out_derivative = 0.0;
 
         if (dropout_factor != 0.0)
         {
+            BrainUint     j = 0;
+            BrainDouble sum = 0.0;
+
             for (j = 0; j < neuron->_number_of_input; ++j)
             {
                 sum += neuron->_in[j] * neuron->_w[j];
