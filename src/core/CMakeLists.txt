@@ -5,7 +5,7 @@ set(Brain_VERSION_MINOR 1)
 
 set(CMAKE_BUILD_TYPE debug)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
-set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-o2 -g3 -Wall -Wextra")
+set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-o2 -g3 -Wall -Wextra -Wshadow -Wunused")
 
 find_package(LIBXML2)
 

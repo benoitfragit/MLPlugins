@@ -42,3 +42,4 @@ build
 doc
 .geanyproj
 doxygen_sqlite3.db
+cscope.out

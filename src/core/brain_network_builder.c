@@ -22,6 +22,32 @@ struct Network
     CostPtrFunc _cost_function_derivative; /*!< CostFunction derivative to use */
 } Network;
 
+static BrainUint
+get_network_number_of_layer(const BrainNetwork network)
+{
+    if (network != NULL)
+    {
+        return network->_number_of_layer;
+    }
+
+    return 0;
+}
+
+static BrainLayer
+get_network_layer(const BrainNetwork network,
+                  const BrainUint layer_index)
+{
+    if ((network != NULL)
+    &&  (network->_layers != NULL)
+    &&  (layer_index < network->_number_of_layer))
+    {
+        return network->_layers[layer_index];
+    }
+
+    return NULL;
+}
+
+
 static BrainDouble
 backpropagate_output_layer(BrainNetwork network,
                            const BrainUint number_of_output,
@@ -123,20 +149,6 @@ get_network_output(const BrainNetwork network)
     return NULL;
 }
 
-BrainLayer
-get_network_layer(const BrainNetwork network,
-                  const BrainUint layer_index)
-{
-    if ((network != NULL)
-    &&  (network->_layers != NULL)
-    &&  (layer_index < network->_number_of_layer))
-    {
-        return network->_layers[layer_index];
-    }
-
-    return NULL;
-}
-
 void
 delete_network(BrainNetwork network)
 {
@@ -216,17 +228,6 @@ new_network_from_context(Context context)
     }
 
     return NULL;
-}
-
-BrainUint
-get_network_number_of_layer(const BrainNetwork network)
-{
-    if (network != NULL)
-    {
-        return network->_number_of_layer;
-    }
-
-    return 0;
 }
 
 void

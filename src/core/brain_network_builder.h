@@ -57,14 +57,6 @@ void feedforward(BrainNetwork      network,
 void dump_network(const BrainNetwork network,
                   BrainString filename);
 /**
- * \fn BrainUint get_network_number_of_layer(const BrainNetwork network)
- * \brief get the number of layer of the network
- *
- * \param network the BrainNetwork
- * \return the number of layer
- */
-BrainUint   get_network_number_of_layer(const BrainNetwork network);
-/**
  * \fn BrainSignal get_network_output(const BrainNetwork network)
  * \brief get the output of the network
  *
@@ -72,16 +64,6 @@ BrainUint   get_network_number_of_layer(const BrainNetwork network);
  * \return get the output signal
  */
 BrainSignal get_network_output(const BrainNetwork network);
-/**
- * \fn BrainLayer  get_network_layer(const BrainNetwork network, const BrainUint layer_index)
- * \brief get a layer from a network
- *
- * \param network the BrainNetwork
- * \param layer_index index of the layer
- * \return a BrainLayer or NULL
- */
-BrainLayer  get_network_layer(const BrainNetwork network,
-                              const BrainUint layer_index);
 /**
  * \fn BrainResult train(BrainNetwork network, const BrainData data, const BrainDouble target_error, const BrainUint max_iter)
  * \brief launch the training process for the neural network
