@@ -1,5 +1,6 @@
 <map id="/home/benoit/Documents/projets/C/libBrain/src/core/brain_network_builder.h" name="/home/benoit/Documents/projets/C/libBrain/src/core/brain_network_builder.h">
 <area shape="rect" id="node3" href="$brain__layer__builder_8h.html" title="Define the API to build a Layer. " alt="" coords="170,109,311,136"/>
-<area shape="rect" id="node4" href="$brain__neuron__builder_8h.html" title="Define the API to create an BrainNeuron. " alt="" coords="253,184,405,211"/>
-<area shape="rect" id="node5" href="$brain__types_8h.html" title="Define all types. " alt="" coords="172,259,272,285"/>
+<area shape="rect" id="node11" href="$brain__data__reader_8h.html" title="Define the API to read training data from an XML file. " alt="" coords="279,184,415,211"/>
+<area shape="rect" id="node4" href="$brain__neuron__builder_8h.html" title="Define the API to create an BrainNeuron. " alt="" coords="439,184,591,211"/>
+<area shape="rect" id="node5" href="$brain__types_8h.html" title="Define all types. " alt="" coords="325,259,425,285"/>
 </map>

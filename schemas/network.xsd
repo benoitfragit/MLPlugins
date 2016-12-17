@@ -39,6 +39,8 @@
         <xs:sequence minOccurs="1" maxOccurs="unbounded">
             <xs:element name="layer"   type="LayerType"   minOccurs="1" maxOccurs="unbounded"/>
         </xs:sequence>
+        <xs:attribute name="use-dropout"        type="xs:integer"       use="optional"/>
+        <xs:attribute name="dropout-percent"    type="xs:decimal"       use="optional"/>
         <xs:attribute name="cost-function-type" type="CostFunctionType" use="optional"/>
     </xs:complexType>
 

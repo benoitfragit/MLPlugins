@@ -101,10 +101,128 @@ $(document).ready(function(){initNavTree('struct_data.html','');});
 </div>
 
 <div class="header">
+  <div class="summary">
+<a href="#pub-attribs">Data Fields</a>  </div>
   <div class="headertitle">
 <div class="title">Data Struct Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Internal model for a BrainData.  
+ <a href="struct_data.html#details">More...</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Data Fields</h2></td></tr>
+<tr class="memitem:a3932ba373c1a3d85e2b50363c69cf304"><td class="memItemLeft" align="right" valign="top">BrainSignal *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_data.html#a3932ba373c1a3d85e2b50363c69cf304">_signals</a></td></tr>
+<tr class="separator:a3932ba373c1a3d85e2b50363c69cf304"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6c756677c0561792a89aed85c8b142a3"><td class="memItemLeft" align="right" valign="top">BrainSignal *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_data.html#a6c756677c0561792a89aed85c8b142a3">_observations</a></td></tr>
+<tr class="separator:a6c756677c0561792a89aed85c8b142a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa05af015443639b409faa84fea08584d"><td class="memItemLeft" align="right" valign="top">BrainUint *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_data.html#aa05af015443639b409faa84fea08584d">_subset</a></td></tr>
+<tr class="separator:aa05af015443639b409faa84fea08584d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab748d0ac4d47d7e09c8e2904ac5993ed"><td class="memItemLeft" align="right" valign="top">BrainUint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_data.html#ab748d0ac4d47d7e09c8e2904ac5993ed">_subset_length</a></td></tr>
+<tr class="separator:ab748d0ac4d47d7e09c8e2904ac5993ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e94ab3c475fe2606a32f54a8b72ecf4"><td class="memItemLeft" align="right" valign="top">BrainUint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_data.html#a8e94ab3c475fe2606a32f54a8b72ecf4">_signal_length</a></td></tr>
+<tr class="separator:a8e94ab3c475fe2606a32f54a8b72ecf4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7f4a6f345b55a7b79f561cdae54da819"><td class="memItemLeft" align="right" valign="top">BrainUint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_data.html#a7f4a6f345b55a7b79f561cdae54da819">_observation_length</a></td></tr>
+<tr class="separator:a7f4a6f345b55a7b79f561cdae54da819"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab32de699cde3efad855f695a9f685239"><td class="memItemLeft" align="right" valign="top">BrainUint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_data.html#ab32de699cde3efad855f695a9f685239">_number_of_signal</a></td></tr>
+<tr class="separator:ab32de699cde3efad855f695a9f685239"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Internal model for a BrainData. </p>
+<p>All protected fields for a BrainData </p>
+</div><h2 class="groupheader">Field Documentation</h2>
+<a class="anchor" id="ab32de699cde3efad855f695a9f685239"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">BrainUint _number_of_signal</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Number of training data </p>
+
+</div>
+</div>
+<a class="anchor" id="a7f4a6f345b55a7b79f561cdae54da819"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">BrainUint _observation_length</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Size of the output signal </p>
+
+</div>
+</div>
+<a class="anchor" id="a6c756677c0561792a89aed85c8b142a3"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">BrainSignal* _observations</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>An array of output signal </p>
+
+</div>
+</div>
+<a class="anchor" id="a8e94ab3c475fe2606a32f54a8b72ecf4"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">BrainUint _signal_length</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Size of the input signal </p>
+
+</div>
+</div>
+<a class="anchor" id="a3932ba373c1a3d85e2b50363c69cf304"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">BrainSignal* _signals</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>An array of input signal </p>
+
+</div>
+</div>
+<a class="anchor" id="aa05af015443639b409faa84fea08584d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">BrainUint* _subset</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>An array of index </p>
+
+</div>
+</div>
+<a class="anchor" id="ab748d0ac4d47d7e09c8e2904ac5993ed"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">BrainUint _subset_length</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>number of pre-randomized index </p>
+
+</div>
+</div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
 <li>/home/benoit/Documents/projets/C/libBrain/src/core/brain_data_reader.c</li>
 </ul>
@@ -114,7 +232,7 @@ $(document).ready(function(){initNavTree('struct_data.html','');});
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="struct_data.html">Data</a></li>
-    <li class="footer">Generated on Sat Dec 17 2016 15:19:18 for libBrain by
+    <li class="footer">Generated on Sat Dec 17 2016 16:19:25 for libBrain by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.8 </li>
   </ul>

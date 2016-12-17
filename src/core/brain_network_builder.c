@@ -171,6 +171,9 @@ new_network_from_context(Context context)
         _network->_cost_function            = get_cost_function(cost_function_type);
         _network->_cost_function_derivative = get_cost_function_derivative(cost_function_type);
 
+        _network->_use_dropout              = node_get_int(context, "use-dropout", 0);
+        _network->_dropout_percent          = node_get_double(context, "dropout-percent", 0.5);
+
         if (buffer != NULL)
         {
             free(buffer);

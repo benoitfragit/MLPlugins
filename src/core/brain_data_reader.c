@@ -6,15 +6,21 @@
 
 #include "brain_logging_utils.h"
 
+/**
+ * \struct Data
+ * \brief  Internal model for a BrainData
+ *
+ * All protected fields for a BrainData
+ */
 struct Data
 {
-    BrainSignal* _signals;
-    BrainSignal* _observations;
-    BrainUint*   _subset;
-    BrainUint    _subset_length;
-    BrainUint    _signal_length;
-    BrainUint    _observation_length;
-    BrainUint    _number_of_signal;
+    BrainSignal* _signals;            /*!< An array of input signal       */
+    BrainSignal* _observations;       /*!< An array of output signal      */
+    BrainUint*   _subset;             /*!< An array of index              */
+    BrainUint    _subset_length;      /*!< number of pre-randomized index */
+    BrainUint    _signal_length;      /*!< Size of the input signal       */
+    BrainUint    _observation_length; /*!< Size of the output signal      */
+    BrainUint    _number_of_signal;   /*!< Number of training data        */
 } Data;
 
 BrainInt
