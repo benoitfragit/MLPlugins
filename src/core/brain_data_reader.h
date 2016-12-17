@@ -9,7 +9,6 @@
 #ifndef BRAIN_DATA_READER_H
 #define BRAIN_DATA_READER_H
 
-#include "brain_xml_utils.h"
 #include "brain_types.h"
 
 /**
