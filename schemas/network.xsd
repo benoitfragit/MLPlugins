@@ -1,3 +1,4 @@
+
 <?xml version="1.0"?>
 <xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema'>
     <xs:simpleType name="CostFunctionType">
@@ -18,30 +19,20 @@
         </xs:restriction>
     </xs:simpleType>
 
-    <xs:complexType name="WeightType">
-        <xs:attribute name="value" type="xs:decimal" use="required"/>
-    </xs:complexType>
-
-    <xs:complexType name="NeuronType">
-        <xs:attribute name="input"                    type="xs:integer"             use="required"/>
-        <xs:attribute name="learning-rate"            type="xs:decimal"             use="optional"/>
-        <xs:attribute name="inertial-factor"          type="xs:decimal"             use="optional"/>
-        <xs:attribute name="activation-function-type" type="ActivationFunctionType" use="optional"/>
-    </xs:complexType>
-
     <xs:complexType name="LayerType">
-        <xs:sequence minOccurs="1" maxOccurs="unbounded">
-            <xs:element name="neuron" type="NeuronType"/>
-        </xs:sequence>
+        <xs:attribute name="neurons" type="xs:integer" use="required"/>>
     </xs:complexType>
 
     <xs:complexType name="NetworkType">
         <xs:sequence minOccurs="1" maxOccurs="unbounded">
             <xs:element name="layer"   type="LayerType"   minOccurs="1" maxOccurs="unbounded"/>
         </xs:sequence>
-        <xs:attribute name="use-dropout"        type="xs:integer"       use="optional"/>
-        <xs:attribute name="dropout-percent"    type="xs:decimal"       use="optional"/>
-        <xs:attribute name="cost-function-type" type="CostFunctionType" use="optional"/>
+        <xs:attribute name="inputs"                   type="xs:integer"             use="required"/>
+        <xs:attribute name="use-dropout"              type="xs:integer"             use="optional"/>
+        <xs:attribute name="dropout-percent"          type="xs:decimal"             use="optional"/>
+        <xs:attribute name="cost-function-type"       type="CostFunctionType"       use="optional"/>
+        <xs:attribute name="activation-function-type" type="ActivationFunctionType" use="optional"/>
+        <xs:attribute name="learning-rate"            type="xs:decimal"             use="optional"/>
     </xs:complexType>
 
     <xs:element name="network" type="NetworkType"/>

@@ -8,7 +8,7 @@ var searchData=
   ['_5fdropout_5fpercent',['_dropout_percent',['../struct_network.html#a197a725caabaf12e3a59ac92ee75e05c',1,'Network']]],
   ['_5fin',['_in',['../struct_neuron.html#a1f4852ec741af0d5cd025617de74f389',1,'Neuron']]],
   ['_5flayers',['_layers',['../struct_network.html#a3c0d48d1352b012afcc2f99c9788e549',1,'Network']]],
-  ['_5flearning_5frate',['_learning_rate',['../struct_neuron.html#ae4c571e5d0a7d6aacbe54d24c700bde3',1,'Neuron']]],
+  ['_5flearning_5frate',['_learning_rate',['../struct_network.html#ae4c571e5d0a7d6aacbe54d24c700bde3',1,'Network']]],
   ['_5fneurons',['_neurons',['../struct_layer.html#a9e674735b2dfd49feb38cbc38a48200a',1,'Layer']]],
   ['_5fnext_5flayer',['_next_layer',['../struct_layer.html#a53af3e530df2bbecc37eb4fff7a93eff',1,'Layer']]],
   ['_5fnumber_5fof_5finput',['_number_of_input',['../struct_neuron.html#aef9e27db2946ab9642499a87edcb6322',1,'Neuron']]],

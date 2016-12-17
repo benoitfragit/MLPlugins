@@ -15,7 +15,6 @@ struct Neuron
     BrainDouble* _out;             /*!< An output value pointer owned by the BrainLayer    */
     BrainDouble  _out_derivative;  /*!< Derivation of the output                           */
     BrainDouble  _bias;            /*!< Bias of the neuron                                 */
-    BrainDouble  _learning_rate;   /*!< The learning rate of the neuron                    */
     PtrFunc      _activation;      /*!< Activation functon of the neuron                   */
     PtrFunc      _derivative;      /*!< Activation derivative function of the neuron       */
     BrainUint    _number_of_input; /*!< Number of inputs of the neuron                     */
@@ -82,13 +81,14 @@ activate_neuron(BrainNeuron neuron, const BrainDouble dropout_factor)
 
 void
 set_neuron_delta(BrainNeuron neuron,
+                 const BrainDouble learning_rate,
                  const BrainDouble delta)
 {
     if (neuron != NULL)
     {
         const BrainUint   number_of_inputs       = neuron->_number_of_input;
         const BrainDouble neuron_delta           = neuron->_out_derivative * delta;
-        const BrainDouble neuron_learning_delta  = neuron_delta * neuron->_learning_rate;
+        const BrainDouble neuron_learning_delta  = neuron_delta * learning_rate;
         BrainUint i = 0;
 
         neuron->_bias -= neuron_learning_delta;
@@ -149,33 +149,26 @@ delete_neuron(BrainNeuron neuron)
 }
 
 BrainNeuron
-new_neuron_from_context(Context context,
-                        BrainDouble* out,
-                        BrainWeight  weighted_delta)
+new_neuron(const BrainUint           number_of_inputs,
+           const BrainActivationType activation_type,
+           BrainDouble*              out,
+           BrainWeight               weighted_delta)
 {
-    if (context
-    &&  is_node_with_name(context, "neuron")
-    && (out         != NULL)
-    && (weighted_delta != NULL))
+    if ((out              != NULL)
+    &&  (weighted_delta   != NULL)
+    &&  (number_of_inputs != 0))
     {
-        BrainUint    index = 0;
+        BrainUint                index = 0;
         BrainDouble random_value_limit = 0.0;
-        BrainChar*  buffer = NULL;
-        BrainActivationType activation_type = Invalid_Activation;
 
         BrainNeuron _neuron       = (BrainNeuron)calloc(1, sizeof(Neuron));
-
-        _neuron->_learning_rate   = node_get_double(context, "learning-rate", 0.0);
         _neuron->_out             = out;
-        _neuron->_number_of_input = node_get_int(context, "input", 0);
+        _neuron->_number_of_input = number_of_inputs;
         _neuron->_w               = (BrainWeight)calloc(_neuron->_number_of_input , sizeof(BrainDouble));
         _neuron->_weighted_deltas = weighted_delta;
-         buffer                   = (BrainChar *)node_get_prop(context, "activation-type");
-
-        activation_type      = get_activation_type(buffer);
-        _neuron->_activation = activation(activation_type);
-        _neuron->_derivative = derivative(activation_type);
-        random_value_limit   = 1.0/(BrainDouble)(_neuron->_number_of_input);
+        _neuron->_activation      = activation(activation_type);
+        _neuron->_derivative      = derivative(activation_type);
+        random_value_limit        = 1.0/(BrainDouble)(_neuron->_number_of_input);
 
         for (index = 0; index < _neuron->_number_of_input; ++index)
         {
@@ -183,8 +176,6 @@ new_neuron_from_context(Context context,
         }
 
         _neuron->_bias =  (BrainDouble)rand() / (BrainDouble)RAND_MAX * 2.0 * random_value_limit - random_value_limit;
-
-        free(buffer);
 
         return _neuron;
     }

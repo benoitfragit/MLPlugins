@@ -12,13 +12,15 @@
 #include "brain_types.h"
 
 /**
- * \fn BrainLayer new_layer_from_context(Context context)
+ * \fn BrainLayer new_layer_from_context(Context context, const BrainUint number_of_inputs, const BrainAcctivationType activation_type)
  * \brief Fonction to create a BrainLayer from an XML context
  *
  * \param context an XML context
+ * \param number_of_inputs size of the input signal
+ * \param activation_type the activation function type
  * \return a new allocated BrainLayer or NULL if it failed
  */
-BrainLayer  new_layer_from_context    (Context context);
+BrainLayer  new_layer_from_context    (Context context, const BrainUint number_of_inputs, const BrainActivationType activation_type);
 /**
  * \fn BrainNeuron get_layer_neuron(const BrainLayer layer, const BrainUint index)
  * \brief get a Neuron from the layer

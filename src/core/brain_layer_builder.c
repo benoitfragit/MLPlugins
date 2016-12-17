@@ -114,9 +114,11 @@ get_layer_next_layer(const BrainLayer layer)
 }
 
 BrainLayer
-new_layer_from_context(Context context)
+new_layer_from_context(Context context, const BrainUint number_of_inputs, const BrainActivationType activation_type)
 {
-    if (context && is_node_with_name(context, "layer"))
+    if (context
+    &&  is_node_with_name(context, "layer")
+    &&  (number_of_inputs != 0))
     {
         BrainLayer _layer = NULL;
 
@@ -139,9 +141,10 @@ new_layer_from_context(Context context)
 
                 if (neuron_context)
                 {
-                    _layer->_neurons[index] = new_neuron_from_context(neuron_context,
-                                                                      &(_layer->_out[index]),
-                                                                      _layer->_weighted_deltas);
+                    _layer->_neurons[index] = new_neuron(number_of_inputs,
+                                                         activation_type,
+                                                         &(_layer->_out[index]),
+                                                         _layer->_weighted_deltas);
                 }
             }
         }

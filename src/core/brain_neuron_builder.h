@@ -12,17 +12,19 @@
 #include "brain_types.h"
 
 /**
- * \fn BrainNeuron new_neuron_from_context(Context context, BrainDouble* out, BrainWeight weighted_delta)
+ * \fn BrainNeuron new_neuron(const BrainUint number_of_inpus, const BrainActivationType activation_type, BrainDouble* out, BrainWeight weighted_delta)
  * \brief method to build a neuron
  *
- * \param context        the XML context to use
+ * \param number_of_inputs input_signal_size
+ * \param activation_type the activation function type
  * \param out            a pointer to a BrainDouble owned by the BrainLayer
  * \param weighted_delta an array owned by the BrainLayer to update weighted deltas
  * \return a BrainNeuron or NULL if it failed
  */
-BrainNeuron new_neuron_from_context    (Context           context,
-                                        BrainDouble*      out,
-                                        BrainWeight       weighted_delta);
+BrainNeuron new_neuron(const BrainUint           number_of_inputs,
+                       const BrainActivationType activation_type,
+                       BrainDouble*              out,
+                       BrainWeight               weighted_delta);
 /**
  * \fn void initialize_neuron_from_context(BrainNeuron neuron, Context context)
  * \brief load all previously trained weights
@@ -71,7 +73,7 @@ void        set_neuron_input           (BrainNeuron       neuron,
                                         const BrainBool   use_dropout,
                                         const BrainDouble dropout_percent);
 /**
- * \fn void set_neuron_delta(BrainNeuron neuron, const BrainDouble delta);
+ * \fn void set_neuron_delta(BrainNeuron neuron, const BrainDouble learning_rate, const BrainDouble delta);
  * \brief set the delta of the neuron
  *
  * We first update the neuron's bias
@@ -79,8 +81,10 @@ void        set_neuron_input           (BrainNeuron       neuron,
  * Finally we update neuron's weight
  *
  * \param neuron a BrainNeuron
+ * \param learning_rate the learning rate
  * \param delta  the delta
  */
 void        set_neuron_delta           (BrainNeuron       neuron,
+                                        const BrainDouble learning_rate,
                                         const BrainDouble delta);
 #endif /* BRAIN_NEURON_BUILDER_H */

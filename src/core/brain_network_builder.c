@@ -1,5 +1,6 @@
 #include "brain_network_builder.h"
 #include "brain_costfunction.h"
+#include "brain_activation.h"
 #include "brain_layer_builder.h"
 #include "brain_neuron_builder.h"
 #include "brain_data_reader.h"
@@ -16,6 +17,7 @@ struct Network
     BrainLayer* _layers;                   /*!< An array of BrainLayer         */
     BrainSignal _output;                   /*!< Output signal of the layer     */
     BrainUint   _number_of_layer;          /*!< Number of layers               */
+    BrainDouble _learning_rate;            /*!< leanring rate value            */
     BrainDouble _dropout_percent;          /*!< Dropout per cent               */
     BrainBool   _use_dropout;              /*!< Enable or disable dropout      */
     CostPtrFunc _cost_function;            /*!< CostFunction to use            */
@@ -78,7 +80,7 @@ backpropagate_output_layer(BrainNetwork network,
 
                 if (oNeuron != NULL)
                 {
-                    set_neuron_delta(oNeuron, loss);
+                    set_neuron_delta(oNeuron, network->_learning_rate, loss);
                 }
             }
         }
@@ -114,7 +116,7 @@ backpropagate_hidden_layer(BrainNetwork network,
                 if (current_neuron != NULL)
                 {
                     const BrainDouble weighted_delta = get_layer_weighted_delta(next_layer, i);
-                    set_neuron_delta(current_neuron, weighted_delta);
+                    set_neuron_delta(current_neuron, network->_learning_rate, weighted_delta);
                 }
             }
         }
@@ -177,18 +179,30 @@ new_network_from_context(Context context)
     if (context && is_node_with_name(context, "network"))
     {
         BrainChar* buffer = NULL;
+        BrainUint number_of_inputs = 0;
         BrainCostFunctionType cost_function_type = Invalid_CostFunction;
+        BrainActivationType activation_type      = Invalid_Activation;
 
-        BrainNetwork _network      = (BrainNetwork)calloc(1, sizeof(Network));
-        _network->_number_of_layer = get_number_of_node_with_name(context, "layer");
-        buffer                     = (BrainChar *)node_get_prop(context, "cost-function-type");
+        BrainNetwork _network               = (BrainNetwork)calloc(1, sizeof(Network));
+        _network->_number_of_layer          = get_number_of_node_with_name(context, "layer");
 
+        number_of_inputs                    = node_get_int(context, "inputs", 1);
+        _network->_use_dropout              = node_get_int(context, "use-dropout", 0);
+        _network->_dropout_percent          = node_get_double(context, "dropout-percent", 0.5);
+        _network->_learning_rate            = node_get_double(context, "learning-rage", 1.0);
+
+        buffer                              = (BrainChar *)node_get_prop(context, "cost-function-type");
         cost_function_type                  = get_cost_function_type(buffer);
         _network->_cost_function            = get_cost_function(cost_function_type);
         _network->_cost_function_derivative = get_cost_function_derivative(cost_function_type);
 
-        _network->_use_dropout              = node_get_int(context, "use-dropout", 0);
-        _network->_dropout_percent          = node_get_double(context, "dropout-percent", 0.5);
+        if (buffer != NULL)
+        {
+            free(buffer);
+        }
+
+        buffer                              = (BrainChar *)node_get_prop(context, "activation-type");
+        activation_type                     = get_activation_type(buffer);
 
         if (buffer != NULL)
         {
@@ -211,7 +225,9 @@ new_network_from_context(Context context)
 
                 if (subcontext)
                 {
-                    _network->_layers[index] = new_layer_from_context(subcontext);
+                    _network->_layers[index] = new_layer_from_context(subcontext, number_of_inputs, activation_type);
+
+                    number_of_inputs = get_layer_number_of_neuron(_network->_layers[index]);
 
                     if (0 < index && _network->_layers[index] != NULL)
                     {
