@@ -1,0 +1,4 @@
+<map id="Network" name="Network">
+<area shape="rect" id="node2" href="$struct_layer.html" title="Internal model for a BrainLayer. " alt="" coords="13,95,68,121"/>
+<area shape="rect" id="node3" href="$struct_neuron.html" title="Internal model for a BrainNeuron. " alt="" coords="9,5,73,32"/>
+</map>

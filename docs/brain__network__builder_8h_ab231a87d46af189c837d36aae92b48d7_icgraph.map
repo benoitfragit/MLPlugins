@@ -1,0 +1,6 @@
+<map id="get_network_layer" name="get_network_layer">
+<area shape="rect" id="node2" href="$brain__network__builder_8h.html#a411535b82bf3ef03e79f391ee9f2c09a" title="Fonction to create a BrainNetwork from an XML context. " alt="" coords="181,5,364,32"/>
+<area shape="rect" id="node3" href="$brain__network__builder_8h.html#a7fb0b152ccedc8b1335cef3d7d7e6626" title="load previously trained neural network&#39;s weight " alt="" coords="211,57,334,98"/>
+<area shape="rect" id="node4" href="$brain__network__builder_8h.html#a898f07e0d90f3dee6b627ae2b7d96f71" title="propagate an input signal from the input signal to the output layer " alt="" coords="227,123,318,149"/>
+<area shape="rect" id="node5" href="$brain__network__builder_8h.html#a6ac84a7989f4e3471f30f43cbae78d6f" title="launch the training process for the neural network " alt="" coords="412,123,459,149"/>
+</map>

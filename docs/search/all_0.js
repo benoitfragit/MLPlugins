@@ -1,0 +1,23 @@
+var searchData=
+[
+  ['_5factivation',['_activation',['../struct_neuron.html#a4c6dec4970351e1e7979655b18b1f996',1,'Neuron']]],
+  ['_5fbias',['_bias',['../struct_neuron.html#a8c84186c83cd5fb104f92d46efe8c9bd',1,'Neuron']]],
+  ['_5fcost_5ffunction',['_cost_function',['../struct_network.html#af1ed24272820d7a89d2fce3f8384358c',1,'Network']]],
+  ['_5fcost_5ffunction_5fderivative',['_cost_function_derivative',['../struct_network.html#a0b1131f8143af4ae31f6690bf358cb53',1,'Network']]],
+  ['_5fderivative',['_derivative',['../struct_neuron.html#a116074e66d53d2ad1b40c12fc4d2f4ff',1,'Neuron']]],
+  ['_5fdropout_5fpercent',['_dropout_percent',['../struct_network.html#a197a725caabaf12e3a59ac92ee75e05c',1,'Network']]],
+  ['_5fin',['_in',['../struct_neuron.html#a1f4852ec741af0d5cd025617de74f389',1,'Neuron']]],
+  ['_5flayers',['_layers',['../struct_network.html#a3c0d48d1352b012afcc2f99c9788e549',1,'Network']]],
+  ['_5flearning_5frate',['_learning_rate',['../struct_neuron.html#ae4c571e5d0a7d6aacbe54d24c700bde3',1,'Neuron']]],
+  ['_5fneurons',['_neurons',['../struct_layer.html#a9e674735b2dfd49feb38cbc38a48200a',1,'Layer']]],
+  ['_5fnext_5flayer',['_next_layer',['../struct_layer.html#a53af3e530df2bbecc37eb4fff7a93eff',1,'Layer']]],
+  ['_5fnumber_5fof_5finput',['_number_of_input',['../struct_neuron.html#aef9e27db2946ab9642499a87edcb6322',1,'Neuron']]],
+  ['_5fnumber_5fof_5flayer',['_number_of_layer',['../struct_network.html#a27e8a97aaf95fcfb9811aabfd944c036',1,'Network']]],
+  ['_5fnumber_5fof_5fneuron',['_number_of_neuron',['../struct_layer.html#a37d471e86bcd5f974184083c1928149f',1,'Layer']]],
+  ['_5fout',['_out',['../struct_layer.html#a516ceef8752b08ac6de33ac6e991ec79',1,'Layer::_out()'],['../struct_neuron.html#a676b4b4ef4cffcc4ad38626766fa14ee',1,'Neuron::_out()']]],
+  ['_5fout_5fderivative',['_out_derivative',['../struct_neuron.html#ab38a599772b9988d95f02e2708d58c72',1,'Neuron']]],
+  ['_5foutput',['_output',['../struct_network.html#aa69e732ef1fbfdbcc22440f00356e9b1',1,'Network']]],
+  ['_5fuse_5fdropout',['_use_dropout',['../struct_network.html#a620b8231b60c84c72989289def1e1a8f',1,'Network']]],
+  ['_5fw',['_w',['../struct_neuron.html#ae25e45e53b456e1e756d887c1eef5ad3',1,'Neuron']]],
+  ['_5fweighted_5fdeltas',['_weighted_deltas',['../struct_layer.html#a1e428866e7967455daa7dbba6cf2b325',1,'Layer::_weighted_deltas()'],['../struct_neuron.html#a1e428866e7967455daa7dbba6cf2b325',1,'Neuron::_weighted_deltas()']]]
+];

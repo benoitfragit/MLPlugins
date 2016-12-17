@@ -1,0 +1,4 @@
+<map id="train" name="train">
+<area shape="rect" id="node2" href="$brain__network__builder_8h.html#a898f07e0d90f3dee6b627ae2b7d96f71" title="propagate an input signal from the input signal to the output layer " alt="" coords="100,5,191,32"/>
+<area shape="rect" id="node3" href="$brain__network__builder_8h.html#ab231a87d46af189c837d36aae92b48d7" title="get a layer from a network " alt="" coords="239,5,367,32"/>
+</map>

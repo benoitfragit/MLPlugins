@@ -1,0 +1,4 @@
+<map id="new_neuron_from_context" name="new_neuron_from_context">
+<area shape="rect" id="node2" href="$brain__layer__builder_8h.html#acb750af18cd99f6a5abcd81993673262" title="Fonction to create a BrainLayer from an XML context. " alt="" coords="228,5,392,32"/>
+<area shape="rect" id="node3" href="$brain__network__builder_8h.html#a411535b82bf3ef03e79f391ee9f2c09a" title="Fonction to create a BrainNetwork from an XML context. " alt="" coords="440,5,623,32"/>
+</map>
