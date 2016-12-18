@@ -24,12 +24,14 @@ Tutorial
 
 How to write an network
 -----------------------
+```xml
 <?xml version="1.0"?>
 <network inputs="2" use-dropout="0" dropout-percent="0.5" learning-rate="1.2" activation-function-type="Sigmoid" cost-function-type="CrossEntropy">
     <layer neurons="2"/>
     <layer neurons="3"/>
     <layer neurons="2"/>
 </network>
+```
 
 API Documentation
 =================
