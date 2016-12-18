@@ -1,0 +1,7 @@
+<map id="node_get_prop" name="node_get_prop">
+<area shape="rect" id="node2" href="$brain__builder_8h.html#a411535b82bf3ef03e79f391ee9f2c09a" title="Fonction to create a BrainNetwork from an XML context. " alt="" coords="328,16,511,43"/>
+<area shape="rect" id="node3" href="$brain__builder_8h.html#ace677f73508ab8c366c0fe4f82ce2f90" title="Load training data from an XML context. " alt="" coords="339,133,500,160"/>
+<area shape="rect" id="node4" href="$brain__xml__utils_8h.html#a72dee8218f05b2eedbe81fc28570a09f" title="extract a double value from an attribute " alt="" coords="160,27,280,53"/>
+<area shape="rect" id="node5" href="$brain__xml__utils_8h.html#a2622e6f851c46cf0c7abf0456c23521e" title="extract an int value from an attribute " alt="" coords="172,77,268,104"/>
+<area shape="rect" id="node6" href="$brain__builder_8h.html#a7fb0b152ccedc8b1335cef3d7d7e6626" title="load previously trained neural network&#39;s weight " alt="" coords="358,67,481,109"/>
+</map>

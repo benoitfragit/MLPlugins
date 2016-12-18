@@ -1,0 +1,5 @@
+<map id="get_number_of_node_with_name" name="get_number_of_node_with_name">
+<area shape="rect" id="node2" href="$brain__builder_8h.html#a411535b82bf3ef03e79f391ee9f2c09a" title="Fonction to create a BrainNetwork from an XML context. " alt="" coords="196,5,379,32"/>
+<area shape="rect" id="node3" href="$brain__builder_8h.html#ace677f73508ab8c366c0fe4f82ce2f90" title="Load training data from an XML context. " alt="" coords="207,56,368,83"/>
+<area shape="rect" id="node4" href="$brain__builder_8h.html#a7fb0b152ccedc8b1335cef3d7d7e6626" title="load previously trained neural network&#39;s weight " alt="" coords="226,107,349,149"/>
+</map>
