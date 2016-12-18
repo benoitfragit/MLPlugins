@@ -19,8 +19,8 @@ new_network_from_context(Context context)
         BrainUint index   =    0;
 
         const BrainUint   number_of_layers             = get_number_of_node_with_name(context, "layer");
-        const BrainUint   number_of_inputs             = node_get_int   (context, "inputs",            1);
-        const BrainBool   use_dropout                  = node_get_int   (context, "use-dropout",       0);
+        const BrainUint   number_of_inputs             = node_get_int   (context, "inputs",          1);
+        const BrainBool   use_dropout                  = node_get_bool  (context, "use-dropout",     BRAIN_FALSE);
         const BrainDouble dropout_percent              = node_get_double(context, "dropout-percent", 0.5);
         const BrainDouble learning_rate                = node_get_double(context, "learning-rate",   1.0);
         BrainUint*        neuron_per_layers            = (BrainUint *)calloc(number_of_layers, sizeof(BrainUint));

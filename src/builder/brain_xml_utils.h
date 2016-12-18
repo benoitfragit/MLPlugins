@@ -80,6 +80,21 @@ BrainInt node_get_int(Context node,
 BrainDouble node_get_double(Context node,
                             BrainString key,
                             const BrainDouble _default);
+
+/**
+ * \fn BrainBool node_get_bool(Context node,
+ *                             BrainString key,
+ *                             const BrainBool _default)
+ * \brief retrieve a boolean from a node
+ *
+ * \param node the current node
+ * \param key  the sttribute name
+ * \param _default default value
+ * \return a boolean
+ */
+BrainBool   node_get_bool(Context node,
+                          BrainString key,
+                          const BrainBool _default);
 /**
  * \fn Document open_document(BrainString doc)
  * \brief open an XML document

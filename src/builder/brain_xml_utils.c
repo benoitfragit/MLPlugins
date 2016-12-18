@@ -84,6 +84,31 @@ node_get_prop(Context node, BrainString key)
     return res;
 }
 
+BrainBool
+node_get_bool(Context node,
+              BrainString key,
+              const BrainBool _default)
+{
+    BrainBool value = _default;
+    Buffer res = node_get_prop(node, key);
+
+    if (res)
+    {
+        if (!strcmp(res, "true"))
+        {
+            value = BRAIN_TRUE;
+        }
+        else if (atoi(res) == 1)
+        {
+            value = BRAIN_TRUE;
+        }
+
+        xmlFree(res);
+    }
+
+    return value;
+}
+
 BrainDouble
 node_get_double(Context node,
                 BrainString key,

@@ -28,7 +28,7 @@
             <xs:element name="layer"   type="LayerType"   minOccurs="1" maxOccurs="unbounded"/>
         </xs:sequence>
         <xs:attribute name="inputs"                   type="xs:integer"             use="required"/>
-        <xs:attribute name="use-dropout"              type="xs:integer"             use="optional"/>
+        <xs:attribute name="use-dropout"              type="xs:boolean"             use="optional"/>
         <xs:attribute name="dropout-percent"          type="xs:decimal"             use="optional"/>
         <xs:attribute name="cost-function-type"       type="CostFunctionType"       use="optional"/>
         <xs:attribute name="activation-function-type" type="ActivationFunctionType" use="optional"/>
