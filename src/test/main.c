@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "brain_network_builder.h"
-#include "brain_data_reader.h"
+#include "brain_builder.h"
+#include "brain_xml_utils.h"
 
 int
 main(int argc, char** argv)
@@ -17,7 +17,8 @@ main(int argc, char** argv)
         return EXIT_FAILURE;
     }
 
-    if (validate_with_xsd(argv[1], NETWORK_XSD_FILE) && validate_with_xsd(argv[2], DATA_XSD_FILE))
+    if (validate_with_xsd(argv[1], NETWORK_XSD_FILE)
+    &&  validate_with_xsd(argv[2], DATA_XSD_FILE))
     {
         network_document = open_document(argv[1]);
         data_document    = open_document(argv[2]);

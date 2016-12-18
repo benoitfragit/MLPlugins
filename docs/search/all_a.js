@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['ptrfunc',['PtrFunc',['../brain__types_8h.html#a5fd1e19a97ab9959bc8502bbaa609e92',1,'brain_types.h']]]
+  ['open_5fdocument',['open_document',['../brain__xml__utils_8h.html#a5fa3d252f3c0c711206e14f3a54a5650',1,'brain_xml_utils.c']]]
 ];

@@ -10,5 +10,8 @@ var searchData=
   ['get_5flayer_5fnumber_5fof_5fneuron',['get_layer_number_of_neuron',['../brain__layer__builder_8h.html#a40c14c7189d94837b0bec3dbf7345bfc',1,'brain_layer_builder.c']]],
   ['get_5flayer_5foutput',['get_layer_output',['../brain__layer__builder_8h.html#a98cfc2a491c62f48e3b1862479b4b928',1,'brain_layer_builder.c']]],
   ['get_5flayer_5fweighted_5fdelta',['get_layer_weighted_delta',['../brain__layer__builder_8h.html#a5ddd227a5a3373bc9a53bc156093cf75',1,'brain_layer_builder.c']]],
-  ['get_5fnetwork_5foutput',['get_network_output',['../brain__network__builder_8h.html#a5b2decb3e8e92a6f5468743a77057e80',1,'brain_network_builder.c']]]
+  ['get_5fnetwork_5foutput',['get_network_output',['../brain__network__builder_8h.html#a5b2decb3e8e92a6f5468743a77057e80',1,'brain_network_builder.c']]],
+  ['get_5fnode_5fwith_5fname_5fand_5findex',['get_node_with_name_and_index',['../brain__xml__utils_8h.html#a90f1cf35f01430b88a7ddc901c24d9a1',1,'brain_xml_utils.c']]],
+  ['get_5fnumber_5fof_5fnode_5fwith_5fname',['get_number_of_node_with_name',['../brain__xml__utils_8h.html#a78eb483dbc0790e2563b6792e73de1d2',1,'brain_xml_utils.c']]],
+  ['get_5froot_5fnode',['get_root_node',['../brain__xml__utils_8h.html#a4db14479385713852d2a20fe1a0bea11',1,'brain_xml_utils.c']]]
 ];
