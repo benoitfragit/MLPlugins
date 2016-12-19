@@ -33,6 +33,11 @@
 
 # Build dir
 build
+Makefile
+CMakeFiles
+CMakeCache.txt
+cmake_install.cmake
+Doxyfile
 *.out
 .project
 .cproject

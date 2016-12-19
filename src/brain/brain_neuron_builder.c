@@ -9,15 +9,21 @@
  */
 struct Neuron
 {
-    BrainSignal  _in;              /*!< Input signal of an BrainNeuron                     */
-    BrainWeight  _w;               /*!< An array of weight without the bias                */
-    BrainWeight  _weighted_deltas; /*!< An array of weighted delta owned by the BrainLayer */
-    BrainDouble* _out;             /*!< An output value pointer owned by the BrainLayer    */
-    BrainDouble  _out_derivative;  /*!< Derivation of the output                           */
-    BrainDouble  _bias;            /*!< Bias of the neuron                                 */
-    PtrFunc      _activation;      /*!< Activation functon of the neuron                   */
-    PtrFunc      _derivative;      /*!< Activation derivative function of the neuron       */
-    BrainUint    _number_of_input; /*!< Number of inputs of the neuron                     */
+    BrainSignal  _in;               /*!< Input signal of an BrainNeuron                     */
+    BrainDouble  _bias;             /*!< Bias of the neuron                                 */
+    BrainWeight  _w;                /*!< An array of weight without the bias                */
+    BrainWeight  _weighted_deltas;  /*!< An array of weighted delta owned by the BrainLayer */
+    BrainDouble* _out;              /*!< An output value pointer owned by the BrainLayer    */
+    BrainDouble  _out_derivative;   /*!< Derivation of the output                           */
+    PtrFunc      _activation;       /*!< Activation functon of the neuron                   */
+    PtrFunc      _derivative;       /*!< Activation derivative function of the neuron       */
+    BrainUint    _number_of_input;  /*!< Number of inputs of the neuron                     */
+
+    BrainDouble  _delta_min;        /*!< Minimum delta value                                */
+    BrainDouble  _delta_max;        /*!< Maximum delta value                                */
+    BrainDouble  _neg_eta_learning; /*!< Negative gradient resilient learning rate          */
+    BrainDouble  _pos_eta_learning; /*!< Positive gradient resilient learning rate          */
+    BrainBool    _is_resilient;     /*!< Should this neuron use resilient learning          */
 } Neuron;
 
 void
