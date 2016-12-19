@@ -94,11 +94,11 @@ node_get_bool(Context node,
 
     if (res)
     {
-        if (!strcmp(res, "true"))
+        if (!strcmp((BrainString)res, "true"))
         {
             value = BRAIN_TRUE;
         }
-        else if (atoi(res) == 1)
+        else if (atoi((BrainString)res) == 1)
         {
             value = BRAIN_TRUE;
         }
