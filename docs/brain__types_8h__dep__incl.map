@@ -1,9 +1,9 @@
-<map id="src/brain/brain_types.h" name="src/brain/brain_types.h">
-<area shape="rect" id="node2" href="$brain__data__reader_8h.html" title="Define the API to read training data from an XML file. " alt="" coords="5,80,141,121"/>
-<area shape="rect" id="node3" href="$brain__layer__builder_8h.html" title="Define the API to build a Layer. " alt="" coords="165,80,304,121"/>
-<area shape="rect" id="node4" href="$brain__neuron__builder_8h.html" title="Define the API to create an BrainNeuron. " alt="" coords="329,80,479,121"/>
-<area shape="rect" id="node5" href="$brain__network__builder_8h.html" title="Define the API to create an control a Neural network. " alt="" coords="504,80,661,121"/>
-<area shape="rect" id="node6" href="$brain__builder__types_8h.html" title="Define all BrainBuilder types. " alt="" coords="686,80,845,121"/>
-<area shape="rect" id="node7" href="$brain__builder_8h.html" title="Define the API to load a networkand from an XML file. " alt="" coords="589,177,760,203"/>
-<area shape="rect" id="node8" href="$brain__xml__utils_8h.html" title="Define the API to load an XML file. " alt="" coords="785,169,927,211"/>
+<map id="/home/benoit/Documents/projets/C/libBrain/src/brain/brain_types.h" name="/home/benoit/Documents/projets/C/libBrain/src/brain/brain_types.h">
+<area shape="rect" id="node2" href="$brain__data__reader_8h.html" title="Define the API to read training data from an XML file. " alt="" coords="5,109,177,165"/>
+<area shape="rect" id="node3" href="$brain__layer__builder_8h.html" title="Define the API to build a Layer. " alt="" coords="201,109,379,165"/>
+<area shape="rect" id="node4" href="$brain__neuron__builder_8h.html" title="Define the API to create an BrainNeuron. " alt="" coords="403,109,591,165"/>
+<area shape="rect" id="node5" href="$brain__network__builder_8h.html" title="Define the API to create an control a Neural network. " alt="" coords="615,109,810,165"/>
+<area shape="rect" id="node6" href="$brain__builder__types_8h.html" title="Define all BrainBuilder types. " alt="" coords="835,109,1025,165"/>
+<area shape="rect" id="node7" href="$brain__builder_8h.html" title="Define the API to load a networkand from an XML file. " alt="" coords="750,213,918,269"/>
+<area shape="rect" id="node8" href="$brain__xml__utils_8h.html" title="Define the API to load an XML file. " alt="" coords="942,213,1110,269"/>
 </map>

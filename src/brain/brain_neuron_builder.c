@@ -18,12 +18,6 @@ struct Neuron
     PtrFunc      _activation;       /*!< Activation functon of the neuron                   */
     PtrFunc      _derivative;       /*!< Activation derivative function of the neuron       */
     BrainUint    _number_of_input;  /*!< Number of inputs of the neuron                     */
-
-    BrainDouble  _delta_min;        /*!< Minimum delta value                                */
-    BrainDouble  _delta_max;        /*!< Maximum delta value                                */
-    BrainDouble  _neg_eta_learning; /*!< Negative gradient resilient learning rate          */
-    BrainDouble  _pos_eta_learning; /*!< Positive gradient resilient learning rate          */
-    BrainBool    _is_resilient;     /*!< Should this neuron use resilient learning          */
 } Neuron;
 
 void
