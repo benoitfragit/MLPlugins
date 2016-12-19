@@ -5,6 +5,7 @@ var brain__xml__utils_8h =
     [ "get_number_of_node_with_name", "brain__xml__utils_8h.html#a78eb483dbc0790e2563b6792e73de1d2", null ],
     [ "get_root_node", "brain__xml__utils_8h.html#a4db14479385713852d2a20fe1a0bea11", null ],
     [ "is_node_with_name", "brain__xml__utils_8h.html#a909c289a290d5e807b5843464cfc034a", null ],
+    [ "node_get_bool", "brain__xml__utils_8h.html#a311d21e7adf9863b916effbd644a3823", null ],
     [ "node_get_double", "brain__xml__utils_8h.html#a72dee8218f05b2eedbe81fc28570a09f", null ],
     [ "node_get_int", "brain__xml__utils_8h.html#a2622e6f851c46cf0c7abf0456c23521e", null ],
     [ "node_get_prop", "brain__xml__utils_8h.html#a2e5bb9c55060b410c8164eb42c239519", null ],

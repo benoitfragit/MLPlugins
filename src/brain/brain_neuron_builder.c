@@ -21,8 +21,8 @@ struct Neuron
 } Neuron;
 
 void
-set_neuron_weight(BrainNeuron neuron,
-                  const BrainUint index,
+set_neuron_weight(BrainNeuron       neuron,
+                  const BrainUint   index,
                   const BrainDouble weight)
 {
     if ((neuron != NULL)
@@ -33,7 +33,7 @@ set_neuron_weight(BrainNeuron neuron,
 }
 
 void
-set_neuron_bias(BrainNeuron neuron,
+set_neuron_bias(BrainNeuron       neuron,
                 const BrainDouble bias)
 {
     if (neuron != NULL)
@@ -43,7 +43,8 @@ set_neuron_bias(BrainNeuron neuron,
 }
 
 static void
-activate_neuron(BrainNeuron neuron, const BrainDouble dropout_factor)
+activate_neuron(BrainNeuron       neuron,
+                const BrainDouble dropout_factor)
 {
     if (neuron != NULL)
     {
@@ -69,7 +70,7 @@ activate_neuron(BrainNeuron neuron, const BrainDouble dropout_factor)
 }
 
 void
-set_neuron_delta(BrainNeuron neuron,
+set_neuron_delta(BrainNeuron       neuron,
                  const BrainDouble learning_rate,
                  const BrainDouble delta)
 {
@@ -91,10 +92,10 @@ set_neuron_delta(BrainNeuron neuron,
 }
 
 void
-set_neuron_input(BrainNeuron neuron,
-                 const BrainUint number_of_inputs,
+set_neuron_input(BrainNeuron       neuron,
+                 const BrainUint   number_of_inputs,
                  const BrainSignal in,
-                 const BrainBool use_dropout,
+                 const BrainBool   use_dropout,
                  const BrainDouble dropout_percent)
 {
     if ((in     != NULL)
@@ -174,8 +175,8 @@ new_neuron(const BrainUint           number_of_inputs,
 
 void
 dump_neuron(const BrainNeuron neuron,
-            const BrainUint layer_idx,
-            const BrainUint neuron_idx,
+            const BrainUint   layer_idx,
+            const BrainUint   neuron_idx,
             FILE* file)
 {
     if (neuron && file)
@@ -188,8 +189,7 @@ dump_neuron(const BrainNeuron neuron,
 
         for (i = 0; i < neuron->_number_of_input; ++i)
         {
-            fprintf(file, "\t\t<weight value=\"%lf\"", neuron->_w[i]);
-            fprintf(file, " input=\"%d\"/>\n",i);
+            fprintf(file, "\t\t<weight value=\"%lf\"/>\n", neuron->_w[i]);
         }
 
         fprintf(file, "\t</neuron>\n");

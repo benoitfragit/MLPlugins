@@ -151,10 +151,9 @@ initialize_neuron_from_context(BrainNeuron neuron,
         {
             Context subcontext = get_node_with_name_and_index(context, "weight", index);
 
-            const BrainUint   input_idx = node_get_int   (subcontext, "input",  -1);
             const BrainDouble weight    = node_get_double(subcontext, "value",  0.0);
 
-            set_neuron_weight(neuron, input_idx, weight);
+            set_neuron_weight(neuron, index, weight);
         }
     }
 }
