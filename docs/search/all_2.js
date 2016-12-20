@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['backpropagation',['BackPropagation',['../brain__types_8h.html#a76a79e05ba37325dc341b11b74c4be5aa8a832779869748ffa072156388285bf2',1,'brain_types.h']]],
   ['brain_5fbuilder_2eh',['brain_builder.h',['../brain__builder_8h.html',1,'']]],
   ['brain_5fbuilder_5ftypes_2eh',['brain_builder_types.h',['../brain__builder__types_8h.html',1,'']]],
   ['brain_5fdata_5freader_2eh',['brain_data_reader.h',['../brain__data__reader_8h.html',1,'']]],
@@ -7,6 +8,7 @@ var searchData=
   ['brain_5flayer_5fbuilder_2eh',['brain_layer_builder.h',['../brain__layer__builder_8h.html',1,'']]],
   ['brain_5fnetwork_5fbuilder_2eh',['brain_network_builder.h',['../brain__network__builder_8h.html',1,'']]],
   ['brain_5fneuron_5fbuilder_2eh',['brain_neuron_builder.h',['../brain__neuron__builder_8h.html',1,'']]],
+  ['brain_5fsettings_2eh',['brain_settings.h',['../brain__settings_8h.html',1,'']]],
   ['brain_5fsuccess',['BRAIN_SUCCESS',['../brain__types_8h.html#a0941b6bafdb9422c702a56e46423c48fad528ca6d04731db526114361ff13c105',1,'brain_types.h']]],
   ['brain_5ftypes_2eh',['brain_types.h',['../brain__types_8h.html',1,'']]],
   ['brain_5fxml_5futils_2eh',['brain_xml_utils.h',['../brain__xml__utils_8h.html',1,'']]],
@@ -14,8 +16,10 @@ var searchData=
   ['braincostfunctiontype',['BrainCostFunctionType',['../brain__types_8h.html#a93b1d42a254458cc3a7fd41b4551a192',1,'brain_types.h']]],
   ['braindata',['BrainData',['../brain__types_8h.html#add44c3d64045810f58dd68fbcdc8ef42',1,'brain_types.h']]],
   ['brainlayer',['BrainLayer',['../brain__types_8h.html#ad02501e36a988a81d3c21a87fc2f6d54',1,'brain_types.h']]],
+  ['brainlearningtype',['BrainLearningType',['../brain__types_8h.html#a76a79e05ba37325dc341b11b74c4be5a',1,'brain_types.h']]],
   ['brainnetwork',['BrainNetwork',['../brain__types_8h.html#ad5cc0d451c7f47db39ffb684ec3837ee',1,'brain_types.h']]],
   ['brainneuron',['BrainNeuron',['../brain__types_8h.html#ad0650b03224b278f4745106e67c745f7',1,'brain_types.h']]],
   ['brainresult',['BrainResult',['../brain__types_8h.html#a0941b6bafdb9422c702a56e46423c48f',1,'brain_types.h']]],
+  ['brainsettings',['BrainSettings',['../brain__types_8h.html#a916598db8a4fc666f327e73a7fc46c70',1,'brain_types.h']]],
   ['buffer',['Buffer',['../brain__builder__types_8h.html#a8bf2e2ae8bdfb29978cd6f3ce365161a',1,'brain_builder_types.h']]]
 ];

@@ -9,7 +9,8 @@ set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-o2 -g3 -Wall -Wextra -Wshadow -Wunused")
 
 include_directories(${PROJECT_BINARY_DIR})
 
-set(SOURCES brain_network_builder.c
+set(SOURCES brain_settings.c
+            brain_network_builder.c
             brain_layer_builder.c
             brain_neuron_builder.c
             brain_activation.c

@@ -6,5 +6,6 @@ var brain__layer__builder_8h =
     [ "get_layer_number_of_neuron", "brain__layer__builder_8h.html#a40c14c7189d94837b0bec3dbf7345bfc", null ],
     [ "get_layer_output", "brain__layer__builder_8h.html#a98cfc2a491c62f48e3b1862479b4b928", null ],
     [ "get_layer_weighted_delta", "brain__layer__builder_8h.html#a5ddd227a5a3373bc9a53bc156093cf75", null ],
-    [ "reset_layer_delta", "brain__layer__builder_8h.html#a95edec1284124b3fd2f58139228c9678", null ]
+    [ "reset_layer_delta", "brain__layer__builder_8h.html#a95edec1284124b3fd2f58139228c9678", null ],
+    [ "set_layer_input", "brain__layer__builder_8h.html#a93b759f69b75965db34e744cfec2cf9b", null ]
 ];

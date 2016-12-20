@@ -19,9 +19,7 @@ struct Layer
 void
 set_layer_input(BrainLayer        layer,
                 const BrainUint   number_of_inputs,
-                const BrainSignal in,
-                const BrainBool   use_dropout,
-                const BrainDouble dropout_percent)
+                const BrainSignal in)
 {
     if (layer != NULL)
     {
@@ -34,18 +32,14 @@ set_layer_input(BrainLayer        layer,
 
             set_neuron_input(input_neuron,
                              number_of_inputs,
-                             in,
-                             use_dropout,
-                             dropout_percent);
+                             in);
         }
 
         if (layer->_next_layer != NULL)
         {
             set_layer_input(layer->_next_layer,
                             number_of_neurons,
-                            layer->_out,
-                            use_dropout,
-                            dropout_percent);
+                            layer->_out);
         }
     }
 }
@@ -114,9 +108,9 @@ get_layer_next_layer(const BrainLayer layer)
 }
 
 BrainLayer
-new_layer(const BrainUint           number_of_neurons,
-          const BrainUint           number_of_inputs,
-          const BrainActivationType activation_type)
+new_layer(const BrainUint     number_of_neurons,
+          const BrainUint     number_of_inputs,
+          const BrainSettings settings)
 {
     if ((number_of_inputs  != 0)
     &&  (number_of_neurons != 0))
@@ -132,13 +126,13 @@ new_layer(const BrainUint           number_of_neurons,
             BrainUint index = 0;
 
             _layer->_neurons         = (BrainNeuron *)calloc(_layer->_number_of_neuron, sizeof(BrainNeuron));
-            _layer->_out             = (BrainSignal)calloc(_layer->_number_of_neuron, sizeof(BrainDouble));
-            _layer->_weighted_deltas = (BrainWeight)calloc(_layer->_number_of_neuron, sizeof(BrainDouble));
+            _layer->_out             = (BrainSignal  )calloc(_layer->_number_of_neuron, sizeof(BrainDouble));
+            _layer->_weighted_deltas = (BrainWeight  )calloc(_layer->_number_of_neuron, sizeof(BrainDouble));
 
             for (index = 0; index < _layer->_number_of_neuron; ++index)
             {
                 _layer->_neurons[index] = new_neuron(number_of_inputs,
-                                                     activation_type,
+                                                     settings,
                                                      &(_layer->_out[index]),
                                                      _layer->_weighted_deltas);
             }

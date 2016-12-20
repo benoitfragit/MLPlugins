@@ -3,6 +3,7 @@
 #include "brain_activation.h"
 #include "brain_layer_builder.h"
 #include "brain_neuron_builder.h"
+#include "brain_settings.h"
 #include "brain_data_reader.h"
 
 /**
@@ -13,14 +14,10 @@
  */
 struct Network
 {
-    BrainLayer* _layers;                   /*!< An array of BrainLayer         */
-    BrainSignal _output;                   /*!< Output signal of the layer     */
-    BrainUint   _number_of_layer;          /*!< Number of layers               */
-    BrainDouble _learning_rate;            /*!< leanring rate value            */
-    BrainDouble _dropout_percent;          /*!< Dropout per cent               */
-    BrainBool   _use_dropout;              /*!< Enable or disable dropout      */
-    CostPtrFunc _cost_function;            /*!< CostFunction to use            */
-    CostPtrFunc _cost_function_derivative; /*!< CostFunction derivative to use */
+    BrainLayer*   _layers;           /*!< An array of BrainLayer         */
+    BrainSignal   _output;           /*!< Output signal of the layer     */
+    BrainUint     _number_of_layer;  /*!< Number of layers               */
+    BrainSettings _settings;          /*!< Network settings               */
 } Network;
 
 static BrainUint
@@ -59,31 +56,44 @@ backpropagate_output_layer(BrainNetwork network,
     if ((network != NULL)
     &&  (desired != NULL))
     {
-        const BrainUint   number_of_layers = get_network_number_of_layer(network);
-        BrainLayer        output_layer     = get_network_layer(network, number_of_layers - 1);
-        const BrainSignal output           = get_layer_output(output_layer);
-        const BrainUint   number_of_neuron = get_layer_number_of_neuron(output_layer);
+        const BrainSettings settings         = network->_settings;
+        const BrainUint     number_of_layers = get_network_number_of_layer(network);
+        BrainLayer          output_layer     = get_network_layer(network, number_of_layers - 1);
+        const BrainSignal   output           = get_layer_output(output_layer);
+        const BrainUint     number_of_neuron = get_layer_number_of_neuron(output_layer);
 
-        if (output_layer != NULL && number_of_neuron == number_of_output)
+        if ((output_layer     != NULL)
+        &&  (number_of_neuron == number_of_output))
         {
+            CostPtrFunc cost_function            = get_settings_network_cost_function(settings);
+            CostPtrFunc cost_function_derivative = get_settings_network_cost_function_derivative(settings);
+
             BrainUint output_index = 0;
 
             reset_layer_delta(output_layer);
 
-            for (output_index = 0; output_index < number_of_output; ++output_index)
+            for (output_index = 0;
+                 output_index < number_of_output;
+               ++output_index)
             {
-                const BrainDouble loss = network->_cost_function_derivative(output[output_index], desired[output_index]);
-                BrainNeuron oNeuron = get_layer_neuron(output_layer, output_index);
+                const BrainDouble loss = cost_function_derivative(output[output_index],
+                                                                  desired[output_index]);
 
-                error += network->_cost_function(output[output_index], desired[output_index]);
+                BrainNeuron oNeuron = get_layer_neuron(output_layer,
+                                                       output_index);
+
+                error += cost_function(output[output_index],
+                                       desired[output_index]);
 
                 if (oNeuron != NULL)
                 {
-                    set_neuron_delta(oNeuron, network->_learning_rate, loss);
+                    set_neuron_delta(oNeuron, loss);
                 }
             }
         }
     }
+
+    error *= 1.0/(BrainDouble)number_of_output;
 
     return error;
 }
@@ -98,9 +108,9 @@ backpropagate_hidden_layer(BrainNetwork network,
     &&  (0 != layer_index)
     &&  (layer_index < number_of_layers - 1))
     {
-        BrainLayer current_layer                = get_network_layer(network, layer_index);
-        const BrainLayer next_layer             = get_layer_next_layer(current_layer);
-        const BrainInt current_number_of_neuron = get_layer_number_of_neuron(current_layer);
+        BrainLayer       current_layer            = get_network_layer(network, layer_index);
+        const BrainLayer next_layer               = get_layer_next_layer(current_layer);
+        const BrainInt   current_number_of_neuron = get_layer_number_of_neuron(current_layer);
 
         if (current_layer != NULL && next_layer != NULL)
         {
@@ -115,7 +125,8 @@ backpropagate_hidden_layer(BrainNetwork network,
                 if (current_neuron != NULL)
                 {
                     const BrainDouble weighted_delta = get_layer_weighted_delta(next_layer, i);
-                    set_neuron_delta(current_neuron, network->_learning_rate, weighted_delta);
+
+                    set_neuron_delta(current_neuron, weighted_delta);
                 }
             }
         }
@@ -168,6 +179,11 @@ delete_network(BrainNetwork network)
             free(network->_layers);
         }
 
+        if (network->_settings != NULL)
+        {
+            delete_settings(network->_settings);
+        }
+
         free(network);
     }
 }
@@ -175,24 +191,16 @@ delete_network(BrainNetwork network)
 BrainNetwork
 new_network(const BrainUint             signal_input_length,
             const BrainUint             number_of_layers,
-            const BrainBool             use_dropout,
-            const BrainDouble           dropout_percent,
-            const BrainDouble           learning_rate,
-            const BrainCostFunctionType cost_function_type,
-            const BrainActivationType   activation_type,
+            const BrainSettings         settings,
             const BrainUint             *neuron_per_layers)
 {
-    if (neuron_per_layers != NULL)
+    if (neuron_per_layers != NULL && settings != NULL)
     {
         BrainUint number_of_inputs          = signal_input_length;
         BrainNetwork _network               = (BrainNetwork)calloc(1, sizeof(Network));
 
         _network->_number_of_layer          = number_of_layers;
-        _network->_use_dropout              = use_dropout;
-        _network->_dropout_percent          = dropout_percent;
-        _network->_learning_rate            = learning_rate;
-        _network->_cost_function            = get_cost_function(cost_function_type);
-        _network->_cost_function_derivative = get_cost_function_derivative(cost_function_type);
+        _network->_settings                 = settings;
 
         srand(time(NULL));
 
@@ -210,7 +218,7 @@ new_network(const BrainUint             signal_input_length,
 
                 _network->_layers[index] = new_layer(number_of_neurons,
                                                      number_of_inputs,
-                                                     activation_type);
+                                                     settings);
 
                 number_of_inputs = number_of_neurons;
 
@@ -266,9 +274,7 @@ feedforward(BrainNetwork      network,
 
         set_layer_input(input_layer,
                         number_of_input,
-                        in,
-                        network->_use_dropout,
-                        network->_dropout_percent);
+                        in);
     }
 }
 

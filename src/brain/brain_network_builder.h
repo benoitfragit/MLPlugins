@@ -15,32 +15,20 @@
 /**
  * \fn BrainNetwork new_network(const BrainUint             signal_input_length,
  *                              const BrainUint             number_of_layers,
- *                              const BrainBool             use_dropout,
- *                              const BrainDouble           dropout_percent,
- *                              const BrainDouble           learning_rate,
- *                              const BrainCostFunctionType cost_function_type,
- *                              const BrainActivationType   activation_type
+ *                              const BrainSettings         settings,
  *                              const BrainUint             *neuron_per_layers)
  *
  * \brief Fonction to create a BrainNetwork
  *
  * \param signal_input_length Size of the input signal
  * \param number_of_layers    Number of layer in this network
- * \param use_dropout         Use dropout
- * \param dropout_percent     Dropout ratio
- * \param learning_rate       Learning rate factor
- * \param cost_function_type  Type of cost function
- * \param activation_type     Type of activation function shared by all neurons
+ * \param settings            Network settings
  * \param neuron_per_layers   Array containing neumber of neurons per layer
  * \return a new allocated BrainNetwork or NULL if it failed
  */
 BrainNetwork new_network(const BrainUint             signal_input_length,
                          const BrainUint             number_of_layers,
-                         const BrainBool             use_dropout,
-                         const BrainDouble           dropout_percent,
-                         const BrainDouble           learning_rate,
-                         const BrainCostFunctionType cost_function_type,
-                         const BrainActivationType   activation_type,
+                         const BrainSettings         settings,
                          const BrainUint             *neuron_per_layers);
 /**
  * \fn void delete_network(BrainNetwork network)

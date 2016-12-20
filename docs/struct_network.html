@@ -117,7 +117,7 @@ $(document).ready(function(){initNavTree('struct_network.html','');});
 <div id="dynsection-0-content" class="dyncontent" style="display:none;">
 <div class="center"><img src="struct_network__coll__graph.png" border="0" usemap="#_network_coll__map" alt="Collaboration graph"/></div>
 <map name="_network_coll__map" id="_network_coll__map">
-<area shape="rect" id="node2" href="struct_layer.html" title="Internal model for a BrainLayer. " alt="" coords="23,263,171,369"/><area shape="rect" id="node3" href="struct_neuron.html" title="Internal model for a BrainNeuron. " alt="" coords="28,5,165,200"/></map>
+<area shape="rect" id="node2" href="struct_settings.html" title="Internal model for a BrainSettings. " alt="" coords="5,5,223,259"/><area shape="rect" id="node4" href="struct_neuron.html" title="Internal model for a BrainNeuron. " alt="" coords="116,321,253,487"/><area shape="rect" id="node3" href="struct_layer.html" title="Internal model for a BrainLayer. " alt="" coords="115,549,263,656"/></map>
 </div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
@@ -128,60 +128,13 @@ Data Fields</h2></td></tr>
 <tr class="separator:aa69e732ef1fbfdbcc22440f00356e9b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a27e8a97aaf95fcfb9811aabfd944c036"><td class="memItemLeft" align="right" valign="top">BrainUint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_network.html#a27e8a97aaf95fcfb9811aabfd944c036">_number_of_layer</a></td></tr>
 <tr class="separator:a27e8a97aaf95fcfb9811aabfd944c036"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae4c571e5d0a7d6aacbe54d24c700bde3"><td class="memItemLeft" align="right" valign="top">BrainDouble&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_network.html#ae4c571e5d0a7d6aacbe54d24c700bde3">_learning_rate</a></td></tr>
-<tr class="separator:ae4c571e5d0a7d6aacbe54d24c700bde3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a197a725caabaf12e3a59ac92ee75e05c"><td class="memItemLeft" align="right" valign="top">BrainDouble&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_network.html#a197a725caabaf12e3a59ac92ee75e05c">_dropout_percent</a></td></tr>
-<tr class="separator:a197a725caabaf12e3a59ac92ee75e05c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a620b8231b60c84c72989289def1e1a8f"><td class="memItemLeft" align="right" valign="top">BrainBool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_network.html#a620b8231b60c84c72989289def1e1a8f">_use_dropout</a></td></tr>
-<tr class="separator:a620b8231b60c84c72989289def1e1a8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af1ed24272820d7a89d2fce3f8384358c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="brain__types_8h.html#aef1d48952fa11f6fd0c737f5a16f9a41">CostPtrFunc</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_network.html#af1ed24272820d7a89d2fce3f8384358c">_cost_function</a></td></tr>
-<tr class="separator:af1ed24272820d7a89d2fce3f8384358c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0b1131f8143af4ae31f6690bf358cb53"><td class="memItemLeft" align="right" valign="top"><a class="el" href="brain__types_8h.html#aef1d48952fa11f6fd0c737f5a16f9a41">CostPtrFunc</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_network.html#a0b1131f8143af4ae31f6690bf358cb53">_cost_function_derivative</a></td></tr>
-<tr class="separator:a0b1131f8143af4ae31f6690bf358cb53"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae1a23603d0b34d1220e3255dfab049a9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="brain__types_8h.html#a916598db8a4fc666f327e73a7fc46c70">BrainSettings</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_network.html#ae1a23603d0b34d1220e3255dfab049a9">_settings</a></td></tr>
+<tr class="separator:ae1a23603d0b34d1220e3255dfab049a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Internal model for a BrainNetwork. </p>
 <p>All protected fields for a BrainNetwork </p>
 </div><h2 class="groupheader">Field Documentation</h2>
-<a class="anchor" id="af1ed24272820d7a89d2fce3f8384358c"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="brain__types_8h.html#aef1d48952fa11f6fd0c737f5a16f9a41">CostPtrFunc</a> _cost_function</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>CostFunction to use </p>
-
-</div>
-</div>
-<a class="anchor" id="a0b1131f8143af4ae31f6690bf358cb53"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="brain__types_8h.html#aef1d48952fa11f6fd0c737f5a16f9a41">CostPtrFunc</a> _cost_function_derivative</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>CostFunction derivative to use </p>
-
-</div>
-</div>
-<a class="anchor" id="a197a725caabaf12e3a59ac92ee75e05c"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">BrainDouble _dropout_percent</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Dropout per cent </p>
-
-</div>
-</div>
 <a class="anchor" id="a3c0d48d1352b012afcc2f99c9788e549"></a>
 <div class="memitem">
 <div class="memproto">
@@ -192,19 +145,6 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>An array of BrainLayer </p>
-
-</div>
-</div>
-<a class="anchor" id="ae4c571e5d0a7d6aacbe54d24c700bde3"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">BrainDouble _learning_rate</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>leanring rate value </p>
 
 </div>
 </div>
@@ -234,16 +174,16 @@ Data Fields</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a620b8231b60c84c72989289def1e1a8f"></a>
+<a class="anchor" id="ae1a23603d0b34d1220e3255dfab049a9"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">BrainBool _use_dropout</td>
+          <td class="memname"><a class="el" href="brain__types_8h.html#a916598db8a4fc666f327e73a7fc46c70">BrainSettings</a> _settings</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Enable or disable dropout </p>
+<p><a class="el" href="struct_network.html" title="Internal model for a BrainNetwork. ">Network</a> settings </p>
 
 </div>
 </div>
@@ -256,7 +196,7 @@ Data Fields</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="struct_network.html">Network</a></li>
-    <li class="footer">Generated on Mon Dec 19 2016 19:18:51 for libBrain by
+    <li class="footer">Generated on Tue Dec 20 2016 20:20:32 for libBrain by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.8 </li>
   </ul>

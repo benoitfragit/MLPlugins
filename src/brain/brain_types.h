@@ -76,6 +76,20 @@ typedef enum BrainCostFunctionType
 } BrainCostFunctionType;
 
 /**
+ * \enum BrainLearningType
+ * \brief enumeration to choose network learning process
+ */
+typedef enum BrainLearningType
+{
+    Invalid_Learning, /*!< Invalid learning         */
+    BackPropagation,  /*!< Backpropagation learning */
+    Resilient,        /*!< Resilient learning       */
+
+    First_Learning = Invalid_Learning,
+    Last_Learning  = Resilient
+} BrainLearningType;
+
+/**
  * \brief function pointer on an activation function
  *
  * It let neurons use several activation function and
@@ -97,6 +111,11 @@ typedef BrainDouble (*PtrFunc)(const BrainDouble value);
  */
 typedef BrainDouble (*CostPtrFunc)(const BrainDouble output,
                                    const BrainDouble desired);
+
+/**
+ * \brief opaque pointer on Settings struct
+ */
+typedef struct Settings* BrainSettings;
 /**
  * \brief opaque pointer on Data struct
  */

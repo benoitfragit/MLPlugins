@@ -12,17 +12,20 @@
 #include "brain_types.h"
 
 /**
- * \fn BrainNeuron new_neuron(const BrainUint number_of_inputs, const BrainActivationType activation_type, BrainDouble* out, BrainWeight weighted_delta)
+ * \fn BrainNeuron new_neuron(const BrainUint number_of_inputs,
+ *                            const BrainSettings settings,
+ *                            BrainDouble* out,
+ *                            BrainWeight weighted_delta)
  * \brief method to build a neuron
  *
  * \param number_of_inputs input_signal_size
- * \param activation_type the activation function type
+ * \param settings       network settings
  * \param out            a pointer to a BrainDouble owned by the BrainLayer
  * \param weighted_delta an array owned by the BrainLayer to update weighted deltas
  * \return a BrainNeuron or NULL if it failed
  */
 BrainNeuron new_neuron(const BrainUint           number_of_inputs,
-                       const BrainActivationType activation_type,
+                       const BrainSettings       settings,
                        BrainDouble*              out,
                        BrainWeight               weighted_delta);
 /**
@@ -46,7 +49,9 @@ void        dump_neuron                (const BrainNeuron neuron,
                                         const BrainUint   neuron_idx,
                                         FILE*             file);
 /**
- * \fn void set_neuron_input(BrainNeuron neuron, const BrainUint number_of_inputs, const BrainSignal in, const BrainBool use_dropout, const BrainDouble dropout_percent)
+ * \fn void set_neuron_input(BrainNeuron neuron,
+ *                           const BrainUint number_of_inputs,
+ *                           const BrainSignal in)
  * \brief set the input signal on a neuron
  *
  * Each time a new input comes to a Neuron then if the neuron stay activated because of the
@@ -55,16 +60,12 @@ void        dump_neuron                (const BrainNeuron neuron,
  * \param neuron           a BrainNeuron
  * \param number_of_inputs input signal's length
  * \param in               the input signal
- * \param use_dropout      enable or disable dropout
- * \param dropout_percent  dropout factor
  */
 void        set_neuron_input           (BrainNeuron       neuron,
                                         const BrainUint   number_of_inputs,
-                                        const BrainSignal in,
-                                        const BrainBool   use_dropout,
-                                        const BrainDouble dropout_percent);
+                                        const BrainSignal in);
 /**
- * \fn void set_neuron_delta(BrainNeuron neuron, const BrainDouble learning_rate, const BrainDouble delta);
+ * \fn void set_neuron_delta(BrainNeuron neuron, const BrainDouble delta);
  * \brief set the delta of the neuron
  *
  * We first update the neuron's bias
@@ -72,11 +73,9 @@ void        set_neuron_input           (BrainNeuron       neuron,
  * Finally we update neuron's weight
  *
  * \param neuron a BrainNeuron
- * \param learning_rate the learning rate
  * \param delta  the delta
  */
 void        set_neuron_delta           (BrainNeuron       neuron,
-                                        const BrainDouble learning_rate,
                                         const BrainDouble delta);
 /**
  * \fn void set_neuron_bias(BrainNeuron neuron, const BrainDouble bias)

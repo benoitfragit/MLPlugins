@@ -121,21 +121,21 @@ $(document).ready(function(){initNavTree('brain__neuron__builder_8h.html','');})
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a95e511aeaae3b9b89fdb8c52593ff8ba"><td class="memItemLeft" align="right" valign="top"><a class="el" href="brain__types_8h.html#ad0650b03224b278f4745106e67c745f7">BrainNeuron</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="brain__neuron__builder_8h.html#a95e511aeaae3b9b89fdb8c52593ff8ba">new_neuron</a> (const BrainUint number_of_inputs, const <a class="el" href="brain__types_8h.html#aa5b3ee640e9de81caddce84b23d0c38e">BrainActivationType</a> activation_type, BrainDouble *out, BrainWeight weighted_delta)</td></tr>
-<tr class="memdesc:a95e511aeaae3b9b89fdb8c52593ff8ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">method to build a neuron  <a href="#a95e511aeaae3b9b89fdb8c52593ff8ba">More...</a><br /></td></tr>
-<tr class="separator:a95e511aeaae3b9b89fdb8c52593ff8ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a39b4c217cd57ab1aa91c313864a485c0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="brain__types_8h.html#ad0650b03224b278f4745106e67c745f7">BrainNeuron</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="brain__neuron__builder_8h.html#a39b4c217cd57ab1aa91c313864a485c0">new_neuron</a> (const BrainUint number_of_inputs, const <a class="el" href="brain__types_8h.html#a916598db8a4fc666f327e73a7fc46c70">BrainSettings</a> settings, BrainDouble *out, BrainWeight weighted_delta)</td></tr>
+<tr class="memdesc:a39b4c217cd57ab1aa91c313864a485c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">method to build a neuron  <a href="#a39b4c217cd57ab1aa91c313864a485c0">More...</a><br /></td></tr>
+<tr class="separator:a39b4c217cd57ab1aa91c313864a485c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac39479cd2f36ef2606f3d93ce0f29ca6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="brain__neuron__builder_8h.html#ac39479cd2f36ef2606f3d93ce0f29ca6">delete_neuron</a> (<a class="el" href="brain__types_8h.html#ad0650b03224b278f4745106e67c745f7">BrainNeuron</a> neuron)</td></tr>
 <tr class="memdesc:ac39479cd2f36ef2606f3d93ce0f29ca6"><td class="mdescLeft">&#160;</td><td class="mdescRight">free all BrainNeuron memory  <a href="#ac39479cd2f36ef2606f3d93ce0f29ca6">More...</a><br /></td></tr>
 <tr class="separator:ac39479cd2f36ef2606f3d93ce0f29ca6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa810160fba09cea8cc9aae2708d8a284"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="brain__neuron__builder_8h.html#aa810160fba09cea8cc9aae2708d8a284">dump_neuron</a> (const <a class="el" href="brain__types_8h.html#ad0650b03224b278f4745106e67c745f7">BrainNeuron</a> neuron, const BrainUint layer_idx, const BrainUint neuron_idx, FILE *file)</td></tr>
 <tr class="memdesc:aa810160fba09cea8cc9aae2708d8a284"><td class="mdescLeft">&#160;</td><td class="mdescRight">serialize a neuron to an XML file  <a href="#aa810160fba09cea8cc9aae2708d8a284">More...</a><br /></td></tr>
 <tr class="separator:aa810160fba09cea8cc9aae2708d8a284"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa2041e6e5b2ace18013f0900e71928e8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="brain__neuron__builder_8h.html#aa2041e6e5b2ace18013f0900e71928e8">set_neuron_input</a> (<a class="el" href="brain__types_8h.html#ad0650b03224b278f4745106e67c745f7">BrainNeuron</a> neuron, const BrainUint number_of_inputs, const BrainSignal in, const BrainBool use_dropout, const BrainDouble dropout_percent)</td></tr>
-<tr class="memdesc:aa2041e6e5b2ace18013f0900e71928e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the input signal on a neuron  <a href="#aa2041e6e5b2ace18013f0900e71928e8">More...</a><br /></td></tr>
-<tr class="separator:aa2041e6e5b2ace18013f0900e71928e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3364e052e3eaca92f2b3c097e012e69a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="brain__neuron__builder_8h.html#a3364e052e3eaca92f2b3c097e012e69a">set_neuron_delta</a> (<a class="el" href="brain__types_8h.html#ad0650b03224b278f4745106e67c745f7">BrainNeuron</a> neuron, const BrainDouble learning_rate, const BrainDouble delta)</td></tr>
-<tr class="memdesc:a3364e052e3eaca92f2b3c097e012e69a"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the delta of the neuron  <a href="#a3364e052e3eaca92f2b3c097e012e69a">More...</a><br /></td></tr>
-<tr class="separator:a3364e052e3eaca92f2b3c097e012e69a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a348a48d4e081ebe42f9bfe30aef57a10"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="brain__neuron__builder_8h.html#a348a48d4e081ebe42f9bfe30aef57a10">set_neuron_input</a> (<a class="el" href="brain__types_8h.html#ad0650b03224b278f4745106e67c745f7">BrainNeuron</a> neuron, const BrainUint number_of_inputs, const BrainSignal in)</td></tr>
+<tr class="memdesc:a348a48d4e081ebe42f9bfe30aef57a10"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the input signal on a neuron  <a href="#a348a48d4e081ebe42f9bfe30aef57a10">More...</a><br /></td></tr>
+<tr class="separator:a348a48d4e081ebe42f9bfe30aef57a10"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a70056740aee7224eb689cc1e1f2a787c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="brain__neuron__builder_8h.html#a70056740aee7224eb689cc1e1f2a787c">set_neuron_delta</a> (<a class="el" href="brain__types_8h.html#ad0650b03224b278f4745106e67c745f7">BrainNeuron</a> neuron, const BrainDouble delta)</td></tr>
+<tr class="memdesc:a70056740aee7224eb689cc1e1f2a787c"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the delta of the neuron  <a href="#a70056740aee7224eb689cc1e1f2a787c">More...</a><br /></td></tr>
+<tr class="separator:a70056740aee7224eb689cc1e1f2a787c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad3882bcadabedd856a09723d65889f7e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="brain__neuron__builder_8h.html#ad3882bcadabedd856a09723d65889f7e">set_neuron_bias</a> (<a class="el" href="brain__types_8h.html#ad0650b03224b278f4745106e67c745f7">BrainNeuron</a> neuron, const BrainDouble bias)</td></tr>
 <tr class="memdesc:ad3882bcadabedd856a09723d65889f7e"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the bias of a neuron  <a href="#ad3882bcadabedd856a09723d65889f7e">More...</a><br /></td></tr>
 <tr class="separator:ad3882bcadabedd856a09723d65889f7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -233,7 +233,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a95e511aeaae3b9b89fdb8c52593ff8ba"></a>
+<a class="anchor" id="a39b4c217cd57ab1aa91c313864a485c0"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -246,8 +246,8 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="brain__types_8h.html#aa5b3ee640e9de81caddce84b23d0c38e">BrainActivationType</a>&#160;</td>
-          <td class="paramname"><em>activation_type</em>, </td>
+          <td class="paramtype"><a class="el" href="brain__types_8h.html#a916598db8a4fc666f327e73a7fc46c70">BrainSettings</a>&#160;</td>
+          <td class="paramname"><em>settings</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -273,7 +273,7 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">number_of_inputs</td><td>input_signal_size </td></tr>
-    <tr><td class="paramname">activation_type</td><td>the activation function type </td></tr>
+    <tr><td class="paramname">settings</td><td>network settings </td></tr>
     <tr><td class="paramname">out</td><td>a pointer to a BrainDouble owned by the BrainLayer </td></tr>
     <tr><td class="paramname">weighted_delta</td><td>an array owned by the BrainLayer to update weighted deltas </td></tr>
   </table>
@@ -318,7 +318,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a3364e052e3eaca92f2b3c097e012e69a"></a>
+<a class="anchor" id="a70056740aee7224eb689cc1e1f2a787c"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -327,12 +327,6 @@ Functions</h2></td></tr>
           <td>(</td>
           <td class="paramtype"><a class="el" href="brain__types_8h.html#ad0650b03224b278f4745106e67c745f7">BrainNeuron</a>&#160;</td>
           <td class="paramname"><em>neuron</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const BrainDouble&#160;</td>
-          <td class="paramname"><em>learning_rate</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -353,15 +347,25 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">neuron</td><td>a BrainNeuron </td></tr>
-    <tr><td class="paramname">learning_rate</td><td>the learning rate </td></tr>
     <tr><td class="paramname">delta</td><td>the delta </td></tr>
   </table>
   </dd>
 </dl>
 
+<p><div id="dynsection-2" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
+  <img id="dynsection-2-trigger" src="closed.png" alt="+"/> Here is the call graph for this function:</div>
+<div id="dynsection-2-summary" class="dynsummary" style="display:block;">
+</div>
+<div id="dynsection-2-content" class="dyncontent" style="display:none;">
+<div class="center"><img src="brain__neuron__builder_8h_a70056740aee7224eb689cc1e1f2a787c_cgraph.png" border="0" usemap="#brain__neuron__builder_8h_a70056740aee7224eb689cc1e1f2a787c_cgraph" alt=""/></div>
+<map name="brain__neuron__builder_8h_a70056740aee7224eb689cc1e1f2a787c_cgraph" id="brain__neuron__builder_8h_a70056740aee7224eb689cc1e1f2a787c_cgraph">
+<area shape="rect" id="node2" href="brain__settings_8h.html#a70944b150ae7341ee57fa4ceb45b8a2d" title="get the backpropagation learning rate " alt="" coords="175,5,369,47"/></map>
+</div>
+</p>
+
 </div>
 </div>
-<a class="anchor" id="aa2041e6e5b2ace18013f0900e71928e8"></a>
+<a class="anchor" id="a348a48d4e081ebe42f9bfe30aef57a10"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -381,19 +385,7 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const BrainSignal&#160;</td>
-          <td class="paramname"><em>in</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const BrainBool&#160;</td>
-          <td class="paramname"><em>use_dropout</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const BrainDouble&#160;</td>
-          <td class="paramname"><em>dropout_percent</em>&#160;</td>
+          <td class="paramname"><em>in</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -410,11 +402,20 @@ Functions</h2></td></tr>
     <tr><td class="paramname">neuron</td><td>a BrainNeuron </td></tr>
     <tr><td class="paramname">number_of_inputs</td><td>input signal's length </td></tr>
     <tr><td class="paramname">in</td><td>the input signal </td></tr>
-    <tr><td class="paramname">use_dropout</td><td>enable or disable dropout </td></tr>
-    <tr><td class="paramname">dropout_percent</td><td>dropout factor </td></tr>
   </table>
   </dd>
 </dl>
+
+<p><div id="dynsection-3" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
+  <img id="dynsection-3-trigger" src="closed.png" alt="+"/> Here is the caller graph for this function:</div>
+<div id="dynsection-3-summary" class="dynsummary" style="display:block;">
+</div>
+<div id="dynsection-3-content" class="dyncontent" style="display:none;">
+<div class="center"><img src="brain__neuron__builder_8h_a348a48d4e081ebe42f9bfe30aef57a10_icgraph.png" border="0" usemap="#brain__neuron__builder_8h_a348a48d4e081ebe42f9bfe30aef57a10_icgraph" alt=""/></div>
+<map name="brain__neuron__builder_8h_a348a48d4e081ebe42f9bfe30aef57a10_icgraph" id="brain__neuron__builder_8h_a348a48d4e081ebe42f9bfe30aef57a10_icgraph">
+<area shape="rect" id="node2" href="brain__layer__builder_8h.html#a93b759f69b75965db34e744cfec2cf9b" title="set the layer input " alt="" coords="175,5,285,32"/><area shape="rect" id="node3" href="brain__network__builder_8h.html#a898f07e0d90f3dee6b627ae2b7d96f71" title="propagate an input signal from the input signal to the output layer " alt="" coords="333,5,424,32"/><area shape="rect" id="node4" href="brain__network__builder_8h.html#a6ac84a7989f4e3471f30f43cbae78d6f" title="launch the training process for the neural network " alt="" coords="472,5,519,32"/></map>
+</div>
+</p>
 
 </div>
 </div>
@@ -466,7 +467,7 @@ Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_b25a7f08a29e71bd5c0b707ba966a66f.html">brain</a></li><li class="navelem"><a class="el" href="brain__neuron__builder_8h.html">brain_neuron_builder.h</a></li>
-    <li class="footer">Generated on Mon Dec 19 2016 19:18:51 for libBrain by
+    <li class="footer">Generated on Tue Dec 20 2016 20:20:32 for libBrain by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.8 </li>
   </ul>

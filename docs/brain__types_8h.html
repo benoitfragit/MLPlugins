@@ -116,8 +116,6 @@ $(document).ready(function(){initNavTree('brain__types_8h.html','');});
 </div>
 <div id="dynsection-0-content" class="dyncontent" style="display:none;">
 <div class="center"><img src="brain__types_8h__incl.png" border="0" usemap="#_2home_2benoit_2_documents_2projets_2_c_2lib_brain_2src_2brain_2brain__types_8h" alt=""/></div>
-<map name="_2home_2benoit_2_documents_2projets_2_c_2lib_brain_2src_2brain_2brain__types_8h" id="_2home_2benoit_2_documents_2projets_2_c_2lib_brain_2src_2brain_2brain__types_8h">
-</map>
 </div>
 </div><div class="textblock"><div id="dynsection-1" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
   <img id="dynsection-1-trigger" src="closed.png" alt="+"/> This graph shows which files directly or indirectly include this file:</div>
@@ -126,7 +124,7 @@ $(document).ready(function(){initNavTree('brain__types_8h.html','');});
 <div id="dynsection-1-content" class="dyncontent" style="display:none;">
 <div class="center"><img src="brain__types_8h__dep__incl.png" border="0" usemap="#_2home_2benoit_2_documents_2projets_2_c_2lib_brain_2src_2brain_2brain__types_8hdep" alt=""/></div>
 <map name="_2home_2benoit_2_documents_2projets_2_c_2lib_brain_2src_2brain_2brain__types_8hdep" id="_2home_2benoit_2_documents_2projets_2_c_2lib_brain_2src_2brain_2brain__types_8hdep">
-<area shape="rect" id="node2" href="brain__data__reader_8h.html" title="Define the API to read training data from an XML file. " alt="" coords="5,109,177,165"/><area shape="rect" id="node3" href="brain__layer__builder_8h.html" title="Define the API to build a Layer. " alt="" coords="201,109,379,165"/><area shape="rect" id="node4" href="brain__neuron__builder_8h.html" title="Define the API to create an BrainNeuron. " alt="" coords="403,109,591,165"/><area shape="rect" id="node5" href="brain__network__builder_8h.html" title="Define the API to create an control a Neural network. " alt="" coords="615,109,810,165"/><area shape="rect" id="node6" href="brain__builder__types_8h.html" title="Define all BrainBuilder types. " alt="" coords="835,109,1025,165"/><area shape="rect" id="node7" href="brain__builder_8h.html" title="Define the API to load a networkand from an XML file. " alt="" coords="750,213,918,269"/><area shape="rect" id="node8" href="brain__xml__utils_8h.html" title="Define the API to load an XML file. " alt="" coords="942,213,1110,269"/></map>
+<area shape="rect" id="node2" href="brain__data__reader_8h.html" title="Define the API to read training data from an XML file. " alt="" coords="5,109,177,165"/><area shape="rect" id="node3" href="brain__layer__builder_8h.html" title="Define the API to build a Layer. " alt="" coords="201,109,379,165"/><area shape="rect" id="node4" href="brain__neuron__builder_8h.html" title="Define the API to create an BrainNeuron. " alt="" coords="403,109,591,165"/><area shape="rect" id="node5" href="brain__network__builder_8h.html" title="Define the API to create an control a Neural network. " alt="" coords="615,109,810,165"/><area shape="rect" id="node6" href="brain__settings_8h.html" title="Define the API to control network settings. " alt="" coords="834,109,1002,165"/><area shape="rect" id="node7" href="brain__builder__types_8h.html" title="Define all BrainBuilder types. " alt="" coords="1027,109,1217,165"/><area shape="rect" id="node8" href="brain__builder_8h.html" title="Define the API to load a networkand from an XML file. " alt="" coords="942,213,1110,269"/><area shape="rect" id="node9" href="brain__xml__utils_8h.html" title="Define the API to load an XML file. " alt="" coords="1134,213,1302,269"/></map>
 </div>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
@@ -137,6 +135,10 @@ Typedefs</h2></td></tr>
 <tr class="memitem:aef1d48952fa11f6fd0c737f5a16f9a41"><td class="memItemLeft" align="right" valign="top">typedef BrainDouble(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="brain__types_8h.html#aef1d48952fa11f6fd0c737f5a16f9a41">CostPtrFunc</a> )(const BrainDouble output, const BrainDouble desired)</td></tr>
 <tr class="memdesc:aef1d48952fa11f6fd0c737f5a16f9a41"><td class="mdescLeft">&#160;</td><td class="mdescRight">function pointer on an cost function  <a href="#aef1d48952fa11f6fd0c737f5a16f9a41">More...</a><br /></td></tr>
 <tr class="separator:aef1d48952fa11f6fd0c737f5a16f9a41"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a916598db8a4fc666f327e73a7fc46c70"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a916598db8a4fc666f327e73a7fc46c70"></a>
+typedef struct <a class="el" href="struct_settings.html">Settings</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="brain__types_8h.html#a916598db8a4fc666f327e73a7fc46c70">BrainSettings</a></td></tr>
+<tr class="memdesc:a916598db8a4fc666f327e73a7fc46c70"><td class="mdescLeft">&#160;</td><td class="mdescRight">opaque pointer on <a class="el" href="struct_settings.html" title="Internal model for a BrainSettings. ">Settings</a> struct <br /></td></tr>
+<tr class="separator:a916598db8a4fc666f327e73a7fc46c70"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:add44c3d64045810f58dd68fbcdc8ef42"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="add44c3d64045810f58dd68fbcdc8ef42"></a>
 typedef struct <a class="el" href="struct_data.html">Data</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="brain__types_8h.html#add44c3d64045810f58dd68fbcdc8ef42">BrainData</a></td></tr>
 <tr class="memdesc:add44c3d64045810f58dd68fbcdc8ef42"><td class="mdescLeft">&#160;</td><td class="mdescRight">opaque pointer on <a class="el" href="struct_data.html" title="Internal model for a BrainData. ">Data</a> struct <br /></td></tr>
@@ -180,6 +182,12 @@ Enumerations</h2></td></tr>
  }</td></tr>
 <tr class="memdesc:a93b1d42a254458cc3a7fd41b4551a192"><td class="mdescLeft">&#160;</td><td class="mdescRight">enumeration to choose network cost function  <a href="brain__types_8h.html#a93b1d42a254458cc3a7fd41b4551a192">More...</a><br /></td></tr>
 <tr class="separator:a93b1d42a254458cc3a7fd41b4551a192"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a76a79e05ba37325dc341b11b74c4be5a"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="brain__types_8h.html#a76a79e05ba37325dc341b11b74c4be5a">BrainLearningType</a> { <a class="el" href="brain__types_8h.html#a76a79e05ba37325dc341b11b74c4be5aa56f778bf997c23d08cb96669430c00e9">Invalid_Learning</a>, 
+<a class="el" href="brain__types_8h.html#a76a79e05ba37325dc341b11b74c4be5aa8a832779869748ffa072156388285bf2">BackPropagation</a>, 
+<a class="el" href="brain__types_8h.html#a76a79e05ba37325dc341b11b74c4be5aa82bfcba055fc81945b5d7082f5577e57">Resilient</a>
+ }</td></tr>
+<tr class="memdesc:a76a79e05ba37325dc341b11b74c4be5a"><td class="mdescLeft">&#160;</td><td class="mdescRight">enumeration to choose network learning process  <a href="brain__types_8h.html#a76a79e05ba37325dc341b11b74c4be5a">More...</a><br /></td></tr>
+<tr class="separator:a76a79e05ba37325dc341b11b74c4be5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Define all types. </p>
@@ -295,6 +303,31 @@ Enumerations</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a76a79e05ba37325dc341b11b74c4be5a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="brain__types_8h.html#a76a79e05ba37325dc341b11b74c4be5a">BrainLearningType</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>enumeration to choose network learning process </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a class="anchor" id="a76a79e05ba37325dc341b11b74c4be5aa56f778bf997c23d08cb96669430c00e9"></a>Invalid_Learning&#160;</td><td class="fielddoc">
+<p>Invalid learning </p>
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="a76a79e05ba37325dc341b11b74c4be5aa8a832779869748ffa072156388285bf2"></a>BackPropagation&#160;</td><td class="fielddoc">
+<p>Backpropagation learning </p>
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="a76a79e05ba37325dc341b11b74c4be5aa82bfcba055fc81945b5d7082f5577e57"></a>Resilient&#160;</td><td class="fielddoc">
+<p>Resilient learning </p>
+</td></tr>
+</table>
+
+</div>
+</div>
 <a class="anchor" id="a0941b6bafdb9422c702a56e46423c48f"></a>
 <div class="memitem">
 <div class="memproto">
@@ -323,7 +356,7 @@ Enumerations</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_b25a7f08a29e71bd5c0b707ba966a66f.html">brain</a></li><li class="navelem"><a class="el" href="brain__types_8h.html">brain_types.h</a></li>
-    <li class="footer">Generated on Mon Dec 19 2016 19:18:51 for libBrain by
+    <li class="footer">Generated on Tue Dec 20 2016 20:20:32 for libBrain by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.8 </li>
   </ul>

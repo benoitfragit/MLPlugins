@@ -1,6 +1,16 @@
 <?xml version="1.0"?>
-<network inputs="2" use-dropout="false" dropout-percent="0.5" learning-rate="1.2" activation-function-type="Sigmoid" cost-function-type="CrossEntropy">
-    <layer neurons="2"/>
-    <layer neurons="3"/>
-    <layer neurons="2"/>
+<network inputs="2">
+    <layers>
+        <layer neurons="2"/>
+        <layer neurons="3"/>
+        <layer neurons="2"/>
+    </layers>
+
+    <settings activation-function="Sigmoid" cost-function="CrossEntropy">
+        <training learning="BackPropagation" backpropagation-learning-rate="1.2">
+            <dropout activate="false" factor="0.5"/>
+            <resilient-eta   positive="1.2" negative="0.95"/>
+            <resilient-delta min="0.000001" max="50.0"/>
+        </training>
+    </settings>
 </network>

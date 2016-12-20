@@ -1,3 +1,6 @@
 <map id="get_layer_neuron" name="get_layer_neuron">
-<area shape="rect" id="node2" href="$brain__builder_8h.html#a7fb0b152ccedc8b1335cef3d7d7e6626" title="load previously trained neural network&#39;s weight " alt="" coords="175,5,297,47"/>
+<area shape="rect" id="node2" href="$brain__layer__builder_8h.html#a93b759f69b75965db34e744cfec2cf9b" title="set the layer input " alt="" coords="181,5,291,32"/>
+<area shape="rect" id="node5" href="$brain__builder_8h.html#a7fb0b152ccedc8b1335cef3d7d7e6626" title="load previously trained neural network&#39;s weight " alt="" coords="175,57,297,98"/>
+<area shape="rect" id="node3" href="$brain__network__builder_8h.html#a898f07e0d90f3dee6b627ae2b7d96f71" title="propagate an input signal from the input signal to the output layer " alt="" coords="345,5,436,32"/>
+<area shape="rect" id="node4" href="$brain__network__builder_8h.html#a6ac84a7989f4e3471f30f43cbae78d6f" title="launch the training process for the neural network " alt="" coords="484,5,531,32"/>
 </map>

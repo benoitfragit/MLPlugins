@@ -1,3 +1,5 @@
 <map id="feedforward" name="feedforward">
-<area shape="rect" id="node2" href="$brain__network__builder_8h.html#ab231a87d46af189c837d36aae92b48d7" title="get a layer from a network " alt="" coords="144,5,272,32"/>
+<area shape="rect" id="node2" href="$brain__layer__builder_8h.html#a93b759f69b75965db34e744cfec2cf9b" title="set the layer input " alt="" coords="144,31,255,57"/>
+<area shape="rect" id="node3" href="$brain__layer__builder_8h.html#a8b6c1e634e8d7b7fcfe3a526c6b11755" title="get a Neuron from the layer " alt="" coords="303,5,424,32"/>
+<area shape="rect" id="node4" href="$brain__neuron__builder_8h.html#a348a48d4e081ebe42f9bfe30aef57a10" title="set the input signal on a neuron " alt="" coords="303,56,424,83"/>
 </map>

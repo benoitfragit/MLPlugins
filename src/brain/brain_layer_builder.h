@@ -12,17 +12,19 @@
 #include "brain_types.h"
 
 /**
- * \fn BrainLayer new_layer(const BrainUint number_of_neurons, const BrainUint number_of_inputs, const BrainAcctivationType activation_type)
+ * \fn BrainLayer new_layer(const BrainUint number_of_neurons,
+ *                          const BrainUint number_of_inputs
+ *                          const BrainSettings settings)
  * \brief Fonction to create a BrainLayer from an XML context
  *
  * \param number_of_neurons Number of neurons in this layer
  * \param number_of_inputs size of the input signal
- * \param activation_type the activation function type
+ * \param settings network settings
  * \return a new allocated BrainLayer or NULL if it failed
  */
 BrainLayer  new_layer                 (const BrainUint number_of_neurons,
                                        const BrainUint number_of_inputs,
-                                       const BrainActivationType activation_type);
+                                       const BrainSettings settings);
 /**
  * \fn BrainNeuron get_layer_neuron(const BrainLayer layer, const BrainUint index)
  * \brief get a Neuron from the layer
@@ -75,7 +77,9 @@ BrainLayer  get_layer_next_layer      (const BrainLayer layer);
  */
 void        delete_layer              (BrainLayer layer);
 /**
- * \fn void set_layer_input(const BrainLayer layer, const BrainUint index)
+ * \fn void set_layer_input(const BrainLayer layer,
+ *                          const BrainUint number_of_inputs,
+ *                          const BrainSignal in)
  * \brief set the layer input
  *
  * this method set the input of a layer, then compute the activation
@@ -84,14 +88,10 @@ void        delete_layer              (BrainLayer layer);
  * \param layer            a BrainLayer
  * \param number_of_inputs length of the input signal
  * \param in               the input_signal
- * \param use_dropout      enable or disable dropout
- * \param dropout_percent  dropout ratio
  */
 void        set_layer_input           (BrainLayer layer,
                                        const BrainUint number_of_inputs,
-                                       const BrainSignal in,
-                                       const BrainBool use_dropbout,
-                                       const BrainDouble dropout_percent);
+                                       const BrainSignal in);
 /**
  * \fn void dump_layer(const BrainLayer layer)
  * \brief write the content of the layer to an xml file
