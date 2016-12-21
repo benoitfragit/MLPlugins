@@ -1,0 +1,4 @@
+<map id="update_neuron_weights" name="update_neuron_weights">
+<area shape="rect" id="node2" href="$brain__settings_8h.html#a90258dbea90c04abd90611994703c8fa" title="get the network learning type " alt="" coords="221,5,398,32"/>
+<area shape="rect" id="node3" href="$brain__settings_8h.html#a70944b150ae7341ee57fa4ceb45b8a2d" title="get the backpropagation learning rate " alt="" coords="212,57,407,98"/>
+</map>
