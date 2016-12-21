@@ -25,9 +25,5 @@ var brain__types_8h =
       [ "Invalid_Learning", "brain__types_8h.html#a76a79e05ba37325dc341b11b74c4be5aa56f778bf997c23d08cb96669430c00e9", null ],
       [ "BackPropagation", "brain__types_8h.html#a76a79e05ba37325dc341b11b74c4be5aa8a832779869748ffa072156388285bf2", null ],
       [ "Resilient", "brain__types_8h.html#a76a79e05ba37325dc341b11b74c4be5aa82bfcba055fc81945b5d7082f5577e57", null ]
-    ] ],
-    [ "BrainResult", "brain__types_8h.html#a0941b6bafdb9422c702a56e46423c48f", [
-      [ "BRAIN_FAILED", "brain__types_8h.html#a0941b6bafdb9422c702a56e46423c48fa9cbf37e8095fb08c9c5949b7a60857cc", null ],
-      [ "BRAIN_SUCCESS", "brain__types_8h.html#a0941b6bafdb9422c702a56e46423c48fad528ca6d04731db526114361ff13c105", null ]
     ] ]
 ];

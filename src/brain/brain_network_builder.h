@@ -77,7 +77,7 @@ BrainSignal get_network_output(const BrainNetwork network);
 BrainLayer get_network_layer(const BrainNetwork network,
                              const BrainUint layer_index);
 /**
- * \fn BrainResult train(BrainNetwork network, const BrainData data, const BrainDouble target_error, const BrainUint max_iter)
+ * \fn BrainBool train(BrainNetwork network, const BrainData data, const BrainDouble target_error, const BrainUint max_iter)
  * \brief launch the training process for the neural network
  *
  * \param network      the BrainNetwork to train
@@ -85,9 +85,9 @@ BrainLayer get_network_layer(const BrainNetwork network,
  * \param target_error the minimum error threshold
  * \param max_iter     maximum number of iteration
  *
- * \return BRAIN_SUCCESS if training work else BRAIN_FAILED
+ * \return BRAIN_TRUE if training work else BRAIN_FALSE
  */
-BrainResult train(BrainNetwork      network,
+BrainBool train(BrainNetwork      network,
                   const BrainData   data,
                   const BrainDouble target_error,
                   const BrainUint   max_iter);

@@ -242,6 +242,7 @@ void
 dump_network(const BrainNetwork network,
              BrainString filename)
 {
+
     if (network != NULL && filename != NULL)
     {
         FILE* file = fopen(filename, "w");
@@ -278,7 +279,7 @@ feedforward(BrainNetwork      network,
     }
 }
 
-BrainResult
+BrainBool
 train(BrainNetwork network,
       const BrainData data,
       const BrainDouble target_error,
@@ -310,8 +311,8 @@ train(BrainNetwork network,
 
     if (error > target_error)
     {
-        return BRAIN_FAILED;
+        return BRAIN_FALSE;
     }
 
-    return BRAIN_SUCCESS;
+    return BRAIN_TRUE;
 }

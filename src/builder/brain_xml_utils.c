@@ -209,7 +209,6 @@ validate_with_xsd(BrainString xml_file, BrainString xsd_file)
         ret = xmlSchemaValidateDoc(ctxt, doc);
         if (ret == 0)
         {
-            BRAIN_DEBUG("%s validates\n", xml_file);
             result = BRAIN_TRUE;
         }
         else if (ret > 0)

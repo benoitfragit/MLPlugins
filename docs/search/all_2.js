@@ -4,12 +4,10 @@ var searchData=
   ['brain_5fbuilder_2eh',['brain_builder.h',['../brain__builder_8h.html',1,'']]],
   ['brain_5fbuilder_5ftypes_2eh',['brain_builder_types.h',['../brain__builder__types_8h.html',1,'']]],
   ['brain_5fdata_5freader_2eh',['brain_data_reader.h',['../brain__data__reader_8h.html',1,'']]],
-  ['brain_5ffailed',['BRAIN_FAILED',['../brain__types_8h.html#a0941b6bafdb9422c702a56e46423c48fa9cbf37e8095fb08c9c5949b7a60857cc',1,'brain_types.h']]],
   ['brain_5flayer_5fbuilder_2eh',['brain_layer_builder.h',['../brain__layer__builder_8h.html',1,'']]],
   ['brain_5fnetwork_5fbuilder_2eh',['brain_network_builder.h',['../brain__network__builder_8h.html',1,'']]],
   ['brain_5fneuron_5fbuilder_2eh',['brain_neuron_builder.h',['../brain__neuron__builder_8h.html',1,'']]],
   ['brain_5fsettings_2eh',['brain_settings.h',['../brain__settings_8h.html',1,'']]],
-  ['brain_5fsuccess',['BRAIN_SUCCESS',['../brain__types_8h.html#a0941b6bafdb9422c702a56e46423c48fad528ca6d04731db526114361ff13c105',1,'brain_types.h']]],
   ['brain_5ftypes_2eh',['brain_types.h',['../brain__types_8h.html',1,'']]],
   ['brain_5fxml_5futils_2eh',['brain_xml_utils.h',['../brain__xml__utils_8h.html',1,'']]],
   ['brainactivationtype',['BrainActivationType',['../brain__types_8h.html#aa5b3ee640e9de81caddce84b23d0c38e',1,'brain_types.h']]],
@@ -19,7 +17,6 @@ var searchData=
   ['brainlearningtype',['BrainLearningType',['../brain__types_8h.html#a76a79e05ba37325dc341b11b74c4be5a',1,'brain_types.h']]],
   ['brainnetwork',['BrainNetwork',['../brain__types_8h.html#ad5cc0d451c7f47db39ffb684ec3837ee',1,'brain_types.h']]],
   ['brainneuron',['BrainNeuron',['../brain__types_8h.html#ad0650b03224b278f4745106e67c745f7',1,'brain_types.h']]],
-  ['brainresult',['BrainResult',['../brain__types_8h.html#a0941b6bafdb9422c702a56e46423c48f',1,'brain_types.h']]],
   ['brainsettings',['BrainSettings',['../brain__types_8h.html#a916598db8a4fc666f327e73a7fc46c70',1,'brain_types.h']]],
   ['buffer',['Buffer',['../brain__builder__types_8h.html#a8bf2e2ae8bdfb29978cd6f3ce365161a',1,'brain_builder_types.h']]]
 ];

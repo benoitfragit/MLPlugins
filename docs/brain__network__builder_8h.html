@@ -136,9 +136,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a5b2decb3e8e92a6f5468743a77057e80"><td class="memItemLeft" align="right" valign="top">BrainSignal&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="brain__network__builder_8h.html#a5b2decb3e8e92a6f5468743a77057e80">get_network_output</a> (const <a class="el" href="brain__types_8h.html#ad5cc0d451c7f47db39ffb684ec3837ee">BrainNetwork</a> network)</td></tr>
 <tr class="memdesc:a5b2decb3e8e92a6f5468743a77057e80"><td class="mdescLeft">&#160;</td><td class="mdescRight">get the output of the network  <a href="#a5b2decb3e8e92a6f5468743a77057e80">More...</a><br /></td></tr>
 <tr class="separator:a5b2decb3e8e92a6f5468743a77057e80"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6ac84a7989f4e3471f30f43cbae78d6f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="brain__types_8h.html#a0941b6bafdb9422c702a56e46423c48f">BrainResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="brain__network__builder_8h.html#a6ac84a7989f4e3471f30f43cbae78d6f">train</a> (<a class="el" href="brain__types_8h.html#ad5cc0d451c7f47db39ffb684ec3837ee">BrainNetwork</a> network, const <a class="el" href="brain__types_8h.html#add44c3d64045810f58dd68fbcdc8ef42">BrainData</a> data, const BrainDouble target_error, const BrainUint max_iter)</td></tr>
-<tr class="memdesc:a6ac84a7989f4e3471f30f43cbae78d6f"><td class="mdescLeft">&#160;</td><td class="mdescRight">launch the training process for the neural network  <a href="#a6ac84a7989f4e3471f30f43cbae78d6f">More...</a><br /></td></tr>
-<tr class="separator:a6ac84a7989f4e3471f30f43cbae78d6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a165855c65fbabf57d9e69b4fda6a0507"><td class="memItemLeft" align="right" valign="top">BrainBool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="brain__network__builder_8h.html#a165855c65fbabf57d9e69b4fda6a0507">train</a> (<a class="el" href="brain__types_8h.html#ad5cc0d451c7f47db39ffb684ec3837ee">BrainNetwork</a> network, const <a class="el" href="brain__types_8h.html#add44c3d64045810f58dd68fbcdc8ef42">BrainData</a> data, const BrainDouble target_error, const BrainUint max_iter)</td></tr>
+<tr class="memdesc:a165855c65fbabf57d9e69b4fda6a0507"><td class="mdescLeft">&#160;</td><td class="mdescRight">launch the training process for the neural network  <a href="#a165855c65fbabf57d9e69b4fda6a0507">More...</a><br /></td></tr>
+<tr class="separator:a165855c65fbabf57d9e69b4fda6a0507"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Define the API to create an control a Neural network. </p>
@@ -274,7 +274,7 @@ Functions</h2></td></tr>
 <div id="dynsection-3-content" class="dyncontent" style="display:none;">
 <div class="center"><img src="brain__network__builder_8h_a898f07e0d90f3dee6b627ae2b7d96f71_icgraph.png" border="0" usemap="#brain__network__builder_8h_a898f07e0d90f3dee6b627ae2b7d96f71_icgraph" alt=""/></div>
 <map name="brain__network__builder_8h_a898f07e0d90f3dee6b627ae2b7d96f71_icgraph" id="brain__network__builder_8h_a898f07e0d90f3dee6b627ae2b7d96f71_icgraph">
-<area shape="rect" id="node2" href="brain__network__builder_8h.html#a6ac84a7989f4e3471f30f43cbae78d6f" title="launch the training process for the neural network " alt="" coords="144,5,191,32"/></map>
+<area shape="rect" id="node2" href="brain__network__builder_8h.html#a165855c65fbabf57d9e69b4fda6a0507" title="launch the training process for the neural network " alt="" coords="144,5,191,32"/></map>
 </div>
 </p>
 
@@ -377,12 +377,12 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a6ac84a7989f4e3471f30f43cbae78d6f"></a>
+<a class="anchor" id="a165855c65fbabf57d9e69b4fda6a0507"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="brain__types_8h.html#a0941b6bafdb9422c702a56e46423c48f">BrainResult</a> train </td>
+          <td class="memname">BrainBool train </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="brain__types_8h.html#ad5cc0d451c7f47db39ffb684ec3837ee">BrainNetwork</a>&#160;</td>
           <td class="paramname"><em>network</em>, </td>
@@ -423,15 +423,15 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>BRAIN_SUCCESS if training work else BRAIN_FAILED </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>BRAIN_TRUE if training work else BRAIN_FALSE </dd></dl>
 
 <p><div id="dynsection-6" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
   <img id="dynsection-6-trigger" src="closed.png" alt="+"/> Here is the call graph for this function:</div>
 <div id="dynsection-6-summary" class="dynsummary" style="display:block;">
 </div>
 <div id="dynsection-6-content" class="dyncontent" style="display:none;">
-<div class="center"><img src="brain__network__builder_8h_a6ac84a7989f4e3471f30f43cbae78d6f_cgraph.png" border="0" usemap="#brain__network__builder_8h_a6ac84a7989f4e3471f30f43cbae78d6f_cgraph" alt=""/></div>
-<map name="brain__network__builder_8h_a6ac84a7989f4e3471f30f43cbae78d6f_cgraph" id="brain__network__builder_8h_a6ac84a7989f4e3471f30f43cbae78d6f_cgraph">
+<div class="center"><img src="brain__network__builder_8h_a165855c65fbabf57d9e69b4fda6a0507_cgraph.png" border="0" usemap="#brain__network__builder_8h_a165855c65fbabf57d9e69b4fda6a0507_cgraph" alt=""/></div>
+<map name="brain__network__builder_8h_a165855c65fbabf57d9e69b4fda6a0507_cgraph" id="brain__network__builder_8h_a165855c65fbabf57d9e69b4fda6a0507_cgraph">
 <area shape="rect" id="node2" href="brain__data__reader_8h.html#a054cc968ff8383d3b163812441d3dcf3" title="get a random input index " alt="" coords="100,5,268,47"/><area shape="rect" id="node3" href="brain__data__reader_8h.html#a042d67d146c4a88afd7ba4febfd7cb13" title="get input signal length " alt="" coords="109,71,259,98"/><area shape="rect" id="node4" href="brain__data__reader_8h.html#a9c1590c4134d47b33f8b9665fa3559ab" title="get output signal length " alt="" coords="105,122,263,149"/><area shape="rect" id="node5" href="brain__data__reader_8h.html#ac5c16f1d904807423136f09a35ac3305" title="get on input signal from the BrainData " alt="" coords="131,173,237,199"/><area shape="rect" id="node6" href="brain__data__reader_8h.html#af86bd7390f646a72c63ec78f34643c7d" title="get an output signal from the BrainData " alt="" coords="127,223,241,250"/><area shape="rect" id="node7" href="brain__network__builder_8h.html#a898f07e0d90f3dee6b627ae2b7d96f71" title="propagate an input signal from the input signal to the output layer " alt="" coords="139,274,229,301"/><area shape="rect" id="node8" href="brain__layer__builder_8h.html#a93b759f69b75965db34e744cfec2cf9b" title="set the layer input " alt="" coords="316,274,427,301"/><area shape="rect" id="node9" href="brain__layer__builder_8h.html#a8b6c1e634e8d7b7fcfe3a526c6b11755" title="get a Neuron from the layer " alt="" coords="475,249,596,275"/><area shape="rect" id="node10" href="brain__neuron__builder_8h.html#a348a48d4e081ebe42f9bfe30aef57a10" title="set the input signal on a neuron " alt="" coords="475,299,596,326"/></map>
 </div>
 </p>
@@ -444,7 +444,7 @@ Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_b25a7f08a29e71bd5c0b707ba966a66f.html">brain</a></li><li class="navelem"><a class="el" href="brain__network__builder_8h.html">brain_network_builder.h</a></li>
-    <li class="footer">Generated on Tue Dec 20 2016 20:20:32 for libBrain by
+    <li class="footer">Generated on Wed Dec 21 2016 10:07:22 for libBrain by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.8 </li>
   </ul>

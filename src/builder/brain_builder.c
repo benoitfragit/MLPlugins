@@ -17,123 +17,129 @@ new_network_from_context(Context context)
 
     if (context && is_node_with_name(context, "network"))
     {
-        const BrainUint  number_of_layers = get_number_of_node_with_name(context, "layer");
-        const BrainUint  number_of_inputs = node_get_int   (context, "inputs",          1);
-        BrainUint*      neuron_per_layers = (BrainUint *)calloc(number_of_layers, sizeof(BrainUint));
-        BrainChar*                 buffer = NULL;
-        BrainUint                   index = 0;
 
-        for (index = 0;
-             index < number_of_layers;
-             ++index)
-        {
-            Context subcontext = get_node_with_name_and_index(context, "layer", index);
-
-            neuron_per_layers[index] = node_get_int(subcontext, "neurons", 1);
-        }
-
-        BrainBool                   use_dropout = BRAIN_FALSE;
-        BrainDouble             dropout_percent = 1.0;
-        BrainDouble                   delta_min = 0.000001;
-        BrainDouble                   delta_max = 50.0;
-        BrainDouble                eta_positive = 1.2;
-        BrainDouble                eta_negative = 0.95;
-        BrainDouble               learning_rate = 1.12;
-        BrainLearningType         learning_type = BackPropagation;
-        BrainActivationType     activation_type = Sigmoid;
+        BrainBool                    use_dropout = BRAIN_FALSE;
+        BrainDouble              dropout_percent = 1.0;
+        BrainDouble                    delta_min = 0.000001;
+        BrainDouble                    delta_max = 50.0;
+        BrainDouble                 eta_positive = 1.2;
+        BrainDouble                 eta_negative = 0.95;
+        BrainDouble                learning_rate = 1.12;
+        BrainLearningType          learning_type = BackPropagation;
+        BrainActivationType      activation_type = Sigmoid;
         BrainCostFunctionType cost_function_type = CrossEntropy;
+        BrainChar*                        buffer = NULL;
+        BrainUint                          index = 0;
+        const BrainUint  number_of_inputs = node_get_int(context, "inputs", 1);
 
-        //load settings level
-        Context settings_context = get_node_with_name_and_index(context, "settings", 0);
+        Context layers_context = get_node_with_name_and_index(context, "layers", 0);
 
-        if (settings_context != NULL)
+        if (layers_context != NULL)
         {
-            Context training_context = get_node_with_name_and_index(settings_context, "training", 0);
+            const BrainUint  number_of_layers = get_number_of_node_with_name(layers_context, "layer");
+            BrainUint*      neuron_per_layers = (BrainUint *)calloc(number_of_layers, sizeof(BrainUint));
 
-            if (training_context != NULL)
+            for (index = 0;
+                 index < number_of_layers;
+                 ++index)
             {
-                Context dropout_context = get_node_with_name_and_index(training_context, "dropout", 0);
+                Context subcontext = get_node_with_name_and_index(layers_context, "layer", index);
 
-                if (dropout_context != NULL)
+                neuron_per_layers[index] = node_get_int(subcontext, "neurons", 1);
+            }
+
+            //load settings level
+            Context settings_context = get_node_with_name_and_index(context, "settings", 0);
+
+            if (settings_context != NULL)
+            {
+                Context training_context = get_node_with_name_and_index(settings_context, "training", 0);
+
+                if (training_context != NULL)
                 {
-                    use_dropout     = node_get_bool(dropout_context, "activate", BRAIN_FALSE);
-                    dropout_percent = node_get_double(dropout_context, "factor", 1.0);
+                    Context dropout_context = get_node_with_name_and_index(training_context, "dropout", 0);
+
+                    if (dropout_context != NULL)
+                    {
+                        use_dropout     = node_get_bool(dropout_context, "activate", BRAIN_FALSE);
+                        dropout_percent = node_get_double(dropout_context, "factor", 1.0);
+                    }
+
+                    buffer = (BrainChar *)node_get_prop(training_context, "learning");
+                    learning_type = get_learning_type(buffer);
+
+                    if (buffer != NULL)
+                    {
+                        free(buffer);
+                    }
+
+                    switch (learning_type)
+                    {
+                        case BackPropagation:
+                        {
+                            learning_rate = node_get_double(training_context, "backpropagation-learning-rate", 1.2);
+                        }
+                            break;
+                        case Resilient:
+                        {
+                            Context eta_context   = get_node_with_name_and_index(training_context, "resilient-eta", 0);
+                            Context delta_context = get_node_with_name_and_index(training_context, "resilient-delta", 0);
+
+                            if (eta_context != NULL)
+                            {
+                                eta_positive = node_get_double(eta_context, "positive", 1.25);
+                                eta_negative = node_get_double(eta_context, "negative", 0.95);
+                            }
+
+                            if (delta_context != NULL)
+                            {
+                                delta_max = node_get_double(delta_context, "max", 50.0);
+                                delta_min = node_get_double(delta_context, "min", 0.000001);
+                            }
+                        }
+                            break;
+                        default:
+                            break;
+                    }
                 }
 
-                buffer = (BrainChar *)node_get_prop(training_context, "type");
-                learning_type = get_learning_type(buffer);
+                buffer             = (BrainChar *)node_get_prop(settings_context, "cost-function");
+                cost_function_type = get_cost_function_type(buffer);
 
                 if (buffer != NULL)
                 {
                     free(buffer);
                 }
 
-                switch (learning_type)
+                buffer             = (BrainChar *)node_get_prop(settings_context, "activation-function");
+                activation_type    = get_activation_type(buffer);
+
+                if (buffer != NULL)
                 {
-                    case BackPropagation:
-                    {
-                        learning_rate = node_get_double(training_context, "backpropagation-learning-rate", 1.2);
-                    }
-                        break;
-                    case Resilient:
-                    {
-                        Context eta_context   = get_node_with_name_and_index(training_context, "resilient-eta", 0);
-                        Context delta_context = get_node_with_name_and_index(training_context, "resilient-deta", 0);
-
-                        if (eta_context != NULL)
-                        {
-                            eta_positive = node_get_double(eta_context, "positive", 1.25);
-                            eta_negative = node_get_double(eta_context, "negative", 0.95);
-                        }
-
-                        if (delta_context != NULL)
-                        {
-                            delta_max = node_get_double(delta_context, "max", 50.0);
-                            delta_min = node_get_double(delta_context, "min", 0.000001);
-                        }
-                    }
-                        break;
-                    default:
-                        break;
+                    free(buffer);
                 }
             }
 
-            buffer             = (BrainChar *)node_get_prop(settings_context, "cost-function");
-            cost_function_type = get_cost_function_type(buffer);
+            settings = new_settings(activation_type,
+                                    cost_function_type,
+                                    use_dropout,
+                                    dropout_percent,
+                                    learning_type,
+                                    learning_rate,
+                                    delta_min,
+                                    delta_max,
+                                    eta_positive,
+                                    eta_negative);
 
-            if (buffer != NULL)
+            network = new_network(number_of_inputs,
+                                  number_of_layers,
+                                  settings,
+                                  neuron_per_layers);
+
+            if (neuron_per_layers != NULL)
             {
-                free(buffer);
+                free(neuron_per_layers);
             }
-
-            buffer             = (BrainChar *)node_get_prop(settings_context, "activation-function");
-            activation_type    = get_activation_type(buffer);
-
-            if (buffer != NULL)
-            {
-                free(buffer);
-            }
-        }
-
-        settings = new_settings(activation_type,
-                                cost_function_type,
-                                use_dropout,
-                                dropout_percent,
-                                learning_type,
-                                learning_rate,
-                                delta_min,
-                                delta_max,
-                                eta_positive,
-                                eta_negative);
-
-        network = new_network(number_of_inputs,
-                              number_of_layers,
-                              settings,
-                              neuron_per_layers);
-
-        if (neuron_per_layers != NULL)
-        {
-            free(neuron_per_layers);
         }
     }
 

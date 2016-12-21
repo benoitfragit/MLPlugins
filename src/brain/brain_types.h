@@ -34,16 +34,6 @@ typedef BrainDouble*  BrainSignal;
 typedef BrainDouble*  BrainWeight;
 
 /**
- * \enum BrainResult
- * \brief Return value for the train method.
- */
-typedef enum BrainResult
-{
-    BRAIN_FAILED  = 0, /*!< Training failed  */
-    BRAIN_SUCCESS = 1  /*!< Training succeed */
-} BrainResult;
-
-/**
  * \enum BrainActivationType
  * \brief enumeration to choose neurons activation function
  */
