@@ -88,16 +88,11 @@ activation(const BrainActivationType type)
 {
     switch (type)
     {
-        case Identity:
-            return &identity;
-        case TanH:
-            return &tangeant_hyperbolic;
-        case ArcTan:
-            return &co_tangeant;
-        case SoftPlus:
-            return &softplus;
-        case Sinusoid:
-            return &sinusoid;
+        case Identity: return &identity;
+        case TanH:     return &tangeant_hyperbolic;
+        case ArcTan:   return &co_tangeant;
+        case SoftPlus: return &softplus;
+        case Sinusoid: return &sinusoid;
         case Sigmoid:
         default:
             break;
@@ -111,16 +106,11 @@ derivative(const BrainActivationType type)
 {
     switch (type)
     {
-        case Identity:
-            return &identity_derivative;
-        case TanH:
-            return &tangeant_hyperbolic_derivative;
-        case ArcTan:
-            return &co_tangeant_derivative;
-        case SoftPlus:
-            return &softplus_derivative;
-        case Sinusoid:
-            return &sinusoid_derivative;
+        case Identity: return &identity_derivative;
+        case TanH:     return &tangeant_hyperbolic_derivative;
+        case ArcTan:   return &co_tangeant_derivative;
+        case SoftPlus: return &softplus_derivative;
+        case Sinusoid: return &sinusoid_derivative;
         case Sigmoid:
         default:
             break;
