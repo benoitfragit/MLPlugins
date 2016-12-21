@@ -116,12 +116,12 @@ $(document).ready(function(){initNavTree('struct_settings.html','');});
 </div>
 <div id="dynsection-0-content" class="dyncontent" style="display:none;">
 <div class="center"><img src="struct_settings__coll__graph.png" border="0" usemap="#_settings_coll__map" alt="Collaboration graph"/></div>
+<map name="_settings_coll__map" id="_settings_coll__map">
+<area shape="rect" id="node2" href="struct_neuron.html" title="Internal model for a BrainNeuron. " alt="" coords="45,307,183,472"/></map>
 </div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Data Fields</h2></td></tr>
-<tr class="memitem:ac66402d701756425617d0eb773718521"><td class="memItemLeft" align="right" valign="top"><a class="el" href="brain__types_8h.html#a76a79e05ba37325dc341b11b74c4be5a">BrainLearningType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_settings.html#ac66402d701756425617d0eb773718521">_learning_type</a></td></tr>
-<tr class="separator:ac66402d701756425617d0eb773718521"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a30c99a231dcb480b401adb4b99b33dec"><td class="memItemLeft" align="right" valign="top">BrainDouble&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_settings.html#a30c99a231dcb480b401adb4b99b33dec">_resilient_delta_max</a></td></tr>
 <tr class="separator:a30c99a231dcb480b401adb4b99b33dec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a802d2dbfdfe8a55b55b4d7a90ea88254"><td class="memItemLeft" align="right" valign="top">BrainDouble&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_settings.html#a802d2dbfdfe8a55b55b4d7a90ea88254">_resilient_delta_min</a></td></tr>
@@ -144,6 +144,8 @@ Data Fields</h2></td></tr>
 <tr class="separator:abcf1d1467bfcb647b3de689b235f777b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a876ef1fcf55e6f7e732c2875a36db7ec"><td class="memItemLeft" align="right" valign="top"><a class="el" href="brain__types_8h.html#a5fd1e19a97ab9959bc8502bbaa609e92">PtrFunc</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_settings.html#a876ef1fcf55e6f7e732c2875a36db7ec">_neuron_derivative</a></td></tr>
 <tr class="separator:a876ef1fcf55e6f7e732c2875a36db7ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a52f4a6c49b618a61f2f6031eeef2831c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="brain__types_8h.html#ab85811d56a97ec5fab642db632a15523">LearningPtrFunc</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_settings.html#a52f4a6c49b618a61f2f6031eeef2831c">_learning_function</a></td></tr>
+<tr class="separator:a52f4a6c49b618a61f2f6031eeef2831c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Internal model for a BrainSettings. </p>
@@ -175,16 +177,16 @@ Data Fields</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ac66402d701756425617d0eb773718521"></a>
+<a class="anchor" id="a52f4a6c49b618a61f2f6031eeef2831c"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="brain__types_8h.html#a76a79e05ba37325dc341b11b74c4be5a">BrainLearningType</a> _learning_type</td>
+          <td class="memname"><a class="el" href="brain__types_8h.html#ab85811d56a97ec5fab642db632a15523">LearningPtrFunc</a> _learning_function</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>learning method for this network </p>
+<p>Learning function </p>
 
 </div>
 </div>
@@ -314,7 +316,7 @@ Data Fields</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="struct_settings.html">Settings</a></li>
-    <li class="footer">Generated on Wed Dec 21 2016 10:07:23 for libBrain by
+    <li class="footer">Generated on Wed Dec 21 2016 11:44:23 for libBrain by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.8 </li>
   </ul>

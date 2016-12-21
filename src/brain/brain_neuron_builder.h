@@ -65,18 +65,29 @@ void        set_neuron_input           (BrainNeuron       neuron,
                                         const BrainUint   number_of_inputs,
                                         const BrainSignal in);
 /**
- * \fn void set_neuron_delta(BrainNeuron neuron, const BrainDouble delta);
- * \brief set the delta of the neuron
+ * \fn void update_neuron_using_backpropagation(BrainNeuron neuron,
+ *                                              const BrainDouble loss);
+ * \brief update weights using backpropagation
  *
  * We first update the neuron's bias
  * Then we update the layer weighted deltas
  * Finally we update neuron's weight
  *
  * \param neuron a BrainNeuron
- * \param delta  the delta
+ * \param loss  the loss
  */
-void        set_neuron_delta           (BrainNeuron       neuron,
-                                        const BrainDouble delta);
+void update_neuron_using_backpropagation(BrainNeuron neuron,
+                                         const BrainDouble loss);
+/**
+ * \fn void update_neuron_using_resilient(BrainNeuron neuron,
+ *                                        const BrainDouble loss);
+ * \brief update weights using resilient learning
+ *
+ * \param neuron a BrainNeuron
+ * \param loss  the loss
+ */
+void update_neuron_using_resilient(BrainNeuron neuron,
+                                   const BrainDouble loss);
 /**
  * \fn void set_neuron_bias(BrainNeuron neuron, const BrainDouble bias)
  * \brief set the bias of a neuron

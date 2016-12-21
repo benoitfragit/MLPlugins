@@ -6,6 +6,7 @@
 #include "brain_settings.h"
 #include "brain_costfunction.h"
 #include "brain_activation.h"
+#include "brain_learning.h"
 #include "brain_logging_utils.h"
 #include "brain_xml_utils.h"
 

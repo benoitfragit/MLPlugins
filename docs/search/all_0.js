@@ -5,7 +5,7 @@ var searchData=
   ['_5fdropout_5fpercent',['_dropout_percent',['../struct_settings.html#a197a725caabaf12e3a59ac92ee75e05c',1,'Settings']]],
   ['_5fin',['_in',['../struct_neuron.html#a1f4852ec741af0d5cd025617de74f389',1,'Neuron']]],
   ['_5flayers',['_layers',['../struct_network.html#a3c0d48d1352b012afcc2f99c9788e549',1,'Network']]],
-  ['_5flearning_5ftype',['_learning_type',['../struct_settings.html#ac66402d701756425617d0eb773718521',1,'Settings']]],
+  ['_5flearning_5ffunction',['_learning_function',['../struct_settings.html#a52f4a6c49b618a61f2f6031eeef2831c',1,'Settings']]],
   ['_5fnetwork_5fcost_5ffunction',['_network_cost_function',['../struct_settings.html#a18010ffd0a402a7630411719f05f707b',1,'Settings']]],
   ['_5fnetwork_5fcost_5ffunction_5fderivative',['_network_cost_function_derivative',['../struct_settings.html#aaea270b84674ed8b03c655dd0cc0bbc4',1,'Settings']]],
   ['_5fneuron_5factivation',['_neuron_activation',['../struct_settings.html#abcf1d1467bfcb647b3de689b235f777b',1,'Settings']]],

@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['validate_5fwith_5fxsd',['validate_with_xsd',['../brain__xml__utils_8h.html#a82322932424e376e40bd6e9585952ed3',1,'brain_xml_utils.c']]]
+  ['update_5fneuron_5fusing_5fbackpropagation',['update_neuron_using_backpropagation',['../brain__neuron__builder_8h.html#adcd8b6862ecc6afcf4a1bb892b34b662',1,'brain_neuron_builder.c']]],
+  ['update_5fneuron_5fusing_5fresilient',['update_neuron_using_resilient',['../brain__neuron__builder_8h.html#aec5da47dd065f994904676373a0b8a09',1,'brain_neuron_builder.c']]]
 ];

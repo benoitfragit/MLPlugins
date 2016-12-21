@@ -54,13 +54,13 @@ new_settings(const BrainActivationType   activation_type,
  */
 void delete_settings(BrainSettings settings);
 /**
- * \fn BrainLearningType get_settings_learning_type(const BrainSettings settings)
+ * \fn LearningPtrFunc get_settings_learning_function(const BrainSettings settings)
  * \brief get the network learning type
  *
  * \param settings Network associated settings
  * \return the learning type
  */
-BrainLearningType get_settings_learning_type(const BrainSettings settings);
+LearningPtrFunc get_settings_learning_function(const BrainSettings settings);
 /**
  * \fn BrainDouble get_settings_resilient_delta_max(const BrainSettings settings)
  * \brief get the network resilient delta max
@@ -149,12 +149,4 @@ CostPtrFunc get_settings_network_cost_function_derivative(const BrainSettings se
  * \return a learning rate
  */
 BrainDouble get_settings_backpropagation_learning_rate(const BrainSettings settings);
-/** \internal
- * \fn BrainLearningType get_learning_type(BrainString learning_name)
- * \brief get the learning type
- *
- * \param learning_name the Learning name
- * \return a BrainLearningType
- */
-BrainLearningType get_learning_type(BrainString learning_name);
 #endif /* BRAIN_SETTINGS_H */

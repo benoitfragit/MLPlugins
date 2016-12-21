@@ -4,7 +4,7 @@ var brain__settings_8h =
     [ "get_settings_backpropagation_learning_rate", "brain__settings_8h.html#a70944b150ae7341ee57fa4ceb45b8a2d", null ],
     [ "get_settings_dropout_activated", "brain__settings_8h.html#aecf7544f02a48cc6ad109d74c7bad48e", null ],
     [ "get_settings_dropout_percent", "brain__settings_8h.html#a44edb26d183d2221f69d62f2b4691cce", null ],
-    [ "get_settings_learning_type", "brain__settings_8h.html#a90258dbea90c04abd90611994703c8fa", null ],
+    [ "get_settings_learning_function", "brain__settings_8h.html#a10498749921de5c08aeec20f0c16faef", null ],
     [ "get_settings_network_cost_function", "brain__settings_8h.html#aebccf8e71f77e1aab2c6d2559b3c603e", null ],
     [ "get_settings_network_cost_function_derivative", "brain__settings_8h.html#a41a184fc87434b809ef7e676aacfc30e", null ],
     [ "get_settings_neuron_activation", "brain__settings_8h.html#a1a2d85a1758d037b6571176d51e42056", null ],

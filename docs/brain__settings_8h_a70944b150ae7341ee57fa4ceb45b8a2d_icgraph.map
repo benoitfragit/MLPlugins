@@ -1,3 +1,3 @@
 <map id="get_settings_backpropagation_learning_rate" name="get_settings_backpropagation_learning_rate">
-<area shape="rect" id="node2" href="$brain__neuron__builder_8h.html#a70056740aee7224eb689cc1e1f2a787c" title="set the delta of the neuron " alt="" coords="248,13,369,39"/>
+<area shape="rect" id="node2" href="$brain__neuron__builder_8h.html#adcd8b6862ecc6afcf4a1bb892b34b662" title="update weights using backpropagation " alt="" coords="248,5,393,47"/>
 </map>

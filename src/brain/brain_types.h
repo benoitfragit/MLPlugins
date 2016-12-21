@@ -80,6 +80,27 @@ typedef enum BrainLearningType
 } BrainLearningType;
 
 /**
+ * \brief opaque pointer on Settings struct
+ */
+typedef struct Settings* BrainSettings;
+/**
+ * \brief opaque pointer on Data struct
+ */
+typedef struct Data*    BrainData;
+/**
+ * \brief opaque pointer on Neuron struct
+ */
+typedef struct Neuron*  BrainNeuron;
+/**
+ * \brief opaque pointer on Layer struct
+ */
+typedef struct Layer*   BrainLayer;
+/**
+ * \brief opaque pointer on Network struct
+ */
+typedef struct Network* BrainNetwork;
+
+/**
  * \brief function pointer on an activation function
  *
  * It let neurons use several activation function and
@@ -101,26 +122,12 @@ typedef BrainDouble (*PtrFunc)(const BrainDouble value);
  */
 typedef BrainDouble (*CostPtrFunc)(const BrainDouble output,
                                    const BrainDouble desired);
-
 /**
- * \brief opaque pointer on Settings struct
+ * \brief function pointer to update neuron weights
+ *
+ * \param neuron a BrainNeuron
+ * \param loss   the total output error
  */
-typedef struct Settings* BrainSettings;
-/**
- * \brief opaque pointer on Data struct
- */
-typedef struct Data*    BrainData;
-/**
- * \brief opaque pointer on Neuron struct
- */
-typedef struct Neuron*  BrainNeuron;
-/**
- * \brief opaque pointer on Layer struct
- */
-typedef struct Layer*   BrainLayer;
-/**
- * \brief opaque pointer on Network struct
- */
-typedef struct Network* BrainNetwork;
-
+typedef void (*LearningPtrFunc)(BrainNeuron neuron,
+                                const BrainDouble loss);
 #endif /* BRAIN_TYPES_H */

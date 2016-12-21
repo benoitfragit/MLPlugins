@@ -56,38 +56,47 @@ backpropagate_output_layer(BrainNetwork network,
     if ((network != NULL)
     &&  (desired != NULL))
     {
-        const BrainSettings settings         = network->_settings;
-        const BrainUint     number_of_layers = get_network_number_of_layer(network);
-        BrainLayer          output_layer     = get_network_layer(network, number_of_layers - 1);
-        const BrainSignal   output           = get_layer_output(output_layer);
-        const BrainUint     number_of_neuron = get_layer_number_of_neuron(output_layer);
+        const BrainSettings settings = network->_settings;
 
-        if ((output_layer     != NULL)
-        &&  (number_of_neuron == number_of_output))
+        if (settings != NULL)
         {
-            CostPtrFunc cost_function            = get_settings_network_cost_function(settings);
-            CostPtrFunc cost_function_derivative = get_settings_network_cost_function_derivative(settings);
+            LearningPtrFunc   learning_function = get_settings_learning_function(settings);
 
-            BrainUint output_index = 0;
-
-            reset_layer_delta(output_layer);
-
-            for (output_index = 0;
-                 output_index < number_of_output;
-               ++output_index)
+            if (learning_function != NULL)
             {
-                const BrainDouble loss = cost_function_derivative(output[output_index],
-                                                                  desired[output_index]);
+                const BrainUint   number_of_layers  = get_network_number_of_layer(network);
+                BrainLayer        output_layer      = get_network_layer(network, number_of_layers - 1);
+                const BrainSignal output            = get_layer_output(output_layer);
+                const BrainUint   number_of_neuron  = get_layer_number_of_neuron(output_layer);
 
-                BrainNeuron oNeuron = get_layer_neuron(output_layer,
-                                                       output_index);
-
-                error += cost_function(output[output_index],
-                                       desired[output_index]);
-
-                if (oNeuron != NULL)
+                if ((output_layer     != NULL)
+                &&  (number_of_neuron == number_of_output))
                 {
-                    set_neuron_delta(oNeuron, loss);
+                    CostPtrFunc cost_function            = get_settings_network_cost_function(settings);
+                    CostPtrFunc cost_function_derivative = get_settings_network_cost_function_derivative(settings);
+
+                    BrainUint output_index = 0;
+
+                    reset_layer_delta(output_layer);
+
+                    for (output_index = 0;
+                         output_index < number_of_output;
+                       ++output_index)
+                    {
+                        const BrainDouble loss = cost_function_derivative(output[output_index],
+                                                                          desired[output_index]);
+
+                        BrainNeuron oNeuron = get_layer_neuron(output_layer,
+                                                               output_index);
+
+                        error += cost_function(output[output_index],
+                                               desired[output_index]);
+
+                        if (oNeuron != NULL)
+                        {
+                            learning_function(oNeuron, loss);
+                        }
+                    }
                 }
             }
         }
@@ -108,25 +117,35 @@ backpropagate_hidden_layer(BrainNetwork network,
     &&  (0 != layer_index)
     &&  (layer_index < number_of_layers - 1))
     {
-        BrainLayer       current_layer            = get_network_layer(network, layer_index);
-        const BrainLayer next_layer               = get_layer_next_layer(current_layer);
-        const BrainInt   current_number_of_neuron = get_layer_number_of_neuron(current_layer);
+        BrainSettings    settings = network->_settings;
 
-        if (current_layer != NULL && next_layer != NULL)
+        if (settings != NULL)
         {
-            BrainInt i = 0;
+            LearningPtrFunc  learning_function = get_settings_learning_function(settings);
 
-            reset_layer_delta(current_layer);
-
-            for (i = 0; i < current_number_of_neuron; ++i)
+            if (learning_function != NULL)
             {
-                BrainNeuron current_neuron = get_layer_neuron(current_layer, i);
+                BrainLayer       current_layer            = get_network_layer(network, layer_index);
+                const BrainLayer next_layer               = get_layer_next_layer(current_layer);
+                const BrainInt   current_number_of_neuron = get_layer_number_of_neuron(current_layer);
 
-                if (current_neuron != NULL)
+                if (current_layer != NULL && next_layer != NULL)
                 {
-                    const BrainDouble weighted_delta = get_layer_weighted_delta(next_layer, i);
+                    BrainInt i = 0;
 
-                    set_neuron_delta(current_neuron, weighted_delta);
+                    reset_layer_delta(current_layer);
+
+                    for (i = 0; i < current_number_of_neuron; ++i)
+                    {
+                        BrainNeuron current_neuron = get_layer_neuron(current_layer, i);
+
+                        if (current_neuron != NULL)
+                        {
+                            const BrainDouble loss = get_layer_weighted_delta(next_layer, i);
+
+                            learning_function(current_neuron, loss);
+                        }
+                    }
                 }
             }
         }

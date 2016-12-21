@@ -1,5 +1,5 @@
 <map id="Network" name="Network">
-<area shape="rect" id="node2" href="$struct_settings.html" title="Internal model for a BrainSettings. " alt="" coords="5,5,223,259"/>
-<area shape="rect" id="node4" href="$struct_neuron.html" title="Internal model for a BrainNeuron. " alt="" coords="116,321,253,487"/>
-<area shape="rect" id="node3" href="$struct_layer.html" title="Internal model for a BrainLayer. " alt="" coords="115,549,263,656"/>
+<area shape="rect" id="node2" href="$struct_settings.html" title="Internal model for a BrainSettings. " alt="" coords="5,5,223,244"/>
+<area shape="rect" id="node3" href="$struct_neuron.html" title="Internal model for a BrainNeuron. " alt="" coords="113,307,251,472"/>
+<area shape="rect" id="node4" href="$struct_layer.html" title="Internal model for a BrainLayer. " alt="" coords="108,535,256,641"/>
 </map>

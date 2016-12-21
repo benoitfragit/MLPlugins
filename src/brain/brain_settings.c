@@ -1,28 +1,7 @@
 #include "brain_settings.h"
 #include "brain_costfunction.h"
 #include "brain_activation.h"
-
-static BrainString _learning_names[] =
-{
-    "BackPropagation",
-    "Resilient"
-};
-
-BrainLearningType
-get_learning_type(BrainString learning_name)
-{
-    BrainUint i = 0;
-
-    for (i = First_Learning; i <= Last_Learning; ++i)
-    {
-        if (i != First_Learning && !strcmp(_learning_names[i], learning_name))
-        {
-            return i;
-        }
-    }
-
-    return Invalid_Learning;
-}
+#include "brain_learning.h"
 
 /**
  * \struct Settings
@@ -32,18 +11,18 @@ get_learning_type(BrainString learning_name)
  */
 struct Settings
 {
-    BrainLearningType _learning_type;                    /*!< learning method  for this network             */
-    BrainDouble       _resilient_delta_max;              /*!< maximum value of delta for resilient learning */
-    BrainDouble       _resilient_delta_min;              /*!< minimum value of delta for resilient learning */
-    BrainDouble       _resilient_eta_positive;           /*!< positive value of eta for resilient learning  */
-    BrainDouble       _resilient_eta_negative;           /*!< negative value of eta for resilient learning  */
-    BrainDouble       _backpropagation_learning_rate;    /*!< learning rate for backpropagation             */
-    BrainDouble       _dropout_percent;                  /*!< Dropout per cent                              */
-    BrainBool         _use_dropout;                      /*!< Enable or disable dropout                     */
-    CostPtrFunc       _network_cost_function;            /*!< CostFunction to use                           */
-    CostPtrFunc       _network_cost_function_derivative; /*!< CostFunction derivative to use                */
-    PtrFunc           _neuron_activation;                /*!< Activation functon of the neuron              */
-    PtrFunc           _neuron_derivative;                /*!< Activation derivative function of the neuron  */
+    BrainDouble     _resilient_delta_max;              /*!< maximum value of delta for resilient learning */
+    BrainDouble     _resilient_delta_min;              /*!< minimum value of delta for resilient learning */
+    BrainDouble     _resilient_eta_positive;           /*!< positive value of eta for resilient learning  */
+    BrainDouble     _resilient_eta_negative;           /*!< negative value of eta for resilient learning  */
+    BrainDouble     _backpropagation_learning_rate;    /*!< learning rate for backpropagation             */
+    BrainDouble     _dropout_percent;                  /*!< Dropout per cent                              */
+    BrainBool       _use_dropout;                      /*!< Enable or disable dropout                     */
+    CostPtrFunc     _network_cost_function;            /*!< CostFunction to use                           */
+    CostPtrFunc     _network_cost_function_derivative; /*!< CostFunction derivative to use                */
+    PtrFunc         _neuron_activation;                /*!< Activation functon of the neuron              */
+    PtrFunc         _neuron_derivative;                /*!< Activation derivative function of the neuron  */
+    LearningPtrFunc _learning_function;                /*!< Learning function                             */
 } Settings;
 
 BrainDouble
@@ -91,13 +70,13 @@ get_settings_neuron_derivative(const BrainSettings settings)
     return NULL;
 }
 
-BrainLearningType
-get_settings_learning_type(const BrainSettings settings)
+LearningPtrFunc
+get_settings_learning_function(const BrainSettings settings)
 {
     if (settings != NULL)
-        return settings->_learning_type;
+        return settings->_learning_function;
 
-    return Invalid_Learning;
+    return NULL;
 }
 
 BrainDouble
@@ -169,7 +148,7 @@ new_settings(const BrainActivationType   activation_type,
 {
     BrainSettings _settings   = (BrainSettings)calloc(1, sizeof(Settings));
 
-    _settings->_learning_type                    = learning_type;
+    _settings->_learning_function                = get_learning_function(learning_type);
     _settings->_use_dropout                      = use_dropout;
     _settings->_dropout_percent                  = dropout_factor;
     _settings->_backpropagation_learning_rate    = backpropagation_learning_rate;

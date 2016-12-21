@@ -129,12 +129,6 @@ $(document).ready(function(){initNavTree('brain__types_8h.html','');});
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:a5fd1e19a97ab9959bc8502bbaa609e92"><td class="memItemLeft" align="right" valign="top">typedef BrainDouble(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="brain__types_8h.html#a5fd1e19a97ab9959bc8502bbaa609e92">PtrFunc</a> )(const BrainDouble value)</td></tr>
-<tr class="memdesc:a5fd1e19a97ab9959bc8502bbaa609e92"><td class="mdescLeft">&#160;</td><td class="mdescRight">function pointer on an activation function  <a href="#a5fd1e19a97ab9959bc8502bbaa609e92">More...</a><br /></td></tr>
-<tr class="separator:a5fd1e19a97ab9959bc8502bbaa609e92"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aef1d48952fa11f6fd0c737f5a16f9a41"><td class="memItemLeft" align="right" valign="top">typedef BrainDouble(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="brain__types_8h.html#aef1d48952fa11f6fd0c737f5a16f9a41">CostPtrFunc</a> )(const BrainDouble output, const BrainDouble desired)</td></tr>
-<tr class="memdesc:aef1d48952fa11f6fd0c737f5a16f9a41"><td class="mdescLeft">&#160;</td><td class="mdescRight">function pointer on an cost function  <a href="#aef1d48952fa11f6fd0c737f5a16f9a41">More...</a><br /></td></tr>
-<tr class="separator:aef1d48952fa11f6fd0c737f5a16f9a41"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a916598db8a4fc666f327e73a7fc46c70"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a916598db8a4fc666f327e73a7fc46c70"></a>
 typedef struct <a class="el" href="struct_settings.html">Settings</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="brain__types_8h.html#a916598db8a4fc666f327e73a7fc46c70">BrainSettings</a></td></tr>
 <tr class="memdesc:a916598db8a4fc666f327e73a7fc46c70"><td class="mdescLeft">&#160;</td><td class="mdescRight">opaque pointer on <a class="el" href="struct_settings.html" title="Internal model for a BrainSettings. ">Settings</a> struct <br /></td></tr>
@@ -155,6 +149,15 @@ typedef struct <a class="el" href="struct_layer.html">Layer</a> *&#160;</td><td 
 typedef struct <a class="el" href="struct_network.html">Network</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="brain__types_8h.html#ad5cc0d451c7f47db39ffb684ec3837ee">BrainNetwork</a></td></tr>
 <tr class="memdesc:ad5cc0d451c7f47db39ffb684ec3837ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">opaque pointer on <a class="el" href="struct_network.html" title="Internal model for a BrainNetwork. ">Network</a> struct <br /></td></tr>
 <tr class="separator:ad5cc0d451c7f47db39ffb684ec3837ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5fd1e19a97ab9959bc8502bbaa609e92"><td class="memItemLeft" align="right" valign="top">typedef BrainDouble(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="brain__types_8h.html#a5fd1e19a97ab9959bc8502bbaa609e92">PtrFunc</a> )(const BrainDouble value)</td></tr>
+<tr class="memdesc:a5fd1e19a97ab9959bc8502bbaa609e92"><td class="mdescLeft">&#160;</td><td class="mdescRight">function pointer on an activation function  <a href="#a5fd1e19a97ab9959bc8502bbaa609e92">More...</a><br /></td></tr>
+<tr class="separator:a5fd1e19a97ab9959bc8502bbaa609e92"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef1d48952fa11f6fd0c737f5a16f9a41"><td class="memItemLeft" align="right" valign="top">typedef BrainDouble(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="brain__types_8h.html#aef1d48952fa11f6fd0c737f5a16f9a41">CostPtrFunc</a> )(const BrainDouble output, const BrainDouble desired)</td></tr>
+<tr class="memdesc:aef1d48952fa11f6fd0c737f5a16f9a41"><td class="mdescLeft">&#160;</td><td class="mdescRight">function pointer on an cost function  <a href="#aef1d48952fa11f6fd0c737f5a16f9a41">More...</a><br /></td></tr>
+<tr class="separator:aef1d48952fa11f6fd0c737f5a16f9a41"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab85811d56a97ec5fab642db632a15523"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="brain__types_8h.html#ab85811d56a97ec5fab642db632a15523">LearningPtrFunc</a> )(<a class="el" href="brain__types_8h.html#ad0650b03224b278f4745106e67c745f7">BrainNeuron</a> neuron, const BrainDouble loss)</td></tr>
+<tr class="memdesc:ab85811d56a97ec5fab642db632a15523"><td class="mdescLeft">&#160;</td><td class="mdescRight">function pointer to update neuron weights  <a href="#ab85811d56a97ec5fab642db632a15523">More...</a><br /></td></tr>
+<tr class="separator:ab85811d56a97ec5fab642db632a15523"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -210,6 +213,27 @@ Enumerations</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the value of the cost function </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ab85811d56a97ec5fab642db632a15523"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef void(* LearningPtrFunc)(<a class="el" href="brain__types_8h.html#ad0650b03224b278f4745106e67c745f7">BrainNeuron</a> neuron, const BrainDouble loss)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>function pointer to update neuron weights </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">neuron</td><td>a BrainNeuron </td></tr>
+    <tr><td class="paramname">loss</td><td>the total output error </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -329,7 +353,7 @@ Enumerations</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_b25a7f08a29e71bd5c0b707ba966a66f.html">brain</a></li><li class="navelem"><a class="el" href="brain__types_8h.html">brain_types.h</a></li>
-    <li class="footer">Generated on Wed Dec 21 2016 10:07:22 for libBrain by
+    <li class="footer">Generated on Wed Dec 21 2016 11:44:23 for libBrain by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.8 </li>
   </ul>
