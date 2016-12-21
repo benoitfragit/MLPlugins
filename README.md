@@ -22,14 +22,26 @@ Several parameters could be changed very easily from the network XML definition:
 Tutorial
 ========
 
-How to write an network
+How to write a Network
 -----------------------
 ```xml
 <?xml version="1.0"?>
-<network inputs="2" use-dropout="false" dropout-percent="0.5" learning-rate="1.2" activation-function-type="Sigmoid" cost-function-type="CrossEntropy">
-    <layer neurons="2"/>
-    <layer neurons="3"/>
-    <layer neurons="2"/>
+<network inputs="2">
+    <!-- define the structure of the Network -->
+    <layers>
+        <layer neurons="2"/>
+        <layer neurons="3"/>
+        <layer neurons="2"/>
+    </layers>
+
+    <!-- Configure the Network -->
+    <settings activation-function="Sigmoid" cost-function="CrossEntropy">
+        <training learning="BackPropagation" backpropagation-learning-rate="1.2">
+            <dropout activate="false" factor="0.5"/>
+            <resilient-eta   positive="1.2" negative="0.95"/>
+            <resilient-delta min="0.000001" max="50.0"/>
+        </training>
+    </settings>
 </network>
 ```
 
@@ -37,35 +49,35 @@ You can save the state of a network to reload it later, here is an example:
 
 ```xml
 <init>
-    <neuron index="0" layer-index="0" bias="0.164150">
-        <weight value="0.229889" input="0"/>
-        <weight value="0.005664" input="1"/>
+    <neuron index="0" layer-index="0" bias="0.387371">
+        <weight value="0.064384"/>
+        <weight value="-0.030312"/>
     </neuron>
-    <neuron index="1" layer-index="0" bias="0.325530">
-        <weight value="-0.369910" input="0"/>
-        <weight value="-0.379591" input="1"/>
+    <neuron index="1" layer-index="0" bias="-0.232962">
+        <weight value="-0.480723"/>
+        <weight value="-0.078180"/>
     </neuron>
-    <neuron index="0" layer-index="1" bias="0.465258">
-        <weight value="0.137685" input="0"/>
-        <weight value="0.199213" input="1"/>
+    <neuron index="0" layer-index="1" bias="0.025801">
+        <weight value="-0.399538"/>
+        <weight value="0.346602"/>
     </neuron>
-    <neuron index="1" layer-index="1" bias="-0.208207">
-        <weight value="-0.177604" input="0"/>
-        <weight value="0.183424" input="1"/>
+    <neuron index="1" layer-index="1" bias="-0.374252">
+        <weight value="-0.119340"/>
+        <weight value="0.052492"/>
     </neuron>
-    <neuron index="2" layer-index="1" bias="0.247561">
-        <weight value="0.226107" input="0"/>
-        <weight value="0.103306" input="1"/>
+    <neuron index="2" layer-index="1" bias="-0.365058">
+        <weight value="-0.042249"/>
+        <weight value="0.139676"/>
     </neuron>
-    <neuron index="0" layer-index="2" bias="-0.144994">
-        <weight value="0.017281" input="0"/>
-        <weight value="-0.011214" input="1"/>
-        <weight value="-0.114676" input="2"/>
+    <neuron index="0" layer-index="2" bias="0.164984">
+        <weight value="0.092912"/>
+        <weight value="-0.011035"/>
+        <weight value="0.077357"/>
     </neuron>
-    <neuron index="1" layer-index="2" bias="-0.326887">
-        <weight value="-0.156190" input="0"/>
-        <weight value="-0.052734" input="1"/>
-        <weight value="0.210257" input="2"/>
+    <neuron index="1" layer-index="2" bias="-0.155481">
+        <weight value="-0.104649"/>
+        <weight value="0.052773"/>
+        <weight value="-0.332921"/>
     </neuron>
 </init>
 ```

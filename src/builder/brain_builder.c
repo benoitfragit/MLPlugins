@@ -17,7 +17,6 @@ new_network_from_context(Context context)
 
     if (context && is_node_with_name(context, "network"))
     {
-
         BrainBool                    use_dropout = BRAIN_FALSE;
         BrainDouble              dropout_percent = 1.0;
         BrainDouble                    delta_min = 0.000001;
