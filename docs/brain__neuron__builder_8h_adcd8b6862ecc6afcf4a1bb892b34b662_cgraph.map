@@ -1,3 +1,4 @@
 <map id="update_neuron_using_backpropagation" name="update_neuron_using_backpropagation">
 <area shape="rect" id="node2" href="$brain__settings_8h.html#a70944b150ae7341ee57fa4ceb45b8a2d" title="get the backpropagation learning rate " alt="" coords="199,5,393,47"/>
+<area shape="rect" id="node3" href="$brain__settings_8h.html#a2b4e65cd74ce4ab155d9b093cee132a7" title="get a function pointer to compute the neuron activation derivative " alt="" coords="227,71,365,112"/>
 </map>

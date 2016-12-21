@@ -2,7 +2,9 @@ var searchData=
 [
   ['_5fbackpropagation_5flearning_5frate',['_backpropagation_learning_rate',['../struct_settings.html#a01fc65735397a13dacda93a9548876b7',1,'Settings']]],
   ['_5fbias',['_bias',['../struct_neuron.html#a8c84186c83cd5fb104f92d46efe8c9bd',1,'Neuron']]],
+  ['_5fdelta',['_delta',['../struct_neuron.html#abbfba66fc79db47687b49a21e6fd22b4',1,'Neuron']]],
   ['_5fdropout_5fpercent',['_dropout_percent',['../struct_settings.html#a197a725caabaf12e3a59ac92ee75e05c',1,'Settings']]],
+  ['_5fgradient',['_gradient',['../struct_neuron.html#a34b7d63f123984fe7ffabdb32e021f06',1,'Neuron']]],
   ['_5fin',['_in',['../struct_neuron.html#a1f4852ec741af0d5cd025617de74f389',1,'Neuron']]],
   ['_5flayers',['_layers',['../struct_network.html#a3c0d48d1352b012afcc2f99c9788e549',1,'Network']]],
   ['_5flearning_5ffunction',['_learning_function',['../struct_settings.html#a52f4a6c49b618a61f2f6031eeef2831c',1,'Settings']]],
@@ -19,7 +21,6 @@ var searchData=
   ['_5fobservation_5flength',['_observation_length',['../struct_data.html#a7f4a6f345b55a7b79f561cdae54da819',1,'Data']]],
   ['_5fobservations',['_observations',['../struct_data.html#a6c756677c0561792a89aed85c8b142a3',1,'Data']]],
   ['_5fout',['_out',['../struct_layer.html#a516ceef8752b08ac6de33ac6e991ec79',1,'Layer::_out()'],['../struct_neuron.html#a676b4b4ef4cffcc4ad38626766fa14ee',1,'Neuron::_out()']]],
-  ['_5fout_5fderivative',['_out_derivative',['../struct_neuron.html#ab38a599772b9988d95f02e2708d58c72',1,'Neuron']]],
   ['_5foutput',['_output',['../struct_network.html#aa69e732ef1fbfdbcc22440f00356e9b1',1,'Network']]],
   ['_5fresilient_5fdelta_5fmax',['_resilient_delta_max',['../struct_settings.html#a30c99a231dcb480b401adb4b99b33dec',1,'Settings']]],
   ['_5fresilient_5fdelta_5fmin',['_resilient_delta_min',['../struct_settings.html#a802d2dbfdfe8a55b55b4d7a90ea88254',1,'Settings']]],
