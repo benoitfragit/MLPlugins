@@ -1,0 +1,6 @@
+Name: Project
+    Description: Brain library
+    Version: 0.0.1
+    Requires:
+    Libs: -L/usr/local/lib
+    Cflags: -I/include

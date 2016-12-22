@@ -98,12 +98,122 @@ $(document).ready(function(){initNavTree('index.html','');});
 <div class="title">libBrain Documentation</div>  </div>
 </div><!--header-->
 <div class="contents">
-</div><!-- contents -->
+<div class="textblock"><p>The goal of the libBrain project is to develop a very flexible way to build, train an use a neural network. it offers:</p>
+<h2>Reading and Writing </h2>
+<ul>
+<li>XML network structure loading</li>
+<li>XML network initialization</li>
+<li>XML validation with XSD schema</li>
+<li>XML network serialization</li>
+</ul>
+<h2>Training </h2>
+<p>Several parameters could be changed very easily from the network XML definition:</p>
+<ul>
+<li>Dropout parameters to exclude some neuron from training to avoid overfitting</li>
+<li>Learning type (RProp, BackProp) with several parameters (max iteration, target error)</li>
+<li>Activation function (Sigmoid, SoftPlus, TanH, ...)</li>
+<li>Cost function (Quadratic, CrossEntropy)</li>
+</ul>
+<h1>Tutorial </h1>
+<h2>How to define a BackProp <a class="el" href="struct_network.html" title="Internal model for a BrainNetwork. ">Network</a> </h2>
+<pre class="fragment">&lt;?xml version="1.0"?&gt;
+&lt;network inputs="2"&gt;
+    &lt;layers&gt;
+        &lt;layer neurons="2"/&gt;
+        &lt;layer neurons="3"/&gt;
+        &lt;layer neurons="2"/&gt;
+    &lt;/layers&gt;
+
+    &lt;settings activation-function="Sigmoid" cost-function="CrossEntropy"&gt;
+        &lt;training learning="BackPropagation" iterations="10000" error="0.01"&gt;
+            &lt;dropout activate="false" factor="0.5"/&gt;
+            &lt;method&gt;
+                &lt;backprop learning-rate="1.2"/&gt;
+            &lt;/method&gt;
+        &lt;/training&gt;
+    &lt;/settings&gt;
+&lt;/network&gt;
+</pre><h2>How to define the same network with RProp </h2>
+<pre class="fragment">&lt;?xml version="1.0"?&gt;
+&lt;network inputs="2"&gt;
+    &lt;layers&gt;
+        &lt;layer neurons="2"/&gt;
+        &lt;layer neurons="3"/&gt;
+        &lt;layer neurons="2"/&gt;
+    &lt;/layers&gt;
+
+    &lt;settings activation-function="Sigmoid" cost-function="CrossEntropy"&gt;
+        &lt;training learning="Resilient" iterations="10000" error="0.01"&gt;
+            &lt;dropout activate="false" factor="0.5"/&gt;
+            &lt;method&gt;
+                &lt;rprop&gt;
+                    &lt;eta   positive="1.2" negative="0.95"/&gt;
+                    &lt;delta min="0.000001" max="50.0"/&gt;
+                &lt;/rprop&gt;
+            &lt;/method&gt;
+        &lt;/training&gt;
+    &lt;/settings&gt;
+&lt;/network&gt;
+</pre><h1>Working with Neural <a class="el" href="struct_network.html" title="Internal model for a BrainNetwork. ">Network</a> </h1>
+<h2>How can I tune my network ? </h2>
+<ul>
+<li>Change the <a class="el" href="struct_neuron.html" title="Internal model for a BrainNeuron. ">Neuron</a> Activation function using "activation-function" attribute</li>
+<li>Change the <a class="el" href="struct_network.html" title="Internal model for a BrainNetwork. ">Network</a> Cost function using "cost-function" attribute</li>
+<li>Change the <a class="el" href="struct_neuron.html" title="Internal model for a BrainNeuron. ">Neuron</a> training method using learning attribute</li>
+<li>Change the <a class="el" href="struct_neuron.html" title="Internal model for a BrainNeuron. ">Neuron</a> training duration and accuracy using "iterations" and "error" attributes</li>
+<li>In BackProp mode, change the learning rate</li>
+<li>In RProp mode, change several parameters (eta, delta) used during the training process</li>
+<li>Activate and tune dropout with "activate" and "factor" attributes</li>
+</ul>
+<h2>I Have a functional network how to save it </h2>
+<p>You can save the state of a network to reload it later, here is an example of how the network weights/bias will be saved:</p>
+<pre class="fragment">&lt;init&gt;
+    &lt;neuron index="0" layer-index="0" bias="0.387371"&gt;
+        &lt;weight value="0.064384"/&gt;
+        &lt;weight value="-0.030312"/&gt;
+    &lt;/neuron&gt;
+    &lt;neuron index="1" layer-index="0" bias="-0.232962"&gt;
+        &lt;weight value="-0.480723"/&gt;
+        &lt;weight value="-0.078180"/&gt;
+    &lt;/neuron&gt;
+    &lt;neuron index="0" layer-index="1" bias="0.025801"&gt;
+        &lt;weight value="-0.399538"/&gt;
+        &lt;weight value="0.346602"/&gt;
+    &lt;/neuron&gt;
+    &lt;neuron index="1" layer-index="1" bias="-0.374252"&gt;
+        &lt;weight value="-0.119340"/&gt;
+        &lt;weight value="0.052492"/&gt;
+    &lt;/neuron&gt;
+    &lt;neuron index="2" layer-index="1" bias="-0.365058"&gt;
+        &lt;weight value="-0.042249"/&gt;
+        &lt;weight value="0.139676"/&gt;
+    &lt;/neuron&gt;
+    &lt;neuron index="0" layer-index="2" bias="0.164984"&gt;
+        &lt;weight value="0.092912"/&gt;
+        &lt;weight value="-0.011035"/&gt;
+        &lt;weight value="0.077357"/&gt;
+    &lt;/neuron&gt;
+    &lt;neuron index="1" layer-index="2" bias="-0.155481"&gt;
+        &lt;weight value="-0.104649"/&gt;
+        &lt;weight value="0.052773"/&gt;
+        &lt;weight value="-0.332921"/&gt;
+    &lt;/neuron&gt;
+&lt;/init&gt;
+</pre><h1>API Documentation </h1>
+<p>Once you have an XML definition file for you network, you can load it: </p><pre class="fragment">BrainNetwork network = new_network_from_context(BrainString filepath);
+</pre><p>Then you can load Training dataset using </p><pre class="fragment">BrainData data = new_data_from_context(BrainString filepath);
+</pre><p>Then you can start the training process using: </p><pre class="fragment">BrainBool train(BrainNetwork network, const BrainData data);
+</pre><p>Finally in online mode you can simple use the feedforward method of the network to feed the network and grab the output of the layer like this:</p>
+<pre class="fragment">void feedforward(BrainNetwork network, const BrainUint number_of_input, const BrainSignal in);
+BrainSignal get_network_output(const BrainNetwork network);
+</pre><p>You can access the full libBrain documentation here:</p>
+<p><a href="http://benoitfragit.github.io/libBrain/">http://benoitfragit.github.io/libBrain/</a> </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Thu Dec 22 2016 19:12:03 for libBrain by
+    <li class="footer">Generated on Thu Dec 22 2016 20:05:48 for libBrain by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.8 </li>
   </ul>
