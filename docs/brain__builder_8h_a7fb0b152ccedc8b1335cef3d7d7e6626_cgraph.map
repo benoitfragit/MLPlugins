@@ -1,8 +1,0 @@
-<map id="initialize_network_from_context" name="initialize_network_from_context">
-<area shape="rect" id="node2" href="$brain__xml__utils_8h.html#a78eb483dbc0790e2563b6792e73de1d2" title="get the number of children node with given node_name name " alt="" coords="177,5,320,47"/>
-<area shape="rect" id="node4" href="$brain__xml__utils_8h.html#a90f1cf35f01430b88a7ddc901c24d9a1" title="get a child node with its name and its position in the XML " alt="" coords="176,71,321,112"/>
-<area shape="rect" id="node5" href="$brain__xml__utils_8h.html#a2622e6f851c46cf0c7abf0456c23521e" title="extract an int value from an attribute " alt="" coords="201,137,297,163"/>
-<area shape="rect" id="node7" href="$brain__layer__builder_8h.html#a8b6c1e634e8d7b7fcfe3a526c6b11755" title="get a Neuron from the layer " alt="" coords="188,187,309,214"/>
-<area shape="rect" id="node3" href="$brain__xml__utils_8h.html#a909c289a290d5e807b5843464cfc034a" title="Check if a give node has a certain name. " alt="" coords="369,46,507,73"/>
-<area shape="rect" id="node6" href="$brain__xml__utils_8h.html#a2e5bb9c55060b410c8164eb42c239519" title="get a string buffer from an XML node " alt="" coords="385,137,491,163"/>
-</map>

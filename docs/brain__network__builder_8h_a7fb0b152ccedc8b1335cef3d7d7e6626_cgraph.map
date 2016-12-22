@@ -1,4 +1,0 @@
-<map id="initialize_network_from_context" name="initialize_network_from_context">
-<area shape="rect" id="node2" href="$brain__layer__builder_8h.html#a8b6c1e634e8d7b7fcfe3a526c6b11755" title="get a Neuron from the layer " alt="" coords="189,5,311,32"/>
-<area shape="rect" id="node3" href="$brain__neuron__builder_8h.html#aceffd11d3c80a032e3ce51960bc700fd" title="load all previously trained weights " alt="" coords="176,57,324,98"/>
-</map>
