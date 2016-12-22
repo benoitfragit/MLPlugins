@@ -1,0 +1,4 @@
+<map id="get_settings_neuron_derivative" name="get_settings_neuron_derivative">
+<area shape="rect" id="node2" href="$brain__neuron__builder_8h.html#adcd8b6862ecc6afcf4a1bb892b34b662" title="update weights using backpropagation " alt="" coords="192,5,337,47"/>
+<area shape="rect" id="node3" href="$brain__neuron__builder_8h.html#aec5da47dd065f994904676373a0b8a09" title="update weights using resilient learning " alt="" coords="192,71,337,112"/>
+</map>

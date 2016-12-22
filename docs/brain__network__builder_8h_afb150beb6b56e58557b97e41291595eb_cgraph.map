@@ -1,0 +1,13 @@
+<map id="train" name="train">
+<area shape="rect" id="node2" href="$brain__settings_8h.html#adcd9fce1bf393ce82be8a25602b791c1" title="get training max iterations " alt="" coords="100,5,285,32"/>
+<area shape="rect" id="node3" href="$brain__settings_8h.html#a4a70e388d52dc4c605d9a9d9932847a0" title="get training target error " alt="" coords="126,57,259,98"/>
+<area shape="rect" id="node4" href="$brain__data__reader_8h.html#a054cc968ff8383d3b163812441d3dcf3" title="get a random input index " alt="" coords="109,122,277,163"/>
+<area shape="rect" id="node5" href="$brain__data__reader_8h.html#a042d67d146c4a88afd7ba4febfd7cb13" title="get input signal length " alt="" coords="118,188,267,215"/>
+<area shape="rect" id="node6" href="$brain__data__reader_8h.html#a9c1590c4134d47b33f8b9665fa3559ab" title="get output signal length " alt="" coords="114,239,271,265"/>
+<area shape="rect" id="node7" href="$brain__data__reader_8h.html#ac5c16f1d904807423136f09a35ac3305" title="get on input signal from the BrainData " alt="" coords="139,289,246,316"/>
+<area shape="rect" id="node8" href="$brain__data__reader_8h.html#af86bd7390f646a72c63ec78f34643c7d" title="get an output signal from the BrainData " alt="" coords="135,340,250,367"/>
+<area shape="rect" id="node9" href="$brain__network__builder_8h.html#a898f07e0d90f3dee6b627ae2b7d96f71" title="propagate an input signal from the input signal to the output layer " alt="" coords="147,391,238,417"/>
+<area shape="rect" id="node10" href="$brain__layer__builder_8h.html#a93b759f69b75965db34e744cfec2cf9b" title="set the layer input " alt="" coords="333,391,444,417"/>
+<area shape="rect" id="node11" href="$brain__layer__builder_8h.html#a8b6c1e634e8d7b7fcfe3a526c6b11755" title="get a Neuron from the layer " alt="" coords="492,365,613,392"/>
+<area shape="rect" id="node12" href="$brain__neuron__builder_8h.html#a348a48d4e081ebe42f9bfe30aef57a10" title="set the input signal on a neuron " alt="" coords="492,416,613,443"/>
+</map>
