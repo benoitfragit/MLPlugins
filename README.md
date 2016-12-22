@@ -15,37 +15,79 @@ Training
 Several parameters could be changed very easily from the network XML definition:
 
 * Dropout parameters to exclude some neuron from training to avoid overfitting
-* Learning rate
+* Learning type (RProp, BackProp) with several parameters (max iteration, target error)
 * Activation function (Sigmoid, SoftPlus, TanH, ...)
 * Cost function (Quadratic, CrossEntropy)
 
 Tutorial
 ========
 
-How to write a Network
------------------------
+How to define a BackProp Network
+--------------------------------
 ```xml
 <?xml version="1.0"?>
 <network inputs="2">
-    <!-- define the structure of the Network -->
     <layers>
         <layer neurons="2"/>
         <layer neurons="3"/>
         <layer neurons="2"/>
     </layers>
 
-    <!-- Configure the Network -->
     <settings activation-function="Sigmoid" cost-function="CrossEntropy">
-        <training learning="BackPropagation" backpropagation-learning-rate="1.2">
+        <training learning="BackPropagation" iterations="10000" error="0.01">
             <dropout activate="false" factor="0.5"/>
-            <resilient-eta   positive="1.2" negative="0.95"/>
-            <resilient-delta min="0.000001" max="50.0"/>
+            <method>
+                <backprop learning-rate="1.2"/>
+            </method>
         </training>
     </settings>
 </network>
 ```
 
-You can save the state of a network to reload it later, here is an example:
+How to define the same network with RProp
+-----------------------------------------
+```xml
+<?xml version="1.0"?>
+<network inputs="2">
+    <layers>
+        <layer neurons="2"/>
+        <layer neurons="3"/>
+        <layer neurons="2"/>
+    </layers>
+
+    <settings activation-function="Sigmoid" cost-function="CrossEntropy">
+        <training learning="Resilient" iterations="10000" error="0.01">
+            <dropout activate="false" factor="0.5"/>
+            <method>
+                <rprop>
+                    <eta   positive="1.2" negative="0.95"/>
+                    <delta min="0.000001" max="50.0"/>
+                </rprop>
+            </method>
+        </training>
+    </settings>
+</network>
+```
+
+Working with Neural Network
+============================
+
+How can I tune my network ?
+---------------------------
+
+- Change the Neuron Activation function using "activation-function" attribute
+- Change the Network Cost function using "cost-function" attribute
+- Change the Neuron training method using learning attribute
+- Change the Neuron training duration and accuracy using "iterations" and "error" attributes
+- In BackProp mode, change the learning rate
+- In RProp mode, change several parameters (eta, delta) used during the training process
+- Activate and tune dropout with "activate" and "factor" attributes
+
+
+I Have a functional network how to save it
+-------------------------------------------
+
+You can save the state of a network to reload it later, here is an example of how the network weights/bias will be saved:
 
 ```xml
 <init>
