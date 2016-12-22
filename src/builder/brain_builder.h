@@ -8,7 +8,7 @@
  */
 #ifndef BRAIN_BUILDER_H
 
-#include "brain_builder_types.h"
+#include "brain_types.h"
 
 /**
  * \fn BrainNetwork new_network_from_context(BrainString filepath)

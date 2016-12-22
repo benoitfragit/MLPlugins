@@ -2,7 +2,6 @@
 #include <stdio.h>
 
 #include "brain_builder.h"
-#include "brain_xml_utils.h"
 
 int
 main(int argc, char** argv)

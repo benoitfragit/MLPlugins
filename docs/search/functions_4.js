@@ -1,31 +1,4 @@
 var searchData=
 [
-  ['get_5fdata_5finput',['get_data_input',['../brain__data__reader_8h.html#ac5c16f1d904807423136f09a35ac3305',1,'brain_data_reader.c']]],
-  ['get_5fdata_5finput_5flength',['get_data_input_length',['../brain__data__reader_8h.html#a042d67d146c4a88afd7ba4febfd7cb13',1,'brain_data_reader.c']]],
-  ['get_5fdata_5foutput',['get_data_output',['../brain__data__reader_8h.html#af86bd7390f646a72c63ec78f34643c7d',1,'brain_data_reader.c']]],
-  ['get_5fdata_5foutput_5flength',['get_data_output_length',['../brain__data__reader_8h.html#a9c1590c4134d47b33f8b9665fa3559ab',1,'brain_data_reader.c']]],
-  ['get_5fdata_5frandom_5fsubset_5findex',['get_data_random_subset_index',['../brain__data__reader_8h.html#a054cc968ff8383d3b163812441d3dcf3',1,'brain_data_reader.c']]],
-  ['get_5flayer_5fneuron',['get_layer_neuron',['../brain__layer__builder_8h.html#a8b6c1e634e8d7b7fcfe3a526c6b11755',1,'brain_layer_builder.c']]],
-  ['get_5flayer_5fnext_5flayer',['get_layer_next_layer',['../brain__layer__builder_8h.html#a94c57c4577ef281c0bec3f04a7dea575',1,'brain_layer_builder.c']]],
-  ['get_5flayer_5fnumber_5fof_5fneuron',['get_layer_number_of_neuron',['../brain__layer__builder_8h.html#a40c14c7189d94837b0bec3dbf7345bfc',1,'brain_layer_builder.c']]],
-  ['get_5flayer_5foutput',['get_layer_output',['../brain__layer__builder_8h.html#a98cfc2a491c62f48e3b1862479b4b928',1,'brain_layer_builder.c']]],
-  ['get_5flayer_5fweighted_5fdelta',['get_layer_weighted_delta',['../brain__layer__builder_8h.html#a5ddd227a5a3373bc9a53bc156093cf75',1,'brain_layer_builder.c']]],
-  ['get_5fnetwork_5foutput',['get_network_output',['../brain__network__builder_8h.html#a5b2decb3e8e92a6f5468743a77057e80',1,'brain_network_builder.c']]],
-  ['get_5fnode_5fwith_5fname_5fand_5findex',['get_node_with_name_and_index',['../brain__xml__utils_8h.html#a90f1cf35f01430b88a7ddc901c24d9a1',1,'brain_xml_utils.c']]],
-  ['get_5fnumber_5fof_5fnode_5fwith_5fname',['get_number_of_node_with_name',['../brain__xml__utils_8h.html#a78eb483dbc0790e2563b6792e73de1d2',1,'brain_xml_utils.c']]],
-  ['get_5froot_5fnode',['get_root_node',['../brain__xml__utils_8h.html#a4db14479385713852d2a20fe1a0bea11',1,'brain_xml_utils.c']]],
-  ['get_5fsettings_5fbackpropagation_5flearning_5frate',['get_settings_backpropagation_learning_rate',['../brain__settings_8h.html#a70944b150ae7341ee57fa4ceb45b8a2d',1,'brain_settings.c']]],
-  ['get_5fsettings_5fdropout_5factivated',['get_settings_dropout_activated',['../brain__settings_8h.html#aecf7544f02a48cc6ad109d74c7bad48e',1,'brain_settings.c']]],
-  ['get_5fsettings_5fdropout_5fpercent',['get_settings_dropout_percent',['../brain__settings_8h.html#a44edb26d183d2221f69d62f2b4691cce',1,'brain_settings.c']]],
-  ['get_5fsettings_5flearning_5ffunction',['get_settings_learning_function',['../brain__settings_8h.html#a10498749921de5c08aeec20f0c16faef',1,'brain_settings.c']]],
-  ['get_5fsettings_5fmax_5fiterations',['get_settings_max_iterations',['../brain__settings_8h.html#adcd9fce1bf393ce82be8a25602b791c1',1,'brain_settings.c']]],
-  ['get_5fsettings_5fnetwork_5fcost_5ffunction',['get_settings_network_cost_function',['../brain__settings_8h.html#aebccf8e71f77e1aab2c6d2559b3c603e',1,'brain_settings.c']]],
-  ['get_5fsettings_5fnetwork_5fcost_5ffunction_5fderivative',['get_settings_network_cost_function_derivative',['../brain__settings_8h.html#a41a184fc87434b809ef7e676aacfc30e',1,'brain_settings.c']]],
-  ['get_5fsettings_5fneuron_5factivation',['get_settings_neuron_activation',['../brain__settings_8h.html#a1a2d85a1758d037b6571176d51e42056',1,'brain_settings.c']]],
-  ['get_5fsettings_5fneuron_5fderivative',['get_settings_neuron_derivative',['../brain__settings_8h.html#a2b4e65cd74ce4ab155d9b093cee132a7',1,'brain_settings.c']]],
-  ['get_5fsettings_5fresilient_5fdelta_5fmax',['get_settings_resilient_delta_max',['../brain__settings_8h.html#a51ed7da8e2ee3dc66fcaecbce3a675af',1,'brain_settings.c']]],
-  ['get_5fsettings_5fresilient_5fdelta_5fmin',['get_settings_resilient_delta_min',['../brain__settings_8h.html#a974edc8bbe664c6726a55b428e4cd861',1,'brain_settings.c']]],
-  ['get_5fsettings_5fresilient_5feta_5fnegative',['get_settings_resilient_eta_negative',['../brain__settings_8h.html#a5ded77a4dafb2d78e2b179f7108dd0d5',1,'brain_settings.c']]],
-  ['get_5fsettings_5fresilient_5feta_5fpositive',['get_settings_resilient_eta_positive',['../brain__settings_8h.html#af5700a83da4d59eecb0196c1261cd067',1,'brain_settings.c']]],
-  ['get_5fsettings_5ftarget_5ferror',['get_settings_target_error',['../brain__settings_8h.html#a4a70e388d52dc4c605d9a9d9932847a0',1,'brain_settings.c']]]
+  ['initialize_5fnetwork_5ffrom_5fcontext',['initialize_network_from_context',['../brain__builder_8h.html#a3feea55438a72fe56e862e4ccf04c6e6',1,'brain_builder.c']]]
 ];

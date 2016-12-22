@@ -4,7 +4,5 @@
 <area shape="rect" id="node4" href="$brain__neuron__builder_8h.html" title="Define the API to create an BrainNeuron. " alt="" coords="403,109,591,165"/>
 <area shape="rect" id="node5" href="$brain__network__builder_8h.html" title="Define the API to create an control a Neural network. " alt="" coords="615,109,810,165"/>
 <area shape="rect" id="node6" href="$brain__settings_8h.html" title="Define the API to control network settings. " alt="" coords="834,109,1002,165"/>
-<area shape="rect" id="node7" href="$brain__builder__types_8h.html" title="Define all BrainBuilder types. " alt="" coords="1027,109,1217,165"/>
-<area shape="rect" id="node8" href="$brain__builder_8h.html" title="Define the API to load a networkand from an XML file. " alt="" coords="942,213,1110,269"/>
-<area shape="rect" id="node9" href="$brain__xml__utils_8h.html" title="Define the API to load an XML file. " alt="" coords="1134,213,1302,269"/>
+<area shape="rect" id="node7" href="$brain__builder_8h.html" title="Define the API to load a networkand from an XML file. " alt="" coords="1026,109,1194,165"/>
 </map>

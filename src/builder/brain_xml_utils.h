@@ -1,4 +1,4 @@
-/**
+/** \internal
  * \file brain_xml_utils.h
  * \brief Define the API to load an XML file
  * \author Benoit F.

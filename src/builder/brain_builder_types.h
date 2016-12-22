@@ -1,4 +1,4 @@
-/**
+/** \internal
  * \file brain_builder_types.h
  * \brief Define all BrainBuilder types
  * \author Benoit F.

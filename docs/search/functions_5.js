@@ -1,5 +1,9 @@
 var searchData=
 [
-  ['initialize_5fnetwork_5ffrom_5fcontext',['initialize_network_from_context',['../brain__builder_8h.html#a3feea55438a72fe56e862e4ccf04c6e6',1,'brain_builder.c']]],
-  ['is_5fnode_5fwith_5fname',['is_node_with_name',['../brain__xml__utils_8h.html#a909c289a290d5e807b5843464cfc034a',1,'brain_xml_utils.c']]]
+  ['new_5fdata',['new_data',['../brain__data__reader_8h.html#a15bbad13cb6a3877c752af7b5e39a61a',1,'brain_data_reader.c']]],
+  ['new_5fdata_5ffrom_5fcontext',['new_data_from_context',['../brain__builder_8h.html#a8e02d8c74936b4a4f4f0ca9fbdfad30b',1,'brain_builder.c']]],
+  ['new_5fnetwork',['new_network',['../brain__network__builder_8h.html#a477d508b581e6038df4a7d7729c20b5b',1,'brain_network_builder.c']]],
+  ['new_5fnetwork_5ffrom_5fcontext',['new_network_from_context',['../brain__builder_8h.html#a698a1b32bb1be8955a0b2ef54073c0e9',1,'brain_builder.c']]],
+  ['new_5fneuron',['new_neuron',['../brain__neuron__builder_8h.html#a39b4c217cd57ab1aa91c313864a485c0',1,'brain_neuron_builder.c']]],
+  ['new_5fsettings',['new_settings',['../brain__settings_8h.html#aad252ceff60b2955d16e881c1540a5da',1,'brain_settings.c']]]
 ];

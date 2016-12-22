@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['tanh',['TanH',['../brain__types_8h.html#aa5b3ee640e9de81caddce84b23d0c38eaf870820062ed913556cb66ab05dabe3c',1,'brain_types.h']]],
-  ['train',['train',['../brain__network__builder_8h.html#afb150beb6b56e58557b97e41291595eb',1,'brain_network_builder.c']]]
+  ['update_5fneuron_5fusing_5fbackpropagation',['update_neuron_using_backpropagation',['../brain__neuron__builder_8h.html#adcd8b6862ecc6afcf4a1bb892b34b662',1,'brain_neuron_builder.c']]],
+  ['update_5fneuron_5fusing_5fresilient',['update_neuron_using_resilient',['../brain__neuron__builder_8h.html#aec5da47dd065f994904676373a0b8a09',1,'brain_neuron_builder.c']]]
 ];
