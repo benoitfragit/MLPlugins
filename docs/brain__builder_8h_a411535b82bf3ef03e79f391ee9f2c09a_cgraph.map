@@ -6,7 +6,7 @@
 <area shape="rect" id="node6" href="$brain__xml__utils_8h.html#a78eb483dbc0790e2563b6792e73de1d2" title="get the number of children node with given node_name name " alt="" coords="237,101,380,143"/>
 <area shape="rect" id="node7" href="$brain__xml__utils_8h.html#a311d21e7adf9863b916effbd644a3823" title="retrieve a boolean from a node " alt="" coords="255,269,362,295"/>
 <area shape="rect" id="node8" href="$brain__xml__utils_8h.html#a72dee8218f05b2eedbe81fc28570a09f" title="extract a double value from an attribute " alt="" coords="249,319,369,346"/>
-<area shape="rect" id="node9" href="$brain__settings_8h.html#afdeb869b92d57476ca0a037e5954ef32" title="return a BrainSettings struct owned by the Network to share with neurons " alt="" coords="259,370,358,397"/>
+<area shape="rect" id="node9" href="$brain__settings_8h.html#aad252ceff60b2955d16e881c1540a5da" title="return a BrainSettings struct owned by the Network to share with neurons " alt="" coords="259,370,358,397"/>
 <area shape="rect" id="node10" href="$brain__network__builder_8h.html#a477d508b581e6038df4a7d7729c20b5b" title="Fonction to create a BrainNetwork. " alt="" coords="259,421,358,447"/>
 <area shape="rect" id="node11" href="$brain__layer__builder_8h.html#a98cfc2a491c62f48e3b1862479b4b928" title="get the output of a layer " alt="" coords="439,421,557,447"/>
 </map>

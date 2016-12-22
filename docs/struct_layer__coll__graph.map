@@ -1,4 +1,4 @@
 <map id="Layer" name="Layer">
 <area shape="rect" id="node2" href="$struct_neuron.html" title="Internal model for a BrainNeuron. " alt="" coords="173,5,311,185"/>
-<area shape="rect" id="node3" href="$struct_settings.html" title="Internal model for a BrainSettings. " alt="" coords="281,248,499,487"/>
+<area shape="rect" id="node3" href="$struct_settings.html" title="Internal model for a BrainSettings. " alt="" coords="281,248,499,516"/>
 </map>

@@ -2,6 +2,8 @@ var struct_settings =
 [
     [ "_backpropagation_learning_rate", "struct_settings.html#a01fc65735397a13dacda93a9548876b7", null ],
     [ "_dropout_percent", "struct_settings.html#a197a725caabaf12e3a59ac92ee75e05c", null ],
+    [ "_error", "struct_settings.html#a4e566f6477ed10a1cc0e31405bea8f6e", null ],
+    [ "_iterations", "struct_settings.html#aea6ed158fa79fbec2dffe6a962008b0f", null ],
     [ "_learning_function", "struct_settings.html#a52f4a6c49b618a61f2f6031eeef2831c", null ],
     [ "_network_cost_function", "struct_settings.html#a18010ffd0a402a7630411719f05f707b", null ],
     [ "_network_cost_function_derivative", "struct_settings.html#aaea270b84674ed8b03c655dd0cc0bbc4", null ],

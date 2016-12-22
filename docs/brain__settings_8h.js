@@ -5,6 +5,7 @@ var brain__settings_8h =
     [ "get_settings_dropout_activated", "brain__settings_8h.html#aecf7544f02a48cc6ad109d74c7bad48e", null ],
     [ "get_settings_dropout_percent", "brain__settings_8h.html#a44edb26d183d2221f69d62f2b4691cce", null ],
     [ "get_settings_learning_function", "brain__settings_8h.html#a10498749921de5c08aeec20f0c16faef", null ],
+    [ "get_settings_max_iterations", "brain__settings_8h.html#adcd9fce1bf393ce82be8a25602b791c1", null ],
     [ "get_settings_network_cost_function", "brain__settings_8h.html#aebccf8e71f77e1aab2c6d2559b3c603e", null ],
     [ "get_settings_network_cost_function_derivative", "brain__settings_8h.html#a41a184fc87434b809ef7e676aacfc30e", null ],
     [ "get_settings_neuron_activation", "brain__settings_8h.html#a1a2d85a1758d037b6571176d51e42056", null ],
@@ -13,5 +14,6 @@ var brain__settings_8h =
     [ "get_settings_resilient_delta_min", "brain__settings_8h.html#a974edc8bbe664c6726a55b428e4cd861", null ],
     [ "get_settings_resilient_eta_negative", "brain__settings_8h.html#a5ded77a4dafb2d78e2b179f7108dd0d5", null ],
     [ "get_settings_resilient_eta_positive", "brain__settings_8h.html#af5700a83da4d59eecb0196c1261cd067", null ],
-    [ "new_settings", "brain__settings_8h.html#afdeb869b92d57476ca0a037e5954ef32", null ]
+    [ "get_settings_target_error", "brain__settings_8h.html#a4a70e388d52dc4c605d9a9d9932847a0", null ],
+    [ "new_settings", "brain__settings_8h.html#aad252ceff60b2955d16e881c1540a5da", null ]
 ];

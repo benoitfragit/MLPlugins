@@ -121,9 +121,9 @@ $(document).ready(function(){initNavTree('brain__settings_8h.html','');});
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:afdeb869b92d57476ca0a037e5954ef32"><td class="memItemLeft" align="right" valign="top"><a class="el" href="brain__types_8h.html#a916598db8a4fc666f327e73a7fc46c70">BrainSettings</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="brain__settings_8h.html#afdeb869b92d57476ca0a037e5954ef32">new_settings</a> (const <a class="el" href="brain__types_8h.html#aa5b3ee640e9de81caddce84b23d0c38e">BrainActivationType</a> activation_type, const <a class="el" href="brain__types_8h.html#a93b1d42a254458cc3a7fd41b4551a192">BrainCostFunctionType</a> costfunction_type, const BrainBool use_dropout, const BrainDouble dropout_factor, const <a class="el" href="brain__types_8h.html#a76a79e05ba37325dc341b11b74c4be5a">BrainLearningType</a> learning_type, const BrainDouble backpropagation_learning_rate, const BrainDouble resilient_delta_min, const BrainDouble resilient_delta_max, const BrainDouble resilient_eta_positive, const BrainDouble resilient_eta_negative)</td></tr>
-<tr class="memdesc:afdeb869b92d57476ca0a037e5954ef32"><td class="mdescLeft">&#160;</td><td class="mdescRight">return a BrainSettings struct owned by the <a class="el" href="struct_network.html" title="Internal model for a BrainNetwork. ">Network</a> to share with neurons  <a href="#afdeb869b92d57476ca0a037e5954ef32">More...</a><br /></td></tr>
-<tr class="separator:afdeb869b92d57476ca0a037e5954ef32"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aad252ceff60b2955d16e881c1540a5da"><td class="memItemLeft" align="right" valign="top"><a class="el" href="brain__types_8h.html#a916598db8a4fc666f327e73a7fc46c70">BrainSettings</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="brain__settings_8h.html#aad252ceff60b2955d16e881c1540a5da">new_settings</a> (const BrainUint iterations, const BrainDouble error, const <a class="el" href="brain__types_8h.html#aa5b3ee640e9de81caddce84b23d0c38e">BrainActivationType</a> activation_type, const <a class="el" href="brain__types_8h.html#a93b1d42a254458cc3a7fd41b4551a192">BrainCostFunctionType</a> costfunction_type, const BrainBool use_dropout, const BrainDouble dropout_factor, const <a class="el" href="brain__types_8h.html#a76a79e05ba37325dc341b11b74c4be5a">BrainLearningType</a> learning_type, const BrainDouble backpropagation_learning_rate, const BrainDouble resilient_delta_min, const BrainDouble resilient_delta_max, const BrainDouble resilient_eta_positive, const BrainDouble resilient_eta_negative)</td></tr>
+<tr class="memdesc:aad252ceff60b2955d16e881c1540a5da"><td class="mdescLeft">&#160;</td><td class="mdescRight">return a BrainSettings struct owned by the <a class="el" href="struct_network.html" title="Internal model for a BrainNetwork. ">Network</a> to share with neurons  <a href="#aad252ceff60b2955d16e881c1540a5da">More...</a><br /></td></tr>
+<tr class="separator:aad252ceff60b2955d16e881c1540a5da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad20f060329a1095191a4467aeda6a7ec"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="brain__settings_8h.html#ad20f060329a1095191a4467aeda6a7ec">delete_settings</a> (<a class="el" href="brain__types_8h.html#a916598db8a4fc666f327e73a7fc46c70">BrainSettings</a> settings)</td></tr>
 <tr class="memdesc:ad20f060329a1095191a4467aeda6a7ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">free all associated memory  <a href="#ad20f060329a1095191a4467aeda6a7ec">More...</a><br /></td></tr>
 <tr class="separator:ad20f060329a1095191a4467aeda6a7ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -163,6 +163,12 @@ Functions</h2></td></tr>
 <tr class="memitem:a70944b150ae7341ee57fa4ceb45b8a2d"><td class="memItemLeft" align="right" valign="top">BrainDouble&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="brain__settings_8h.html#a70944b150ae7341ee57fa4ceb45b8a2d">get_settings_backpropagation_learning_rate</a> (const <a class="el" href="brain__types_8h.html#a916598db8a4fc666f327e73a7fc46c70">BrainSettings</a> settings)</td></tr>
 <tr class="memdesc:a70944b150ae7341ee57fa4ceb45b8a2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">get the backpropagation learning rate  <a href="#a70944b150ae7341ee57fa4ceb45b8a2d">More...</a><br /></td></tr>
 <tr class="separator:a70944b150ae7341ee57fa4ceb45b8a2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adcd9fce1bf393ce82be8a25602b791c1"><td class="memItemLeft" align="right" valign="top">BrainUint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="brain__settings_8h.html#adcd9fce1bf393ce82be8a25602b791c1">get_settings_max_iterations</a> (const <a class="el" href="brain__types_8h.html#a916598db8a4fc666f327e73a7fc46c70">BrainSettings</a> settings)</td></tr>
+<tr class="memdesc:adcd9fce1bf393ce82be8a25602b791c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">get training max iterations  <a href="#adcd9fce1bf393ce82be8a25602b791c1">More...</a><br /></td></tr>
+<tr class="separator:adcd9fce1bf393ce82be8a25602b791c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4a70e388d52dc4c605d9a9d9932847a0"><td class="memItemLeft" align="right" valign="top">BrainDouble&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="brain__settings_8h.html#a4a70e388d52dc4c605d9a9d9932847a0">get_settings_target_error</a> (const <a class="el" href="brain__types_8h.html#a916598db8a4fc666f327e73a7fc46c70">BrainSettings</a> settings)</td></tr>
+<tr class="memdesc:a4a70e388d52dc4c605d9a9d9932847a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">get training target error  <a href="#a4a70e388d52dc4c605d9a9d9932847a0">More...</a><br /></td></tr>
+<tr class="separator:a4a70e388d52dc4c605d9a9d9932847a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Define the API to control network settings. </p>
@@ -316,6 +322,42 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="adcd9fce1bf393ce82be8a25602b791c1"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">BrainUint get_settings_max_iterations </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="brain__types_8h.html#a916598db8a4fc666f327e73a7fc46c70">BrainSettings</a>&#160;</td>
+          <td class="paramname"><em>settings</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>get training max iterations </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">settings</td><td><a class="el" href="struct_network.html" title="Internal model for a BrainNetwork. ">Network</a> associated settings </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>number of iterations </dd></dl>
+
+<p><div id="dynsection-3" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
+  <img id="dynsection-3-trigger" src="closed.png" alt="+"/> Here is the caller graph for this function:</div>
+<div id="dynsection-3-summary" class="dynsummary" style="display:block;">
+</div>
+<div id="dynsection-3-content" class="dyncontent" style="display:none;">
+<div class="center"><img src="brain__settings_8h_adcd9fce1bf393ce82be8a25602b791c1_icgraph.png" border="0" usemap="#brain__settings_8h_adcd9fce1bf393ce82be8a25602b791c1_icgraph" alt=""/></div>
+<map name="brain__settings_8h_adcd9fce1bf393ce82be8a25602b791c1_icgraph" id="brain__settings_8h_adcd9fce1bf393ce82be8a25602b791c1_icgraph">
+<area shape="rect" id="node2" href="brain__network__builder_8h.html#afb150beb6b56e58557b97e41291595eb" title="launch the training process for the neural network " alt="" coords="239,5,285,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
 <a class="anchor" id="aebccf8e71f77e1aab2c6d2559b3c603e"></a>
 <div class="memitem">
 <div class="memproto">
@@ -414,11 +456,11 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>a function pointer </dd></dl>
 
-<p><div id="dynsection-3" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
-  <img id="dynsection-3-trigger" src="closed.png" alt="+"/> Here is the caller graph for this function:</div>
-<div id="dynsection-3-summary" class="dynsummary" style="display:block;">
+<p><div id="dynsection-4" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
+  <img id="dynsection-4-trigger" src="closed.png" alt="+"/> Here is the caller graph for this function:</div>
+<div id="dynsection-4-summary" class="dynsummary" style="display:block;">
 </div>
-<div id="dynsection-3-content" class="dyncontent" style="display:none;">
+<div id="dynsection-4-content" class="dyncontent" style="display:none;">
 <div class="center"><img src="brain__settings_8h_a2b4e65cd74ce4ab155d9b093cee132a7_icgraph.png" border="0" usemap="#brain__settings_8h_a2b4e65cd74ce4ab155d9b093cee132a7_icgraph" alt=""/></div>
 <map name="brain__settings_8h_a2b4e65cd74ce4ab155d9b093cee132a7_icgraph" id="brain__settings_8h_a2b4e65cd74ce4ab155d9b093cee132a7_icgraph">
 <area shape="rect" id="node2" href="brain__neuron__builder_8h.html#adcd8b6862ecc6afcf4a1bb892b34b662" title="update weights using backpropagation " alt="" coords="192,5,337,47"/></map>
@@ -527,13 +569,61 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="afdeb869b92d57476ca0a037e5954ef32"></a>
+<a class="anchor" id="a4a70e388d52dc4c605d9a9d9932847a0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">BrainDouble get_settings_target_error </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="brain__types_8h.html#a916598db8a4fc666f327e73a7fc46c70">BrainSettings</a>&#160;</td>
+          <td class="paramname"><em>settings</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>get training target error </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">settings</td><td><a class="el" href="struct_network.html" title="Internal model for a BrainNetwork. ">Network</a> associated settings </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the target error </dd></dl>
+
+<p><div id="dynsection-5" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
+  <img id="dynsection-5-trigger" src="closed.png" alt="+"/> Here is the caller graph for this function:</div>
+<div id="dynsection-5-summary" class="dynsummary" style="display:block;">
+</div>
+<div id="dynsection-5-content" class="dyncontent" style="display:none;">
+<div class="center"><img src="brain__settings_8h_a4a70e388d52dc4c605d9a9d9932847a0_icgraph.png" border="0" usemap="#brain__settings_8h_a4a70e388d52dc4c605d9a9d9932847a0_icgraph" alt=""/></div>
+<map name="brain__settings_8h_a4a70e388d52dc4c605d9a9d9932847a0_icgraph" id="brain__settings_8h_a4a70e388d52dc4c605d9a9d9932847a0_icgraph">
+<area shape="rect" id="node2" href="brain__network__builder_8h.html#afb150beb6b56e58557b97e41291595eb" title="launch the training process for the neural network " alt="" coords="187,13,233,39"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="aad252ceff60b2955d16e881c1540a5da"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="brain__types_8h.html#a916598db8a4fc666f327e73a7fc46c70">BrainSettings</a> new_settings </td>
           <td>(</td>
+          <td class="paramtype">const BrainUint&#160;</td>
+          <td class="paramname"><em>iterations</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const BrainDouble&#160;</td>
+          <td class="paramname"><em>error</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype">const <a class="el" href="brain__types_8h.html#aa5b3ee640e9de81caddce84b23d0c38e">BrainActivationType</a>&#160;</td>
           <td class="paramname"><em>activation_type</em>, </td>
         </tr>
@@ -602,6 +692,8 @@ Functions</h2></td></tr>
 <p>return a BrainSettings struct owned by the <a class="el" href="struct_network.html" title="Internal model for a BrainNetwork. ">Network</a> to share with neurons </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">iterations</td><td>Choose training maximum number of iteration </td></tr>
+    <tr><td class="paramname">error</td><td>Choose training target error </td></tr>
     <tr><td class="paramname">activation_type</td><td>Choose how all neurons compute their activation </td></tr>
     <tr><td class="paramname">costfunction_type</td><td>Choose how the network compute its output error </td></tr>
     <tr><td class="paramname">use_dropout</td><td>Choose to enable or disable the dropout </td></tr>
@@ -616,13 +708,13 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p><div id="dynsection-4" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
-  <img id="dynsection-4-trigger" src="closed.png" alt="+"/> Here is the caller graph for this function:</div>
-<div id="dynsection-4-summary" class="dynsummary" style="display:block;">
+<p><div id="dynsection-6" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
+  <img id="dynsection-6-trigger" src="closed.png" alt="+"/> Here is the caller graph for this function:</div>
+<div id="dynsection-6-summary" class="dynsummary" style="display:block;">
 </div>
-<div id="dynsection-4-content" class="dyncontent" style="display:none;">
-<div class="center"><img src="brain__settings_8h_afdeb869b92d57476ca0a037e5954ef32_icgraph.png" border="0" usemap="#brain__settings_8h_afdeb869b92d57476ca0a037e5954ef32_icgraph" alt=""/></div>
-<map name="brain__settings_8h_afdeb869b92d57476ca0a037e5954ef32_icgraph" id="brain__settings_8h_afdeb869b92d57476ca0a037e5954ef32_icgraph">
+<div id="dynsection-6-content" class="dyncontent" style="display:none;">
+<div class="center"><img src="brain__settings_8h_aad252ceff60b2955d16e881c1540a5da_icgraph.png" border="0" usemap="#brain__settings_8h_aad252ceff60b2955d16e881c1540a5da_icgraph" alt=""/></div>
+<map name="brain__settings_8h_aad252ceff60b2955d16e881c1540a5da_icgraph" id="brain__settings_8h_aad252ceff60b2955d16e881c1540a5da_icgraph">
 <area shape="rect" id="node2" href="brain__builder_8h.html#a411535b82bf3ef03e79f391ee9f2c09a" title="Fonction to create a BrainNetwork from an XML context. " alt="" coords="152,5,335,32"/></map>
 </div>
 </p>
@@ -635,7 +727,7 @@ Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_b25a7f08a29e71bd5c0b707ba966a66f.html">brain</a></li><li class="navelem"><a class="el" href="brain__settings_8h.html">brain_settings.h</a></li>
-    <li class="footer">Generated on Wed Dec 21 2016 19:58:00 for libBrain by
+    <li class="footer">Generated on Thu Dec 22 2016 09:33:58 for libBrain by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.8 </li>
   </ul>

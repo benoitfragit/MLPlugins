@@ -18,6 +18,7 @@ var searchData=
   ['get_5fsettings_5fdropout_5factivated',['get_settings_dropout_activated',['../brain__settings_8h.html#aecf7544f02a48cc6ad109d74c7bad48e',1,'brain_settings.c']]],
   ['get_5fsettings_5fdropout_5fpercent',['get_settings_dropout_percent',['../brain__settings_8h.html#a44edb26d183d2221f69d62f2b4691cce',1,'brain_settings.c']]],
   ['get_5fsettings_5flearning_5ffunction',['get_settings_learning_function',['../brain__settings_8h.html#a10498749921de5c08aeec20f0c16faef',1,'brain_settings.c']]],
+  ['get_5fsettings_5fmax_5fiterations',['get_settings_max_iterations',['../brain__settings_8h.html#adcd9fce1bf393ce82be8a25602b791c1',1,'brain_settings.c']]],
   ['get_5fsettings_5fnetwork_5fcost_5ffunction',['get_settings_network_cost_function',['../brain__settings_8h.html#aebccf8e71f77e1aab2c6d2559b3c603e',1,'brain_settings.c']]],
   ['get_5fsettings_5fnetwork_5fcost_5ffunction_5fderivative',['get_settings_network_cost_function_derivative',['../brain__settings_8h.html#a41a184fc87434b809ef7e676aacfc30e',1,'brain_settings.c']]],
   ['get_5fsettings_5fneuron_5factivation',['get_settings_neuron_activation',['../brain__settings_8h.html#a1a2d85a1758d037b6571176d51e42056',1,'brain_settings.c']]],
@@ -25,5 +26,6 @@ var searchData=
   ['get_5fsettings_5fresilient_5fdelta_5fmax',['get_settings_resilient_delta_max',['../brain__settings_8h.html#a51ed7da8e2ee3dc66fcaecbce3a675af',1,'brain_settings.c']]],
   ['get_5fsettings_5fresilient_5fdelta_5fmin',['get_settings_resilient_delta_min',['../brain__settings_8h.html#a974edc8bbe664c6726a55b428e4cd861',1,'brain_settings.c']]],
   ['get_5fsettings_5fresilient_5feta_5fnegative',['get_settings_resilient_eta_negative',['../brain__settings_8h.html#a5ded77a4dafb2d78e2b179f7108dd0d5',1,'brain_settings.c']]],
-  ['get_5fsettings_5fresilient_5feta_5fpositive',['get_settings_resilient_eta_positive',['../brain__settings_8h.html#af5700a83da4d59eecb0196c1261cd067',1,'brain_settings.c']]]
+  ['get_5fsettings_5fresilient_5feta_5fpositive',['get_settings_resilient_eta_positive',['../brain__settings_8h.html#af5700a83da4d59eecb0196c1261cd067',1,'brain_settings.c']]],
+  ['get_5fsettings_5ftarget_5ferror',['get_settings_target_error',['../brain__settings_8h.html#a4a70e388d52dc4c605d9a9d9932847a0',1,'brain_settings.c']]]
 ];
