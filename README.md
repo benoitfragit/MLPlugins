@@ -126,6 +126,32 @@ You can save the state of a network to reload it later, here is an example of ho
 
 API Documentation
 =================
-You can access libBrain documentation here:
+Once you have an XML definition file for you network, you can load it:
+
+```C
+BrainNetwork network = new_network_from_context(BrainString filepath);
+```
+
+Then you can load Training dataset using
+
+```C
+BrainData data = new_data_from_context(BrainString filepath);
+```
+
+Then you can start the training process using:
+
+```C
+BrainBool train(BrainNetwork network, const BrainData data);
+```
+
+Finally in online mode you can simple use the feedforward method of the network to feed the network
+and grab the output of the layer like this:
+
+```C
+void feedforward(BrainNetwork network, const BrainUint number_of_input, const BrainSignal in);
+BrainSignal get_network_output(const BrainNetwork network);
+```
+
+You can access the full libBrain documentation here:
 
 http://benoitfragit.github.io/libBrain/

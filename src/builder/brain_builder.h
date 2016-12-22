@@ -11,29 +11,29 @@
 #include "brain_builder_types.h"
 
 /**
- * \fn BrainNetwork new_network_from_context(Context context)
+ * \fn BrainNetwork new_network_from_context(BrainString filepath)
  * \brief Fonction to create a BrainNetwork from an XML context
  *
- * \param context an XML context
+ * \param filepath XML Network definition file
  * \return a new allocated BrainNetwork or NULL if it failed
  */
-BrainNetwork new_network_from_context(Context context);
+BrainNetwork new_network_from_context(BrainString filepath);
 /**
- * \fn void initialize_network_from_context(BrainNetwork network, Context context)
+ * \fn void initialize_network_from_context(BrainNetwork network, BrainString filepath)
  * \brief load previously trained neural network's weight
  *
  * \param network BrainNetwork to be initialized
- * \param context Context to load all weight
+ * \param filepath XML file to load
  */
 void initialize_network_from_context(BrainNetwork network,
-                                     Context      context);
+                                     BrainString filepath);
 /**
- * \fn BrainData new_data_from_context(Context context)
+ * \fn BrainData new_data_from_context(BrainString filepath)
  * \brief Load training data from an XML context
  *
- * \param context the XML context to use
+ * \param filepath the XML context to use
  * \return a newly allocated BrainData
  */
-BrainData new_data_from_context(Context context);
+BrainData new_data_from_context(BrainString filepath);
 
 #endif /* BRAIN_BUILDER_H */
