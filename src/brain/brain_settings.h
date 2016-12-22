@@ -12,7 +12,9 @@
 #include "brain_types.h"
 
 /**
- * \fn BrainSettings new_settings(const BrainActivationType   activation_type,
+ * \fn BrainSettings new_settings(const BrainUint             iterations,
+ *                                const BrainDouble           error,
+ *                                const BrainActivationType   activation_type,
  *                                const BrainCostFunctionType costfunction_type,
  *                                const BrainBool             use_dropout,
  *                                const BrainDouble           dropout_factor,
@@ -24,6 +26,8 @@
  *                                const BrainDouble           resilient_eta_negative)
  * \brief return a BrainSettings struct owned by the Network to share with neurons
  *
+ * \param iterations                    Choose training maximum number of iteration
+ * \param error                         Choose training target error
  * \param activation_type               Choose how all neurons compute their activation
  * \param costfunction_type             Choose how the network compute its output error
  * \param use_dropout                   Choose to enable or disable the dropout
@@ -36,7 +40,9 @@
  * \param resilient_eta_negative        Choose the resilient learning rate when gradient derivate sign is changing
  */
 BrainSettings
-new_settings(const BrainActivationType   activation_type,
+new_settings(const BrainUint             iterations,
+             const BrainDouble           error,
+             const BrainActivationType   activation_type,
              const BrainCostFunctionType costfunction_type,
              const BrainBool             use_dropout,
              const BrainDouble           dropout_factor,
@@ -149,4 +155,20 @@ CostPtrFunc get_settings_network_cost_function_derivative(const BrainSettings se
  * \return a learning rate
  */
 BrainDouble get_settings_backpropagation_learning_rate(const BrainSettings settings);
+/**
+ * \fn BrainUint get_settings_max_iterations(const BrainSettings settings)
+ * \brief get training max iterations
+ *
+ * \param settings Network associated settings
+ * \return number of iterations
+ */
+BrainUint get_settings_max_iterations(const BrainSettings settings);
+/**
+ * \fn BrainUint get_settings_target_error(const BrainSettings settings)
+ * \brief get training target error
+ *
+ * \param settings Network associated settings
+ * \return the target error
+ */
+BrainDouble get_settings_target_error(const BrainSettings settings);
 #endif /* BRAIN_SETTINGS_H */

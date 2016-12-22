@@ -11,6 +11,8 @@
  */
 struct Settings
 {
+    BrainUint       _iterations;                       /*!< maximum number of iteration in training mode  */
+    BrainDouble     _error;                            /*!< target error to rich in training mode         */
     BrainDouble     _resilient_delta_max;              /*!< maximum value of delta for resilient learning */
     BrainDouble     _resilient_delta_min;              /*!< minimum value of delta for resilient learning */
     BrainDouble     _resilient_eta_positive;           /*!< positive value of eta for resilient learning  */
@@ -24,6 +26,24 @@ struct Settings
     PtrFunc         _neuron_derivative;                /*!< Activation derivative function of the neuron  */
     LearningPtrFunc _learning_function;                /*!< Learning function                             */
 } Settings;
+
+BrainUint
+get_settings_max_iterations(const BrainSettings settings)
+{
+    if (settings != NULL)
+        return settings->_iterations;
+
+    return 0;
+}
+
+BrainDouble
+get_settings_target_error(const BrainSettings settings)
+{
+    if (settings != NULL)
+        return settings->_error;
+
+    return 1.0;
+}
 
 BrainDouble
 get_settings_backpropagation_learning_rate(const BrainSettings settings)
@@ -135,7 +155,9 @@ get_settings_dropout_activated(const BrainSettings settings)
 }
 
 BrainSettings
-new_settings(const BrainActivationType   activation_type,
+new_settings(const BrainUint             iterations,
+             const BrainDouble           error,
+             const BrainActivationType   activation_type,
              const BrainCostFunctionType costfunction_type,
              const BrainBool             use_dropout,
              const BrainDouble           dropout_factor,
@@ -148,6 +170,8 @@ new_settings(const BrainActivationType   activation_type,
 {
     BrainSettings _settings   = (BrainSettings)calloc(1, sizeof(Settings));
 
+    _settings->_iterations                       = iterations;
+    _settings->_error                            = error;
     _settings->_learning_function                = get_learning_function(learning_type);
     _settings->_use_dropout                      = use_dropout;
     _settings->_dropout_percent                  = dropout_factor;

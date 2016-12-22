@@ -41,15 +41,32 @@
         <xs:attribute name="max"      type="xs:decimal" use="required"/>
     </xs:complexType>
 
+    <xs:complexType name="RPropType">
+        <xs:all>
+            <xs:element name="eta"   type="EtaType"/>
+            <xs:element name="delta" type="DeltaType"/>
+        </xs:all>
+    </xs:complexType>
+
+    <xs:complexType name="BackPropType">
+        <xs:attribute name="learning-rate" type="xs:decimal" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="TrainingMethodType">
+        <xs:choice>
+            <xs:element name="backprop" type="BackPropType"/>
+            <xs:element name="rprop"    type="RPropType"/>
+        </xs:choice>
+    </xs:complexType>
+
     <xs:complexType name="TrainingType">
         <xs:all>
-            <xs:element name="dropout"         type="DropoutType"/>
-            <xs:element name="resilient-eta"   type="EtaType"/>
-            <xs:element name="resilient-delta" type="DeltaType"/>
+            <xs:element name="dropout"  type="DropoutType"/>
+            <xs:element name="method"   type="TrainingMethodType"/>
         </xs:all>
-
-        <xs:attribute name="learning"                      type="LearningType" use="optional"/>
-        <xs:attribute name="backpropagation-learning-rate" type="xs:decimal"   use="optional"/>
+        <xs:attribute name="learning"   type="LearningType" use="required"/>
+        <xs:attribute name="iterations" type="xs:integer"   use="required"/>
+        <xs:attribute name="error"      type="xs:decimal"   use="required"/>
     </xs:complexType>
 
     <xs:complexType name="SettingsType">

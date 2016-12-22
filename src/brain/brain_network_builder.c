@@ -300,38 +300,40 @@ feedforward(BrainNetwork      network,
 
 BrainBool
 train(BrainNetwork network,
-      const BrainData data,
-      const BrainDouble target_error,
-      const BrainUint max_iter)
+      const BrainData data)
 {
-    BrainDouble error = target_error + 1.0;
-
     if ((network != NULL)
-    &&  (data != NULL)
-    &&  (0 <= target_error)
-    &&  (1 <= max_iter))
+    &&  (data != NULL))
     {
-        BrainUint iteration = 0;
+        const BrainSettings  settings = network->_settings;
 
-        do
+        if (settings != NULL)
         {
-            const BrainUint   index         = get_data_random_subset_index(data);
-            const BrainUint   input_length  = get_data_input_length(data);
-            const BrainUint   output_length = get_data_output_length(data);
-            const BrainSignal input         = get_data_input(data, index);
-            const BrainSignal output        = get_data_output(data, index);
+            const BrainUint   max_iter     = get_settings_max_iterations(settings);
+            const BrainDouble target_error = get_settings_target_error(settings);
+            BrainDouble error = target_error + 1.0;
+            BrainUint iteration = 0;
 
-            feedforward(network, input_length, input);
-            error = backpropagate(network, output_length, output);
+            do
+            {
+                const BrainUint   index         = get_data_random_subset_index(data);
+                const BrainUint   input_length  = get_data_input_length(data);
+                const BrainUint   output_length = get_data_output_length(data);
+                const BrainSignal input         = get_data_input(data, index);
+                const BrainSignal output        = get_data_output(data, index);
 
-            ++iteration;
-        } while ((iteration < max_iter) && (error > target_error));
+                feedforward(network, input_length, input);
+                error = backpropagate(network, output_length, output);
+
+                ++iteration;
+            } while ((iteration < max_iter) && (error > target_error));
+
+            if (error < target_error)
+            {
+                return BRAIN_TRUE;
+            }
+        }
     }
 
-    if (error > target_error)
-    {
-        return BRAIN_FALSE;
-    }
-
-    return BRAIN_TRUE;
+    return BRAIN_FALSE;
 }

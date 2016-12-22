@@ -18,6 +18,8 @@ new_network_from_context(Context context)
 
     if (context && is_node_with_name(context, "network"))
     {
+        BrainUint                       max_iter = 1000;
+        BrainDouble                        error = 0.001;
         BrainBool                    use_dropout = BRAIN_FALSE;
         BrainDouble              dropout_percent = 1.0;
         BrainDouble                    delta_min = 0.000001;
@@ -65,6 +67,9 @@ new_network_from_context(Context context)
                         dropout_percent = node_get_double(dropout_context, "factor", 1.0);
                     }
 
+                    max_iter = node_get_int(training_context, "iterations", 1000);
+                    error    = node_get_double(training_context, "error", 0.001);
+
                     buffer = (BrainChar *)node_get_prop(training_context, "learning");
                     learning_type = get_learning_type(buffer);
 
@@ -73,33 +78,48 @@ new_network_from_context(Context context)
                         free(buffer);
                     }
 
-                    switch (learning_type)
+                    Context method_context = get_node_with_name_and_index(training_context, "method", 0);
+
+                    if (method_context != NULL)
                     {
-                        case BackPropagation:
+                        switch (learning_type)
                         {
-                            learning_rate = node_get_double(training_context, "backpropagation-learning-rate", 1.2);
-                        }
-                            break;
-                        case Resilient:
-                        {
-                            Context eta_context   = get_node_with_name_and_index(training_context, "resilient-eta", 0);
-                            Context delta_context = get_node_with_name_and_index(training_context, "resilient-delta", 0);
-
-                            if (eta_context != NULL)
+                            case BackPropagation:
                             {
-                                eta_positive = node_get_double(eta_context, "positive", 1.25);
-                                eta_negative = node_get_double(eta_context, "negative", 0.95);
-                            }
+                                Context backprop_context = get_node_with_name_and_index(method_context, "backprop", 0);
 
-                            if (delta_context != NULL)
-                            {
-                                delta_max = node_get_double(delta_context, "max", 50.0);
-                                delta_min = node_get_double(delta_context, "min", 0.000001);
+                                if (backprop_context != NULL)
+                                {
+                                    learning_rate = node_get_double(backprop_context, "learning-rate", 1.2);
+                                }
                             }
+                                break;
+                            case Resilient:
+                            {
+                                Context rprop_context = get_node_with_name_and_index(method_context, "rprop", 0);
+
+                                if (rprop_context != NULL)
+                                {
+                                    Context eta_context   = get_node_with_name_and_index(rprop_context, "resilient-eta", 0);
+                                    Context delta_context = get_node_with_name_and_index(rprop_context, "resilient-delta", 0);
+
+                                    if (eta_context != NULL)
+                                    {
+                                        eta_positive = node_get_double(eta_context, "positive", 1.25);
+                                        eta_negative = node_get_double(eta_context, "negative", 0.95);
+                                    }
+
+                                    if (delta_context != NULL)
+                                    {
+                                        delta_max = node_get_double(delta_context, "max", 50.0);
+                                        delta_min = node_get_double(delta_context, "min", 0.000001);
+                                    }
+                                }
+                            }
+                                break;
+                            default:
+                                break;
                         }
-                            break;
-                        default:
-                            break;
                     }
                 }
 
@@ -120,16 +140,10 @@ new_network_from_context(Context context)
                 }
             }
 
-            settings = new_settings(activation_type,
-                                    cost_function_type,
-                                    use_dropout,
-                                    dropout_percent,
-                                    learning_type,
-                                    learning_rate,
-                                    delta_min,
-                                    delta_max,
-                                    eta_positive,
-                                    eta_negative);
+            settings = new_settings(          max_iter,         error, activation_type,
+                                    cost_function_type,   use_dropout, dropout_percent,
+                                         learning_type, learning_rate,       delta_min,
+                                             delta_max,  eta_positive,    eta_negative);
 
             network = new_network(number_of_inputs,
                                   number_of_layers,
