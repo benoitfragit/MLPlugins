@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.9)
 project(Brain)
-set(Brain_VERSION_MAJOR 0)
-set(Brain_VERSION_MINOR 1)
+set(Brain_VERSION_MAJOR 1)
+set(Brain_VERSION_MINOR 0)
 
 set(CMAKE_BUILD_TYPE debug)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
@@ -21,11 +21,10 @@ set(SOURCES brain_settings.c
 #Generate the shared library from the sources
 add_library(Brain SHARED ${SOURCES})
 
-target_link_libraries(Brain "-lm")
+configure_file (${CMAKE_CURRENT_SOURCE_DIR}/brain.pc.in
+                ${CMAKE_CURRENT_BINARY_DIR}/brain.pc @ONLY)
 
-# add a .pc file
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/brain.pc.in
-               ${CMAKE_CURRENT_BINARY_DIR}/brain.pc @ONLY)
+target_link_libraries(Brain "-lm")
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/brain.pc
         DESTINATION lib/pkgconfig/)

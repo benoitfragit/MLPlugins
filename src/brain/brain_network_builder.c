@@ -208,18 +208,18 @@ delete_network(BrainNetwork network)
 }
 
 BrainNetwork
-new_network(const BrainUint             signal_input_length,
-            const BrainUint             number_of_layers,
-            const BrainSettings         settings,
-            const BrainUint             *neuron_per_layers)
+new_network(const BrainUint     signal_input_length,
+            const BrainUint     number_of_layers,
+            const BrainSettings settings,
+            const BrainUint     *neuron_per_layers)
 {
     if (neuron_per_layers != NULL && settings != NULL)
     {
-        BrainUint number_of_inputs          = signal_input_length;
-        BrainNetwork _network               = (BrainNetwork)calloc(1, sizeof(Network));
+        BrainUint number_of_inputs = signal_input_length;
+        BrainNetwork _network      = (BrainNetwork)calloc(1, sizeof(Network));
 
-        _network->_number_of_layer          = number_of_layers;
-        _network->_settings                 = settings;
+        _network->_number_of_layer = number_of_layers;
+        _network->_settings        = settings;
 
         srand(time(NULL));
 
