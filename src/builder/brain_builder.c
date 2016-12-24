@@ -190,6 +190,7 @@ new_data_from_context(BrainString filepath)
                 BrainChar*   part = NULL;
                 BrainUint       i = 0;
                 BrainUint       j = 0;
+                BrainUint       k = 0;
 
                 srand(time(NULL));
 
@@ -207,40 +208,49 @@ new_data_from_context(BrainString filepath)
 
                     if (signal_context)
                     {
-                        BrainSignal input  = (BrainSignal)calloc(signal_length, sizeof(BrainDouble));
-                        BrainSignal output = (BrainSignal)calloc(observation_length, sizeof(BrainDouble));
+                        const BrainUint number_of_chunks = get_number_of_node_with_name(signal_context, "chunk");
+                        BrainSignal input  = (BrainSignal)calloc(signal_length * number_of_chunks,      sizeof(BrainDouble));
+                        BrainSignal output = (BrainSignal)calloc(observation_length * number_of_chunks, sizeof(BrainDouble));
 
-                        buffer = (BrainChar *)node_get_prop(signal_context, "input");
-                        part = strtok(buffer, ", ");
-
-                        for (j = 0; j < signal_length; ++j)
+                        for (j = 0; j < number_of_chunks; ++j)
                         {
-                            if (part != NULL)
+                            Context chunk_context = get_node_with_name_and_index(signal_context, "chunk", j);
+
+                            if (chunk_context != NULL)
                             {
-                                sscanf(part, "%lf", &(input[j]));
-                                part = strtok(NULL, ", ");
+                                buffer = (BrainChar *)node_get_prop(chunk_context, "input");
+                                part = strtok(buffer, ", ");
+
+                                for (k = 0; k < signal_length; ++k)
+                                {
+                                    if (part != NULL)
+                                    {
+                                        sscanf(part, "%lf", &(input[j * signal_length + k]));
+                                        part = strtok(NULL, ", ");
+                                    }
+                                }
+
+                                if (buffer)
+                                    free(buffer);
+
+                                buffer = (BrainChar *)node_get_prop(chunk_context, "output");
+                                part = strtok(buffer, ", ");
+
+                                for (k = 0; k < observation_length; ++k)
+                                {
+                                    if (part != NULL)
+                                    {
+                                        sscanf(part, "%lf", &(output[j * observation_length + k]));
+                                        part = strtok(NULL, ", ");
+                                    }
+                                }
+
+                                if (buffer)
+                                    free(buffer);
+
+                                append_data(_data, i, input, output);
                             }
                         }
-
-                        if (buffer)
-                            free(buffer);
-
-                        buffer = (BrainChar *)node_get_prop(signal_context, "output");
-                        part = strtok(buffer, ", ");
-
-                        for (j = 0; j < observation_length; ++j)
-                        {
-                            if (part != NULL)
-                            {
-                                sscanf(part, "%lf", &(output[j]));
-                                part = strtok(NULL, ", ");
-                            }
-                        }
-
-                        if (buffer)
-                            free(buffer);
-
-                        append_data(_data, i, input, output);
                     }
                 }
 

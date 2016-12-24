@@ -1,5 +1,6 @@
 var struct_data =
 [
+    [ "_number_of_chunks", "struct_data.html#a2110ce9fd3b43dad43d44f2379222de2", null ],
     [ "_number_of_signal", "struct_data.html#ab32de699cde3efad855f695a9f685239", null ],
     [ "_observation_length", "struct_data.html#a7f4a6f345b55a7b79f561cdae54da819", null ],
     [ "_observations", "struct_data.html#a6c756677c0561792a89aed85c8b142a3", null ],

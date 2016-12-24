@@ -1,8 +1,9 @@
 var searchData=
 [
-  ['get_5fdata_5finput',['get_data_input',['../brain__data__reader_8h.html#ac5c16f1d904807423136f09a35ac3305',1,'brain_data_reader.c']]],
+  ['get_5fdata_5finput',['get_data_input',['../brain__data__reader_8h.html#a07ee5e28be472c0bb963e72211421251',1,'brain_data_reader.c']]],
   ['get_5fdata_5finput_5flength',['get_data_input_length',['../brain__data__reader_8h.html#a042d67d146c4a88afd7ba4febfd7cb13',1,'brain_data_reader.c']]],
-  ['get_5fdata_5foutput',['get_data_output',['../brain__data__reader_8h.html#af86bd7390f646a72c63ec78f34643c7d',1,'brain_data_reader.c']]],
+  ['get_5fdata_5fnumber_5fof_5fchunks',['get_data_number_of_chunks',['../brain__data__reader_8h.html#a6ea2eb8d6327f5ed53b1f71aa4b207b5',1,'brain_data_reader.c']]],
+  ['get_5fdata_5foutput',['get_data_output',['../brain__data__reader_8h.html#a7386bfe0d72cb80b4d79bde89164f2c5',1,'brain_data_reader.c']]],
   ['get_5fdata_5foutput_5flength',['get_data_output_length',['../brain__data__reader_8h.html#a9c1590c4134d47b33f8b9665fa3559ab',1,'brain_data_reader.c']]],
   ['get_5fdata_5frandom_5fsubset_5findex',['get_data_random_subset_index',['../brain__data__reader_8h.html#a054cc968ff8383d3b163812441d3dcf3',1,'brain_data_reader.c']]],
   ['get_5flayer_5fneuron',['get_layer_neuron',['../brain__layer__builder_8h.html#a8b6c1e634e8d7b7fcfe3a526c6b11755',1,'brain_layer_builder.c']]],

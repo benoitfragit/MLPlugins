@@ -20,6 +20,7 @@ var searchData=
   ['_5fneuron_5fderivative',['_neuron_derivative',['../struct_settings.html#a876ef1fcf55e6f7e732c2875a36db7ec',1,'Settings']]],
   ['_5fneurons',['_neurons',['../struct_layer.html#a9e674735b2dfd49feb38cbc38a48200a',1,'Layer']]],
   ['_5fnext_5flayer',['_next_layer',['../struct_layer.html#a53af3e530df2bbecc37eb4fff7a93eff',1,'Layer']]],
+  ['_5fnumber_5fof_5fchunks',['_number_of_chunks',['../struct_data.html#a2110ce9fd3b43dad43d44f2379222de2',1,'Data']]],
   ['_5fnumber_5fof_5finput',['_number_of_input',['../struct_neuron.html#aef9e27db2946ab9642499a87edcb6322',1,'Neuron']]],
   ['_5fnumber_5fof_5flayer',['_number_of_layer',['../struct_network.html#a27e8a97aaf95fcfb9811aabfd944c036',1,'Network']]],
   ['_5fnumber_5fof_5fneuron',['_number_of_neuron',['../struct_layer.html#a37d471e86bcd5f974184083c1928149f',1,'Layer']]],

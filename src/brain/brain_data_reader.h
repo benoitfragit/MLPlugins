@@ -51,27 +51,35 @@ void append_data(BrainData data,
  */
 void        delete_data                 (BrainData data);
 /**
- * \fn BrainSignal get_data_input(const BrainData data, const BrainUint index)
+ * \fn BrainSignal get_data_input(const BrainData data,
+ *                                const BrainUint index,
+ *                                const BrainUint chunk_index)
  * \brief get on input signal from the BrainData
  *
  * \param data The BrainData struct
  * \param index the input signal index
+ * \param chunk_index Signal chunk index
  *
  * \return an input BrainSignal
  */
 BrainSignal get_data_input              (const BrainData data,
-                                         const BrainUint index);
+                                         const BrainUint index,
+                                         const BrainUint chunk_index);
 /**
- * \fn BrainSignal get_data_output(const BrainData data, const BrainUint index)
+ * \fn BrainSignal get_data_output(const BrainData data,
+ *                                 const BrainUint index,
+ *                                 const BrainUint chunk_index)
  * \brief get an output signal from the BrainData
  *
  * \param data The BrainData struct
  * \param index the output signal index
+ * \param chunk_index Signal chunk index
  *
  * \return an input BrainSignal
  */
 BrainSignal get_data_output             (const BrainData data,
-                                         const BrainUint index);
+                                         const BrainUint index,
+                                         const BrainUint chunk_index);
 /**
  * \fn BrainUint get_data_random_subset_index(const BrainData data)
  * \brief get a random input index
@@ -96,5 +104,14 @@ BrainUint   get_data_input_length       (const BrainData data);
  * \return output signal length
  */
 BrainUint   get_data_output_length      (const BrainData data);
-
+/**
+ * \fn BrainUint get_data_number_of_chunks(const BrainData data,
+ *                                         const BrainUint signal_index)
+ * \brief get the number of chunk for a signal
+ *
+ * \param data The dataset
+ * \param signal_index the signal index
+ * \return the number of chunks for this signal
+ */
+BrainUint get_data_number_of_chunks(const BrainData data, const BrainUint signal_index);
 #endif /* BRAIN_DATA_READER_H */
