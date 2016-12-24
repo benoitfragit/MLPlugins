@@ -195,7 +195,8 @@ set_neuron_bias(BrainNeuron       neuron,
 }
 
 static void
-activate_neuron(BrainNeuron neuron)
+activate_neuron(BrainNeuron neuron,
+                const BrainBool is_an_hidden_unit)
 {
     if (neuron != NULL)
     {
@@ -207,7 +208,9 @@ activate_neuron(BrainNeuron neuron)
 
         *(neuron->_out)         = 0.0;
 
+        //dropout is only available for hidden unit
         if (use_dropout
+        &&  is_an_hidden_unit
         && (0 <= dropout_percent)
         && (dropout_percent < 1.0))
         {
@@ -242,14 +245,15 @@ activate_neuron(BrainNeuron neuron)
 void
 set_neuron_input(BrainNeuron       neuron,
                  const BrainUint   number_of_inputs,
-                 const BrainSignal in)
+                 const BrainSignal in,
+                 const BrainBool   is_an_hidden_unit)
 {
     if ((in     != NULL)
     &&  (neuron != NULL)
     &&  (neuron->_number_of_input == number_of_inputs))
     {
         neuron->_in = in;
-        activate_neuron(neuron);
+        activate_neuron(neuron, is_an_hidden_unit);
     }
 }
 

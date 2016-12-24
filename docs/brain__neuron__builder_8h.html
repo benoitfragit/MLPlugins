@@ -130,9 +130,9 @@ Functions</h2></td></tr>
 <tr class="memitem:aa810160fba09cea8cc9aae2708d8a284"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="brain__neuron__builder_8h.html#aa810160fba09cea8cc9aae2708d8a284">dump_neuron</a> (const <a class="el" href="brain__types_8h.html#ad0650b03224b278f4745106e67c745f7">BrainNeuron</a> neuron, const BrainUint layer_idx, const BrainUint neuron_idx, FILE *file)</td></tr>
 <tr class="memdesc:aa810160fba09cea8cc9aae2708d8a284"><td class="mdescLeft">&#160;</td><td class="mdescRight">serialize a neuron to an XML file  <a href="#aa810160fba09cea8cc9aae2708d8a284">More...</a><br /></td></tr>
 <tr class="separator:aa810160fba09cea8cc9aae2708d8a284"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a348a48d4e081ebe42f9bfe30aef57a10"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="brain__neuron__builder_8h.html#a348a48d4e081ebe42f9bfe30aef57a10">set_neuron_input</a> (<a class="el" href="brain__types_8h.html#ad0650b03224b278f4745106e67c745f7">BrainNeuron</a> neuron, const BrainUint number_of_inputs, const BrainSignal in)</td></tr>
-<tr class="memdesc:a348a48d4e081ebe42f9bfe30aef57a10"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the input signal on a neuron  <a href="#a348a48d4e081ebe42f9bfe30aef57a10">More...</a><br /></td></tr>
-<tr class="separator:a348a48d4e081ebe42f9bfe30aef57a10"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1ce5aca37f6d481fe80722ac65fcb39c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="brain__neuron__builder_8h.html#a1ce5aca37f6d481fe80722ac65fcb39c">set_neuron_input</a> (<a class="el" href="brain__types_8h.html#ad0650b03224b278f4745106e67c745f7">BrainNeuron</a> neuron, const BrainUint number_of_inputs, const BrainSignal in, const BrainBool is_an_hidden_unit)</td></tr>
+<tr class="memdesc:a1ce5aca37f6d481fe80722ac65fcb39c"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the input signal on a neuron  <a href="#a1ce5aca37f6d481fe80722ac65fcb39c">More...</a><br /></td></tr>
+<tr class="separator:a1ce5aca37f6d481fe80722ac65fcb39c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adcd8b6862ecc6afcf4a1bb892b34b662"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="brain__neuron__builder_8h.html#adcd8b6862ecc6afcf4a1bb892b34b662">update_neuron_using_backpropagation</a> (<a class="el" href="brain__types_8h.html#ad0650b03224b278f4745106e67c745f7">BrainNeuron</a> neuron, const BrainDouble loss)</td></tr>
 <tr class="memdesc:adcd8b6862ecc6afcf4a1bb892b34b662"><td class="mdescLeft">&#160;</td><td class="mdescRight">update weights using backpropagation  <a href="#adcd8b6862ecc6afcf4a1bb892b34b662">More...</a><br /></td></tr>
 <tr class="separator:adcd8b6862ecc6afcf4a1bb892b34b662"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -321,7 +321,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a348a48d4e081ebe42f9bfe30aef57a10"></a>
+<a class="anchor" id="a1ce5aca37f6d481fe80722ac65fcb39c"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -341,7 +341,13 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const BrainSignal&#160;</td>
-          <td class="paramname"><em>in</em>&#160;</td>
+          <td class="paramname"><em>in</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const BrainBool&#160;</td>
+          <td class="paramname"><em>is_an_hidden_unit</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -358,6 +364,7 @@ Functions</h2></td></tr>
     <tr><td class="paramname">neuron</td><td>a BrainNeuron </td></tr>
     <tr><td class="paramname">number_of_inputs</td><td>input signal's length </td></tr>
     <tr><td class="paramname">in</td><td>the input signal </td></tr>
+    <tr><td class="paramname">is_an_hidden_unit</td><td>is this neuron in an hidden layer </td></tr>
   </table>
   </dd>
 </dl>
@@ -367,8 +374,8 @@ Functions</h2></td></tr>
 <div id="dynsection-2-summary" class="dynsummary" style="display:block;">
 </div>
 <div id="dynsection-2-content" class="dyncontent" style="display:none;">
-<div class="center"><img src="brain__neuron__builder_8h_a348a48d4e081ebe42f9bfe30aef57a10_icgraph.png" border="0" usemap="#brain__neuron__builder_8h_a348a48d4e081ebe42f9bfe30aef57a10_icgraph" alt=""/></div>
-<map name="brain__neuron__builder_8h_a348a48d4e081ebe42f9bfe30aef57a10_icgraph" id="brain__neuron__builder_8h_a348a48d4e081ebe42f9bfe30aef57a10_icgraph">
+<div class="center"><img src="brain__neuron__builder_8h_a1ce5aca37f6d481fe80722ac65fcb39c_icgraph.png" border="0" usemap="#brain__neuron__builder_8h_a1ce5aca37f6d481fe80722ac65fcb39c_icgraph" alt=""/></div>
+<map name="brain__neuron__builder_8h_a1ce5aca37f6d481fe80722ac65fcb39c_icgraph" id="brain__neuron__builder_8h_a1ce5aca37f6d481fe80722ac65fcb39c_icgraph">
 <area shape="rect" id="node2" href="brain__layer__builder_8h.html#a93b759f69b75965db34e744cfec2cf9b" title="set the layer input " alt="" coords="175,5,285,32"/><area shape="rect" id="node3" href="brain__network__builder_8h.html#a898f07e0d90f3dee6b627ae2b7d96f71" title="propagate an input signal from the input signal to the output layer " alt="" coords="333,5,424,32"/><area shape="rect" id="node4" href="brain__network__builder_8h.html#afb150beb6b56e58557b97e41291595eb" title="launch the training process for the neural network " alt="" coords="472,5,519,32"/></map>
 </div>
 </p>
@@ -516,7 +523,7 @@ Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_bb5fc065f306d4c7566e1c0cbc3a8658.html">libBrain</a></li><li class="navelem"><a class="el" href="dir_50fb934e504a511d868cd5beea725daa.html">src</a></li><li class="navelem"><a class="el" href="dir_f5403d165038cad814c77f643c15b64b.html">brain</a></li><li class="navelem"><a class="el" href="brain__neuron__builder_8h.html">brain_neuron_builder.h</a></li>
-    <li class="footer">Generated on Fri Dec 23 2016 10:10:18 for libBrain by
+    <li class="footer">Generated on Sat Dec 24 2016 11:30:47 for libBrain by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.8 </li>
   </ul>

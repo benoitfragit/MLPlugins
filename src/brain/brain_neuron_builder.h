@@ -49,21 +49,24 @@ void        dump_neuron                (const BrainNeuron neuron,
                                         const BrainUint   neuron_idx,
                                         FILE*             file);
 /**
- * \fn void set_neuron_input(BrainNeuron neuron,
- *                           const BrainUint number_of_inputs,
- *                           const BrainSignal in)
+ * \fn void set_neuron_input(BrainNeuron       neuron,
+ *                           const BrainUint   number_of_inputs,
+ *                           const BrainSignal in,
+ *                           const BrainBool   is_an_hidden_unit)
  * \brief set the input signal on a neuron
  *
  * Each time a new input comes to a Neuron then if the neuron stay activated because of the
  * dropout selection then we compute the activation
  *
- * \param neuron           a BrainNeuron
- * \param number_of_inputs input signal's length
- * \param in               the input signal
+ * \param neuron            a BrainNeuron
+ * \param number_of_inputs  input signal's length
+ * \param in                the input signal
+ * \param is_an_hidden_unit is this neuron in an hidden layer
  */
-void        set_neuron_input           (BrainNeuron       neuron,
-                                        const BrainUint   number_of_inputs,
-                                        const BrainSignal in);
+void set_neuron_input(BrainNeuron       neuron,
+                      const BrainUint   number_of_inputs,
+                      const BrainSignal in,
+                      const BrainBool   is_an_hidden_unit);
 /**
  * \fn void update_neuron_using_backpropagation(BrainNeuron neuron,
  *                                              const BrainDouble loss);

@@ -23,8 +23,9 @@ set_layer_input(BrainLayer        layer,
 {
     if (layer != NULL)
     {
-        const BrainUint number_of_neurons = layer->_number_of_neuron;
+        const BrainUint number_of_neurons  = layer->_number_of_neuron;
         BrainUint j = 0;
+
 
         for (j = 0; j < number_of_neurons; ++j)
         {
@@ -32,7 +33,8 @@ set_layer_input(BrainLayer        layer,
 
             set_neuron_input(input_neuron,
                              number_of_inputs,
-                             in);
+                             in,
+                             (layer->_next_layer != NULL));
         }
 
         if (layer->_next_layer != NULL)

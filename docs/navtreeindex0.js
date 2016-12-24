@@ -31,7 +31,7 @@ var NAVTREEINDEX0 =
 "brain__network__builder_8h.html#aee7ff28cdd14a59c00591b8dd6978c7c":[1,0,3,1],
 "brain__network__builder_8h.html#afb150beb6b56e58557b97e41291595eb":[1,0,3,5],
 "brain__neuron__builder_8h.html":[1,0,4],
-"brain__neuron__builder_8h.html#a348a48d4e081ebe42f9bfe30aef57a10":[1,0,4,4],
+"brain__neuron__builder_8h.html#a1ce5aca37f6d481fe80722ac65fcb39c":[1,0,4,4],
 "brain__neuron__builder_8h.html#a39b4c217cd57ab1aa91c313864a485c0":[1,0,4,2],
 "brain__neuron__builder_8h.html#a53aabc6f1d277761f202e11cc6d22740":[1,0,4,5],
 "brain__neuron__builder_8h.html#aa810160fba09cea8cc9aae2708d8a284":[1,0,4,1],
