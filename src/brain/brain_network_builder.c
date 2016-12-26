@@ -316,20 +316,32 @@ train(BrainNetwork network,
 
             do
             {
-                const BrainUint  index            = get_data_random_subset_index(data);
-                const BrainUint  input_length     = get_data_input_length(data);
-                const BrainUint  output_length    = get_data_output_length(data);
-                const BrainUint  number_of_chunks = get_data_number_of_chunks(data, index);
-                BrainUint        chunk_index      = 0;
+                const BrainUint   index            = get_data_random_subset_index(data);
+                const BrainUint   input_length     = get_data_input_length    (data);
+                const BrainUint   output_length    = get_data_output_length   (data);
+                const BrainUint   number_of_chunks = get_data_number_of_chunks(data, index);
+                const BrainSignal output           = get_data_output          (data, index);
+                BrainUint         chunk_index      = 0;
 
-                for (chunk_index = 0; chunk_index < number_of_chunks; ++chunk_index)
+                // first loop, to compute network output for all signal chunks
+                for (chunk_index = 0;
+                     chunk_index < number_of_chunks;
+                     ++chunk_index)
                 {
-                    const BrainSignal input       = get_data_input( data, index, chunk_index);
-                    const BrainSignal output      = get_data_output(data, index, chunk_index);
-
+                    const BrainSignal input = get_data_input( data, index, chunk_index);
                     feedforward(network, input_length, input);
+                }
+
+                // for each chunk in reverse order backpropagate previously computed state using backpropagation
+                for (chunk_index = 0;
+                     chunk_index < number_of_chunks;
+                     ++chunk_index)
+                {
                     error = backpropagate(network, output_length, output);
                 }
+
+                // then apply all corrections
+                //@TODO
 
                 ++iteration;
             } while ((iteration < max_iter) && (error > target_error));

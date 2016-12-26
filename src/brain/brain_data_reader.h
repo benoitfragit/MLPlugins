@@ -67,19 +67,16 @@ BrainSignal get_data_input              (const BrainData data,
                                          const BrainUint chunk_index);
 /**
  * \fn BrainSignal get_data_output(const BrainData data,
- *                                 const BrainUint index,
- *                                 const BrainUint chunk_index)
+ *                                 const BrainUint index)
  * \brief get an output signal from the BrainData
  *
  * \param data The BrainData struct
  * \param index the output signal index
- * \param chunk_index Signal chunk index
  *
  * \return an input BrainSignal
  */
 BrainSignal get_data_output             (const BrainData data,
-                                         const BrainUint index,
-                                         const BrainUint chunk_index);
+                                         const BrainUint index);
 /**
  * \fn BrainUint get_data_random_subset_index(const BrainData data)
  * \brief get a random input index

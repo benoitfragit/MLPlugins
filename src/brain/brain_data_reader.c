@@ -199,14 +199,12 @@ delete_data(BrainData data)
 
 BrainSignal
 get_data_output(const BrainData data,
-                const BrainUint index,
-                const BrainUint chunk_index)
+                const BrainUint index)
 {
     if ((data != NULL)
-    &&  (index < data->_number_of_signal)
-    &&  (chunk_index < data->_number_of_chunks[index]))
+    &&  (index < data->_number_of_signal))
     {
-        return &(data->_observations[index][chunk_index * data->_observation_length]);
+        return data->_observations[index];
     }
 
     return NULL;

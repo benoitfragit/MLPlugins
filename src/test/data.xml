@@ -1,12 +1,13 @@
-<data signal-length="3" observation-length="2">
-    <signal>
-        <chunk input="0.0, 1.0, 0.0" output="0.0, 0.25"/>
-        <chunk input="1.0, 1.0, 0.0" output="0.01, 0.0"/>
-        <chunk input="1.0, 0.0, 1.0" output="0.0, 0.0"/>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<data observation-length="2" signal-length="3">
+    <signal output="0.0, 0.25">
+        <chunk input="0.0, 1.0, 0.0"/>
+        <chunk input="1.0, 1.0, 0.0"/>
+        <chunk input="1.0, 0.0, 1.0"/>
     </signal>
-    <signal>
-        <chunk input="1.0, 0.0, 0.0" output="1.0, 0.5"/>
-        <chunk input="0.0, 1.0, 1.0" output="0.7, 0.6"/>
-        <chunk input="0.0, 1.0, 1.0" output="0.5, 0.3"/>
-    </chunk>
+    <signal output="0.5, 0.3">
+        <chunk input="1.0, 0.0, 0.0"/>
+        <chunk input="0.0, 1.0, 1.0"/>
+        <chunk input="0.0, 1.0, 1.0"/>
+    </signal>
 </data>

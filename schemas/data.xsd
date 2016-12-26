@@ -1,21 +1,21 @@
-<?xml version="1.0"?>
-<xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema'>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
     <xs:complexType name="ChunkType">
-        <xs:attribute name="input"  type="xs:string" use="required"/>
-        <xs:attribute name="output" type="xs:string" use="required"/>
+        <xs:attribute name="input" type="xs:string" use="required"/>
     </xs:complexType>
 
     <xs:complexType name="SignalType">
-        <xs:sequence minOccurs="1" maxOccurs="unbounded">
+        <xs:sequence maxOccurs="unbounded" minOccurs="1">
             <xs:element name="chunk" type="ChunkType"/>
         </xs:sequence>
+        <xs:attribute name="output" type="xs:string" use="required"/>
     </xs:complexType>
 
     <xs:complexType name="DataType">
-        <xs:sequence minOccurs="1" maxOccurs="unbounded">
+        <xs:sequence maxOccurs="unbounded" minOccurs="1">
             <xs:element name="signal" type="SignalType"/>
         </xs:sequence>
-        <xs:attribute name="signal-length"      type="xs:integer" use="required"/>
+        <xs:attribute name="signal-length" type="xs:integer" use="required"/>
         <xs:attribute name="observation-length" type="xs:integer" use="required"/>
     </xs:complexType>
 

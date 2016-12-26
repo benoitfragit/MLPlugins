@@ -210,7 +210,7 @@ new_data_from_context(BrainString filepath)
                     {
                         const BrainUint number_of_chunks = get_number_of_node_with_name(signal_context, "chunk");
                         BrainSignal input  = (BrainSignal)calloc(signal_length * number_of_chunks,      sizeof(BrainDouble));
-                        BrainSignal output = (BrainSignal)calloc(observation_length * number_of_chunks, sizeof(BrainDouble));
+                        BrainSignal output = (BrainSignal)calloc(observation_length, sizeof(BrainDouble));
 
                         for (j = 0; j < number_of_chunks; ++j)
                         {
@@ -229,28 +229,28 @@ new_data_from_context(BrainString filepath)
                                         part = strtok(NULL, ", ");
                                     }
                                 }
-
-                                if (buffer)
-                                    free(buffer);
-
-                                buffer = (BrainChar *)node_get_prop(chunk_context, "output");
-                                part = strtok(buffer, ", ");
-
-                                for (k = 0; k < observation_length; ++k)
-                                {
-                                    if (part != NULL)
-                                    {
-                                        sscanf(part, "%lf", &(output[j * observation_length + k]));
-                                        part = strtok(NULL, ", ");
-                                    }
-                                }
-
-                                if (buffer)
-                                    free(buffer);
-
-                                append_data(_data, i, input, output);
                             }
                         }
+
+                        if (buffer)
+                            free(buffer);
+
+                        buffer = (BrainChar *)node_get_prop(signal_context, "output");
+                        part = strtok(buffer, ", ");
+
+                        for (k = 0; k < observation_length; ++k)
+                        {
+                            if (part != NULL)
+                            {
+                                sscanf(part, "%lf", &(output[k]));
+                                part = strtok(NULL, ", ");
+                            }
+                        }
+
+                        if (buffer)
+                            free(buffer);
+
+                        append_data(_data, i, input, output);
                     }
                 }
 

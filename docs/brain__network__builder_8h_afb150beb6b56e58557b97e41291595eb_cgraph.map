@@ -5,8 +5,8 @@
 <area shape="rect" id="node5" href="$brain__data__reader_8h.html#a042d67d146c4a88afd7ba4febfd7cb13" title="get input signal length " alt="" coords="118,188,267,215"/>
 <area shape="rect" id="node6" href="$brain__data__reader_8h.html#a9c1590c4134d47b33f8b9665fa3559ab" title="get output signal length " alt="" coords="114,239,271,265"/>
 <area shape="rect" id="node7" href="$brain__data__reader_8h.html#a6ea2eb8d6327f5ed53b1f71aa4b207b5" title="get the number of chunk for a signal " alt="" coords="123,290,263,331"/>
-<area shape="rect" id="node8" href="$brain__data__reader_8h.html#a07ee5e28be472c0bb963e72211421251" title="get on input signal from the BrainData " alt="" coords="139,356,246,383"/>
-<area shape="rect" id="node9" href="$brain__data__reader_8h.html#a7386bfe0d72cb80b4d79bde89164f2c5" title="get an output signal from the BrainData " alt="" coords="135,407,250,433"/>
+<area shape="rect" id="node8" href="$brain__data__reader_8h.html#af86bd7390f646a72c63ec78f34643c7d" title="get an output signal from the BrainData " alt="" coords="135,356,250,383"/>
+<area shape="rect" id="node9" href="$brain__data__reader_8h.html#a07ee5e28be472c0bb963e72211421251" title="get on input signal from the BrainData " alt="" coords="139,407,246,433"/>
 <area shape="rect" id="node10" href="$brain__network__builder_8h.html#a898f07e0d90f3dee6b627ae2b7d96f71" title="propagate an input signal from the input signal to the output layer " alt="" coords="147,457,238,484"/>
 <area shape="rect" id="node11" href="$brain__layer__builder_8h.html#a93b759f69b75965db34e744cfec2cf9b" title="set the layer input " alt="" coords="333,457,444,484"/>
 <area shape="rect" id="node12" href="$brain__layer__builder_8h.html#a8b6c1e634e8d7b7fcfe3a526c6b11755" title="get a Neuron from the layer " alt="" coords="492,432,613,459"/>
