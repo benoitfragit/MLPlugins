@@ -323,25 +323,12 @@ train(BrainNetwork network,
                 const BrainSignal output           = get_data_output          (data, index);
                 BrainUint         chunk_index      = 0;
 
-                // first loop, to compute network output for all signal chunks
-                for (chunk_index = 0;
-                     chunk_index < number_of_chunks;
-                     ++chunk_index)
+                for (chunk_index = 0; chunk_index < number_of_chunks; ++chunk_index)
                 {
                     const BrainSignal input = get_data_input( data, index, chunk_index);
                     feedforward(network, input_length, input);
-                }
-
-                // for each chunk in reverse order backpropagate previously computed state using backpropagation
-                for (chunk_index = 0;
-                     chunk_index < number_of_chunks;
-                     ++chunk_index)
-                {
                     error = backpropagate(network, output_length, output);
                 }
-
-                // then apply all corrections
-                //@TODO
 
                 ++iteration;
             } while ((iteration < max_iter) && (error > target_error));
