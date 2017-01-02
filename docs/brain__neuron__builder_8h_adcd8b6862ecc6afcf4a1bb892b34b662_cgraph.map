@@ -1,4 +1,7 @@
 <map id="update_neuron_using_backpropagation" name="update_neuron_using_backpropagation">
 <area shape="rect" id="node2" href="$brain__settings_8h.html#a70944b150ae7341ee57fa4ceb45b8a2d" title="get the backpropagation learning rate " alt="" coords="199,5,393,47"/>
 <area shape="rect" id="node3" href="$brain__settings_8h.html#a2b4e65cd74ce4ab155d9b093cee132a7" title="get a function pointer to compute the neuron activation derivative " alt="" coords="227,71,365,112"/>
+<area shape="rect" id="node4" href="$brain__weight_8h.html#a1e5b33984a3fdd9afda82a222a6b1313" title="set the correction value " alt="" coords="221,137,371,163"/>
+<area shape="rect" id="node5" href="$brain__weight_8h.html#ad600c80d6e812141e65a012d9d4d07ed" title="apply the correction " alt="" coords="215,187,377,214"/>
+<area shape="rect" id="node6" href="$brain__weight_8h.html#a830b60a9b70fa19a2121cc4fdf879b98" title="get the weight value " alt="" coords="235,238,357,265"/>
 </map>

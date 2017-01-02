@@ -31,7 +31,6 @@ typedef double        BrainDouble;
 typedef const char*   BrainString;
 typedef char          BrainChar;
 typedef BrainDouble*  BrainSignal;
-typedef BrainDouble*  BrainWeight;
 
 /**
  * \enum BrainActivationType
@@ -99,7 +98,10 @@ typedef struct Layer*   BrainLayer;
  * \brief opaque pointer on Network struct
  */
 typedef struct Network* BrainNetwork;
-
+/**
+ * \brief opaque pointer on Weight struct
+ */
+typedef struct Weight*  BrainWeight;
 /**
  * \brief function pointer on an activation function
  *

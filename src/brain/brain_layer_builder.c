@@ -11,7 +11,7 @@ struct Layer
 {
     BrainNeuron* _neurons;          /*!< An array of BrainNeuron       */
     BrainSignal  _out;              /*!< Output vector of the Layer    */
-    BrainWeight  _weighted_deltas;  /*!< An array of weighted delta    */
+    BrainSignal  _weighted_deltas;  /*!< An array of weighted delta    */
     BrainUint    _number_of_neuron; /*!< The number of BrainNeuron     */
     BrainLayer   _next_layer;       /*!< The next layer in the network */
 } Layer;
@@ -129,7 +129,7 @@ new_layer(const BrainUint     number_of_neurons,
 
             _layer->_neurons         = (BrainNeuron *)calloc(_layer->_number_of_neuron, sizeof(BrainNeuron));
             _layer->_out             = (BrainSignal  )calloc(_layer->_number_of_neuron, sizeof(BrainDouble));
-            _layer->_weighted_deltas = (BrainWeight  )calloc(_layer->_number_of_neuron, sizeof(BrainDouble));
+            _layer->_weighted_deltas = (BrainSignal)calloc(_layer->_number_of_neuron, sizeof(BrainDouble));
 
             for (index = 0; index < _layer->_number_of_neuron; ++index)
             {

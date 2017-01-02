@@ -14,8 +14,8 @@
 /**
  * \fn BrainNeuron new_neuron(const BrainUint number_of_inputs,
  *                            const BrainSettings settings,
- *                            BrainDouble* out,
- *                            BrainWeight weighted_delta)
+ *                            BrainSignal out,
+ *                            BrainSignal weighted_delta)
  * \brief method to build a neuron
  *
  * \param number_of_inputs input_signal_size
@@ -24,10 +24,10 @@
  * \param weighted_delta an array owned by the BrainLayer to update weighted deltas
  * \return a BrainNeuron or NULL if it failed
  */
-BrainNeuron new_neuron(const BrainUint           number_of_inputs,
-                       const BrainSettings       settings,
-                       BrainDouble*              out,
-                       BrainWeight               weighted_delta);
+BrainNeuron new_neuron(const BrainUint     number_of_inputs,
+                       const BrainSettings settings,
+                       BrainSignal         out,
+                       BrainSignal         weighted_delta);
 /**
  * \fn void delete_neuron(BrainNeuron neuron)
  * \brief free all BrainNeuron memory

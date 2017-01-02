@@ -25,5 +25,9 @@ var searchData=
   ['get_5fsettings_5fresilient_5fdelta_5fmin',['get_settings_resilient_delta_min',['../brain__settings_8h.html#a974edc8bbe664c6726a55b428e4cd861',1,'brain_settings.c']]],
   ['get_5fsettings_5fresilient_5feta_5fnegative',['get_settings_resilient_eta_negative',['../brain__settings_8h.html#a5ded77a4dafb2d78e2b179f7108dd0d5',1,'brain_settings.c']]],
   ['get_5fsettings_5fresilient_5feta_5fpositive',['get_settings_resilient_eta_positive',['../brain__settings_8h.html#af5700a83da4d59eecb0196c1261cd067',1,'brain_settings.c']]],
-  ['get_5fsettings_5ftarget_5ferror',['get_settings_target_error',['../brain__settings_8h.html#a4a70e388d52dc4c605d9a9d9932847a0',1,'brain_settings.c']]]
+  ['get_5fsettings_5ftarget_5ferror',['get_settings_target_error',['../brain__settings_8h.html#a4a70e388d52dc4c605d9a9d9932847a0',1,'brain_settings.c']]],
+  ['get_5fweight_5fcorrection',['get_weight_correction',['../brain__weight_8h.html#a5396d5d2c7468724439d68419d2b6c4e',1,'brain_weight.c']]],
+  ['get_5fweight_5fdelta',['get_weight_delta',['../brain__weight_8h.html#a68f3f1d0d349577fb24817446f1a94ac',1,'brain_weight.c']]],
+  ['get_5fweight_5fgradient',['get_weight_gradient',['../brain__weight_8h.html#a2ea158556f0ba8a2b0c64e38bfba9f91',1,'brain_weight.c']]],
+  ['get_5fweight_5fvalue',['get_weight_value',['../brain__weight_8h.html#a830b60a9b70fa19a2121cc4fdf879b98',1,'brain_weight.c']]]
 ];

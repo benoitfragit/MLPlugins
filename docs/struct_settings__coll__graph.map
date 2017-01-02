@@ -1,3 +1,4 @@
 <map id="Settings" name="Settings">
-<area shape="rect" id="node2" href="$struct_neuron.html" title="Internal model for a BrainNeuron. " alt="" coords="45,336,183,575"/>
+<area shape="rect" id="node2" href="$struct_neuron.html" title="Internal model for a BrainNeuron. " alt="" coords="111,351,248,472"/>
+<area shape="rect" id="node3" href="$struct_weight.html" title="Internal model for a BrainWeight. " alt="" coords="278,79,377,200"/>
 </map>

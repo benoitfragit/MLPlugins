@@ -5,6 +5,7 @@ var brain__types_8h =
     [ "BrainNetwork", "brain__types_8h.html#ad5cc0d451c7f47db39ffb684ec3837ee", null ],
     [ "BrainNeuron", "brain__types_8h.html#ad0650b03224b278f4745106e67c745f7", null ],
     [ "BrainSettings", "brain__types_8h.html#a916598db8a4fc666f327e73a7fc46c70", null ],
+    [ "BrainWeight", "brain__types_8h.html#a51cfd4336691758d69ef54b6f7bacd70", null ],
     [ "CostPtrFunc", "brain__types_8h.html#aef1d48952fa11f6fd0c737f5a16f9a41", null ],
     [ "LearningPtrFunc", "brain__types_8h.html#ab85811d56a97ec5fab642db632a15523", null ],
     [ "PtrFunc", "brain__types_8h.html#a5fd1e19a97ab9959bc8502bbaa609e92", null ],

@@ -4,4 +4,5 @@
 <area shape="rect" id="node4" href="$brain__settings_8h.html#a974edc8bbe664c6726a55b428e4cd861" title="get the network resilient delta min " alt="" coords="199,136,344,177"/>
 <area shape="rect" id="node5" href="$brain__settings_8h.html#a51ed7da8e2ee3dc66fcaecbce3a675af" title="get the network resilient delta max " alt="" coords="199,201,344,243"/>
 <area shape="rect" id="node6" href="$brain__settings_8h.html#a2b4e65cd74ce4ab155d9b093cee132a7" title="get a function pointer to compute the neuron activation derivative " alt="" coords="202,267,341,308"/>
+<area shape="rect" id="node7" href="$brain__weight_8h.html#a830b60a9b70fa19a2121cc4fdf879b98" title="get the weight value " alt="" coords="210,333,333,359"/>
 </map>

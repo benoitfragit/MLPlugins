@@ -1,15 +1,12 @@
 var searchData=
 [
   ['_5fbackpropagation_5flearning_5frate',['_backpropagation_learning_rate',['../struct_settings.html#a01fc65735397a13dacda93a9548876b7',1,'Settings']]],
-  ['_5fbias',['_bias',['../struct_neuron.html#a8c84186c83cd5fb104f92d46efe8c9bd',1,'Neuron']]],
-  ['_5fcorrection_5fbias',['_correction_bias',['../struct_neuron.html#a3feba48e8c4747148c109ca997433c55',1,'Neuron']]],
-  ['_5fcorrection_5fw',['_correction_w',['../struct_neuron.html#ab65e1099992c926d73efa4509905935b',1,'Neuron']]],
-  ['_5fdelta_5fbias',['_delta_bias',['../struct_neuron.html#a1d74ab7d0f01373a35c0a66a8a82a76c',1,'Neuron']]],
-  ['_5fdelta_5fw',['_delta_w',['../struct_neuron.html#a46725b8379ff2ff785cbdf5d9556809b',1,'Neuron']]],
+  ['_5fbias',['_bias',['../struct_neuron.html#ae5f4dd8c4af0d4326f05a8531b652437',1,'Neuron']]],
+  ['_5fcorrection',['_correction',['../struct_weight.html#a0f88f93fe3f7cba69931e9fb4feb808e',1,'Weight']]],
+  ['_5fdelta',['_delta',['../struct_weight.html#a88ca594f2892422c941ba88f2bbd6d56',1,'Weight']]],
   ['_5fdropout_5fpercent',['_dropout_percent',['../struct_settings.html#a197a725caabaf12e3a59ac92ee75e05c',1,'Settings']]],
   ['_5ferror',['_error',['../struct_settings.html#a4e566f6477ed10a1cc0e31405bea8f6e',1,'Settings']]],
-  ['_5fgradient_5fbias',['_gradient_bias',['../struct_neuron.html#a0a5a3fe9f403b82cf5bc5e2477bbd03b',1,'Neuron']]],
-  ['_5fgradient_5fw',['_gradient_w',['../struct_neuron.html#afe1b4d90fb1358d5df2386976afd077d',1,'Neuron']]],
+  ['_5fgradient',['_gradient',['../struct_weight.html#adf52ac2806d7150ded93918e88460857',1,'Weight']]],
   ['_5fin',['_in',['../struct_neuron.html#a1f4852ec741af0d5cd025617de74f389',1,'Neuron']]],
   ['_5fiterations',['_iterations',['../struct_settings.html#aea6ed158fa79fbec2dffe6a962008b0f',1,'Settings']]],
   ['_5flayers',['_layers',['../struct_network.html#a3c0d48d1352b012afcc2f99c9788e549',1,'Network']]],
@@ -27,7 +24,7 @@ var searchData=
   ['_5fnumber_5fof_5fsignal',['_number_of_signal',['../struct_data.html#ab32de699cde3efad855f695a9f685239',1,'Data']]],
   ['_5fobservation_5flength',['_observation_length',['../struct_data.html#a7f4a6f345b55a7b79f561cdae54da819',1,'Data']]],
   ['_5fobservations',['_observations',['../struct_data.html#a6c756677c0561792a89aed85c8b142a3',1,'Data']]],
-  ['_5fout',['_out',['../struct_layer.html#a516ceef8752b08ac6de33ac6e991ec79',1,'Layer::_out()'],['../struct_neuron.html#a676b4b4ef4cffcc4ad38626766fa14ee',1,'Neuron::_out()']]],
+  ['_5fout',['_out',['../struct_layer.html#a516ceef8752b08ac6de33ac6e991ec79',1,'Layer::_out()'],['../struct_neuron.html#a516ceef8752b08ac6de33ac6e991ec79',1,'Neuron::_out()']]],
   ['_5foutput',['_output',['../struct_network.html#aa69e732ef1fbfdbcc22440f00356e9b1',1,'Network']]],
   ['_5fresilient_5fdelta_5fmax',['_resilient_delta_max',['../struct_settings.html#a30c99a231dcb480b401adb4b99b33dec',1,'Settings']]],
   ['_5fresilient_5fdelta_5fmin',['_resilient_delta_min',['../struct_settings.html#a802d2dbfdfe8a55b55b4d7a90ea88254',1,'Settings']]],
@@ -39,6 +36,7 @@ var searchData=
   ['_5fsubset',['_subset',['../struct_data.html#aa05af015443639b409faa84fea08584d',1,'Data']]],
   ['_5fsubset_5flength',['_subset_length',['../struct_data.html#ab748d0ac4d47d7e09c8e2904ac5993ed',1,'Data']]],
   ['_5fuse_5fdropout',['_use_dropout',['../struct_settings.html#a620b8231b60c84c72989289def1e1a8f',1,'Settings']]],
-  ['_5fw',['_w',['../struct_neuron.html#ae25e45e53b456e1e756d887c1eef5ad3',1,'Neuron']]],
-  ['_5fweighted_5fdeltas',['_weighted_deltas',['../struct_layer.html#a1e428866e7967455daa7dbba6cf2b325',1,'Layer::_weighted_deltas()'],['../struct_neuron.html#a1e428866e7967455daa7dbba6cf2b325',1,'Neuron::_weighted_deltas()']]]
+  ['_5fvalue',['_value',['../struct_weight.html#ad469d5b6e786056f6c58ceeecb3abb27',1,'Weight']]],
+  ['_5fw',['_w',['../struct_neuron.html#afaa24feca7d896a5f56b995dc71c9b78',1,'Neuron']]],
+  ['_5fweighted_5fdeltas',['_weighted_deltas',['../struct_layer.html#aff8d9064c0d91a0e5df1665df773eb6b',1,'Layer::_weighted_deltas()'],['../struct_neuron.html#aff8d9064c0d91a0e5df1665df773eb6b',1,'Neuron::_weighted_deltas()']]]
 ];

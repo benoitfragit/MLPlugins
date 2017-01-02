@@ -6,5 +6,6 @@ var searchData=
   ['brain_5fnetwork_5fbuilder_2eh',['brain_network_builder.h',['../brain__network__builder_8h.html',1,'']]],
   ['brain_5fneuron_5fbuilder_2eh',['brain_neuron_builder.h',['../brain__neuron__builder_8h.html',1,'']]],
   ['brain_5fsettings_2eh',['brain_settings.h',['../brain__settings_8h.html',1,'']]],
-  ['brain_5ftypes_2eh',['brain_types.h',['../brain__types_8h.html',1,'']]]
+  ['brain_5ftypes_2eh',['brain_types.h',['../brain__types_8h.html',1,'']]],
+  ['brain_5fweight_2eh',['brain_weight.h',['../brain__weight_8h.html',1,'']]]
 ];

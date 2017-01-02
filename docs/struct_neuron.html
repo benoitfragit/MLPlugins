@@ -117,7 +117,7 @@ $(document).ready(function(){initNavTree('struct_neuron.html','');});
 <div id="dynsection-0-content" class="dyncontent" style="display:none;">
 <div class="center"><img src="struct_neuron__coll__graph.png" border="0" usemap="#_neuron_coll__map" alt="Collaboration graph"/></div>
 <map name="_neuron_coll__map" id="_neuron_coll__map">
-<area shape="rect" id="node2" href="struct_settings.html" title="Internal model for a BrainSettings. " alt="" coords="5,307,223,575"/></map>
+<area shape="rect" id="node3" href="struct_settings.html" title="Internal model for a BrainSettings. " alt="" coords="5,388,223,656"/><area shape="rect" id="node2" href="struct_weight.html" title="Internal model for a BrainWeight. " alt="" coords="65,5,163,127"/></map>
 </div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
@@ -128,119 +128,29 @@ Data Fields</h2></td></tr>
 <tr class="separator:a1f4852ec741af0d5cd025617de74f389"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aef9e27db2946ab9642499a87edcb6322"><td class="memItemLeft" align="right" valign="top">BrainUint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_neuron.html#aef9e27db2946ab9642499a87edcb6322">_number_of_input</a></td></tr>
 <tr class="separator:aef9e27db2946ab9642499a87edcb6322"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8c84186c83cd5fb104f92d46efe8c9bd"><td class="memItemLeft" align="right" valign="top">BrainDouble&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_neuron.html#a8c84186c83cd5fb104f92d46efe8c9bd">_bias</a></td></tr>
-<tr class="separator:a8c84186c83cd5fb104f92d46efe8c9bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae25e45e53b456e1e756d887c1eef5ad3"><td class="memItemLeft" align="right" valign="top">BrainWeight&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_neuron.html#ae25e45e53b456e1e756d887c1eef5ad3">_w</a></td></tr>
-<tr class="separator:ae25e45e53b456e1e756d887c1eef5ad3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a676b4b4ef4cffcc4ad38626766fa14ee"><td class="memItemLeft" align="right" valign="top">BrainDouble *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_neuron.html#a676b4b4ef4cffcc4ad38626766fa14ee">_out</a></td></tr>
-<tr class="separator:a676b4b4ef4cffcc4ad38626766fa14ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1e428866e7967455daa7dbba6cf2b325"><td class="memItemLeft" align="right" valign="top">BrainWeight&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_neuron.html#a1e428866e7967455daa7dbba6cf2b325">_weighted_deltas</a></td></tr>
-<tr class="separator:a1e428866e7967455daa7dbba6cf2b325"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0a5a3fe9f403b82cf5bc5e2477bbd03b"><td class="memItemLeft" align="right" valign="top">BrainDouble&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_neuron.html#a0a5a3fe9f403b82cf5bc5e2477bbd03b">_gradient_bias</a></td></tr>
-<tr class="separator:a0a5a3fe9f403b82cf5bc5e2477bbd03b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afe1b4d90fb1358d5df2386976afd077d"><td class="memItemLeft" align="right" valign="top">BrainWeight&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_neuron.html#afe1b4d90fb1358d5df2386976afd077d">_gradient_w</a></td></tr>
-<tr class="separator:afe1b4d90fb1358d5df2386976afd077d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1d74ab7d0f01373a35c0a66a8a82a76c"><td class="memItemLeft" align="right" valign="top">BrainDouble&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_neuron.html#a1d74ab7d0f01373a35c0a66a8a82a76c">_delta_bias</a></td></tr>
-<tr class="separator:a1d74ab7d0f01373a35c0a66a8a82a76c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a46725b8379ff2ff785cbdf5d9556809b"><td class="memItemLeft" align="right" valign="top">BrainWeight&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_neuron.html#a46725b8379ff2ff785cbdf5d9556809b">_delta_w</a></td></tr>
-<tr class="separator:a46725b8379ff2ff785cbdf5d9556809b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3feba48e8c4747148c109ca997433c55"><td class="memItemLeft" align="right" valign="top">BrainDouble&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_neuron.html#a3feba48e8c4747148c109ca997433c55">_correction_bias</a></td></tr>
-<tr class="separator:a3feba48e8c4747148c109ca997433c55"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab65e1099992c926d73efa4509905935b"><td class="memItemLeft" align="right" valign="top">BrainWeight&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_neuron.html#ab65e1099992c926d73efa4509905935b">_correction_w</a></td></tr>
-<tr class="separator:ab65e1099992c926d73efa4509905935b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae5f4dd8c4af0d4326f05a8531b652437"><td class="memItemLeft" align="right" valign="top"><a class="el" href="brain__types_8h.html#a51cfd4336691758d69ef54b6f7bacd70">BrainWeight</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_neuron.html#ae5f4dd8c4af0d4326f05a8531b652437">_bias</a></td></tr>
+<tr class="separator:ae5f4dd8c4af0d4326f05a8531b652437"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afaa24feca7d896a5f56b995dc71c9b78"><td class="memItemLeft" align="right" valign="top"><a class="el" href="brain__types_8h.html#a51cfd4336691758d69ef54b6f7bacd70">BrainWeight</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_neuron.html#afaa24feca7d896a5f56b995dc71c9b78">_w</a></td></tr>
+<tr class="separator:afaa24feca7d896a5f56b995dc71c9b78"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a516ceef8752b08ac6de33ac6e991ec79"><td class="memItemLeft" align="right" valign="top">BrainSignal&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_neuron.html#a516ceef8752b08ac6de33ac6e991ec79">_out</a></td></tr>
+<tr class="separator:a516ceef8752b08ac6de33ac6e991ec79"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aff8d9064c0d91a0e5df1665df773eb6b"><td class="memItemLeft" align="right" valign="top">BrainSignal&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_neuron.html#aff8d9064c0d91a0e5df1665df773eb6b">_weighted_deltas</a></td></tr>
+<tr class="separator:aff8d9064c0d91a0e5df1665df773eb6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Internal model for a BrainNeuron. </p>
 <p>All protected fields for a BrainNeuron </p>
 </div><h2 class="groupheader">Field Documentation</h2>
-<a class="anchor" id="a8c84186c83cd5fb104f92d46efe8c9bd"></a>
+<a class="anchor" id="ae5f4dd8c4af0d4326f05a8531b652437"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">BrainDouble _bias</td>
+          <td class="memname"><a class="el" href="brain__types_8h.html#a51cfd4336691758d69ef54b6f7bacd70">BrainWeight</a> _bias</td>
         </tr>
       </table>
 </div><div class="memdoc">
 <p>Bias of the neuron </p>
-
-</div>
-</div>
-<a class="anchor" id="a3feba48e8c4747148c109ca997433c55"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">BrainDouble _correction_bias</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>rprop bias correction value </p>
-
-</div>
-</div>
-<a class="anchor" id="ab65e1099992c926d73efa4509905935b"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">BrainWeight _correction_w</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>rprop weights correction value </p>
-
-</div>
-</div>
-<a class="anchor" id="a1d74ab7d0f01373a35c0a66a8a82a76c"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">BrainDouble _delta_bias</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>rprop bias delta value </p>
-
-</div>
-</div>
-<a class="anchor" id="a46725b8379ff2ff785cbdf5d9556809b"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">BrainWeight _delta_w</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>rprop weights delta values </p>
-
-</div>
-</div>
-<a class="anchor" id="a0a5a3fe9f403b82cf5bc5e2477bbd03b"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">BrainDouble _gradient_bias</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>rprop bias gradient value </p>
-
-</div>
-</div>
-<a class="anchor" id="afe1b4d90fb1358d5df2386976afd077d"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">BrainWeight _gradient_w</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>rprop weights gradient values </p>
 
 </div>
 </div>
@@ -270,12 +180,12 @@ Data Fields</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a676b4b4ef4cffcc4ad38626766fa14ee"></a>
+<a class="anchor" id="a516ceef8752b08ac6de33ac6e991ec79"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">BrainDouble* _out</td>
+          <td class="memname">BrainSignal _out</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -296,12 +206,12 @@ Data Fields</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ae25e45e53b456e1e756d887c1eef5ad3"></a>
+<a class="anchor" id="afaa24feca7d896a5f56b995dc71c9b78"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">BrainWeight _w</td>
+          <td class="memname"><a class="el" href="brain__types_8h.html#a51cfd4336691758d69ef54b6f7bacd70">BrainWeight</a>* _w</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -309,12 +219,12 @@ Data Fields</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a1e428866e7967455daa7dbba6cf2b325"></a>
+<a class="anchor" id="aff8d9064c0d91a0e5df1665df773eb6b"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">BrainWeight _weighted_deltas</td>
+          <td class="memname">BrainSignal _weighted_deltas</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -331,7 +241,7 @@ Data Fields</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="struct_neuron.html">Neuron</a></li>
-    <li class="footer">Generated on Mon Dec 26 2016 18:58:37 for libBrain by
+    <li class="footer">Generated on Mon Jan 2 2017 12:49:52 for libBrain by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.8 </li>
   </ul>
