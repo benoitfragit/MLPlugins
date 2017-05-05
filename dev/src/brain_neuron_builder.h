@@ -96,7 +96,7 @@ void set_neuron_weight(BrainNeuron neuron,
  */
 BrainUint get_neuron_number_of_input(const BrainNeuron neuron);
 /**
- * \fn BrainDouble get_neuron_outout(const BrainNeuron neuron)
+ * \fn BrainDouble get_neuron_output(const BrainNeuron neuron)
  * \brief retrieve neuron output
  *
  * \param neuron the Neuron

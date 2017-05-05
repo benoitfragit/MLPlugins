@@ -5,11 +5,15 @@ set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-o2 -g3 -Wall -Wextra -Wshadow -Wunused")
 
 find_package(LIBXML2 REQUIRED)
 
+configure_file ("${PROJECT_SOURCE_DIR}/src/brain_utils_config.h.in"
+                "${PROJECT_BINARY_DIR}/src/brain_utils_config.h")
+
 set(LIBBRAIN_SOURCE_DIR
     ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 set(LIBBRAIN_INCLUDE_DIRS
     ${LIBXML2_INCLUDE_DIR}
+    ${PROJECT_BINARY_DIR}/src
     ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 include_directories(${LIBBRAIN_INCLUDE_DIRS})
