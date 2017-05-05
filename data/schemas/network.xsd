@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema'>
+
+    <xs:simpleType name="CostFunctionType">
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="Quadratic"/>
+            <xs:enumeration value="CrossEntropy"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="ActivationFunctionType">
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="Identity"/>
+            <xs:enumeration value="Sigmoid"/>
+            <xs:enumeration value="TanH"/>
+            <xs:enumeration value="ArcTan"/>
+            <xs:enumeration value="SoftPlus"/>
+            <xs:enumeration value="Sinus"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="LearningType">
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="BackPropagation"/>
+            <xs:enumeration value="Resilient"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="DropoutType">
+        <xs:attribute name="activate" type="xs:boolean" use="required"/>
+        <xs:attribute name="factor"   type="xs:decimal" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="EtaType">
+        <xs:attribute name="positive" type="xs:decimal" use="required"/>
+        <xs:attribute name="negative" type="xs:decimal" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="DeltaType">
+        <xs:attribute name="min"      type="xs:decimal" use="required"/>
+        <xs:attribute name="max"      type="xs:decimal" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="RPropType">
+        <xs:all>
+            <xs:element name="eta"   type="EtaType"/>
+            <xs:element name="delta" type="DeltaType"/>
+        </xs:all>
+    </xs:complexType>
+
+    <xs:complexType name="BackPropType">
+        <xs:attribute name="learning-rate" type="xs:decimal" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="TrainingMethodType">
+        <xs:choice>
+            <xs:element name="backprop" type="BackPropType"/>
+            <xs:element name="rprop"    type="RPropType"/>
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:complexType name="TrainingType">
+        <xs:all>
+            <xs:element name="dropout"  type="DropoutType"/>
+            <xs:element name="method"   type="TrainingMethodType"/>
+        </xs:all>
+        <xs:attribute name="learning"   type="LearningType" use="required"/>
+        <xs:attribute name="iterations" type="xs:integer"   use="required"/>
+        <xs:attribute name="error"      type="xs:decimal"   use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="SettingsType">
+        <xs:all>
+            <xs:element name="training" type="TrainingType"/>
+        </xs:all>
+        <xs:attribute name="activation-function" type="ActivationFunctionType" use="optional"/>
+        <xs:attribute name="cost-function"       type="CostFunctionType"       use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="LayerType">
+        <xs:attribute name="neurons" type="xs:integer" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="LayersType">
+        <xs:sequence minOccurs="1" maxOccurs="unbounded">
+            <xs:element name="layer"   type="LayerType" minOccurs="2" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="NetworkType">
+        <xs:all>
+            <xs:element name="layers"   type="LayersType"/>
+            <xs:element name="settings" type="SettingsType"/>
+        </xs:all>
+
+        <xs:attribute name="inputs"   type="xs:integer" use="required"/>
+    </xs:complexType>
+
+    <xs:element name="network" type="NetworkType"/>
+</xs:schema>

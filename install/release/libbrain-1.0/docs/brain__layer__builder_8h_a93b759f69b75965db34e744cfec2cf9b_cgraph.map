@@ -1,0 +1,4 @@
+<map id="set_layer_input" name="set_layer_input">
+<area shape="rect" id="node2" href="$brain__layer__builder_8h.html#a8b6c1e634e8d7b7fcfe3a526c6b11755" title="get a Neuron from the layer " alt="" coords="164,5,285,32"/>
+<area shape="rect" id="node3" href="$brain__neuron__builder_8h.html#a1ce5aca37f6d481fe80722ac65fcb39c" title="set the input signal on a neuron " alt="" coords="164,56,285,83"/>
+</map>

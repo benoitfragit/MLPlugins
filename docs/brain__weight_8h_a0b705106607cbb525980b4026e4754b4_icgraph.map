@@ -1,0 +1,4 @@
+<map id="set_weight_value" name="set_weight_value">
+<area shape="rect" id="node2" href="$brain__neuron__builder_8h.html#a53aabc6f1d277761f202e11cc6d22740" title="set a weight of a neuron " alt="" coords="176,5,307,32"/>
+<area shape="rect" id="node3" href="$brain__neuron__builder_8h.html#ad3882bcadabedd856a09723d65889f7e" title="set the bias of a neuron " alt="" coords="183,56,300,83"/>
+</map>

@@ -1,0 +1,6 @@
+<map id="delete_network" name="delete_network">
+<area shape="rect" id="node2" href="$brain__layer__builder_8h.html#abd1a19b45a5303fd59c552abe66c46c7" title="free all layer allocated memory " alt="" coords="173,5,265,32"/>
+<area shape="rect" id="node5" href="$brain__settings_8h.html#ad20f060329a1095191a4467aeda6a7ec" title="free all associated memory " alt="" coords="164,56,275,83"/>
+<area shape="rect" id="node3" href="$brain__neuron__builder_8h.html#ac39479cd2f36ef2606f3d93ce0f29ca6" title="free all BrainNeuron memory " alt="" coords="323,5,425,32"/>
+<area shape="rect" id="node4" href="$brain__weight_8h.html#a75e0b4bcfb39885e6469ba9d98aa5e63" title="deleta a weight " alt="" coords="473,5,576,32"/>
+</map>

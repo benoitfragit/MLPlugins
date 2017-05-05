@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema'>
+    <xs:complexType name="WeightType">
+        <xs:attribute name="value"  type="xs:decimal" use="required"/>
+    </xs:complexType>
+
+    <xs::complexType name="NeuronInitType">
+        <xs:sequence minOccurs="1" maxOccurs="unbounded">
+            <xs:element name="weight" type="WeightType"/>
+        </xs:sequence>
+        <xs:attribute name="layer-index"  type="xs:integer" use="required"/>
+        <xs:attribute name="index"        type="xs:integer" use="required"/>
+        <xs:attribute name="bias"         type="xs:decimal" use="required"/>
+    </xs::complexType>
+
+    <xs:complexType name="InitType">
+        <xs:sequence minOccurs="1" maxOccurs="unbounded">
+            <xs:attribute name="neuron" type="NeuronInitType"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="init" type="InitType"/>
+</xs:schema>

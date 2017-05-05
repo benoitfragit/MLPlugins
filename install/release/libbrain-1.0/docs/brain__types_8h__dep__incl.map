@@ -1,0 +1,9 @@
+<map id="brain_types.h" name="brain_types.h">
+<area shape="rect" id="node2" href="$brain__builder_8h.html" title="Define the API to load a networkand from an XML file. " alt="" coords="5,80,112,107"/>
+<area shape="rect" id="node3" href="$brain__network__builder_8h.html" title="Define the API to create an control a Neural network. " alt="" coords="137,80,295,107"/>
+<area shape="rect" id="node4" href="$brain__layer__builder_8h.html" title="Define the API to build a Layer. " alt="" coords="320,80,461,107"/>
+<area shape="rect" id="node5" href="$brain__neuron__builder_8h.html" title="Define the API to create an BrainNeuron. " alt="" coords="485,80,637,107"/>
+<area shape="rect" id="node6" href="$brain__data__reader_8h.html" title="Define the API to read training data from an XML file. " alt="" coords="661,80,797,107"/>
+<area shape="rect" id="node7" href="$brain__settings_8h.html" title="Define the API to control network settings. " alt="" coords="821,80,936,107"/>
+<area shape="rect" id="node8" href="$brain__weight_8h.html" title="Define the API to create a BrainWeight. " alt="" coords="960,80,1067,107"/>
+</map>
