@@ -1,9 +1,8 @@
 cmake_minimum_required(VERSION 2.8.9)
-
-add_subdirectory(src)
+add_subdirectory(dev)
+add_subdirectory(data)
 
 find_package(Doxygen)
-
 
 if(DOXYGEN_FOUND)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
@@ -12,7 +11,5 @@ if(DOXYGEN_FOUND)
                       COMMENT "Generating API documentation with Doxygen" VERBATIM)
 endif(DOXYGEN_FOUND)
 
-# install all xsd files
-install(DIRECTORY   ${CMAKE_CURRENT_SOURCE_DIR}/schemas/
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/schemas
-        FILES_MATCHING PATTERN "*.xsd"  PATTERN "*.xsd")
+install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/docs/
+        DESTINATION ${CMAKE_INSTALL_PREFIX}/docs)

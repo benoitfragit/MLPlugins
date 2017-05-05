@@ -1,5 +1,0 @@
-<map id="get_weight_value" name="get_weight_value">
-<area shape="rect" id="node2" href="$brain__neuron__builder_8h.html#adcd8b6862ecc6afcf4a1bb892b34b662" title="update weights using backpropagation " alt="" coords="176,5,321,47"/>
-<area shape="rect" id="node3" href="$brain__neuron__builder_8h.html#aec5da47dd065f994904676373a0b8a09" title="update weights using resilient learning " alt="" coords="176,71,321,112"/>
-<area shape="rect" id="node4" href="$brain__neuron__builder_8h.html#aa810160fba09cea8cc9aae2708d8a284" title="serialize a neuron to an XML file " alt="" coords="199,137,299,163"/>
-</map>

@@ -1,4 +1,0 @@
-<map id="set_layer_input" name="set_layer_input">
-<area shape="rect" id="node2" href="$brain__network__builder_8h.html#a898f07e0d90f3dee6b627ae2b7d96f71" title="propagate an input signal from the input signal to the output layer " alt="" coords="164,5,255,32"/>
-<area shape="rect" id="node3" href="$brain__network__builder_8h.html#afb150beb6b56e58557b97e41291595eb" title="launch the training process for the neural network " alt="" coords="303,5,349,32"/>
-</map>
