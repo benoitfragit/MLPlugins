@@ -43,6 +43,7 @@ Doxyfile
 .cproject
 .settings
 .metadata
+install
 
 doc
 .geanyproj

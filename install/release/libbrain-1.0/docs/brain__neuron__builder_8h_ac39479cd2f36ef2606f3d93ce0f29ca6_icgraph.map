@@ -1,4 +1,0 @@
-<map id="delete_neuron" name="delete_neuron">
-<area shape="rect" id="node2" href="$brain__layer__builder_8h.html#abd1a19b45a5303fd59c552abe66c46c7" title="free all layer allocated memory " alt="" coords="156,5,248,32"/>
-<area shape="rect" id="node3" href="$brain__network__builder_8h.html#a5e34699dce66feb9fc8bd0a41ce79441" title="deallocate a BrainNetwork " alt="" coords="296,5,407,32"/>
-</map>
