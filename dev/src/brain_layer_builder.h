@@ -13,18 +13,16 @@
 
 /**
  * \fn BrainLayer new_layer(const BrainUint number_of_neurons,
- *                          const BrainUint number_of_inputs
- *                          const BrainSettings settings)
+ *                          const BrainUint number_of_inputs)
  * \brief Fonction to create a BrainLayer from an XML context
  *
  * \param number_of_neurons Number of neurons in this layer
  * \param number_of_inputs size of the input signal
- * \param settings network settings
+ *
  * \return a new allocated BrainLayer or NULL if it failed
  */
 BrainLayer  new_layer                 (const BrainUint number_of_neurons,
-                                       const BrainUint number_of_inputs,
-                                       const BrainSettings settings);
+                                       const BrainUint number_of_inputs);
 /**
  * \fn BrainNeuron get_layer_neuron(const BrainLayer layer, const BrainUint index)
  * \brief get a Neuron from the layer

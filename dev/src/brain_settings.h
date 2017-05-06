@@ -12,7 +12,15 @@
 #include "brain_types.h"
 
 /**
- * \fn BrainSettings new_settings(const BrainUint             iterations,
+ * \fn BrainSettings get_settings_instance()
+ * \brief return the uniq settings manager
+ *
+ * \return the uniq settings manager
+ */
+BrainSettings get_settings_instance();
+
+/**
+ * \fn void new_settings(const BrainUint             iterations,
  *                                const BrainDouble           error,
  *                                const BrainActivationType   activation_type,
  *                                const BrainCostFunctionType costfunction_type,
@@ -24,7 +32,7 @@
  *                                const BrainDouble           resilient_delta_max,
  *                                const BrainDouble           resilient_eta_positive,
  *                                const BrainDouble           resilient_eta_negative)
- * \brief return a BrainSettings struct owned by the Network to share with neurons
+ * \brief initialize the settings manager
  *
  * \param iterations                    Choose training maximum number of iteration
  * \param error                         Choose training target error
@@ -39,7 +47,7 @@
  * \param resilient_eta_positive        Choose the resilient learning rate, when gradient derivative sign is not changing
  * \param resilient_eta_negative        Choose the resilient learning rate when gradient derivate sign is changing
  */
-BrainSettings
+void
 new_settings(const BrainUint             iterations,
              const BrainDouble           error,
              const BrainActivationType   activation_type,
@@ -53,122 +61,106 @@ new_settings(const BrainUint             iterations,
              const BrainDouble           resilient_eta_positive,
              const BrainDouble           resilient_eta_negative);
 /**
- * \fn void delete_settings(BrainSettings settings)
+ * \fn void delete_settings()
  * \brief free all associated memory
- *
- * \param settings Network associated settings
  */
-void delete_settings(BrainSettings settings);
+void delete_settings();
 /**
- * \fn LearningPtrFunc get_settings_learning_function(const BrainSettings settings)
+ * \fn LearningPtrFunc get_settings_learning_function()
  * \brief get the network learning type
  *
- * \param settings Network associated settings
  * \return the learning type
  */
-LearningPtrFunc get_settings_learning_function(const BrainSettings settings);
+LearningPtrFunc get_settings_learning_function();
 /**
- * \fn BrainDouble get_settings_resilient_delta_max(const BrainSettings settings)
+ * \fn BrainDouble get_settings_resilient_delta_max()
  * \brief get the network resilient delta max
  *
- * \param settings Network associated settings
  * \return the delta max
  */
-BrainDouble get_settings_resilient_delta_max(const BrainSettings settings);
+BrainDouble get_settings_resilient_delta_max();
 /**
- * \fn BrainDouble get_settings_resilient_delta_min(const BrainSettings settings)
+ * \fn BrainDouble get_settings_resilient_delta_min()
  * \brief get the network resilient delta min
  *
- * \param settings Network associated settings
  * \return the delta min
  */
-BrainDouble get_settings_resilient_delta_min(const BrainSettings settings);
+BrainDouble get_settings_resilient_delta_min();
 /**
- * \fn BrainDouble get_settings_resilient_eta_negative(const BrainSettings settings)
+ * \fn BrainDouble get_settings_resilient_eta_negative()
  * \brief get the network resilient eta negative
  *
- * \param settings Network associated settings
  * \return the eta negative
  */
-BrainDouble get_settings_resilient_eta_negative(const BrainSettings settings);
+BrainDouble get_settings_resilient_eta_negative();
 /**
- * \fn BrainDouble get_settings_resilient_eta_positive(const BrainSettings settings)
+ * \fn BrainDouble get_settings_resilient_eta_positive()
  * \brief get the network resilient delta min
  *
- * \param settings Network associated settings
  * \return the eta positive
  */
-BrainDouble get_settings_resilient_eta_positive(const BrainSettings settings);
+BrainDouble get_settings_resilient_eta_positive();
 /**
- * \fn BrainDouble get_settings_dropout_percent(const BrainSettings settings)
+ * \fn BrainDouble get_settings_dropout_percent()
  * \brief get the network dropout percent
  *
- * \param settings Network associated settings
  * \return the dropout percent
  */
-BrainDouble get_settings_dropout_percent(const BrainSettings settings);
+BrainDouble get_settings_dropout_percent();
 /**
- * \fn BrainBool get_settings_dropout_activated(const BrainSettings settings)
+ * \fn BrainBool get_settings_dropout_activated()
  * \brief is the network use dropout
  *
- * \param settings Network associated settings
  * \return is dropout activated
  */
-BrainBool get_settings_dropout_activated(const BrainSettings settings);
+BrainBool get_settings_dropout_activated();
 /**
- * \fn PtrFunc get_settings_neuron_activation(const BrainSettings settings)
+ * \fn PtrFunc get_settings_neuron_activation()
  * \brief get a function pointer to compute the neuron activation
  *
- * \param settings Network associated settings
  * \return a function pointer
  */
-PtrFunc get_settings_neuron_activation(const BrainSettings settings);
+PtrFunc get_settings_neuron_activation();
 /**
- * \fn PtrFunc get_settings_neuron_derivative(const BrainSettings settings)
+ * \fn PtrFunc get_settings_neuron_derivative()
  * \brief get a function pointer to compute the neuron activation derivative
  *
- * \param settings Network associated settings
  * \return a function pointer
  */
-PtrFunc get_settings_neuron_derivative(const BrainSettings settings);
+PtrFunc get_settings_neuron_derivative();
 /**
- * \fn PtrFunc get_settings_network_cost_function(const BrainSettings settings)
+ * \fn PtrFunc get_settings_network_cost_function()
  * \brief get a function pointer to compute the network error
  *
- * \param settings Network associated settings
  * \return a function pointer
  */
-CostPtrFunc get_settings_network_cost_function(const BrainSettings settings);
+CostPtrFunc get_settings_network_cost_function();
 /**
- * \fn PtrFunc get_settings_network_cost_function_derivative(const BrainSettings settings)
+ * \fn PtrFunc get_settings_network_cost_function_derivative()
  * \brief get a function pointer to compute the network error derivative
  *
- * \param settings Network associated settings
  * \return a function pointer
  */
-CostPtrFunc get_settings_network_cost_function_derivative(const BrainSettings settings);
+CostPtrFunc get_settings_network_cost_function_derivative();
 /**
- * \fn BrainDouble get_settings_backpropagation_learning_rate(const BrainSettings settings)
+ * \fn BrainDouble get_settings_backpropagation_learning_rate()
  * \brief get the backpropagation learning rate
  *
- * \param settings Network associated settings
  * \return a learning rate
  */
-BrainDouble get_settings_backpropagation_learning_rate(const BrainSettings settings);
+BrainDouble get_settings_backpropagation_learning_rate();
 /**
- * \fn BrainUint get_settings_max_iterations(const BrainSettings settings)
+ * \fn BrainUint get_settings_max_iterations()
  * \brief get training max iterations
  *
- * \param settings Network associated settings
  * \return number of iterations
  */
-BrainUint get_settings_max_iterations(const BrainSettings settings);
+BrainUint get_settings_max_iterations();
 /**
- * \fn BrainUint get_settings_target_error(const BrainSettings settings)
+ * \fn BrainUint get_settings_target_error()
  * \brief get training target error
  *
- * \param settings Network associated settings
  * \return the target error
  */
-BrainDouble get_settings_target_error(const BrainSettings settings);
+BrainDouble get_settings_target_error();
 #endif /* BRAIN_SETTINGS_H */

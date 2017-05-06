@@ -35,5 +35,12 @@ void initialize_network_from_context(BrainNetwork network,
  * \return a newly allocated BrainData
  */
 BrainData new_data_from_context(BrainString filepath);
+/**
+ * \fn void new_settings_from_context(BrainString filepath)
+ * \brief Load settings from an XML context
+ *
+ * \param filepath the XML context to use
+ */
+void new_settings_from_context(BrainString filepath);
 
 #endif /* BRAIN_BUILDER_H */

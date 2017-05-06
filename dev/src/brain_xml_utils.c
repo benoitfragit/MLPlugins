@@ -202,11 +202,11 @@ validate_with_xsd(BrainString xml_file, BrainString xsd_file)
     }
     else
     {
-        xmlSchemaValidCtxtPtr ctxt;
+        xmlSchemaValidCtxtPtr validation_ctxt;
 
-        ctxt = xmlSchemaNewValidCtxt(schema);
-        xmlSchemaSetValidErrors(ctxt, (xmlSchemaValidityErrorFunc) fprintf, (xmlSchemaValidityWarningFunc) fprintf, stderr);
-        ret = xmlSchemaValidateDoc(ctxt, doc);
+        validation_ctxt = xmlSchemaNewValidCtxt(schema);
+        xmlSchemaSetValidErrors(validation_ctxt, (xmlSchemaValidityErrorFunc) fprintf, (xmlSchemaValidityWarningFunc) fprintf, stderr);
+        ret = xmlSchemaValidateDoc(validation_ctxt, doc);
         if (ret == 0)
         {
             result = BRAIN_TRUE;
@@ -220,7 +220,7 @@ validate_with_xsd(BrainString xml_file, BrainString xsd_file)
             BRAIN_CRITICAL("%s validation generated an BrainInternal error\n", xml_file);
         }
 
-        xmlSchemaFreeValidCtxt(ctxt);
+        xmlSchemaFreeValidCtxt(validation_ctxt);
         xmlFreeDoc(doc);
     }
 

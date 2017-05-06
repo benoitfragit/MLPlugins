@@ -131,6 +131,5 @@ typedef BrainDouble (*CostPtrFunc)(const BrainDouble output,
  * \param loss   the total output error
  */
 typedef void (*LearningPtrFunc)(BrainNeuron neuron,
-                                const BrainSettings settings,
                                 const BrainDouble loss);
 #endif /* BRAIN_TYPES_H */

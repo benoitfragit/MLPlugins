@@ -27,134 +27,162 @@ struct Settings
     LearningPtrFunc _learning_function;                /*!< Learning function                             */
 } Settings;
 
-BrainUint
-get_settings_max_iterations(const BrainSettings settings)
+static BrainSettings _settings = NULL;
+
+BrainSettings
+get_settings_instance()
 {
-    if (settings != NULL)
-        return settings->_iterations;
+    if (_settings == NULL)
+    {
+        _settings = (BrainSettings)calloc(1, sizeof(Settings));
+
+        _settings->_iterations                       = 1000;
+        _settings->_error                            = 0.001;
+        _settings->_use_dropout                      = BRAIN_FALSE;
+        _settings->_dropout_percent                  = 0.5;
+        _settings->_resilient_delta_max              = 0.000001;
+        _settings->_resilient_delta_min              = 50.0;
+        _settings->_resilient_eta_negative           = 0.95;
+        _settings->_resilient_eta_positive           = 1.2;
+        _settings->_backpropagation_learning_rate    = 1.12;
+        _settings->_learning_function                = get_learning_function(BackPropagation);
+        _settings->_neuron_activation                = activation(Sigmoid);
+        _settings->_neuron_derivative                = derivative(Sigmoid);
+        _settings->_network_cost_function            = get_cost_function(CrossEntropy);
+        _settings->_network_cost_function_derivative = get_cost_function_derivative(CrossEntropy);
+    }
+
+    return _settings;
+}
+
+BrainUint
+get_settings_max_iterations()
+{
+    if (_settings != NULL)
+        return _settings->_iterations;
 
     return 0;
 }
 
 BrainDouble
-get_settings_target_error(const BrainSettings settings)
+get_settings_target_error()
 {
-    if (settings != NULL)
-        return settings->_error;
+    if (_settings != NULL)
+        return _settings->_error;
 
     return 1.0;
 }
 
 BrainDouble
-get_settings_backpropagation_learning_rate(const BrainSettings settings)
+get_settings_backpropagation_learning_rate()
 {
-    if (settings != NULL)
-        return settings->_backpropagation_learning_rate;
+    if (_settings != NULL)
+        return _settings->_backpropagation_learning_rate;
 
     return 1.0;
 }
 
 CostPtrFunc
-get_settings_network_cost_function(const BrainSettings settings)
+get_settings_network_cost_function()
 {
-    if (settings != NULL)
-        return settings->_network_cost_function;
+    if (_settings != NULL)
+        return _settings->_network_cost_function;
 
     return NULL;
 }
 
 CostPtrFunc
-get_settings_network_cost_function_derivative(const BrainSettings settings)
+get_settings_network_cost_function_derivative()
 {
-    if (settings != NULL)
-        return settings->_network_cost_function_derivative;
+    if (_settings != NULL)
+        return _settings->_network_cost_function_derivative;
 
     return NULL;
 }
 
 PtrFunc
-get_settings_neuron_activation(const BrainSettings settings)
+get_settings_neuron_activation()
 {
-    if (settings != NULL)
-        return settings->_neuron_activation;
+    if (_settings != NULL)
+        return _settings->_neuron_activation;
 
     return NULL;
 }
 
 PtrFunc
-get_settings_neuron_derivative(const BrainSettings settings)
+get_settings_neuron_derivative()
 {
-    if (settings != NULL)
-        return settings->_neuron_derivative;
+    if (_settings != NULL)
+        return _settings->_neuron_derivative;
 
     return NULL;
 }
 
 LearningPtrFunc
-get_settings_learning_function(const BrainSettings settings)
+get_settings_learning_function()
 {
-    if (settings != NULL)
-        return settings->_learning_function;
+    if (_settings != NULL)
+        return _settings->_learning_function;
 
     return NULL;
 }
 
 BrainDouble
-get_settings_resilient_delta_max(const BrainSettings settings)
+get_settings_resilient_delta_max()
 {
-    if (settings != NULL)
-        return settings->_resilient_delta_max;
+    if (_settings != NULL)
+        return _settings->_resilient_delta_max;
 
     return 0.0;
 }
 
 BrainDouble
-get_settings_resilient_delta_min(const BrainSettings settings)
+get_settings_resilient_delta_min()
 {
-    if (settings != NULL)
-        return settings->_resilient_delta_min;
+    if (_settings != NULL)
+        return _settings->_resilient_delta_min;
 
     return 0.0;
 }
 
 BrainDouble
-get_settings_resilient_eta_positive(const BrainSettings settings)
+get_settings_resilient_eta_positive()
 {
-    if (settings != NULL)
-        return settings->_resilient_eta_positive;
+    if (_settings != NULL)
+        return _settings->_resilient_eta_positive;
 
     return 0.0;
 }
 
 BrainDouble
-get_settings_resilient_eta_negative(const BrainSettings settings)
+get_settings_resilient_eta_negative()
 {
-    if (settings != NULL)
-        return settings->_resilient_eta_negative;
+    if (_settings != NULL)
+        return _settings->_resilient_eta_negative;
 
     return 0.0;
 }
 
 BrainDouble
-get_settings_dropout_percent(const BrainSettings settings)
+get_settings_dropout_percent()
 {
-    if (settings != NULL)
-        return settings->_dropout_percent;
+    if (_settings != NULL)
+        return _settings->_dropout_percent;
 
     //no dropout
     return 1.0;
 }
 
 BrainBool
-get_settings_dropout_activated(const BrainSettings settings)
+get_settings_dropout_activated()
 {
-    if (settings != NULL)
-        return settings->_use_dropout;
+    if (_settings != NULL)
+        return _settings->_use_dropout;
 
     return BRAIN_FALSE;
 }
 
-BrainSettings
+void
 new_settings(const BrainUint             iterations,
              const BrainDouble           error,
              const BrainActivationType   activation_type,
@@ -168,29 +196,27 @@ new_settings(const BrainUint             iterations,
              const BrainDouble           resilient_eta_positive,
              const BrainDouble           resilient_eta_negative)
 {
-    BrainSettings _settings   = (BrainSettings)calloc(1, sizeof(Settings));
+    BrainSettings settings = get_settings_instance();
 
-    _settings->_iterations                       = iterations;
-    _settings->_error                            = error;
-    _settings->_learning_function                = get_learning_function(learning_type);
-    _settings->_use_dropout                      = use_dropout;
-    _settings->_dropout_percent                  = dropout_factor;
-    _settings->_backpropagation_learning_rate    = backpropagation_learning_rate;
-    _settings->_resilient_delta_max              = resilient_delta_max;
-    _settings->_resilient_delta_min              = resilient_delta_min;
-    _settings->_resilient_eta_negative           = resilient_eta_negative;
-    _settings->_resilient_eta_positive           = resilient_eta_positive;
-    _settings->_neuron_activation                = activation(activation_type);
-    _settings->_neuron_derivative                = derivative(activation_type);
-    _settings->_network_cost_function            = get_cost_function(costfunction_type);
-    _settings->_network_cost_function_derivative = get_cost_function_derivative(costfunction_type);
-
-    return _settings;
+    settings->_iterations                       = iterations;
+    settings->_error                            = error;
+    settings->_learning_function                = get_learning_function(learning_type);
+    settings->_use_dropout                      = use_dropout;
+    settings->_dropout_percent                  = dropout_factor;
+    settings->_backpropagation_learning_rate    = backpropagation_learning_rate;
+    settings->_resilient_delta_max              = resilient_delta_max;
+    settings->_resilient_delta_min              = resilient_delta_min;
+    settings->_resilient_eta_negative           = resilient_eta_negative;
+    settings->_resilient_eta_positive           = resilient_eta_positive;
+    settings->_neuron_activation                = activation(activation_type);
+    settings->_neuron_derivative                = derivative(activation_type);
+    settings->_network_cost_function            = get_cost_function(costfunction_type);
+    settings->_network_cost_function_derivative = get_cost_function_derivative(costfunction_type);
 }
 
 void
-delete_settings(BrainSettings settings)
+delete_settings()
 {
-    if (settings != NULL)
-        free(settings);
+    if (_settings != NULL)
+        free(_settings);
 }

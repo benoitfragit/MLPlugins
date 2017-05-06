@@ -14,18 +14,18 @@ static BrainString _learning_names[] =
 
 static void
 update_neuron_using_backpropagation(BrainNeuron neuron,
-                                    const BrainSettings settings,
                                     const BrainDouble loss)
 {
     if (neuron != NULL)
     {
+        const BrainSettings settings = get_settings_instance();
         const BrainUint number_of_inputs = get_neuron_number_of_input(neuron);
         BrainUint i = 0;
 
         if (settings != NULL)
         {
-            const BrainDouble learning_rate = get_settings_backpropagation_learning_rate(settings);
-            PtrFunc     derivative_function = get_settings_neuron_derivative(settings);
+            const BrainDouble learning_rate = get_settings_backpropagation_learning_rate();
+            PtrFunc     derivative_function = get_settings_neuron_derivative();
 
             if (derivative_function != NULL)
             {
@@ -115,16 +115,18 @@ apply_neuron_rprop(const BrainDouble rprop_eta_positive,
 
 static void
 update_neuron_using_resilient(BrainNeuron neuron,
-                              const BrainSettings settings,
                               const BrainDouble loss)
 {
+    const BrainSettings settings = get_settings_instance();
+
     if (neuron != NULL && settings != NULL)
     {
-        const BrainDouble rprop_eta_positive  = get_settings_resilient_eta_positive(settings);
-        const BrainDouble rprop_eta_negative  = get_settings_resilient_eta_negative(settings);
-        const BrainDouble rprop_delta_min     = get_settings_resilient_delta_min(settings);
-        const BrainDouble rprop_delta_max     = get_settings_resilient_delta_max(settings);
-        PtrFunc           derivative_function = get_settings_neuron_derivative(settings);
+
+        const BrainDouble rprop_eta_positive  = get_settings_resilient_eta_positive();
+        const BrainDouble rprop_eta_negative  = get_settings_resilient_eta_negative();
+        const BrainDouble rprop_delta_min     = get_settings_resilient_delta_min();
+        const BrainDouble rprop_delta_max     = get_settings_resilient_delta_max();
+        PtrFunc           derivative_function = get_settings_neuron_derivative();
 
         if (derivative_function != NULL)
         {

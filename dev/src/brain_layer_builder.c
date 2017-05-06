@@ -111,8 +111,7 @@ get_layer_next_layer(const BrainLayer layer)
 
 BrainLayer
 new_layer(const BrainUint     number_of_neurons,
-          const BrainUint     number_of_inputs,
-          const BrainSettings settings)
+          const BrainUint     number_of_inputs)
 {
     if ((number_of_inputs  != 0)
     &&  (number_of_neurons != 0))
@@ -134,7 +133,6 @@ new_layer(const BrainUint     number_of_neurons,
             for (index = 0; index < _layer->_number_of_neuron; ++index)
             {
                 _layer->_neurons[index] = new_neuron(number_of_inputs,
-                                                     settings,
                                                      &(_layer->_out[index]),
                                                      _layer->_weighted_deltas);
             }
