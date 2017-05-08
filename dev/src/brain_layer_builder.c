@@ -1,5 +1,6 @@
 #include "brain_layer_builder.h"
 #include "brain_neuron_builder.h"
+#include "brain_settings.h"
 
 /**
  * \struct Layer
@@ -9,11 +10,12 @@
  */
 struct Layer
 {
-    BrainNeuron* _neurons;          /*!< An array of BrainNeuron       */
-    BrainSignal  _out;              /*!< Output vector of the Layer    */
-    BrainSignal  _weighted_deltas;  /*!< An array of weighted delta    */
-    BrainUint    _number_of_neuron; /*!< The number of BrainNeuron     */
-    BrainLayer   _next_layer;       /*!< The next layer in the network */
+    BrainNeuron* _neurons;          /*!< An array of BrainNeuron           */
+    BrainSignal  _out;              /*!< Output vector of the Layer        */
+    BrainSignal  _weighted_deltas;  /*!< An array of weighted delta        */
+    BrainUint    _number_of_neuron; /*!< The number of BrainNeuron         */
+    BrainLayer   _next;             /*!< The next layer in the network     */
+    BrainLayer   _prev;             /*!< The previous layer in the network */
 } Layer;
 
 void
@@ -26,7 +28,6 @@ set_layer_input(BrainLayer        layer,
         const BrainUint number_of_neurons  = layer->_number_of_neuron;
         BrainUint j = 0;
 
-
         for (j = 0; j < number_of_neurons; ++j)
         {
             BrainNeuron input_neuron = get_layer_neuron(layer, j);
@@ -34,12 +35,12 @@ set_layer_input(BrainLayer        layer,
             set_neuron_input(input_neuron,
                              number_of_inputs,
                              in,
-                             (layer->_next_layer != NULL));
+                             (layer->_next != NULL));
         }
 
-        if (layer->_next_layer != NULL)
+        if (layer->_next != NULL)
         {
-            set_layer_input(layer->_next_layer,
+            set_layer_input(layer->_next,
                             number_of_neurons,
                             layer->_out);
         }
@@ -96,7 +97,7 @@ set_layer_next_layer(BrainLayer layer,
 {
     if (layer != NULL)
     {
-        layer->_next_layer = next_layer;
+        layer->_next = next_layer;
     }
 }
 
@@ -104,7 +105,26 @@ BrainLayer
 get_layer_next_layer(const BrainLayer layer)
 {
     if (layer != NULL)
-        return layer->_next_layer;
+        return layer->_next;
+
+    return NULL;
+}
+
+void
+set_layer_previous_layer(BrainLayer layer,
+                         BrainLayer prev_layer)
+{
+    if (layer != NULL)
+    {
+        layer->_prev = prev_layer;
+    }
+}
+
+BrainLayer
+get_layer_previous_layer(const BrainLayer layer)
+{
+    if (layer != NULL)
+        return layer->_prev;
 
     return NULL;
 }
@@ -119,7 +139,8 @@ new_layer(const BrainUint     number_of_neurons,
         BrainLayer _layer = NULL;
 
         _layer                    = (BrainLayer)calloc(1, sizeof(Layer));
-        _layer->_next_layer       = NULL;
+        _layer->_next             = NULL;
+        _layer->_prev             = NULL;
         _layer->_number_of_neuron = number_of_neurons;
 
         if (0 != _layer->_number_of_neuron)
@@ -205,4 +226,107 @@ get_layer_weighted_delta(const BrainLayer layer,
     }
 
     return 0.0;
+}
+
+BrainDouble
+backpropagate_output_layer(BrainLayer output_layer,
+                           const BrainUint number_of_output,
+                           const BrainSignal desired)
+{
+    BrainDouble error = 0.0;
+
+    if ((output_layer != NULL)
+    &&  (desired != NULL))
+    {
+        const BrainSettings settings = get_settings_instance();
+
+        if (settings != NULL)
+        {
+            LearningPtrFunc learning_function = get_settings_learning_function();
+
+            if (learning_function != NULL)
+            {
+                const BrainSignal output            = get_layer_output(output_layer);
+                const BrainUint   number_of_neuron  = get_layer_number_of_neuron(output_layer);
+
+                if (number_of_neuron == number_of_output)
+                {
+                    CostPtrFunc cost_function            = get_settings_network_cost_function();
+                    CostPtrFunc cost_function_derivative = get_settings_network_cost_function_derivative();
+
+                    BrainUint output_index = 0;
+
+                    reset_layer_delta(output_layer);
+
+                    for (output_index = 0;
+                         output_index < number_of_output;
+                       ++output_index)
+                    {
+                        const BrainDouble loss = cost_function_derivative(output[output_index],
+                                                                          desired[output_index]);
+
+                        BrainNeuron oNeuron = get_layer_neuron(output_layer,
+                                                               output_index);
+
+                        error += cost_function(output[output_index],
+                                               desired[output_index]);
+
+                        if (oNeuron != NULL)
+                        {
+                            learning_function(oNeuron, loss);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    error *= 1.0/(BrainDouble)number_of_output;
+
+    return error;
+}
+
+void
+backpropagate_hidden_layer(BrainLayer hidden_layer)
+{
+    if (hidden_layer != NULL)
+    {
+        const BrainSettings settings = get_settings_instance();
+
+        if (settings != NULL)
+        {
+            LearningPtrFunc learning_function = get_settings_learning_function(settings);
+
+            if (learning_function != NULL)
+            {
+                const BrainLayer next_layer               = get_layer_next_layer(hidden_layer);
+                const BrainLayer prev_layer               = get_layer_previous_layer(hidden_layer);
+                const BrainUint   current_number_of_neuron = get_layer_number_of_neuron(hidden_layer);
+
+                if (next_layer != NULL)
+                {
+                    BrainUint i = 0;
+
+                    reset_layer_delta(hidden_layer);
+
+                    for (i = 0; i < current_number_of_neuron; ++i)
+                    {
+                        BrainNeuron current_neuron = get_layer_neuron(hidden_layer, i);
+
+                        if (current_neuron != NULL)
+                        {
+                            const BrainDouble loss = get_layer_weighted_delta(next_layer, i);
+
+                            learning_function(current_neuron, loss);
+                        }
+                    }
+
+                    if (prev_layer != NULL)
+                    {
+                        backpropagate_hidden_layer(prev_layer);
+                    }
+                }
+            }
+        }
+    }
 }

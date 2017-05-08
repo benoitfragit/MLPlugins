@@ -64,17 +64,6 @@ void dump_network(const BrainNetwork network,
  */
 BrainSignal get_network_output(const BrainNetwork network);
 /**
- * \fn BrainLayer get_network_layer(const BrainNetwork network
- *                                  const BrainUint layer_index)
- * \brief get a layer of the network
- *
- * \param network the BrainNetwork
- * \param layer_index the layer index
- * \return get the requested layer or NULL
- */
-BrainLayer get_network_layer(const BrainNetwork network,
-                             const BrainUint layer_index);
-/**
  * \fn BrainBool train(BrainNetwork network,
  *                     const BrainData data)
  * \brief launch the training process for the neural network
@@ -86,5 +75,15 @@ BrainLayer get_network_layer(const BrainNetwork network,
  */
 BrainBool train(BrainNetwork      network,
                   const BrainData   data);
-
+/**
+ * \fn BrainLayer get_network_layer(const BrainNetwork network,
+ *                                  const BrainUint layer_index)
+ * \brief find a given layer
+ *
+ * \param network      the BrainNetwork to train
+ * \param layer_index  index of the layer
+ *
+ * \return a BrainLayer
+ */
+BrainLayer get_network_layer(const BrainNetwork network, const BrainUint layer_index);
 #endif /* BRAIN_NETWORK_BUILDER_H */

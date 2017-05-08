@@ -64,9 +64,17 @@ BrainDouble get_layer_weighted_delta  (const BrainLayer layer,
  * \brief get the next layer
  *
  * \param layer a BrainLayerex
- * \return a BrainLayer or NULL if it is the layer
+ * \return a BrainLayer or NULL if it is the output layer
  */
 BrainLayer  get_layer_next_layer      (const BrainLayer layer);
+/**
+ * \fn BrainLayer get_layer_previous_layer(const BrainLayer layer)
+ * \brief get the previous layer
+ *
+ * \param layer a BrainLayer
+ * \return a BrainLayer or NULL if it is the input layer
+ */
+BrainLayer  get_layer_previous_layer      (const BrainLayer layer);
 /**
  * \fn void delete_layer(BrainLayer layer)
  * \brief free all layer allocated memory
@@ -109,11 +117,41 @@ void        dump_layer                (const BrainLayer layer,
  */
 void        reset_layer_delta         (BrainLayer layer);
 /**
- * \fn void get_layer_next_layer(const BrainLayer layer)
- * \brief get the next layer for a layer
+ * \fn void set_layer_next_layer(BrainLayer layer, BrainLayer next_layer)
+ * \brief set the next layer for a layer
  *
  * \param layer a BrainLayer
+ * \param next_layer a BrainLayer
  */
 void        set_layer_next_layer      (BrainLayer layer,
                                        BrainLayer next_layer);
+/**
+ * \fn void set_layer_previous_layer(BrainLayer layer, BrainLayer prev_layer)
+ * \brief set the previous layer for a layer
+ *
+ * \param layer a BrainLayer
+ * \param prev_layer a BrainLayer
+ */
+void        set_layer_previous_layer  (BrainLayer layer,
+                                       BrainLayer prev_layer);
+/**
+ * \fn BrainDouble backpropagate_output_layer(BrainLayer output_layer, const BrainUint number_of_output, const BrainSignal desired)
+ * \brief apply backpropagation algorithm on an output layer and return the error between computed and desired outputs
+ *
+ * \param output_layer the BrainLayer
+ * \param number_of_output the size of the output vector
+ * \param desired the desired output
+ *
+ * \return the error rate
+ */
+BrainDouble backpropagate_output_layer(BrainLayer output_layer,
+                                       const BrainUint number_of_output,
+                                       const BrainSignal desired);
+/**
+ * \fn void backpropagate_hidden_layer(BrainLayer hidden_layer)
+ * \brief apply backpropagation algorithm on an hidden layer
+ *
+ * \param hidden_layer the BrainLayer
+ */
+void backpropagate_hidden_layer(BrainLayer hidden_layer);
 #endif /* BRAIN_LAYER_BUILDER_H */

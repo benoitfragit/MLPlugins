@@ -14,158 +14,48 @@
  */
 struct Network
 {
-    BrainLayer*   _layers;           /*!< An array of BrainLayer         */
+    BrainLayer    _input_layer;      /*!< The input layer                */
+    BrainLayer    _output_layer;     /*!< The output layer               */
     BrainSignal   _output;           /*!< Output signal of the layer     */
-    BrainUint     _number_of_layer;  /*!< Number of layers               */
 } Network;
-
-static BrainUint
-get_network_number_of_layer(const BrainNetwork network)
-{
-    if (network != NULL)
-    {
-        return network->_number_of_layer;
-    }
-
-    return 0;
-}
-
-BrainLayer
-get_network_layer(const BrainNetwork network,
-                  const BrainUint layer_index)
-{
-    if ((network != NULL)
-    &&  (network->_layers != NULL)
-    &&  (layer_index < network->_number_of_layer))
-    {
-        return network->_layers[layer_index];
-    }
-
-    return NULL;
-}
-
-
-static BrainDouble
-backpropagate_output_layer(BrainNetwork network,
-                           const BrainUint number_of_output,
-                           const BrainSignal desired)
-{
-    BrainDouble error = 0.0;
-
-    if ((network != NULL)
-    &&  (desired != NULL))
-    {
-        const BrainSettings settings = get_settings_instance();
-
-        if (settings != NULL)
-        {
-            LearningPtrFunc learning_function = get_settings_learning_function();
-
-            if (learning_function != NULL)
-            {
-                const BrainUint   number_of_layers  = get_network_number_of_layer(network);
-                BrainLayer        output_layer      = get_network_layer(network, number_of_layers - 1);
-                const BrainSignal output            = get_layer_output(output_layer);
-                const BrainUint   number_of_neuron  = get_layer_number_of_neuron(output_layer);
-
-                if ((output_layer     != NULL)
-                &&  (number_of_neuron == number_of_output))
-                {
-                    CostPtrFunc cost_function            = get_settings_network_cost_function();
-                    CostPtrFunc cost_function_derivative = get_settings_network_cost_function_derivative();
-
-                    BrainUint output_index = 0;
-
-                    reset_layer_delta(output_layer);
-
-                    for (output_index = 0;
-                         output_index < number_of_output;
-                       ++output_index)
-                    {
-                        const BrainDouble loss = cost_function_derivative(output[output_index],
-                                                                          desired[output_index]);
-
-                        BrainNeuron oNeuron = get_layer_neuron(output_layer,
-                                                               output_index);
-
-                        error += cost_function(output[output_index],
-                                               desired[output_index]);
-
-                        if (oNeuron != NULL)
-                        {
-                            learning_function(oNeuron, loss);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    error *= 1.0/(BrainDouble)number_of_output;
-
-    return error;
-}
-
-static void
-backpropagate_hidden_layer(BrainNetwork network,
-                           const BrainUint layer_index)
-{
-    const BrainUint number_of_layers = get_network_number_of_layer(network);
-
-    if ((network != NULL)
-    &&  (0 != layer_index)
-    &&  (layer_index < number_of_layers - 1))
-    {
-        const BrainSettings settings = get_settings_instance();
-
-        if (settings != NULL)
-        {
-            LearningPtrFunc learning_function = get_settings_learning_function(settings);
-
-            if (learning_function != NULL)
-            {
-                BrainLayer       current_layer            = get_network_layer(network, layer_index);
-                const BrainLayer next_layer               = get_layer_next_layer(current_layer);
-                const BrainInt   current_number_of_neuron = get_layer_number_of_neuron(current_layer);
-
-                if (current_layer != NULL && next_layer != NULL)
-                {
-                    BrainInt i = 0;
-
-                    reset_layer_delta(current_layer);
-
-                    for (i = 0; i < current_number_of_neuron; ++i)
-                    {
-                        BrainNeuron current_neuron = get_layer_neuron(current_layer, i);
-
-                        if (current_neuron != NULL)
-                        {
-                            const BrainDouble loss = get_layer_weighted_delta(next_layer, i);
-
-                            learning_function(current_neuron, loss);
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
 
 static BrainDouble
 backpropagate(BrainNetwork network,
               const BrainUint number_of_output,
               const BrainSignal desired)
 {
-    BrainUint i;
-    const BrainUint number_of_layers = get_network_number_of_layer(network);
-    const BrainDouble error = backpropagate_output_layer(network, number_of_output, desired);
+    BrainDouble error = 1.0;
 
-    for (i = 2; i <= number_of_layers; ++i)
+    if (network != NULL && network->_output_layer != NULL)
     {
-        backpropagate_hidden_layer(network, number_of_layers - i);
+        error = backpropagate_output_layer(network->_output_layer,
+                                           number_of_output,
+                                           desired);
+
+        backpropagate_hidden_layer(get_layer_previous_layer(network->_output_layer));
     }
 
     return error;
+}
+
+BrainLayer
+get_network_layer(const BrainNetwork network, const BrainUint layer_index)
+{
+    if (network != NULL)
+    {
+        BrainUint idx = 0;
+        BrainLayer layer = network->_input_layer;
+
+        while (idx != layer_index)
+        {
+            ++idx;
+            layer = get_layer_next_layer(layer);
+        }
+
+        return layer;
+    }
+
+    return NULL;
 }
 
 BrainSignal
@@ -184,17 +74,15 @@ delete_network(BrainNetwork network)
 {
     if (network != NULL)
     {
-        if (network->_layers != NULL)
+        BrainLayer layer = network->_input_layer;
+
+        while (layer != NULL)
         {
-            const BrainUint number_of_layers = network->_number_of_layer;
-            BrainUint i = 0;
+            BrainLayer next_layer = get_layer_next_layer(layer);
 
-            for (i = 0; i < number_of_layers; ++i)
-            {
-                delete_layer(network->_layers[i]);
-            }
+            delete_layer(layer);
 
-            free(network->_layers);
+            layer = next_layer;
         }
 
         free(network);
@@ -211,37 +99,34 @@ new_network(const BrainUint     signal_input_length,
         BrainUint number_of_inputs = signal_input_length;
         BrainNetwork _network      = (BrainNetwork)calloc(1, sizeof(Network));
 
-        _network->_number_of_layer = number_of_layers;
-
         srand(time(NULL));
 
-        if (_network->_number_of_layer != 0)
+        if (0 < number_of_layers)
         {
-            BrainUint       index            = 0;
-            BrainLayer      last_layer       = NULL;
-            const BrainUint last_layer_index = _network->_number_of_layer - 1;
+            BrainUint index = 0;
+            BrainUint number_of_neurons = neuron_per_layers[0];
+            BrainLayer layer      = NULL;
+            BrainLayer next_layer = NULL;
 
-            _network->_layers = (BrainLayer *)calloc(_network->_number_of_layer,
-                                                     sizeof(BrainLayer));
+            // create the input layer first
+            _network->_input_layer = new_layer(number_of_neurons, number_of_inputs);
+            number_of_inputs       = number_of_neurons;
+            layer                  = _network->_input_layer;
 
-            for (index = 0; index < _network->_number_of_layer; ++index)
+            // then, create all layers
+            for (index = 1; index < number_of_layers; ++index)
             {
-                const BrainUint number_of_neurons = neuron_per_layers[index];
-
-                _network->_layers[index] = new_layer(number_of_neurons,
-                                                     number_of_inputs);
-
+                number_of_neurons = neuron_per_layers[index];
+                next_layer = new_layer(number_of_neurons, number_of_inputs);
                 number_of_inputs = number_of_neurons;
 
-                if (0 < index && _network->_layers[index] != NULL)
-                {
-                    set_layer_next_layer(_network->_layers[index - 1],
-                                         _network->_layers[index]);
-                }
+                set_layer_next_layer(layer, next_layer);
+                set_layer_previous_layer(next_layer, layer);
+                layer = next_layer;
             }
 
-            last_layer = get_network_layer(_network, last_layer_index);
-            _network->_output = get_layer_output(last_layer);
+            _network->_output_layer = layer;
+            _network->_output = get_layer_output(_network->_output_layer);
         }
 
         return _network;
@@ -260,14 +145,18 @@ dump_network(const BrainNetwork network,
         FILE* file = fopen(filename, "w");
         if (file)
         {
-            const BrainUint number_of_layers = network->_number_of_layer;
-            BrainUint i;
+            BrainLayer layer = network->_input_layer;
+            BrainUint layer_index = 0;
 
             fprintf(file, "<init>\n");
 
-            for (i = 0; i < number_of_layers; ++i)
+            while (layer != NULL)
             {
-                dump_layer(network->_layers[i], i, file);
+                dump_layer(layer, layer_index, file);
+
+                layer = get_layer_next_layer(layer);
+
+                ++layer_index;
             }
 
             fprintf(file, "</init>\n");
@@ -281,11 +170,9 @@ feedforward(BrainNetwork      network,
             const BrainUint   number_of_input,
             const BrainSignal in)
 {
-    if (in != NULL )
+    if (in != NULL && network != NULL)
     {
-        BrainLayer input_layer = get_network_layer(network, 0);
-
-        set_layer_input(input_layer,
+        set_layer_input(network->_input_layer,
                         number_of_input,
                         in);
     }
