@@ -11,20 +11,20 @@
  */
 struct Settings
 {
-    BrainUint       _iterations;                       /*!< maximum number of iteration in training mode  */
-    BrainDouble     _error;                            /*!< target error to rich in training mode         */
-    BrainDouble     _resilient_delta_max;              /*!< maximum value of delta for resilient learning */
-    BrainDouble     _resilient_delta_min;              /*!< minimum value of delta for resilient learning */
-    BrainDouble     _resilient_eta_positive;           /*!< positive value of eta for resilient learning  */
-    BrainDouble     _resilient_eta_negative;           /*!< negative value of eta for resilient learning  */
-    BrainDouble     _backpropagation_learning_rate;    /*!< learning rate for backpropagation             */
-    BrainDouble     _dropout_percent;                  /*!< Dropout per cent                              */
-    BrainBool       _use_dropout;                      /*!< Enable or disable dropout                     */
-    CostPtrFunc     _network_cost_function;            /*!< CostFunction to use                           */
-    CostPtrFunc     _network_cost_function_derivative; /*!< CostFunction derivative to use                */
-    PtrFunc         _neuron_activation;                /*!< Activation functon of the neuron              */
-    PtrFunc         _neuron_derivative;                /*!< Activation derivative function of the neuron  */
-    LearningPtrFunc _learning_function;                /*!< Learning function                             */
+    BrainUint         _iterations;                       /*!< maximum number of iteration in training mode  */
+    BrainDouble       _error;                            /*!< target error to rich in training mode         */
+    BrainDouble       _resilient_delta_max;              /*!< maximum value of delta for resilient learning */
+    BrainDouble       _resilient_delta_min;              /*!< minimum value of delta for resilient learning */
+    BrainDouble       _resilient_eta_positive;           /*!< positive value of eta for resilient learning  */
+    BrainDouble       _resilient_eta_negative;           /*!< negative value of eta for resilient learning  */
+    BrainDouble       _backpropagation_learning_rate;    /*!< learning rate for backpropagation             */
+    BrainDouble       _dropout_percent;                  /*!< Dropout per cent                              */
+    BrainBool         _use_dropout;                      /*!< Enable or disable dropout                     */
+    CostPtrFunc       _network_cost_function;            /*!< CostFunction to use                           */
+    CostPtrFunc       _network_cost_function_derivative; /*!< CostFunction derivative to use                */
+    ActivationPtrFunc _neuron_activation;                /*!< Activation functon of the neuron              */
+    ActivationPtrFunc _neuron_derivative;                /*!< Activation derivative function of the neuron  */
+    LearningPtrFunc   _learning_function;                /*!< Learning function                             */
 } Settings;
 
 static BrainSettings _settings = NULL;
@@ -100,7 +100,7 @@ get_settings_network_cost_function_derivative()
     return NULL;
 }
 
-PtrFunc
+ActivationPtrFunc
 get_settings_neuron_activation()
 {
     if (_settings != NULL)
@@ -109,7 +109,7 @@ get_settings_neuron_activation()
     return NULL;
 }
 
-PtrFunc
+ActivationPtrFunc
 get_settings_neuron_derivative()
 {
     if (_settings != NULL)

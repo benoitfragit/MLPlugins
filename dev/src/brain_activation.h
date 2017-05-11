@@ -19,7 +19,7 @@
  * \param type BrainActivationType to get the corresponding Activation function
  * \return an activation function or NULL
  */
-PtrFunc             activation(const BrainActivationType type);
+ActivationPtrFunc   activation(const BrainActivationType type);
 /**
  * \fn PtrFunc derivative(const BrainActivationType type)
  * \brief get an activation derivative function
@@ -27,7 +27,7 @@ PtrFunc             activation(const BrainActivationType type);
  * \param type BrainActivationType to get the corresponding Activation derivative function
  * \return a activation derivative function or NULL
  */
-PtrFunc             derivative(const BrainActivationType type);
+ActivationPtrFunc   derivative(const BrainActivationType type);
 /**
  * \fn BrainActivationType get_activation_type(BrainString activation_type_name)
  * \brief get a BrainActivationType according to its raw name

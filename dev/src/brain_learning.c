@@ -25,7 +25,7 @@ update_neuron_using_backpropagation(BrainNeuron neuron,
         if (settings != NULL)
         {
             const BrainDouble learning_rate = get_settings_backpropagation_learning_rate();
-            PtrFunc     derivative_function = get_settings_neuron_derivative();
+            ActivationPtrFunc derivative_function = get_settings_neuron_derivative();
 
             if (derivative_function != NULL)
             {
@@ -126,7 +126,7 @@ update_neuron_using_resilient(BrainNeuron neuron,
         const BrainDouble rprop_eta_negative  = get_settings_resilient_eta_negative();
         const BrainDouble rprop_delta_min     = get_settings_resilient_delta_min();
         const BrainDouble rprop_delta_max     = get_settings_resilient_delta_max();
-        PtrFunc           derivative_function = get_settings_neuron_derivative();
+        ActivationPtrFunc           derivative_function = get_settings_neuron_derivative();
 
         if (derivative_function != NULL)
         {

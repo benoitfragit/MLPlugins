@@ -120,14 +120,14 @@ BrainBool get_settings_dropout_activated();
  *
  * \return a function pointer
  */
-PtrFunc get_settings_neuron_activation();
+ActivationPtrFunc get_settings_neuron_activation();
 /**
  * \fn PtrFunc get_settings_neuron_derivative()
  * \brief get a function pointer to compute the neuron activation derivative
  *
  * \return a function pointer
  */
-PtrFunc get_settings_neuron_derivative();
+ActivationPtrFunc get_settings_neuron_derivative();
 /**
  * \fn PtrFunc get_settings_network_cost_function()
  * \brief get a function pointer to compute the network error

@@ -91,10 +91,10 @@ activate_neuron(BrainNeuron neuron,
 {
     if (neuron != NULL)
     {
-        PtrFunc             activation_function = get_settings_neuron_activation();
-        const BrainDouble   dropout_percent     = get_settings_dropout_percent();
-        const BrainBool     use_dropout         = get_settings_dropout_activated();
-        BrainDouble         dropout_factor      = 1.0;
+        ActivationPtrFunc activation_function = get_settings_neuron_activation();
+        const BrainDouble dropout_percent     = get_settings_dropout_percent();
+        const BrainBool   use_dropout         = get_settings_dropout_activated();
+        BrainDouble       dropout_factor      = 1.0;
 
         *(neuron->_out)         = 0.0;
 

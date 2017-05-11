@@ -111,7 +111,7 @@ typedef struct Weight*  BrainWeight;
  * \param value dot product of input vector and weight vector of a neuron
  * \return the value of the activation
  */
-typedef BrainDouble (*PtrFunc)(const BrainDouble value);
+typedef BrainDouble (*ActivationPtrFunc)(const BrainDouble value);
 /**
  * \brief function pointer on an cost function
  *

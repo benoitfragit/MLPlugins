@@ -83,7 +83,7 @@ sinusoid_derivative(const BrainDouble value)
     return sqrt(1.0 - value*value);
 }
 
-PtrFunc
+ActivationPtrFunc
 activation(const BrainActivationType type)
 {
     switch (type)
@@ -101,7 +101,7 @@ activation(const BrainActivationType type)
     return &sigmoid;
 }
 
-PtrFunc
+ActivationPtrFunc
 derivative(const BrainActivationType type)
 {
     switch (type)
