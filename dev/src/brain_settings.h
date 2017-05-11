@@ -12,14 +12,6 @@
 #include "brain_types.h"
 
 /**
- * \fn BrainSettings get_settings_instance()
- * \brief return the uniq settings manager
- *
- * \return the uniq settings manager
- */
-BrainSettings get_settings_instance();
-
-/**
  * \fn void new_settings(const BrainUint             iterations,
  *                                const BrainDouble           error,
  *                                const BrainActivationType   activation_type,

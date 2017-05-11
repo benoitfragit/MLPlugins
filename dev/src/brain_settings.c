@@ -29,7 +29,7 @@ struct Settings
 
 static BrainSettings _settings = NULL;
 
-BrainSettings
+static BrainSettings
 get_settings_instance()
 {
     if (_settings == NULL)
