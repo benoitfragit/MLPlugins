@@ -13,8 +13,6 @@
 #include <libxml/tree.h>
 #include <libxml/xpath.h>
 
-#include "brain_utils_config.h"
-
 /**
  * \brief define a XML Context
  */

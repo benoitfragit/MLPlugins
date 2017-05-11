@@ -9,6 +9,7 @@
 #include "brain_learning.h"
 #include "brain_logging_utils.h"
 #include "brain_xml_utils.h"
+#include "brain_utils_config.h"
 
 BrainNetwork
 new_network_from_context(BrainString filepath)
