@@ -1,13 +1,13 @@
 /**
- * \file brain_layer_builder.h
+ * \file brain_layer.h
  * \brief Define the API to build a Layer
  * \author Benoit F.
  * \date 16 decembre 2016
  *
  * All public methods to build a Layer
  */
-#ifndef BRAIN_LAYER_BUILDER_H
-#define BRAIN_LAYER_BUILDER_H
+#ifndef BRAIN_LAYER_H
+#define BRAIN_LAYER_H
 
 #include "brain_types.h"
 
@@ -154,4 +154,4 @@ BrainDouble backpropagate_output_layer(BrainLayer output_layer,
  * \param hidden_layer the BrainLayer
  */
 void backpropagate_hidden_layer(BrainLayer hidden_layer);
-#endif /* BRAIN_LAYER_BUILDER_H */
+#endif /* BRAIN_LAYER_H */

@@ -1,5 +1,5 @@
 /**
- * \file brain_network_builder.h
+ * \file brain_network.h
  * \brief Define the API to create an control a Neural network
  * \author Benoit F.
  * \date 16 decembre 2016
@@ -7,8 +7,8 @@
  * All public methods to create and control a NeuralNetwork
  */
 
-#ifndef BRAIN_NETWORK_BUILDER_H
-#define BRAIN_NETWORK_BUILDER_H
+#ifndef BRAIN_NETWORK_H
+#define BRAIN_NETWORK_H
 
 #include "brain_types.h"
 
@@ -86,4 +86,4 @@ BrainBool train(BrainNetwork      network,
  * \return a BrainLayer
  */
 BrainLayer get_network_layer(const BrainNetwork network, const BrainUint layer_index);
-#endif /* BRAIN_NETWORK_BUILDER_H */
+#endif /* BRAIN_NETWORK_H */

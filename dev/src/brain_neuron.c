@@ -1,4 +1,4 @@
-#include "brain_neuron_builder.h"
+#include "brain_neuron.h"
 #include "brain_activation.h"
 #include "brain_settings.h"
 #include "brain_weight.h"

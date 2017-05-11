@@ -1,5 +1,5 @@
-#include "brain_layer_builder.h"
-#include "brain_neuron_builder.h"
+#include "brain_layer.h"
+#include "brain_neuron.h"
 #include "brain_settings.h"
 
 /**

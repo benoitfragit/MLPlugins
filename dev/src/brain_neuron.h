@@ -1,13 +1,13 @@
 /**
- * \file brain_neuron_builder.h
+ * \file brain_neuron.h
  * \brief Define the API to create an BrainNeuron
  * \author Benoit F.
  * \date 16 decembre 2016
  *
  * All public methods to create aa BrainNeuron
  */
-#ifndef BRAIN_NEURON_BUILDER_H
-#define BRAIN_NEURON_BUILDER_H
+#ifndef BRAIN_NEURON_H
+#define BRAIN_NEURON_H
 
 #include "brain_types.h"
 
@@ -126,4 +126,4 @@ BrainWeight get_neuron_weight(const BrainNeuron neuron, const BrainUint index);
  * \return the neuron input at index
  */
 BrainDouble get_neuron_input(const BrainNeuron neuron, const BrainUint index);
-#endif /* BRAIN_NEURON_BUILDER_H */
+#endif /* BRAIN_NEURON_H */
