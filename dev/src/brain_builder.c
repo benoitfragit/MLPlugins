@@ -4,9 +4,11 @@
 #include "brain_neuron.h"
 #include "brain_data_reader.h"
 #include "brain_settings.h"
-#include "brain_costfunction.h"
+
 #include "brain_activation.h"
 #include "brain_learning.h"
+#include "brain_cost.h"
+
 #include "brain_logging_utils.h"
 #include "brain_xml_utils.h"
 #include "brain_utils_config.h"

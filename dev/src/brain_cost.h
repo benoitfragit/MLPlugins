@@ -1,13 +1,13 @@
 /** \internal
- * \file brain_costfunction.h
+ * \file brain_cost.h
  * \brief Define the API to retrieve cost functions
  * \author Benoit F.
  * \date 16 decembre 2016
  *
  * All public methods to get an cost function
  */
-#ifndef BRAIN_COSTFUNCTION_H
-#define BRAIN_COSTFUNCTION_H
+#ifndef BRAIN_COST_H
+#define BRAIN_COST_H
 
 #include "brain_types.h"
 
@@ -36,4 +36,4 @@ CostPtrFunc get_cost_function_derivative(const BrainCostFunctionType type);
  */
 BrainCostFunctionType get_cost_function_type(BrainString name);
 
-#endif /* BRAIN_COSTFUNCTION_H */
+#endif /* BRAIN_COST_H */

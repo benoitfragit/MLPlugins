@@ -1,4 +1,4 @@
-#include "brain_costfunction.h"
+#include "brain_cost.h"
 #include <math.h>
 #include <string.h>
 

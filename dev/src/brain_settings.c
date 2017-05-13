@@ -1,5 +1,5 @@
 #include "brain_settings.h"
-#include "brain_costfunction.h"
+#include "brain_cost.h"
 #include "brain_activation.h"
 #include "brain_learning.h"
 
