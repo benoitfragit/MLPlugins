@@ -13,16 +13,19 @@
 
 /**
  * \fn BrainLayer new_layer(const BrainUint number_of_neurons,
- *                          const BrainUint number_of_inputs)
+ *                          const BrainUint number_of_inputs,
+ *                          BrainLayer prev)
  * \brief Fonction to create a BrainLayer from an XML context
  *
  * \param number_of_neurons Number of neurons in this layer
  * \param number_of_inputs size of the input signal
+ * \param prev the previous layer
  *
  * \return a new allocated BrainLayer or NULL if it failed
  */
 BrainLayer  new_layer                 (const BrainUint number_of_neurons,
-                                       const BrainUint number_of_inputs);
+                                       const BrainUint number_of_inputs,
+                                       BrainLayer prev);
 /**
  * \fn BrainNeuron get_layer_neuron(const BrainLayer layer, const BrainUint index)
  * \brief get a Neuron from the layer
@@ -109,13 +112,6 @@ void        set_layer_input           (BrainLayer layer,
 void        dump_layer                (const BrainLayer layer,
                                        const BrainUint layer_idx,
                                        FILE* file);
-/**
- * \fn void reset_layer_delta(BrainLayer layer)
- * \brief reset the weigthed_delta vector
- *
- * \param layer a BrainLayer
- */
-void        reset_layer_delta         (BrainLayer layer);
 /**
  * \fn void set_layer_next_layer(BrainLayer layer, BrainLayer next_layer)
  * \brief set the next layer for a layer

@@ -131,17 +131,31 @@ get_layer_previous_layer(const BrainLayer layer)
 
 BrainLayer
 new_layer(const BrainUint     number_of_neurons,
-          const BrainUint     number_of_inputs)
+          const BrainUint     number_of_inputs,
+          BrainLayer prev)
 {
     if ((number_of_inputs  != 0)
     &&  (number_of_neurons != 0))
     {
         BrainLayer _layer = NULL;
+        BrainSignal previous_weighted_delta = NULL;
 
         _layer                    = (BrainLayer)calloc(1, sizeof(Layer));
-        _layer->_next             = NULL;
-        _layer->_prev             = NULL;
         _layer->_number_of_neuron = number_of_neurons;
+
+        // setting the previous layer on the current layer
+        _layer->_prev             = prev;
+
+        // setting the next layer on the current layer
+        _layer->_next             = NULL;
+
+        // setting the next layer on the previous layer
+        if (prev != NULL)
+        {
+            prev->_next = _layer;
+
+            previous_weighted_delta = prev->_weighted_deltas;
+        }
 
         if (0 != _layer->_number_of_neuron)
         {
@@ -155,7 +169,7 @@ new_layer(const BrainUint     number_of_neurons,
             {
                 _layer->_neurons[index] = new_neuron(number_of_inputs,
                                                      &(_layer->_out[index]),
-                                                     _layer->_weighted_deltas);
+                                                     previous_weighted_delta);
             }
         }
 
@@ -204,13 +218,14 @@ dump_layer(const BrainLayer layer,
     }
 }
 
-void
+static void
 reset_layer_delta(BrainLayer layer)
 {
     if ((layer != NULL)
-    &&  (layer->_weighted_deltas != NULL))
+    &&  (layer->_prev != NULL) 
+	&&  (layer->_prev->_weighted_deltas))
     {
-        memset(layer->_weighted_deltas, 0, layer->_number_of_neuron * sizeof(BrainDouble));
+        memset(layer->_prev->_weighted_deltas, 0, layer->_number_of_neuron * sizeof(BrainDouble));
     }
 }
 
@@ -251,7 +266,7 @@ backpropagate_output_layer(BrainLayer output_layer,
                 CostPtrFunc cost_function_derivative = get_settings_network_cost_function_derivative();
 
                 BrainUint output_index = 0;
-
+		        
                 reset_layer_delta(output_layer);
 
                 for (output_index = 0;

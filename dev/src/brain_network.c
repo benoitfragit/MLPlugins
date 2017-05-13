@@ -105,27 +105,29 @@ new_network(const BrainUint     signal_input_length,
         {
             BrainUint index = 0;
             BrainUint number_of_neurons = neuron_per_layers[0];
-            BrainLayer layer      = NULL;
-            BrainLayer next_layer = NULL;
+            BrainLayer previous_layer = NULL;
 
             // create the input layer first
-            _network->_input_layer = new_layer(number_of_neurons, number_of_inputs);
+            _network->_input_layer = new_layer(number_of_neurons,
+                                               number_of_inputs,
+                                               NULL);
             number_of_inputs       = number_of_neurons;
-            layer                  = _network->_input_layer;
+            previous_layer         = _network->_input_layer;
 
             // then, create all layers
             for (index = 1; index < number_of_layers; ++index)
             {
                 number_of_neurons = neuron_per_layers[index];
-                next_layer = new_layer(number_of_neurons, number_of_inputs);
+
+                _network->_output_layer = new_layer(number_of_neurons,
+                                                    number_of_inputs,
+                                                    previous_layer);
+
                 number_of_inputs = number_of_neurons;
 
-                set_layer_next_layer(layer, next_layer);
-                set_layer_previous_layer(next_layer, layer);
-                layer = next_layer;
+                previous_layer = _network->_output_layer;
             }
 
-            _network->_output_layer = layer;
             _network->_output = get_layer_output(_network->_output_layer);
         }
 
