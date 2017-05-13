@@ -113,24 +113,6 @@ void        dump_layer                (const BrainLayer layer,
                                        const BrainUint layer_idx,
                                        FILE* file);
 /**
- * \fn void set_layer_next_layer(BrainLayer layer, BrainLayer next_layer)
- * \brief set the next layer for a layer
- *
- * \param layer a BrainLayer
- * \param next_layer a BrainLayer
- */
-void        set_layer_next_layer      (BrainLayer layer,
-                                       BrainLayer next_layer);
-/**
- * \fn void set_layer_previous_layer(BrainLayer layer, BrainLayer prev_layer)
- * \brief set the previous layer for a layer
- *
- * \param layer a BrainLayer
- * \param prev_layer a BrainLayer
- */
-void        set_layer_previous_layer  (BrainLayer layer,
-                                       BrainLayer prev_layer);
-/**
  * \fn BrainDouble backpropagate_output_layer(BrainLayer output_layer, const BrainUint number_of_output, const BrainSignal desired)
  * \brief apply backpropagation algorithm on an output layer and return the error between computed and desired outputs
  *

@@ -91,16 +91,6 @@ delete_layer(BrainLayer layer)
     }
 }
 
-void
-set_layer_next_layer(BrainLayer layer,
-                     BrainLayer next_layer)
-{
-    if (layer != NULL)
-    {
-        layer->_next = next_layer;
-    }
-}
-
 BrainLayer
 get_layer_next_layer(const BrainLayer layer)
 {
@@ -108,16 +98,6 @@ get_layer_next_layer(const BrainLayer layer)
         return layer->_next;
 
     return NULL;
-}
-
-void
-set_layer_previous_layer(BrainLayer layer,
-                         BrainLayer prev_layer)
-{
-    if (layer != NULL)
-    {
-        layer->_prev = prev_layer;
-    }
 }
 
 BrainLayer
@@ -222,8 +202,8 @@ static void
 reset_layer_delta(BrainLayer layer)
 {
     if ((layer != NULL)
-    &&  (layer->_prev != NULL) 
-	&&  (layer->_prev->_weighted_deltas))
+    &&  (layer->_prev != NULL)
+    &&  (layer->_prev->_weighted_deltas))
     {
         memset(layer->_prev->_weighted_deltas, 0, layer->_number_of_neuron * sizeof(BrainDouble));
     }
@@ -266,7 +246,7 @@ backpropagate_output_layer(BrainLayer output_layer,
                 CostPtrFunc cost_function_derivative = get_settings_network_cost_function_derivative();
 
                 BrainUint output_index = 0;
-		        
+
                 reset_layer_delta(output_layer);
 
                 for (output_index = 0;
