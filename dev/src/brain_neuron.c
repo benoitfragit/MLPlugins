@@ -16,6 +16,7 @@ struct Neuron
     BrainWeight   _bias;            /*!< Bias of the neuron                                 */
     BrainWeight*  _w;               /*!< An array of weight without the bias                */
     BrainSignal   _out;             /*!< An output value pointer owned by the BrainLayer    */
+    BrainDouble   _sum;             /*!< Summation of all input time weight                 */
 } Neuron;
 
 BrainDouble
@@ -97,6 +98,7 @@ activate_neuron(BrainNeuron neuron,
         BrainDouble       dropout_factor      = 1.0;
 
         *(neuron->_out)         = 0.0;
+        neuron->_sum   = 0.0;
 
         //dropout is only available for hidden unit
         if (use_dropout
@@ -118,16 +120,17 @@ activate_neuron(BrainNeuron neuron,
         &&  (dropout_factor != 0.0))
         {
             BrainUint     j = 0;
-            BrainDouble sum = 0.0;
+
+            neuron->_sum = 0.0;
 
             for (j = 0; j < neuron->_number_of_input; ++j)
             {
-                sum += neuron->_in[j] * get_weight_value(neuron->_w[j]);
+                neuron->_sum += neuron->_in[j] * get_weight_value(neuron->_w[j]);
             }
 
-            sum += get_weight_value(neuron->_bias);
+            neuron->_sum += get_weight_value(neuron->_bias);
 
-            *(neuron->_out) = activation_function(sum) * dropout_factor;
+            *(neuron->_out) = activation_function(neuron->_sum) * dropout_factor;
         }
     }
 }
@@ -192,6 +195,7 @@ new_neuron(const BrainUint number_of_inputs,
         _neuron->_number_of_input = number_of_inputs;
         _neuron->_w               = (BrainWeight *)calloc(_neuron->_number_of_input, sizeof(BrainWeight));
         _neuron->_bias            = new_weight(random_value_limit, NULL);
+        _neuron->_sum             = 0.0;
 
         for (index = 0; index < _neuron->_number_of_input; ++index)
         {
@@ -234,4 +238,15 @@ get_neuron_number_of_input(const BrainNeuron neuron)
         return neuron->_number_of_input;
 
     return 0;
+}
+
+BrainDouble
+get_neuron_summation(const BrainNeuron neuron)
+{
+    if (neuron != NULL)
+    {
+        return neuron->_sum;
+    }
+
+    return 0.0;
 }

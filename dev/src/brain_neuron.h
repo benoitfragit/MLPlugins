@@ -126,4 +126,13 @@ BrainWeight get_neuron_weight(const BrainNeuron neuron, const BrainUint index);
  * \return the neuron input at index
  */
 BrainDouble get_neuron_input(const BrainNeuron neuron, const BrainUint index);
+/**
+ * \fn BrainDouble get_neuron_summation(const BrainNeuron neuron)
+ * \brief retrieve neuron summation
+ *
+ * \param neuron the Neuron
+ * \return the neuron summation
+ */
+BrainDouble get_neuron_summation(const BrainNeuron neuron);
+
 #endif /* BRAIN_NEURON_H */

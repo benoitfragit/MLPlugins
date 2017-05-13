@@ -26,7 +26,8 @@ update_neuron_using_backpropagation(BrainNeuron neuron,
 
         if (derivative_function != NULL)
         {
-            const BrainDouble neuron_derivative = derivative_function(get_neuron_output(neuron));
+            const BrainDouble neuron_summation  = get_neuron_summation(neuron);
+            const BrainDouble neuron_derivative = derivative_function(neuron_summation);
             const BrainDouble neuron_gradient   = neuron_derivative * loss;
 
             BrainWeight neuron_bias = get_neuron_bias(neuron);
@@ -123,7 +124,8 @@ update_neuron_using_resilient(BrainNeuron neuron,
 
         if (derivative_function != NULL)
         {
-            const BrainDouble neuron_derivative = derivative_function(get_neuron_output(neuron));
+            const BrainDouble neuron_summation  = get_neuron_summation(neuron);
+            const BrainDouble neuron_derivative = derivative_function(neuron_summation);
             const BrainDouble neuron_gradient   = neuron_derivative * loss;
             const BrainUint   number_of_inputs  = get_neuron_number_of_input(neuron);
             BrainUint i = 0;
