@@ -53,16 +53,6 @@ BrainUint   get_layer_number_of_neuron(const BrainLayer layer);
  */
 BrainSignal get_layer_output          (const BrainLayer layer);
 /**
- * \fn BrainDouble get_layer_weighted_delta(const BrainLayer layer, const BrainUint input_index)
- * \brief get the weighted delta for an input
- *
- * \param layer a BrainLayer
- * \param input_index index of the weighted delta to extract
- * \return the weighted_delta
- */
-BrainDouble get_layer_weighted_delta  (const BrainLayer layer,
-                                       const BrainUint input_index);
-/**
  * \fn BrainLayer get_layer_next_layer(const BrainLayer layer)
  * \brief get the next layer
  *

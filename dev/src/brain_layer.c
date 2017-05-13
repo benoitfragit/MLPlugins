@@ -209,7 +209,7 @@ reset_layer_delta(BrainLayer layer)
     }
 }
 
-BrainDouble
+static BrainDouble
 get_layer_weighted_delta(const BrainLayer layer,
                          const BrainUint input_index)
 {
@@ -301,7 +301,7 @@ backpropagate_hidden_layer(BrainLayer hidden_layer)
 
                     if (current_neuron != NULL)
                     {
-                        const BrainDouble loss = get_layer_weighted_delta(next_layer, i);
+                        const BrainDouble loss = get_layer_weighted_delta(hidden_layer, i);
 
                         learning_function(current_neuron, loss);
                     }
