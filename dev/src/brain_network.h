@@ -47,15 +47,6 @@ void feedforward(BrainNetwork      network,
                  const BrainUint   number_of_input,
                  const BrainSignal in);
 /**
- * \fn void dump_network(const BrainNetwork network, BrainString filename)
- * \brief serialize the network to an output file
- *
- * \param network BrainNetwork to dump
- * \param filename the name of the output file
- */
-void dump_network(const BrainNetwork network,
-                  BrainString filename);
-/**
  * \fn BrainSignal get_network_output(const BrainNetwork network)
  * \brief get the output of the network
  *
@@ -86,4 +77,13 @@ BrainBool train(BrainNetwork      network,
  * \return a BrainLayer
  */
 BrainLayer get_network_layer(const BrainNetwork network, const BrainUint layer_index);
+/**
+ * \fn BrainLayer get_network_input_layer(const BrainNetwork network)
+ * \brief retrieve the input layer
+ *
+ * \param network      the BrainNetwork to train
+ *
+ * \return a BrainLayer
+ */
+BrainLayer get_network_input_layer(const BrainNetwork network);
 #endif /* BRAIN_NETWORK_H */

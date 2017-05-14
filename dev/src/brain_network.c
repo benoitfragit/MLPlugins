@@ -46,7 +46,7 @@ get_network_layer(const BrainNetwork network, const BrainUint layer_index)
         BrainUint idx = 0;
         BrainLayer layer = network->_input_layer;
 
-        while (idx != layer_index)
+        while (idx < layer_index && layer != NULL)
         {
             ++idx;
             layer = get_layer_next_layer(layer);
@@ -135,36 +135,6 @@ new_network(const BrainUint     signal_input_length,
     }
 
     return NULL;
-}
-
-void
-dump_network(const BrainNetwork network,
-             BrainString filename)
-{
-
-    if (network != NULL && filename != NULL)
-    {
-        FILE* file = fopen(filename, "w");
-        if (file)
-        {
-            BrainLayer layer = network->_input_layer;
-            BrainUint layer_index = 0;
-
-            fprintf(file, "<init>\n");
-
-            while (layer != NULL)
-            {
-                dump_layer(layer, layer_index, file);
-
-                layer = get_layer_next_layer(layer);
-
-                ++layer_index;
-            }
-
-            fprintf(file, "</init>\n");
-            fclose(file);
-        }
-    }
 }
 
 void

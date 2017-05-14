@@ -129,4 +129,55 @@ Context  get_root_node(Document doc);
 BrainBool validate_with_xsd(BrainString xml_file,
                             BrainString xsd_file);
 
+/**
+ * \fn Writer create_document(BrainString filepath, BrainString encoding)
+ * \brief create a new document
+ *
+ * \param filepath
+ * \param encoding
+ * \return the XML writer
+ */
+Writer create_document(BrainString filepath, BrainString encoding);
+/**
+ * \fn BrainBool start_element(Writer writer, BrainString element)
+ * \brief start a new element
+ *
+ * \param writer the XML writer
+ * \param element new element name
+ *
+ * \param return true if the element has been added
+ */
+BrainBool start_element(Writer writer, BrainString element);
+/**
+ * \fn void stop_element(Writer writer)
+ * \brief stop an element
+ *
+ * \param writer the XML writer
+ */
+void stop_element(Writer writer);
+/**
+ * \fn void add_attribute(Writer writer, BrainString attribute, BrainString value)
+ * \brief add a new attribute
+ *
+ * \param writer the XML writer
+ * \param attribute the new attribute
+ * \param value the attribute value
+ */
+void add_attribute(Writer writer, BrainString attribute, BrainString value);
+/**
+ * \fn void write_element(Writer writer, BrainString element, BrainString value)
+ * \brief add a new attribute
+ *
+ * \param writer the XML writer
+ * \param element the new element
+ * \param value the element value
+ */
+void write_element(Writer writer, BrainString element, BrainString value);
+/**
+ * \fn void close_writer(Writer writer)
+ * \brief close the XML writer
+ *
+ * \param writer the writter to be close
+ */
+void close_writer(Writer writer);
 #endif /*BRAIN_XML_UTILS_H*/

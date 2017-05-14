@@ -181,23 +181,6 @@ get_layer_number_of_neuron(const BrainLayer layer)
     return 0;
 }
 
-void
-dump_layer(const BrainLayer layer,
-           const BrainUint layer_idx,
-           FILE* file)
-{
-    if ((layer != NULL) && file)
-    {
-        const BrainUint number_of_neurons = layer->_number_of_neuron;
-        BrainUint i;
-
-        for (i = 0; i < number_of_neurons; ++i)
-        {
-            dump_neuron(layer->_neurons[i], layer_idx, i, file);
-        }
-    }
-}
-
 static void
 reset_layer_delta(BrainLayer layer)
 {

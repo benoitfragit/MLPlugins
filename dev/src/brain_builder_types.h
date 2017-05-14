@@ -12,6 +12,7 @@
 
 #include <libxml/tree.h>
 #include <libxml/xpath.h>
+#include <libxml/xmlwriter.h>
 
 /**
  * \brief define a XML Context
@@ -25,5 +26,8 @@ typedef xmlDocPtr Document;
  * \brief Define an XML buffer
  */
 typedef xmlChar*  Buffer;
-
+/**
+ * \brief define an XML writer
+ */
+typedef xmlTextWriterPtr Writer;
 #endif /* BRAIN_BUILDER_H */

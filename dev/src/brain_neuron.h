@@ -33,19 +33,6 @@ BrainNeuron new_neuron(const BrainUint     number_of_inputs,
  */
 void        delete_neuron              (BrainNeuron       neuron);
 /**
- * \fn void dump_neuron(const BrainNeuron neuron, const BrainUint layer_idx, const BrainUint neuron_idx, FILE* file)
- * \brief serialize a neuron to an XML file
- *
- * \param neuron     A BrainNeuron
- * \param layer_idx  the BrainLayer index
- * \param neuron_idx the BrainNeuron index
- * \param file       the file to serialize in
- */
-void        dump_neuron                (const BrainNeuron neuron,
-                                        const BrainUint   layer_idx,
-                                        const BrainUint   neuron_idx,
-                                        FILE*             file);
-/**
  * \fn void set_neuron_input(BrainNeuron       neuron,
  *                           const BrainUint   number_of_inputs,
  *                           const BrainSignal in,

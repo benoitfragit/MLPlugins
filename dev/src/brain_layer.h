@@ -92,17 +92,6 @@ void        set_layer_input           (BrainLayer layer,
                                        const BrainUint number_of_inputs,
                                        const BrainSignal in);
 /**
- * \fn void dump_layer(const BrainLayer layer)
- * \brief write the content of the layer to an xml file
- *
- * \param layer       a BrainLayer
- * \param layer_index the layer index
- * \param file        the file to use
- */
-void        dump_layer                (const BrainLayer layer,
-                                       const BrainUint layer_idx,
-                                       FILE* file);
-/**
  * \fn BrainDouble backpropagate_output_layer(BrainLayer output_layer, const BrainUint number_of_output, const BrainSignal desired)
  * \brief apply backpropagation algorithm on an output layer and return the error between computed and desired outputs
  *

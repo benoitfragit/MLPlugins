@@ -19,14 +19,14 @@
  */
 BrainNetwork new_network_from_context(BrainString filepath);
 /**
- * \fn void initialize_network_from_context(BrainNetwork network, BrainString filepath)
+ * \fn void deserialize(BrainNetwork network, BrainString filepath)
  * \brief load previously trained neural network's weight
  *
  * \param network BrainNetwork to be initialized
  * \param filepath XML file to load
  */
-void initialize_network_from_context(BrainNetwork network,
-                                     BrainString filepath);
+void deserialize(BrainNetwork network,
+                 BrainString filepath);
 /**
  * \fn BrainData new_data_from_context(BrainString filepath)
  * \brief Load training data from an XML context
@@ -42,5 +42,12 @@ BrainData new_data_from_context(BrainString filepath);
  * \param filepath the XML context to use
  */
 void new_settings_from_context(BrainString filepath);
-
+/**
+ * \fn void serialize(const BrainNetwork network, const BrainString filepath)
+ * \brief serialize a network to a file
+ *
+ * \param network the BrainNetwork to serialize
+ * \param filepath the file that will be created
+ */
+void serialize(const BrainNetwork network, const BrainString filepath);
 #endif /* BRAIN_BUILDER_H */

@@ -3,3 +3,4 @@
 #define INIT_XSD_FILE     "${CMAKE_INSTALL_PREFIX}/schemas/init.xsd"
 #define SETTINGS_XSD_FILE "${CMAKE_INSTALL_PREFIX}/schemas/settings.xsd"
 #define BRAIN_DOMAIN      "brain"
+#define BRAIN_ENCODING    "ISO-8859-1"

@@ -2,6 +2,7 @@
 #include "brain_logging_utils.h"
 
 #include <libxml/xmlschemastypes.h>
+#include <libxml/encoding.h>
 
 BrainBool
 is_node_with_name(Context node, BrainString name)
@@ -234,4 +235,69 @@ validate_with_xsd(BrainString xml_file, BrainString xsd_file)
     xmlMemoryDump();
 
     return result;
+}
+
+Writer
+create_document(BrainString filepath, BrainString encoding)
+{
+    Writer writer = xmlNewTextWriterFilename(filepath, 0);
+
+    if (writer != NULL && xmlTextWriterStartDocument(writer, NULL, encoding, NULL))
+    {
+        return writer;
+    }
+
+    return NULL;
+}
+
+BrainBool
+start_element(Writer writer,
+                  BrainString element)
+{
+    if ((writer != NULL)
+    &&  (element != NULL)
+    &&   xmlTextWriterStartElement(writer, BAD_CAST element))
+    {
+        return BRAIN_TRUE;
+    }
+
+    BRAIN_CRITICAL("Unable to create element: %s\n", element);
+
+    return BRAIN_FALSE;
+}
+
+void
+stop_element(Writer writer)
+{
+    if (writer != NULL)
+    {
+        xmlTextWriterEndElement(writer);
+    }
+}
+
+void
+add_attribute(Writer writer, BrainString attribute, BrainString value)
+{
+    if (writer != NULL && attribute != NULL && value != NULL)
+    {
+        xmlTextWriterWriteAttribute(writer, BAD_CAST attribute, BAD_CAST value);
+    }
+}
+
+void
+write_element(Writer writer, BrainString element, BrainString value)
+{
+    if (writer != NULL && element != NULL && value != NULL)
+    {
+        xmlTextWriterWriteElement(writer, BAD_CAST element, BAD_CAST value);
+    }
+}
+
+void
+close_writer(Writer writer)
+{
+    if (writer != NULL)
+    {
+        xmlTextWriterEndDocument(writer);
+    }
 }

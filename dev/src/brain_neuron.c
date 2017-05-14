@@ -208,29 +208,6 @@ new_neuron(const BrainUint number_of_inputs,
     return NULL;
 }
 
-void
-dump_neuron(const BrainNeuron neuron,
-            const BrainUint   layer_idx,
-            const BrainUint   neuron_idx,
-            FILE* file)
-{
-    if (neuron && file)
-    {
-        BrainUint i = 0;
-
-        fprintf(file, "\t<neuron index=\"%d\" ", neuron_idx);
-        fprintf(file, "layer-index=\"%d\" ",     layer_idx);
-        fprintf(file, "bias=\"%lf\">\n",        get_weight_value(neuron->_bias));
-
-        for (i = 0; i < neuron->_number_of_input; ++i)
-        {
-            fprintf(file, "\t\t<weight value=\"%lf\"/>\n", get_weight_value(neuron->_w[i]));
-        }
-
-        fprintf(file, "\t</neuron>\n");
-    }
-}
-
 BrainUint
 get_neuron_number_of_input(const BrainNeuron neuron)
 {

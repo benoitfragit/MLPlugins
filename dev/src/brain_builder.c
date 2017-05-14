@@ -2,6 +2,8 @@
 #include "brain_network.h"
 #include "brain_layer.h"
 #include "brain_neuron.h"
+#include "brain_weight.h"
+
 #include "brain_data_reader.h"
 #include "brain_settings.h"
 
@@ -320,8 +322,8 @@ initialize_neuron_from_context(BrainNeuron neuron,
 }
 
 void
-initialize_network_from_context(BrainNetwork network,
-                                BrainString filepath)
+deserialize(BrainNetwork network,
+            BrainString filepath)
 {
     if ((network != NULL)
     &&  (filepath != NULL)
@@ -361,5 +363,99 @@ initialize_network_from_context(BrainNetwork network,
 
             close_document(init_document);
         }
+    }
+}
+
+void
+serialize(const BrainNetwork network, BrainString filepath)
+{
+    if (filepath != NULL)
+    {
+        if (network != NULL)
+        {
+            Writer writer = create_document(filepath, BRAIN_ENCODING);
+
+            if (writer != NULL)
+            {
+                // serialize the network
+                if (start_element(writer, "network"))
+                {
+                    // serialize all layers
+                    BrainLayer layer = get_network_input_layer(network);
+
+                    while (layer != NULL)
+                    {
+                        // serialize all neurons
+                        const BrainUint number_of_neurons = get_layer_number_of_neuron(layer);
+                        BrainUint index_neuron = 0;
+
+                        if (start_element(writer, "layer"))
+                        {
+                            for (index_neuron = 0;
+                                 index_neuron < number_of_neurons;
+                                 ++index_neuron)
+                            {
+                                const BrainNeuron neuron = get_layer_neuron(layer, index_neuron);
+
+                                if (neuron != NULL)
+                                {
+                                    const BrainUint number_of_inputs = get_neuron_number_of_input(neuron);
+                                    BrainUint index_input = 0;
+                                    BrainChar buffer[50];
+
+                                    if (start_element(writer, "neuron"))
+                                    {
+                                        const BrainWeight bias = get_neuron_bias(neuron);
+
+                                        if (bias != NULL)
+                                        {
+                                            sprintf(buffer, "%lf", get_weight_value(bias));
+
+                                            add_attribute(writer, "bias", buffer);
+                                        }
+
+                                        for (index_input = 0;
+                                             index_input < number_of_inputs;
+                                             ++index_input)
+                                        {
+                                            const BrainWeight weight = get_neuron_weight(neuron, index_input);
+
+                                            if (weight != NULL)
+                                            {
+                                                sprintf(buffer, "%lf", get_weight_value(weight));
+
+                                                write_element(writer, "weight", buffer);
+                                            }
+                                        }
+
+                                        stop_element(writer);
+                                    }
+                                }
+                            }
+
+                            stop_element(writer);
+                        }
+
+                        layer = get_layer_previous_layer(layer);
+                    }
+
+                    stop_element(writer);
+                }
+
+                close_writer(writer);
+            }
+            else
+            {
+                BRAIN_CRITICAL("Unable to create XML writer\n");
+            }
+        }
+        else
+        {
+            BRAIN_CRITICAL("Network is not valid\n");
+        }
+    }
+    else
+    {
+        BRAIN_CRITICAL("XML serializing file is not valid\n");
     }
 }
