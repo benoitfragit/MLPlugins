@@ -436,7 +436,7 @@ serialize(const BrainNetwork network, BrainString filepath)
                             stop_element(writer);
                         }
 
-                        layer = get_layer_previous_layer(layer);
+                        layer = get_layer_next_layer(layer);
                     }
 
                     stop_element(writer);
