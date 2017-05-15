@@ -14,6 +14,7 @@
 #include "brain_logging_utils.h"
 #include "brain_xml_utils.h"
 #include "brain_utils_config.h"
+#include «brain_data_reader.h»
 
 BrainNetwork
 new_network_from_context(BrainString filepath)
@@ -458,4 +459,44 @@ serialize(const BrainNetwork network, BrainString filepath)
     {
         BRAIN_CRITICAL("XML serializing file is not valid\n");
     }
+}
+
+BrainBool
+train(BrainNetwork network,
+      const BrainData data)
+{
+    if ((network != NULL)
+    &&  (data != NULL))
+    {
+        const BrainUint   max_iter     = get_settings_max_iterations();
+        const BrainDouble target_error = get_settings_target_error();
+        BrainDouble error = target_error + 1.0;
+        BrainUint iteration = 0;
+
+        do
+        {
+            const BrainUint   index            = get_data_random_subset_index(data);
+            const BrainUint   input_length     = get_data_input_length    (data);
+            const BrainUint   output_length    = get_data_output_length   (data);
+            const BrainUint   number_of_chunks = get_data_number_of_chunks(data, index);
+            const BrainSignal output           = get_data_output          (data, index);
+            BrainUint         chunk_index      = 0;
+
+            for (chunk_index = 0; chunk_index < number_of_chunks; ++chunk_index)
+            {
+                const BrainSignal input = get_data_input( data, index, chunk_index);
+                feedforward(network, input_length, input);
+                error = backpropagate(network, output_length, output);
+            }
+
+            ++iteration;
+        } while ((iteration < max_iter) && (error > target_error));
+
+        if (error < target_error)
+        {
+            return BRAIN_TRUE;
+        }
+    }
+
+    return BRAIN_FALSE;
 }

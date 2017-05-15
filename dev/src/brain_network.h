@@ -55,18 +55,6 @@ void feedforward(BrainNetwork      network,
  */
 BrainSignal get_network_output(const BrainNetwork network);
 /**
- * \fn BrainBool train(BrainNetwork network,
- *                     const BrainData data)
- * \brief launch the training process for the neural network
- *
- * \param network      the BrainNetwork to train
- * \param data         Training dataset
- *
- * \return BRAIN_TRUE if training work else BRAIN_FALSE
- */
-BrainBool train(BrainNetwork      network,
-                  const BrainData   data);
-/**
  * \fn BrainLayer get_network_layer(const BrainNetwork network,
  *                                  const BrainUint layer_index)
  * \brief find a given layer
