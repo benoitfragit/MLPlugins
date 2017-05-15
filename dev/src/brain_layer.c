@@ -188,7 +188,7 @@ reset_layer_delta(BrainLayer layer)
     &&  (layer->_prev != NULL)
     &&  (layer->_prev->_weighted_deltas))
     {
-        memset(layer->_prev->_weighted_deltas, 0, layer->_number_of_neuron * sizeof(BrainDouble));
+        memset(layer->_prev->_weighted_deltas, 0, layer->_prev->_number_of_neuron * sizeof(BrainDouble));
     }
 }
 
