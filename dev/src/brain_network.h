@@ -55,17 +55,6 @@ void feedforward(BrainNetwork      network,
  */
 BrainSignal get_network_output(const BrainNetwork network);
 /**
- * \fn BrainLayer get_network_layer(const BrainNetwork network,
- *                                  const BrainUint layer_index)
- * \brief find a given layer
- *
- * \param network      the BrainNetwork to train
- * \param layer_index  index of the layer
- *
- * \return a BrainLayer
- */
-BrainLayer get_network_layer(const BrainNetwork network, const BrainUint layer_index);
-/**
  * \fn BrainLayer get_network_input_layer(const BrainNetwork network)
  * \brief retrieve the input layer
  *

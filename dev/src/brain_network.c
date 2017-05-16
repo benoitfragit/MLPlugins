@@ -37,26 +37,6 @@ backpropagate(BrainNetwork network,
     return error;
 }
 
-BrainLayer
-get_network_layer(const BrainNetwork network, const BrainUint layer_index)
-{
-    if (network != NULL)
-    {
-        BrainUint idx = 0;
-        BrainLayer layer = network->_input_layer;
-
-        while (idx < layer_index && layer != NULL)
-        {
-            ++idx;
-            layer = get_layer_next_layer(layer);
-        }
-
-        return layer;
-    }
-
-    return NULL;
-}
-
 BrainSignal
 get_network_output(const BrainNetwork network)
 {

@@ -337,27 +337,42 @@ deserialize(BrainNetwork network,
 
             if (context != NULL)
             {
-                const BrainUint number_of_neurons = get_number_of_node_with_name(context, "neuron");
-                BrainUint index = 0;
+	               const BrainUint number_of_layer = get_number_of_node_with_name{context, "layer");
+                BrainUint layer_index = 0;
+                BrainLayer layer = network-_input_layer;
 
-                for (index = 0; index < number_of_neurons; ++index)
+                if (number_of_layer > 0 && layer != NULL)
                 {
-                    Context subcontext = get_node_with_name_and_index(context, "neuron", index);
-
-                    const BrainUint layer_idx         = node_get_int(subcontext, "layer-index",  -1);
-                    const BrainUint neuron_idx        = node_get_int(subcontext, "index",        -1);
-
-                    BrainLayer layer = get_network_layer(network, layer_idx);
-
-                    if (layer != NULL)
-                    {
-                        BrainNeuron neuron = get_layer_neuron(layer, neuron_idx);
-
-                        if (neuron != NULL)
+                    do {
+                        Context layer_context = get_node_with_name_and_index(context, "layer", layer_index);
+                        
+                        if (layer_context)
                         {
-                            initialize_neuron_from_context(neuron, subcontext);
+                            const BrainUint number_of_neuron = get_number_of_node_with_name(layer_context, "neuron");
+                            
+                            if (number_of_neuron == get_layer_number_of_neuron(layer))
+                            {
+                                BrainUint neuron_index = 0;
+                         
+                                for (neuron_index = 0; neuron_index < number_of_neuron; ++neuron_index )
+                                {
+                                    Context neuron_context = get_node_with_name_and_index(layer_context, "neuron", neuron_index);
+                                    BrainNeuron neuron = get_layer_neuron(layer, neuron_index);
+                                    
+                                    if (neuron_context != NULL && neuron != NULL)
+                                    {
+                                        initialize_neuron_from_context(neuron, neuron_context);
+                                    }
+                                }
+                            }
+                            else
+                            (
+                                BRAIN_CRITICAL("Unable to initialize the network");
+                            }
                         }
-                    }
+                        layer = get_layer_next_layer(layer);
+                        ++layer_index;
+                    } while (layer != NULL && layer_index < number_of_layer);
                 }
             }
 
