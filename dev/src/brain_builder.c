@@ -14,7 +14,6 @@
 #include "brain_logging_utils.h"
 #include "brain_xml_utils.h"
 #include "brain_utils_config.h"
-#include "brain_data_reader.h"
 
 BrainNetwork
 new_network_from_context(BrainString filepath)

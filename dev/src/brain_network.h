@@ -74,4 +74,13 @@ BrainLayer get_network_layer(const BrainNetwork network, const BrainUint layer_i
  * \return a BrainLayer
  */
 BrainLayer get_network_input_layer(const BrainNetwork network);
+/**
+ * \fn BrainDouble backpropagate(BrainNetwork network, const BrainUint number_of_output, const BrainSignal desired)
+ * \brief backpropagate an input signal from the error signal
+ *
+ * \param network the network to feed
+ * \param number_of_output the length of the output signal
+ * \param desired the output signal
+ */
+BrainDouble backpropagate(BrainNetwork network, const BrainUint number_of_output, const BrainSignal desired);
 #endif /* BRAIN_NETWORK_H */
