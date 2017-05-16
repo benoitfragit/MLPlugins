@@ -18,7 +18,7 @@ struct Network
     BrainSignal   _output;           /*!< Output signal of the layer     */
 } Network;
 
-static BrainDouble
+BrainDouble
 backpropagate(BrainNetwork network,
               const BrainUint number_of_output,
               const BrainSignal desired)
