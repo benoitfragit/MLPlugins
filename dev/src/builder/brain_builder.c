@@ -339,13 +339,13 @@ deserialize(BrainNetwork network,
             {
                 const BrainUint number_of_layer = get_number_of_node_with_name(context, "layer");
                 
-				             BrainUint layer_index = 0;
+				BrainUint layer_index = 0;
                 BrainLayer layer = get_network_input_layer(network);
 
                 if (number_of_layer > 0 && layer != NULL)
                 {
                     do 
-					                {
+					{
                         Context layer_context = get_node_with_name_and_index(context, "layer", layer_index);
                         
                         if (layer_context != NULL)
@@ -357,8 +357,8 @@ deserialize(BrainNetwork network,
                                 BrainUint neuron_index = 0;
                          
                                 for (neuron_index = 0; 
-								                              neuron_index < number_of_neuron; 
-									                             ++neuron_index )
+								     neuron_index < number_of_neuron; 
+									 ++neuron_index )
                                 {
                                     Context neuron_context = get_node_with_name_and_index(layer_context, "neuron", neuron_index);
                                     BrainNeuron neuron = get_layer_neuron(layer, neuron_index);
@@ -370,10 +370,10 @@ deserialize(BrainNetwork network,
                                 }
                             }
                             else
-							                      {
+							{
                                 BRAIN_CRITICAL("Unable to initialize the network");
 
-						                          		return;
+								return;
                             }
                         }
                         layer = get_layer_next_layer(layer);
