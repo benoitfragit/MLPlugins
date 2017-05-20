@@ -131,7 +131,7 @@ new_data(const BrainUint number_of_signals,
     initialize_data(_data);
 
     return _data;
-}
+    }
 
 void
 append_data(BrainData data,
