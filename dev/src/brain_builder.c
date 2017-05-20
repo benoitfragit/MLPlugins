@@ -211,7 +211,9 @@ new_settings_from_context(BrainString filepath)
 BrainData
 new_data_from_context(BrainString filepath)
 {
-    if (filepath != NULL && validate_with_xsd(filepath, DATA_XSD_FILE))
+	BrainData _data = NULL;
+	
+	if (filepath != NULL && validate_with_xsd(filepath, DATA_XSD_FILE))
     {
         Document data_document = open_document(filepath);
 
@@ -232,9 +234,9 @@ new_data_from_context(BrainString filepath)
                 const BrainUint signal_length      = node_get_int(context, "signal-length", 0);
                 const BrainUint observation_length = node_get_int(context, "observation-length", 0);
 
-                BrainData _data = new_data(number_of_signals,
-                                           signal_length,
-                                           observation_length);
+                _data = new_data(number_of_signals,
+                                 signal_length,
+                                 observation_length);
 
                 for (i = 0; i < number_of_signals; ++i)
                 {
@@ -286,15 +288,13 @@ new_data_from_context(BrainString filepath)
                         append_data(_data, i, input, output);
                     }
                 }
-
-                return _data;
             }
 
             close_document(data_document);
         }
     }
 
-    return NULL;
+    return _data;
 }
 
 static void
