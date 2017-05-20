@@ -484,7 +484,9 @@ BrainBool
 train(BrainNetwork network,
       const BrainData data)
 {
-    if ((network != NULL) && (data != NULL))
+    BrainBool is_trained = BRAIN_FALSE;
+
+	if ((network != NULL) && (data != NULL))
     {
         const BrainUint   max_iter      = get_settings_max_iterations();
         const BrainDouble target_error  = get_settings_target_error();
@@ -550,12 +552,14 @@ train(BrainNetwork network,
             }
             else
             {
-                return BRAIN_TRUE;
+                is_trained = BRAIN_TRUE;
             }
 
             ++iteration;
         } while (iteration < max_iter);
+
+		free(outputs);
     }
 
-    return BRAIN_FALSE;
+    return is_trained;
 }
