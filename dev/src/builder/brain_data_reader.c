@@ -120,6 +120,7 @@ new_data(const BrainUint number_of_signals,
 {
 
     BrainData _data            = (BrainData)calloc(1, sizeof(Data));
+
     _data->_number_of_signal   = number_of_signals;
     _data->_signal_length      = signal_length;
     _data->_observation_length = observation_length;
