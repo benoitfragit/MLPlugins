@@ -73,7 +73,7 @@ get_data_input_length(const BrainData data)
     return 0;
 }
 
-static BrainUint
+BrainUint
 get_data_subset_length(const BrainData data)
 {
     if (data != NULL)

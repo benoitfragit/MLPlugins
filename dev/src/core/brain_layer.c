@@ -206,29 +206,28 @@ get_layer_weighted_delta(const BrainLayer layer,
     return 0.0;
 }
 
-BrainDouble
+void
 backpropagate_output_layer(BrainLayer output_layer,
                            const BrainUint number_of_output,
+                           const BrainSignal output,
                            const BrainSignal desired)
 {
-    BrainDouble error = 0.0;
-
     if ((output_layer != NULL)
+    &&  (output != NULL)
     &&  (desired != NULL))
     {
         LearningPtrFunc learning_function = get_settings_learning_function();
 
         if (learning_function != NULL)
         {
-            const BrainSignal output            = get_layer_output(output_layer);
             const BrainUint   number_of_neuron  = get_layer_number_of_neuron(output_layer);
 
             if (number_of_neuron == number_of_output)
             {
-                CostPtrFunc cost_function            = get_settings_network_cost_function();
                 CostPtrFunc cost_function_derivative = get_settings_network_cost_function_derivative();
 
                 BrainUint output_index = 0;
+                BrainNeuron output_neuron = NULL;
 
                 reset_layer_delta(output_layer);
 
@@ -236,27 +235,18 @@ backpropagate_output_layer(BrainLayer output_layer,
                      output_index < number_of_output;
                    ++output_index)
                 {
-                    const BrainDouble loss = cost_function_derivative(output[output_index],
-                                                                      desired[output_index]);
+                    const BrainDouble loss = cost_function_derivative(output[output_index], desired[output_index]);
 
-                    BrainNeuron oNeuron = get_layer_neuron(output_layer,
-                                                           output_index);
+                    output_neuron = get_layer_neuron(output_layer, output_index);
 
-                    error += cost_function(output[output_index],
-                                           desired[output_index]);
-
-                    if (oNeuron != NULL)
+                    if (output_neuron != NULL)
                     {
-                        learning_function(oNeuron, loss);
+                        learning_function(output_neuron, loss);
                     }
                 }
             }
         }
     }
-
-    error *= 1.0/(BrainDouble)number_of_output;
-
-    return error;
 }
 
 void
@@ -268,31 +258,21 @@ backpropagate_hidden_layer(BrainLayer hidden_layer)
 
         if (learning_function != NULL)
         {
-            const BrainLayer next_layer               = get_layer_next_layer(hidden_layer);
-            const BrainLayer prev_layer               = get_layer_previous_layer(hidden_layer);
-            const BrainUint   current_number_of_neuron = get_layer_number_of_neuron(hidden_layer);
+            const BrainUint current_number_of_neuron = get_layer_number_of_neuron(hidden_layer);
 
-            if (next_layer != NULL)
+            BrainUint i = 0;
+
+            reset_layer_delta(hidden_layer);
+
+            for (i = 0; i < current_number_of_neuron; ++i)
             {
-                BrainUint i = 0;
+                BrainNeuron current_neuron = get_layer_neuron(hidden_layer, i);
 
-                reset_layer_delta(hidden_layer);
-
-                for (i = 0; i < current_number_of_neuron; ++i)
+                if (current_neuron != NULL)
                 {
-                    BrainNeuron current_neuron = get_layer_neuron(hidden_layer, i);
+                    const BrainDouble loss = get_layer_weighted_delta(hidden_layer, i);
 
-                    if (current_neuron != NULL)
-                    {
-                        const BrainDouble loss = get_layer_weighted_delta(hidden_layer, i);
-
-                        learning_function(current_neuron, loss);
-                    }
-                }
-
-                if (prev_layer != NULL)
-                {
-                    backpropagate_hidden_layer(prev_layer);
+                    learning_function(current_neuron, loss);
                 }
             }
         }

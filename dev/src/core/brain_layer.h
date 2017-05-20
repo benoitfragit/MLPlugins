@@ -92,18 +92,20 @@ void        set_layer_input           (BrainLayer layer,
                                        const BrainUint number_of_inputs,
                                        const BrainSignal in);
 /**
- * \fn BrainDouble backpropagate_output_layer(BrainLayer output_layer, const BrainUint number_of_output, const BrainSignal desired)
+ * \fn BrainDouble backpropagate_output_layer(BrainLayer output_layer, const BrainUint number_of_output, const BrainSignal output, const BrainSignal desired)
  * \brief apply backpropagation algorithm on an output layer and return the error between computed and desired outputs
  *
  * \param output_layer the BrainLayer
  * \param number_of_output the size of the output vector
+ * \param output the output signal
  * \param desired the desired output
  *
  * \return the error rate
  */
-BrainDouble backpropagate_output_layer(BrainLayer output_layer,
-                                       const BrainUint number_of_output,
-                                       const BrainSignal desired);
+void backpropagate_output_layer(BrainLayer output_layer,
+                                const BrainUint number_of_output,
+                                const BrainSignal output,
+                                const BrainSignal desired);
 /**
  * \fn void backpropagate_hidden_layer(BrainLayer hidden_layer)
  * \brief apply backpropagation algorithm on an hidden layer

@@ -98,4 +98,12 @@ BrainUint   get_data_input_length       (const BrainData data);
  * \return output signal length
  */
 BrainUint   get_data_output_length      (const BrainData data);
+/**
+ * \fn BrainUint get_data_subset_length(const BrainData data)
+ * \brief get the number of signal in the training set
+ *
+ * \param data The BrainData struct
+ * \return number of signals in the training set
+ */
+BrainUint   get_data_subset_length(const BrainData data);
 #endif /* BRAIN_DATA_READER_H */

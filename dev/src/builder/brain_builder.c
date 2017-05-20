@@ -484,32 +484,77 @@ BrainBool
 train(BrainNetwork network,
       const BrainData data)
 {
-    if ((network != NULL)
-    &&  (data != NULL))
+    if ((network != NULL) && (data != NULL))
     {
-        const BrainUint   max_iter     = get_settings_max_iterations();
-        const BrainDouble target_error = get_settings_target_error();
+        const BrainUint   max_iter      = get_settings_max_iterations();
+        const BrainDouble target_error  = get_settings_target_error();
+
+        const BrainUint   subset_length = get_data_subset_length(data);
+        const BrainUint   input_length  = get_data_input_length(data);
+        const BrainUint   output_length = get_data_output_length(data);
+
+        CostPtrFunc cost_function       = get_settings_network_cost_function();
+
+        BrainSignal outputs = (BrainSignal)calloc(subset_length * output_length, sizeof(BrainDouble));
+        BrainSignal network_output = NULL;
         BrainDouble error = target_error + 1.0;
         BrainUint iteration = 0;
+        BrainUint output_index = 0;
 
         do
         {
-            const BrainUint   index            = get_data_random_subset_index(data);
-            const BrainUint   input_length     = get_data_input_length    (data);
-            const BrainUint   output_length    = get_data_output_length   (data);
-            const BrainSignal output           = get_data_output          (data, index);
+            BrainSignal output = outputs;
+            BrainUint subset_index = 0;
 
-            const BrainSignal input = get_data_input(data, index);
-            feedforward(network, input_length, input);
-            error = backpropagate(network, output_length, output);
+            // reseting the error
+            error = 0.0;
+
+            // then get the output for all subset index
+            for (subset_index = 0; subset_index < subset_length; ++subset_index)
+            {
+                const BrainSignal input          = get_data_input(data, subset_index);
+                const BrainSignal desired_output = get_data_output(data, subset_index);
+
+                feedforward(network, input_length, input);
+
+                network_output = get_network_output(network);
+
+                // keep the network output in memcpy
+                memcpy(output, network_output, output_length * sizeof(BrainDouble));
+
+                // record the next output
+                output = output + output_length;
+
+                for (output_index = 0; output_index < output_length; ++output_index)
+                {
+                    error += cost_function(network_output[output_index],
+                                           desired_output[output_index]);
+                }
+            }
+
+            error /= (BrainDouble)subset_length;
+
+            if (target_error < error)
+            {
+                output = outputs;
+
+                // use the backpropagation to correct all weights
+                for (subset_index = 0; subset_index < subset_length; ++subset_index)
+                {
+                    const BrainSignal desired_output = get_data_output(data, subset_index);
+
+                    backpropagate(network, output_length, output, desired_output);
+
+                    output = output + output_length;
+                }
+            }
+            else
+            {
+                return BRAIN_TRUE;
+            }
 
             ++iteration;
-        } while ((iteration < max_iter) && (error > target_error));
-
-        if (error < target_error)
-        {
-            return BRAIN_TRUE;
-        }
+        } while (iteration < max_iter);
     }
 
     return BRAIN_FALSE;
