@@ -15,7 +15,6 @@ struct Data
     BrainUint    _signal_length;      /*!< Size of the input signal       */
     BrainUint    _observation_length; /*!< Size of the output signal      */
     BrainUint    _number_of_signal;   /*!< Number of training data        */
-    BrainUint*   _number_of_chunks;   /*!< Number of chunk per signal     */
 } Data;
 
 BrainInt
@@ -126,7 +125,6 @@ new_data(const BrainUint number_of_signals,
     _data->_observation_length = observation_length;
     _data->_signals            = (BrainSignal *)calloc(_data->_number_of_signal, sizeof(BrainSignal));
     _data->_observations       = (BrainSignal *)calloc(_data->_number_of_signal, sizeof(BrainSignal));
-    _data->_number_of_chunks   = (BrainUint *)calloc(_data->_number_of_signal, sizeof(BrainUint));
     _data->_subset_length      = (BrainUint)(_data->_number_of_signal / 2);
     _data->_subset             = (BrainUint *)calloc(_data->_subset_length, sizeof(BrainUint));
 
@@ -144,7 +142,6 @@ append_data(BrainData data,
     if ((data != NULL)
     &&  (index < data->_number_of_signal))
     {
-        ++(data->_number_of_chunks[index]);
         data->_signals[index]      = input;
         data->_observations[index] = output;
     }
@@ -183,11 +180,6 @@ delete_data(BrainData data)
             free(data->_observations);
         }
 
-        if (data->_number_of_chunks != NULL)
-        {
-            free(data->_number_of_chunks);
-        }
-
         if (data->_subset)
         {
             free(data->_subset);
@@ -212,30 +204,15 @@ get_data_output(const BrainData data,
 
 BrainSignal
 get_data_input(const BrainData data,
-               const BrainUint index,
-               const BrainUint chunk_index)
+               const BrainUint index)
 {
     if ((data != NULL)
-    &&  (index < data->_number_of_signal)
-    &&  (chunk_index < data->_number_of_chunks[index]))
+    &&  (index < data->_number_of_signal))
     {
-        return &(data->_signals[index][chunk_index * data->_signal_length]);
+        return data->_signals[index];
     }
 
     return NULL;
-}
-
-BrainUint
-get_data_number_of_chunks(const BrainData data,
-                          const BrainUint signal_index)
-{
-    if ((data != NULL)
-    &&  (signal_index < data->_number_of_signal))
-    {
-        return data->_number_of_chunks[signal_index];
-    }
-
-    return 0;
 }
 
 BrainUint

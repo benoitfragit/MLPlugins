@@ -15,6 +15,8 @@
 #include "brain_xml_utils.h"
 #include "brain_utils_config.h"
 
+#define TOKENIZER ", "
+
 BrainNetwork
 new_network_from_context(BrainString filepath)
 {
@@ -206,7 +208,6 @@ new_settings_from_context(BrainString filepath)
     }
 }
 
-
 BrainData
 new_data_from_context(BrainString filepath)
 {
@@ -223,7 +224,6 @@ new_data_from_context(BrainString filepath)
                 BrainChar* buffer = NULL;
                 BrainChar*   part = NULL;
                 BrainUint       i = 0;
-                BrainUint       j = 0;
                 BrainUint       k = 0;
 
                 srand(time(NULL));
@@ -238,51 +238,50 @@ new_data_from_context(BrainString filepath)
 
                 for (i = 0; i < number_of_signals; ++i)
                 {
-                    Context signal_context      = get_node_with_name_and_index(context, "signal", i);
+                    Context signal_context = get_node_with_name_and_index(context,
+                                                                          "signal",
+                                                                          i);
 
-                    if (signal_context)
+                    if (signal_context != NULL)
                     {
-                        const BrainUint number_of_chunks = get_number_of_node_with_name(signal_context, "chunk");
-                        BrainSignal input  = (BrainSignal)calloc(signal_length * number_of_chunks,      sizeof(BrainDouble));
+                        BrainSignal input  = (BrainSignal)calloc(signal_length,      sizeof(BrainDouble));
                         BrainSignal output = (BrainSignal)calloc(observation_length, sizeof(BrainDouble));
 
-                        for (j = 0; j < number_of_chunks; ++j)
+                        // reading input signal
+                        buffer = (BrainChar *)node_get_prop(signal_context, "input");
+                        part = strtok(buffer, TOKENIZER);
+
+                        for (k = 0; k < signal_length; ++k)
                         {
-                            Context chunk_context = get_node_with_name_and_index(signal_context, "chunk", j);
-
-                            if (chunk_context != NULL)
+                            if (part != NULL)
                             {
-                                buffer = (BrainChar *)node_get_prop(chunk_context, "input");
-                                part = strtok(buffer, ", ");
-
-                                for (k = 0; k < signal_length; ++k)
-                                {
-                                    if (part != NULL)
-                                    {
-                                        sscanf(part, "%lf", &(input[j * signal_length + k]));
-                                        part = strtok(NULL, ", ");
-                                    }
-                                }
+                                sscanf(part, "%lf", &(input[k]));
+                                part = strtok(NULL, TOKENIZER);
                             }
                         }
 
                         if (buffer)
+                        {
                             free(buffer);
+                        }
 
+                        // reading output signal
                         buffer = (BrainChar *)node_get_prop(signal_context, "output");
-                        part = strtok(buffer, ", ");
+                        part = strtok(buffer, TOKENIZER);
 
                         for (k = 0; k < observation_length; ++k)
                         {
                             if (part != NULL)
                             {
                                 sscanf(part, "%lf", &(output[k]));
-                                part = strtok(NULL, ", ");
+                                part = strtok(NULL, TOKENIZER);
                             }
                         }
 
                         if (buffer)
+                        {
                             free(buffer);
+                        }
 
                         append_data(_data, i, input, output);
                     }
@@ -338,31 +337,31 @@ deserialize(BrainNetwork network,
             if (context != NULL)
             {
                 const BrainUint number_of_layer = get_number_of_node_with_name(context, "layer");
-                
-				BrainUint layer_index = 0;
+
+                BrainUint layer_index = 0;
                 BrainLayer layer = get_network_input_layer(network);
 
                 if (number_of_layer > 0 && layer != NULL)
                 {
-                    do 
-					{
+                    do
+                    {
                         Context layer_context = get_node_with_name_and_index(context, "layer", layer_index);
-                        
+
                         if (layer_context != NULL)
                         {
                             const BrainUint number_of_neuron = get_number_of_node_with_name(layer_context, "neuron");
-                            
+
                             if (number_of_neuron == get_layer_number_of_neuron(layer))
                             {
                                 BrainUint neuron_index = 0;
-                         
-                                for (neuron_index = 0; 
-								     neuron_index < number_of_neuron; 
-									 ++neuron_index )
+
+                                for (neuron_index = 0;
+                                     neuron_index < number_of_neuron;
+                                     ++neuron_index )
                                 {
                                     Context neuron_context = get_node_with_name_and_index(layer_context, "neuron", neuron_index);
                                     BrainNeuron neuron = get_layer_neuron(layer, neuron_index);
-                                    
+
                                     if (neuron_context != NULL && neuron != NULL)
                                     {
                                         initialize_neuron_from_context(neuron, neuron_context);
@@ -370,10 +369,10 @@ deserialize(BrainNetwork network,
                                 }
                             }
                             else
-							{
+                            {
                                 BRAIN_CRITICAL("Unable to initialize the network");
 
-								return;
+                                return;
                             }
                         }
                         layer = get_layer_next_layer(layer);
@@ -498,16 +497,11 @@ train(BrainNetwork network,
             const BrainUint   index            = get_data_random_subset_index(data);
             const BrainUint   input_length     = get_data_input_length    (data);
             const BrainUint   output_length    = get_data_output_length   (data);
-            const BrainUint   number_of_chunks = get_data_number_of_chunks(data, index);
             const BrainSignal output           = get_data_output          (data, index);
-            BrainUint         chunk_index      = 0;
 
-            for (chunk_index = 0; chunk_index < number_of_chunks; ++chunk_index)
-            {
-                const BrainSignal input = get_data_input( data, index, chunk_index);
-                feedforward(network, input_length, input);
-                error = backpropagate(network, output_length, output);
-            }
+            const BrainSignal input = get_data_input(data, index);
+            feedforward(network, input_length, input);
+            error = backpropagate(network, output_length, output);
 
             ++iteration;
         } while ((iteration < max_iter) && (error > target_error));
