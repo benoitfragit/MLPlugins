@@ -68,13 +68,13 @@ void set_weight_value(BrainWeight w, const BrainDouble val);
  */
 BrainDouble get_weight_delta(const BrainWeight w);
 /**
- * \fn BrainDouble get_weight_correction(const BrainWeight w)
- * \brief get the correctin value
+ * \fn BrainDouble get_weight_last_correction(const BrainWeight w)
+ * \brief get the last correction value
  *
  * \param w a BrainWeight
  * \return correction value
  */
-BrainDouble get_weight_correction(const BrainWeight w);
+BrainDouble get_weight_last_correction(const BrainWeight w);
 /**
  * \fn BrainDouble get_weight_gradient(const BrainWeight w)
  * \brief get the gradient value

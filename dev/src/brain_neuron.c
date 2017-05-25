@@ -212,7 +212,9 @@ BrainUint
 get_neuron_number_of_input(const BrainNeuron neuron)
 {
     if (neuron != NULL)
+    {
         return neuron->_number_of_input;
+    }
 
     return 0;
 }
@@ -226,4 +228,30 @@ get_neuron_summation(const BrainNeuron neuron)
     }
 
     return 0.0;
+}
+
+void
+apply_neuron_correction(BrainNeuron neuron)
+{
+    if (neuron != NULL)
+    {
+        const BrainUint number_of_weight = neuron->_number_of_input;
+        BrainUint j = 0;
+        BrainWeight w = neuron->_bias;
+
+        if (w != NULL)
+        {
+            apply_weight_correction(w);
+        }
+
+        for (j = 0; j < number_of_weight; ++j)
+        {
+            w = neuron->_w[j];
+
+            if (w != NULL)
+            {
+                apply_weight_correction(w);
+            }
+        }
+    }
 }

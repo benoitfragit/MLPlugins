@@ -74,4 +74,11 @@ BrainLayer get_network_input_layer(const BrainNetwork network);
  * \return the error value
  */
 BrainDouble backpropagate(BrainNetwork network, const BrainUint number_of_output, const BrainSignal desired);
+/**
+ * \fn void apply_network_correction(BrainNetwork network)
+ * \brief apply all corrections to reduce the total error
+ *
+ * \param network the BrainNetwork to correct
+ */
+void apply_network_correction(BrainNetwork network);
 #endif /* BRAIN_NETWORK_H */

@@ -286,3 +286,28 @@ backpropagate_hidden_layer(BrainLayer hidden_layer)
         }
     }
 }
+
+void
+apply_layer_correction(BrainLayer layer)
+{
+    if (layer != NULL)
+    {
+        const BrainUint number_of_neuron = get_layer_number_of_neuron(layer);
+        BrainUint i = 0;
+
+        for (i = 0; i < number_of_neuron; ++i)
+        {
+            BrainNeuron neuron = get_layer_neuron(layer, i);
+
+            if (neuron != NULL)
+            {
+                apply_neuron_correction(neuron);
+            }
+        }
+
+        if (layer->_next != NULL)
+        {
+            apply_layer_correction(layer->_next);
+        }
+    }
+}

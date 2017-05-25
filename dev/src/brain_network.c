@@ -138,3 +138,14 @@ feedforward(BrainNetwork      network,
                         in);
     }
 }
+
+
+void
+apply_network_correction(BrainNetwork network)
+{
+    if ((network               != NULL) &&
+        (network->_input_layer != NULL))
+    {
+        apply_layer_correction(network->_input_layer);
+    }
+}

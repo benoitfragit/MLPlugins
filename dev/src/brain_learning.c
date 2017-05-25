@@ -33,7 +33,6 @@ update_neuron_using_backpropagation(BrainNeuron neuron,
             BrainWeight neuron_bias = get_neuron_bias(neuron);
 
             set_weight_correction(neuron_bias, - learning_rate * neuron_gradient);
-            apply_weight_correction(neuron_bias);
 
             for (i = 0; i < number_of_inputs; ++i)
             {
@@ -43,7 +42,6 @@ update_neuron_using_backpropagation(BrainNeuron neuron,
                 update_weight_loss(neuron_weight, loss);
 
                 set_weight_correction(neuron_weight, - learning_rate * neuron_gradient_w);
-                apply_weight_correction(neuron_weight);
             }
         }
     }
@@ -61,7 +59,7 @@ apply_neuron_rprop(const BrainDouble rprop_eta_positive,
     {
         const BrainDouble gradient   = get_weight_gradient(weight);
         const BrainDouble delta      = get_weight_delta(weight);
-        const BrainDouble correction = get_weight_correction(weight);
+        const BrainDouble correction = get_weight_last_correction(weight);
 
         BrainDouble new_delta = 0.0;
         BrainDouble new_correction = 0.0;
@@ -79,8 +77,6 @@ apply_neuron_rprop(const BrainDouble rprop_eta_positive,
             set_weight_delta(weight, new_delta);
             set_weight_gradient(weight, new_weight_gradient);
             set_weight_correction(weight, new_correction);
-
-            apply_weight_correction(weight);
         }
         else if (gradient * new_weight_gradient < 0.0)
         {
@@ -91,8 +87,6 @@ apply_neuron_rprop(const BrainDouble rprop_eta_positive,
             set_weight_gradient(weight, 0.0);
             set_weight_correction(weight, new_correction);
             set_weight_delta(weight, delta);
-
-            apply_weight_correction(weight);
         }
         else if (gradient * new_weight_gradient == 0.0)
         {
@@ -105,7 +99,6 @@ apply_neuron_rprop(const BrainDouble rprop_eta_positive,
 
             set_weight_gradient(weight, new_weight_gradient);
             set_weight_correction(weight, new_correction);
-            apply_weight_correction(weight);
         }
     }
 }

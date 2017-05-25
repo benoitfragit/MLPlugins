@@ -4,7 +4,7 @@
 #include "brain_neuron.h"
 #include "brain_weight.h"
 
-#include "brain_data_reader.h"
+#include "brain_data.h"
 #include "brain_settings.h"
 
 #include "brain_activation.h"
@@ -523,6 +523,13 @@ train(BrainNetwork network,
             if (error < target_error)
             {
                 is_trained = BRAIN_TRUE;
+            }
+            else
+            {
+                // if the total error is too big
+                // then, apply all accumulated corrections
+                // to all weights.
+                apply_network_correction(network);
             }
 
             ++iteration;

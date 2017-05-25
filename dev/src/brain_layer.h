@@ -111,4 +111,11 @@ BrainDouble backpropagate_output_layer(BrainLayer output_layer,
  * \param hidden_layer the BrainLayer
  */
 void backpropagate_hidden_layer(BrainLayer hidden_layer);
+/**
+ * \fn void apply_layer_correction(BrainLayer layer)
+ * \brief apply correction to a layer to reduce total error
+ *
+ * \param layer a BrainLayer
+ */
+void apply_layer_correction(BrainLayer layer);
 #endif /* BRAIN_LAYER_H */

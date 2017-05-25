@@ -121,5 +121,11 @@ BrainDouble get_neuron_input(const BrainNeuron neuron, const BrainUint index);
  * \return the neuron summation
  */
 BrainDouble get_neuron_summation(const BrainNeuron neuron);
-
+/**
+ * \fn void apply_neuron_correction(BrainNeuron reuron)
+ * \brief apply correction to a neuron to reduce the total error
+ *
+ * \param neuron a BrainNeuron
+ */
+void apply_neuron_correction(BrainNeuron neuron);
 #endif /* BRAIN_NEURON_H */
