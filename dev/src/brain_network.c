@@ -18,21 +18,23 @@ struct Network
     BrainSignal   _output;           /*!< Output signal of the layer     */
 } Network;
 
-void
+BrainDouble
 backpropagate(BrainNetwork network,
               const BrainUint number_of_output,
-              const BrainSignal output,
               const BrainSignal desired)
 {
-    if (network != NULL && network->_output_layer != NULL && output != NULL && desired != NULL)
+    BrainDouble error = 0.0;
+
+    if ((network                   != NULL) &&
+        (network->_output_layer    != NULL) &&
+        (desired                   != NULL))
     {
         BrainLayer output_layer = network->_output_layer;
         BrainLayer hidden_layer = get_layer_previous_layer(output_layer);
 
-        backpropagate_output_layer(output_layer,
-                                   number_of_output,
-                                   output,
-                                   desired);
+        error = backpropagate_output_layer(output_layer,
+                                           number_of_output,
+                                           desired);
 
         while (hidden_layer != NULL)
         {
@@ -41,6 +43,8 @@ backpropagate(BrainNetwork network,
             hidden_layer = get_layer_previous_layer(hidden_layer);
         }
     }
+
+    return error;
 }
 
 BrainSignal

@@ -97,14 +97,12 @@ void        set_layer_input           (BrainLayer layer,
  *
  * \param output_layer the BrainLayer
  * \param number_of_output the size of the output vector
- * \param output the output signal
  * \param desired the desired output
  *
  * \return the error rate
  */
-void backpropagate_output_layer(BrainLayer output_layer,
+BrainDouble backpropagate_output_layer(BrainLayer output_layer,
                                 const BrainUint number_of_output,
-                                const BrainSignal output,
                                 const BrainSignal desired);
 /**
  * \fn void backpropagate_hidden_layer(BrainLayer hidden_layer)
