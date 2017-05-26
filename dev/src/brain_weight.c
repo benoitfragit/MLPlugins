@@ -1,4 +1,5 @@
 #include "brain_weight.h"
+#include "brain_random.h"
 
 /**
  * \struct Weight
@@ -21,7 +22,7 @@ new_weight(const BrainDouble limit, BrainSignal weighted_loss)
 {
     BrainWeight w = (BrainWeight)calloc(1, sizeof(Weight));
 
-    w->_value      = (BrainDouble)rand() / (BrainDouble)RAND_MAX * 2.0 * limit - limit;
+    w->_value      = get_random_double_value_in_range(-limit, limit);
     w->_correction = 0.0;
     w->_last_correction = 0.0;
     w->_gradient   = 0.0;
@@ -81,7 +82,9 @@ BrainDouble
 get_weight_delta(const BrainWeight w)
 {
     if (w != NULL)
+    {
         return w->_delta;
+    }
 
     return 0.0;
 }
@@ -90,7 +93,9 @@ BrainDouble
 get_weight_gradient(const BrainWeight w)
 {
     if (w != NULL)
+    {
         return w->_gradient;
+    }
 
     return 0.0;
 }

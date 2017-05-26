@@ -20,7 +20,7 @@ identity(const BrainDouble value)
 static BrainDouble
 identity_derivative(const BrainDouble value)
 {
-    return 1.0;
+    return 1.0 + value - value;
 }
 
 static BrainDouble

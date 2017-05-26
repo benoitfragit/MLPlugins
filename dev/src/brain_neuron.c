@@ -2,6 +2,7 @@
 #include "brain_activation.h"
 #include "brain_settings.h"
 #include "brain_weight.h"
+#include "brain_random.h"
 
 /**
  * \struct Neuron
@@ -106,7 +107,7 @@ activate_neuron(BrainNeuron neuron,
         && (0 <= dropout_percent)
         && (dropout_percent < 1.0))
         {
-            if ((BrainDouble)(rand() / RAND_MAX) < dropout_percent)
+            if (get_random_double_value() < dropout_percent)
             {
                 dropout_factor = 0.0;
             }

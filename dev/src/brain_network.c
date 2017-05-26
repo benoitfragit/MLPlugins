@@ -88,8 +88,6 @@ new_network(const BrainUint     signal_input_length,
         BrainUint number_of_inputs = signal_input_length;
         BrainNetwork _network      = (BrainNetwork)calloc(1, sizeof(Network));
 
-        srand(time(NULL));
-
         if (0 < number_of_layers)
         {
             BrainUint index = 0;

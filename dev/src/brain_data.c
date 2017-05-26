@@ -1,4 +1,5 @@
 #include "brain_data.h"
+#include "brain_random.h"
 
 /**
  * \struct Data
@@ -33,7 +34,7 @@ get_data_next_random_subset_index(const BrainUint* subset,
         do
         {
             BrainUint i = 0;
-            random_number = (int)(rand() % max_index);
+            random_number = get_random_int_value_in_range(0, max_index);
 
             is_already_in_subset = BRAIN_FALSE;
 
@@ -82,19 +83,6 @@ get_data_subset_length(const BrainData data)
     }
 
     return 0;
-}
-
-static BrainInt
-get_data_subset_index(const BrainData data,
-                      const BrainUint subset_index)
-{
-    if ((data != NULL)
-    && (subset_index < data->_subset_length))
-    {
-        return data->_subset[subset_index];
-    }
-
-    return -1;
 }
 
 static void
@@ -214,16 +202,4 @@ get_data_input(const BrainData data,
     }
 
     return NULL;
-}
-
-BrainUint
-get_data_random_subset_index(const BrainData data)
-{
-    if (data != NULL)
-    {
-        const BrainUint subset_index = rand() % get_data_subset_length(data);
-        return get_data_subset_index(data, subset_index);
-    }
-
-    return 0;
 }

@@ -228,8 +228,6 @@ new_data_from_context(BrainString filepath)
                 BrainUint       i = 0;
                 BrainUint       k = 0;
 
-                srand(time(NULL));
-
                 const BrainUint number_of_signals  = get_number_of_node_with_name(context, "signal");
                 const BrainUint signal_length      = node_get_int(context, "signal-length", 0);
                 const BrainUint observation_length = node_get_int(context, "observation-length", 0);
