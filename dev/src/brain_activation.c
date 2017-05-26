@@ -20,7 +20,7 @@ identity(const BrainDouble value)
 static BrainDouble
 identity_derivative(const BrainDouble value)
 {
-    return value - value + 1.0;
+    return 1.0;
 }
 
 static BrainDouble
@@ -32,19 +32,21 @@ sigmoid(const BrainDouble value)
 static BrainDouble
 sigmoid_derivative(const BrainDouble value)
 {
-    return value * (1.0 - value);
+    const BrainDouble v = sigmoid(value);
+    return v * (1.0 - v);
 }
 
 static BrainDouble
 tangeant_hyperbolic(const BrainDouble value)
 {
-    return 2.0 / (1.0 + exp (-2.0 * value)) - 1.0;
+    return tanh(value);
 }
 
 static BrainDouble
 tangeant_hyperbolic_derivative(const BrainDouble value)
 {
-    return 1.0 - value*value;
+    const BrainDouble v = tanh(value);
+    return 1.0 - v*v;
 }
 
 static BrainDouble
@@ -56,7 +58,7 @@ co_tangeant(const BrainDouble value)
 static BrainDouble
 co_tangeant_derivative(const BrainDouble value)
 {
-    return 1.0 / (1.0 + tan(value)*tan(value));
+    return 1.0 / (1.0 + value*value);
 }
 
 static BrainDouble
@@ -68,7 +70,8 @@ softplus(const BrainDouble value)
 static BrainDouble
 softplus_derivative(const BrainDouble value)
 {
-    return (exp(value) - 1.0) / exp(value);
+    const BrainDouble v = exp(value);
+    return v / (1.0 + v);
 }
 
 static BrainDouble
@@ -80,7 +83,7 @@ sinusoid(const BrainDouble value)
 static BrainDouble
 sinusoid_derivative(const BrainDouble value)
 {
-    return sqrt(1.0 - value*value);
+    return cos(value);
 }
 
 ActivationPtrFunc

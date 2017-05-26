@@ -513,11 +513,15 @@ train(BrainNetwork network,
                 const BrainSignal input          = get_data_input(data, subset_index);
                 const BrainSignal desired_output = get_data_output(data, subset_index);
 
+                // feed the network to find the corresponding output
                 feedforward(network, input_length, input);
 
+                // backpropagate the error and accumulate it
                 error += backpropagate(network, output_length, desired_output);
             }
 
+            // This is the total training error that
+            // should be minimized other all th training set
             error /= (BrainDouble)subset_length;
 
             if (error < target_error)
