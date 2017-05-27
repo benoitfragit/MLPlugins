@@ -4,7 +4,7 @@
 #include "brain_neuron.h"
 #include "brain_weight.h"
 
-#include "brain_data.h"
+#include "brain_tree.h"
 #include "brain_settings.h"
 
 #include "brain_activation.h"
@@ -208,10 +208,10 @@ new_settings_from_context(BrainString filepath)
     }
 }
 
-BrainData
-new_data_from_context(BrainString filepath)
+BrainTree
+new_tree_from_context(BrainString filepath)
 {
-    BrainData _data = NULL;
+    BrainTree _tree = NULL;
 
     if (filepath != NULL && validate_with_xsd(filepath, DATA_XSD_FILE))
     {
@@ -229,12 +229,12 @@ new_data_from_context(BrainString filepath)
                 BrainUint       k = 0;
 
                 const BrainUint number_of_signals  = get_number_of_node_with_name(context, "signal");
-                const BrainUint signal_length      = node_get_int(context, "signal-length", 0);
-                const BrainUint observation_length = node_get_int(context, "observation-length", 0);
+                const BrainUint input_length      = node_get_int(context, "signal-length", 0);
+                const BrainUint output_length = node_get_int(context, "observation-length", 0);
 
-                _data = new_data(number_of_signals,
-                                 signal_length,
-                                 observation_length);
+                _tree = new_tree(input_length,
+                                 output_length,
+                                 BRAIN_TRUE);
 
                 for (i = 0; i < number_of_signals; ++i)
                 {
@@ -244,14 +244,14 @@ new_data_from_context(BrainString filepath)
 
                     if (signal_context != NULL)
                     {
-                        BrainSignal input  = (BrainSignal)calloc(signal_length,      sizeof(BrainDouble));
-                        BrainSignal output = (BrainSignal)calloc(observation_length, sizeof(BrainDouble));
+                        BrainSignal input  = (BrainSignal)calloc(input_length,      sizeof(BrainDouble));
+                        BrainSignal output = (BrainSignal)calloc(output_length, sizeof(BrainDouble));
 
                         // reading input signal
                         buffer = (BrainChar *)node_get_prop(signal_context, "input");
                         part = strtok(buffer, TOKENIZER);
 
-                        for (k = 0; k < signal_length; ++k)
+                        for (k = 0; k < input_length; ++k)
                         {
                             if (part != NULL)
                             {
@@ -269,7 +269,7 @@ new_data_from_context(BrainString filepath)
                         buffer = (BrainChar *)node_get_prop(signal_context, "output");
                         part = strtok(buffer, TOKENIZER);
 
-                        for (k = 0; k < observation_length; ++k)
+                        for (k = 0; k < output_length; ++k)
                         {
                             if (part != NULL)
                             {
@@ -283,7 +283,7 @@ new_data_from_context(BrainString filepath)
                             free(buffer);
                         }
 
-                        append_data(_data, i, input, output);
+                        new_node(_tree, input, output);
                     }
                 }
             }
@@ -292,7 +292,7 @@ new_data_from_context(BrainString filepath)
         }
     }
 
-    return _data;
+    return _tree;
 }
 
 static void
@@ -478,49 +478,63 @@ serialize(const BrainNetwork network, BrainString filepath)
     }
 }
 
+static BrainDouble
+train_node(BrainNetwork network,
+           const BrainNode node,
+           const BrainUint input_length,
+           const BrainUint output_length)
+{
+    BrainDouble error = 0.0;
+
+    if (network != NULL && node != NULL)
+    {
+        const BrainSignal input      = get_node_input_signal(node);
+        const BrainSignal output     = get_node_output_signal(node);
+        const BrainNode   left_node  = get_left_node(node);
+        const BrainNode   right_node = get_right_node(node);
+
+        // feed the network to find the corresponding output
+        feedforward(network, input_length, input);
+
+        // backpropagate the error and accumulate it
+        error += backpropagate(network, output_length, output);
+
+        // do not forget to train the network using childs
+        error += train_node(network, left_node,  input_length, output_length);
+        error += train_node(network, right_node, input_length, output_length);
+    }
+
+    return error;
+}
+
 BrainBool
-train(BrainNetwork network,
-      const BrainData data)
+train(BrainNetwork network, const BrainTree tree)
 {
     BrainBool is_trained = BRAIN_FALSE;
 
     if ((network != NULL) &&
-        (data    != NULL))
+        (tree    != NULL))
     {
         const BrainUint   max_iteration = get_settings_max_iterations();
         const BrainDouble target_error  = get_settings_target_error();
 
-        const BrainUint   subset_length = get_data_subset_length(data);
-        const BrainUint   input_length  = get_data_input_length(data);
-        const BrainUint   output_length = get_data_output_length(data);
+        const BrainUint   input_length  = get_input_signal_length(tree);
+        const BrainUint   output_length = get_output_signal_length(tree);
 
-        BrainDouble error        = 0.0;
-        BrainUint   iteration    = 0;
-        BrainUint   subset_index = 0;
+        BrainDouble error     = 0.0;
+        BrainUint   iteration = 0;
+        BrainNode   node      = get_training_node(tree);
+
+        const BrainUint number_of_children = get_node_children(node);
 
         do
         {
-            // reseting the error
-            error = 0.0;
-
-            // then get the output for all subset index
-            for (subset_index = 0;
-                 subset_index < subset_length;
-               ++subset_index)
-            {
-                const BrainSignal input          = get_data_input(data, subset_index);
-                const BrainSignal desired_output = get_data_output(data, subset_index);
-
-                // feed the network to find the corresponding output
-                feedforward(network, input_length, input);
-
-                // backpropagate the error and accumulate it
-                error += backpropagate(network, output_length, desired_output);
-            }
+            // then train the network
+            error += train_node(network, node, input_length, output_length);
 
             // This is the total training error that
             // should be minimized other all th training set
-            error /= (BrainDouble)subset_length;
+            error /= (BrainDouble)number_of_children;
 
             if (error < target_error)
             {
@@ -534,6 +548,7 @@ train(BrainNetwork network,
                 apply_network_correction(network);
             }
 
+            error = 0.0;
             ++iteration;
         } while ((iteration < max_iteration) && (is_trained == BRAIN_FALSE));
     }

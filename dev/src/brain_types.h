@@ -103,6 +103,14 @@ typedef struct Network* BrainNetwork;
  */
 typedef struct Weight*  BrainWeight;
 /**
+ * \brief opaque pointer to a Tree
+ */
+typedef struct Tree*    BrainTree;
+/**
+ * \brief opaque pointer to a Node
+ */
+typedef struct Node*    BrainNode;
+/**
  * \brief function pointer on an activation function
  *
  * It let neurons use several activation function and
