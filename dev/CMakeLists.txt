@@ -5,8 +5,8 @@ set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-o2 -g3 -Wall -Wextra -Wshadow -Wunused")
 
 find_package(LIBXML2 REQUIRED)
 
-configure_file ("${PROJECT_SOURCE_DIR}/src/brain_utils_config.h.in"
-                "${PROJECT_BINARY_DIR}/src/brain_utils_config.h")
+configure_file ("${PROJECT_SOURCE_DIR}/src/brain_config.h.in"
+                "${PROJECT_BINARY_DIR}/src/brain_config.h")
 
 set(LIBBRAIN_SOURCE_DIR
     ${CMAKE_CURRENT_SOURCE_DIR}/src)

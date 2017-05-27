@@ -109,4 +109,11 @@ BrainUint get_output_signal_length(const BrainTree tree);
  * \return number of node
  */
 BrainUint get_node_children(const BrainNode node);
+/**
+ * \fn void preprocess(BrainTree tree)
+ * \brief preprocess data tree by using centering and normalization
+ * 
+ * \param tree a BrainTree
+ */
+void preprocess(BrainTree tree);
 #endif /* BRAIN_TREE_H */

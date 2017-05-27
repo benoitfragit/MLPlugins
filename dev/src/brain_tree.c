@@ -24,11 +24,13 @@ struct Node
  */
 struct Tree
 {
-    BrainNode _training;         /*!< This is the training node */
-    BrainNode _evaluating;       /*!< This is the evaluating node */
-    BrainBool _is_data_splitted; /*!< is data automatically splitter */
-    BrainUint _input_length;     /*!< input signal length */
-    BrainUint _output_length;    /*!< output signal length */
+    BrainNode   _training;         /*!< This is the training node       */
+    BrainNode   _evaluating;       /*!< This is the evaluating node     */
+    BrainBool   _is_data_splitted; /*!< is data automatically splitter  */
+    BrainUint   _input_length;     /*!< input signal length             */
+    BrainUint   _output_length;    /*!< output signal length            */
+    BrainSignal _means;            /*!< mean input vector               */
+    BrainSignal _sigmas;           /*!< standerd deviation input vector */
 } Tree;
 
 BrainTree
@@ -38,13 +40,130 @@ new_tree(const BrainUint input_length,
 {
     BrainTree _tree = (BrainTree)calloc(1, sizeof(Tree));
 
-    _tree->_training   = NULL;
-    _tree->_evaluating = NULL;
+    _tree->_training         = NULL;
+    _tree->_evaluating       = NULL;
     _tree->_is_data_splitted = is_data_splitted;
-    _tree->_input_length = input_length;
-    _tree->_output_length = output_length;
+    _tree->_input_length     = input_length;
+    _tree->_output_length    = output_length;
+    _tree->_means            = (BrainSignal)calloc(input_length, sizeof(BrainDouble));
+    _tree->_sigmas           = (BrainSignal)calloc(input_length, sizeof(BrainDouble));
 
     return _tree;
+}
+
+static void
+compute_data_means(const BrainNode node,
+                   const BrainUint input_length,
+                   const BrainUint number_of_signal,
+                   BrainSignal means)
+{
+    if (node != NULL && means != NULL)
+    {
+        if (node->_input != NULL)
+        {
+            BrainUint index = 0;
+
+            for (index = 0; index < input_length; ++index)
+            {
+                means[index] += node->_input[index] / (BrainDouble)number_of_signal;
+            }
+        }
+
+        compute_data_means(node->_left,  input_length, number_of_signal, means);
+        compute_data_means(node->_right, input_length, number_of_signal, means);
+    }
+}
+
+static void
+compute_data_sigmas(const BrainNode node,
+                    const BrainUint input_length,
+                    const BrainUint number_of_signal,
+                    BrainSignal sigmas)
+{
+    if (node != NULL && sigmas != NULL)
+    {
+        if (node->_input != NULL)
+        {
+            BrainUint index = 0;
+
+            for (index = 0; index < input_length; ++index)
+            {
+                sigmas[index] += node->_input[index]*node->_input[index] / (BrainDouble)number_of_signal;
+            }
+        }
+
+        compute_data_sigmas(node->_left,  input_length, number_of_signal, sigmas);
+        compute_data_sigmas(node->_right, input_length, number_of_signal, sigmas);
+    }
+}
+
+static void
+center_data(BrainNode node, const BrainUint input_length, const BrainSignal means)
+{
+    if (node != NULL && means != NULL)
+    {
+        if (node->_input != NULL)
+        {
+            BrainUint index = 0;
+
+            for (index = 0; index < input_length; ++index)
+            {
+                node->_input[index] -= means[index];
+            }
+        }
+
+        center_data(node->_left, input_length, means);
+        center_data(node->_right, input_length, means);
+    }
+}
+
+static void
+normalize_data(BrainNode node, const BrainUint input_length, const BrainSignal sigmas)
+{
+    if (node != NULL && sigmas != NULL)
+    {
+        if (node->_input != NULL)
+        {
+            BrainUint index = 0;
+
+            for (index = 0; index < input_length; ++index)
+            {
+                node->_input[index] /= sigmas[index];
+            }
+        }
+
+        normalize_data(node->_left,  input_length, sigmas);
+        normalize_data(node->_right, input_length, sigmas);
+    }
+}
+
+void
+preprocess(BrainTree tree)
+{
+    if (tree != NULL && tree->_training != NULL)
+    {
+        const BrainUint number_of_signal = tree->_training->_children;
+
+        // data centering
+        compute_data_means(tree->_training,
+                           tree->_input_length,
+                           number_of_signal,
+                           tree->_means);
+
+        center_data(tree->_training,
+                    tree->_input_length,
+                    tree->_means);
+
+        // data normalization
+        compute_data_sigmas(tree->_training,
+                            tree->_input_length,
+                            number_of_signal,
+                            tree->_sigmas);
+
+        normalize_data(tree->_training,
+                       tree->_input_length,
+                       tree->_sigmas);
+    }
 }
 
 static void
@@ -108,6 +227,16 @@ delete_tree(BrainTree tree)
     {
         delete_node(tree->_training);
         delete_node(tree->_evaluating);
+
+        if (tree->_means != NULL)
+        {
+            free(tree->_means);
+        }
+
+        if (tree->_sigmas != NULL)
+        {
+            free(tree->_sigmas);
+        }
 
         free(tree);
     }
