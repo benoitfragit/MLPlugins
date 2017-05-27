@@ -286,6 +286,8 @@ new_tree_from_context(BrainString filepath)
                         new_node(_tree, input, output);
                     }
                 }
+
+				preprocess(_tree);
             }
 
             close_document(data_document);
