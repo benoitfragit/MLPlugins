@@ -32,18 +32,15 @@ new_network_from_context(BrainString filepath)
 
             if (context && is_node_with_name(context, "network"))
             {
-                BrainUint        index            = 0;
                 const BrainUint  number_of_inputs = node_get_int(context, "inputs", 1);
 
-                Context layers_context = get_node_with_name_and_index(context,
-                                                                      "layers",
-                                                                      0);
+                Context layers_context = get_node_with_name_and_index(context, "layers", 0);
 
                 if (layers_context != NULL)
                 {
-                    const BrainUint  number_of_layers = get_number_of_node_with_name(layers_context,
-                                                                                     "layer");
-                    BrainUint*      neuron_per_layers = (BrainUint *)calloc(number_of_layers, sizeof(BrainUint));
+                    const BrainUint  number_of_layers = get_number_of_node_with_name(layers_context, "layer");
+                    BrainUint* neuron_per_layers = (BrainUint *)calloc(number_of_layers, sizeof(BrainUint));
+                    BrainUint  index = 0;
 
                     for (index = 0; index < number_of_layers; ++index)
                     {
@@ -287,7 +284,7 @@ new_tree_from_context(BrainString filepath)
                     }
                 }
 
-				preprocess(_tree);
+                preprocess(_tree);
             }
 
             close_document(data_document);
@@ -338,11 +335,12 @@ deserialize(BrainNetwork network,
             {
                 const BrainUint number_of_layer = get_number_of_node_with_name(context, "layer");
 
-                BrainUint layer_index = 0;
                 BrainLayer layer = get_network_input_layer(network);
 
                 if (number_of_layer > 0 && layer != NULL)
                 {
+                    BrainUint layer_index = 0;
+
                     do
                     {
                         Context layer_context = get_node_with_name_and_index(context, "layer", layer_index);
@@ -407,10 +405,11 @@ serialize(const BrainNetwork network, BrainString filepath)
                     {
                         // serialize all neurons
                         const BrainUint number_of_neurons = get_layer_number_of_neuron(layer);
-                        BrainUint index_neuron = 0;
 
                         if (start_element(writer, "layer"))
                         {
+                            BrainUint index_neuron = 0;
+
                             for (index_neuron = 0;
                                  index_neuron < number_of_neurons;
                                  ++index_neuron)
@@ -420,12 +419,12 @@ serialize(const BrainNetwork network, BrainString filepath)
                                 if (neuron != NULL)
                                 {
                                     const BrainUint number_of_inputs = get_neuron_number_of_input(neuron);
-                                    BrainUint index_input = 0;
-                                    BrainChar buffer[50];
 
                                     if (start_element(writer, "neuron"))
                                     {
                                         const BrainWeight bias = get_neuron_bias(neuron);
+                                        BrainUint index_input = 0;
+                                        BrainChar buffer[50];
 
                                         if (bias != NULL)
                                         {

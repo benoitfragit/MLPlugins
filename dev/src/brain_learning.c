@@ -19,7 +19,6 @@ update_neuron_using_backpropagation(BrainNeuron neuron,
     if (neuron != NULL)
     {
         const BrainUint number_of_inputs = get_neuron_number_of_input(neuron);
-        BrainUint i = 0;
 
         const BrainDouble learning_rate = get_settings_backpropagation_learning_rate();
         ActivationPtrFunc derivative_function = get_settings_neuron_derivative();
@@ -31,6 +30,7 @@ update_neuron_using_backpropagation(BrainNeuron neuron,
             const BrainDouble neuron_gradient   = neuron_derivative * loss;
 
             BrainWeight neuron_bias = get_neuron_bias(neuron);
+            BrainUint i = 0;
 
             set_weight_correction(neuron_bias, - learning_rate * neuron_gradient);
 
@@ -86,7 +86,7 @@ apply_neuron_rprop(const BrainDouble rprop_eta_positive,
 
             set_weight_gradient(weight, 0.0);
             set_weight_correction(weight, new_correction);
-            set_weight_delta(weight, delta);
+            set_weight_delta(weight, new_delta);
         }
         else if (gradient * new_weight_gradient == 0.0)
         {

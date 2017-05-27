@@ -20,12 +20,10 @@ get_node_with_name_and_index(Context node,
                              BrainString name,
                              const BrainInt i)
 {
-    BrainInt index = 0;
-    Context child;
-
     if (node)
     {
-        child = node->xmlChildrenNode;
+        Context child = node->xmlChildrenNode;
+        BrainInt index = 0;
 
         while (child)
         {
@@ -180,7 +178,6 @@ get_root_node(Document doc)
 BrainBool
 validate_with_xsd(BrainString xml_file, BrainString xsd_file)
 {
-    BrainInt ret = 0;
     BrainBool result = BRAIN_FALSE;
     Document doc;
     xmlSchemaPtr schema = NULL;
@@ -206,8 +203,10 @@ validate_with_xsd(BrainString xml_file, BrainString xsd_file)
         xmlSchemaValidCtxtPtr validation_ctxt;
 
         validation_ctxt = xmlSchemaNewValidCtxt(schema);
+
         xmlSchemaSetValidErrors(validation_ctxt, (xmlSchemaValidityErrorFunc) fprintf, (xmlSchemaValidityWarningFunc) fprintf, stderr);
-        ret = xmlSchemaValidateDoc(validation_ctxt, doc);
+
+        const BrainInt ret = xmlSchemaValidateDoc(validation_ctxt, doc);
         if (ret == 0)
         {
             result = BRAIN_TRUE;

@@ -186,37 +186,35 @@ delete_node(BrainNode node)
         }
 
         free(node);
-
-        node = NULL;
     }
 }
 
 static void
-create_child_node(BrainNode node, BrainSignal input, BrainSignal output)
+create_child_node(BrainNode* node, BrainSignal input, BrainSignal output)
 {
-    if (node != NULL)
+    if (*node != NULL)
     {
-        if (node->_left == NULL)
+        if ((*node)->_left == NULL)
         {
-            node->_children += 1;
-            create_child_node(node->_left, input, output);
+            (*node)->_children += 1;
+            create_child_node(&((*node)->_left), input, output);
         }
-        else if (node->_right == NULL)
+        else if ((*node)->_right == NULL)
         {
-            node->_children += 1;
-            create_child_node(node->_right, input, output);
+            (*node)->_children += 1;
+            create_child_node(&((*node)->_right), input, output);
         }
     }
     else
     {
-        node = (BrainNode)calloc(1, sizeof(Node));
+        *node = (BrainNode)calloc(1, sizeof(Node));
 
-        node->_input  = input;
-        node->_output = output;
-        node->_left   = NULL;
-        node->_right  = NULL;
+        (*node)->_input  = input;
+        (*node)->_output = output;
+        (*node)->_left   = NULL;
+        (*node)->_right  = NULL;
 
-        node->_children = 1;
+        (*node)->_children = 1;
     }
 }
 
@@ -316,11 +314,11 @@ new_node(BrainTree tree, BrainSignal input, BrainSignal output)
         // data auto separation into 2 sets testing
         if ((tree->_is_data_splitted == BRAIN_TRUE) && get_random_double_value() < 0.5)
         {
-            create_child_node(tree->_training, input, output);
+            create_child_node(&(tree->_training), input, output);
         }
         else
         {
-            create_child_node(tree->_evaluating, input, output);
+            create_child_node(&(tree->_evaluating), input, output);
         }
     }
 }

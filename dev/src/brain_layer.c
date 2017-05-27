@@ -229,7 +229,6 @@ backpropagate_output_layer(BrainLayer output_layer,
                 CostPtrFunc cost_function_derivative = get_settings_network_cost_function_derivative();
 
                 BrainUint output_index = 0;
-                BrainNeuron output_neuron = NULL;
 
                 reset_layer_delta(output_layer);
 
@@ -239,7 +238,7 @@ backpropagate_output_layer(BrainLayer output_layer,
                 {
                     const BrainDouble loss = cost_function_derivative(output[output_index], desired[output_index]);
 
-                    output_neuron = get_layer_neuron(output_layer, output_index);
+                    BrainNeuron output_neuron = get_layer_neuron(output_layer, output_index);
 
                     error += cost_function(output[output_index], desired[output_index]);
 
