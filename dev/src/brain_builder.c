@@ -4,7 +4,7 @@
 #include "brain_neuron.h"
 #include "brain_weight.h"
 
-#include "brain_tree.h"
+#include "brain_data.h"
 #include "brain_settings.h"
 
 #include "brain_activation.h"
@@ -205,10 +205,10 @@ new_settings_from_context(BrainString filepath)
     }
 }
 
-BrainTree
-new_tree_from_context(BrainString filepath)
+BrainData
+new_data_from_context(BrainString filepath)
 {
-    BrainTree _tree = NULL;
+    BrainData _data = NULL;
 
     if (filepath != NULL && validate_with_xsd(filepath, DATA_XSD_FILE))
     {
@@ -229,7 +229,7 @@ new_tree_from_context(BrainString filepath)
                 const BrainUint input_length      = node_get_int(context, "signal-length", 0);
                 const BrainUint output_length = node_get_int(context, "observation-length", 0);
 
-                _tree = new_tree(input_length,
+                _data = new_data(input_length,
                                  output_length,
                                  BRAIN_TRUE);
 
@@ -280,18 +280,18 @@ new_tree_from_context(BrainString filepath)
                             free(buffer);
                         }
 
-                        new_node(_tree, input, output);
+                        new_node(_data, input, output);
                     }
                 }
 
-                preprocess(_tree);
+                preprocess(_data);
             }
 
             close_document(data_document);
         }
     }
 
-    return _tree;
+    return _data;
 }
 
 static void
@@ -491,8 +491,7 @@ train_node(BrainNetwork network,
     {
         const BrainSignal input      = get_node_input_signal(node);
         const BrainSignal output     = get_node_output_signal(node);
-        const BrainNode   left_node  = get_left_node(node);
-        const BrainNode   right_node = get_right_node(node);
+        const BrainNode   next_node  = get_next_node(node);
 
         // feed the network to find the corresponding output
         feedforward(network, input_length, input);
@@ -501,32 +500,31 @@ train_node(BrainNetwork network,
         error += backpropagate(network, output_length, output);
 
         // do not forget to train the network using childs
-        error += train_node(network, left_node,  input_length, output_length);
-        error += train_node(network, right_node, input_length, output_length);
+        error += train_node(network, next_node,  input_length, output_length);
     }
 
     return error;
 }
 
 BrainBool
-train(BrainNetwork network, const BrainTree tree)
+train(BrainNetwork network, const BrainData data)
 {
     BrainBool is_trained = BRAIN_FALSE;
 
     if ((network != NULL) &&
-        (tree    != NULL))
+        (data    != NULL))
     {
         const BrainUint   max_iteration = get_settings_max_iterations();
         const BrainDouble target_error  = get_settings_target_error();
 
-        const BrainUint   input_length  = get_input_signal_length(tree);
-        const BrainUint   output_length = get_output_signal_length(tree);
+        const BrainUint   input_length  = get_input_signal_length(data);
+        const BrainUint   output_length = get_output_signal_length(data);
 
         BrainDouble error     = 0.0;
         BrainUint   iteration = 0;
-        BrainNode   node      = get_training_node(tree);
+        BrainNode   node      = get_training_node(data);
 
-        const BrainUint number_of_children = get_node_children(node);
+        const BrainUint number_of_children = get_node_children(data);
 
         do
         {

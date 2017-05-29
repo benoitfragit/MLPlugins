@@ -25,6 +25,7 @@ file(GLOB_RECURSE HEADERS ${LIBBRAIN_SOURCE_DIR}/*.h)
 add_library(Brain SHARED ${SOURCES} ${HEADERS})
 
 target_link_libraries(Brain ${LIBXML2_LIBRARIES} "-lm")
+target_include_directories(Brain PUBLIC ${LIBBRAIN_INCLUDE_DIRS})
 
 install(TARGETS Brain
         RUNTIME DESTINATION bin

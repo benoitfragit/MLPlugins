@@ -18,6 +18,17 @@ struct Network
     BrainSignal   _output;           /*!< Output signal of the layer     */
 } Network;
 
+BrainLayer
+get_network_input_layer(const BrainNetwork network)
+{
+	if (network != NULL)
+	{
+		return network->_input_layer;
+	}
+
+	return NULL;
+}
+
 BrainDouble
 backpropagate(BrainNetwork network,
               const BrainUint number_of_output,

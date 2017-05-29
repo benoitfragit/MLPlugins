@@ -103,10 +103,6 @@ typedef struct Network* BrainNetwork;
  */
 typedef struct Weight*  BrainWeight;
 /**
- * \brief opaque pointer to a Tree
- */
-typedef struct Tree*    BrainTree;
-/**
  * \brief opaque pointer to a Node
  */
 typedef struct Node*    BrainNode;

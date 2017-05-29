@@ -28,13 +28,13 @@ BrainNetwork new_network_from_context(BrainString filepath);
 void deserialize(BrainNetwork network,
                  BrainString filepath);
 /**
- * \fn BrainTree new_tree_from_context(BrainString filepath)
+ * \fn BrainData new_data_from_context(BrainString filepath)
  * \brief Load training data from an XML context
  *
  * \param filepath the XML context to use
  * \return a newly allocated BrainTree
  */
-BrainTree new_tree_from_context(BrainString filepath);
+BrainData new_data_from_context(BrainString filepath);
 /**
  * \fn void new_settings_from_context(BrainString filepath)
  * \brief Load settings from an XML context
@@ -51,13 +51,13 @@ void new_settings_from_context(BrainString filepath);
  */
 void serialize(const BrainNetwork network, const BrainString filepath);
 /**
- * \fn BrainBool train(BrainNetwork network, const BrainTree tree)
+ * \fn BrainBool train(BrainNetwork network, const BrainData data)
  * \brief launch the training process for the neural network
  *
  * \param network      the BrainNetwork to train
- * \param tree         Training dataset
+ * \param data         Training dataset
  *
  * \return BRAIN_TRUE if training work else BRAIN_FALSE
  */
-BrainBool train(BrainNetwork network, const BrainTree tree);
+BrainBool train(BrainNetwork network, const BrainData data);
 #endif /* BRAIN_BUILDER_H */
