@@ -480,10 +480,10 @@ serialize(const BrainNetwork network, BrainString filepath)
 }
 
 static BrainDouble
-train_node(BrainNetwork network,
-           const BrainNode node,
-           const BrainUint input_length,
-           const BrainUint output_length)
+step(BrainNetwork network,
+     const BrainNode node,
+     const BrainUint input_length,
+     const BrainUint output_length)
 {
     BrainDouble error = 0.0;
 
@@ -500,7 +500,7 @@ train_node(BrainNetwork network,
         error += backpropagate(network, output_length, output);
 
         // do not forget to train the network using childs
-        error += train_node(network, next_node,  input_length, output_length);
+        error += step(network, next_node,  input_length, output_length);
     }
 
     return error;
@@ -529,7 +529,7 @@ train(BrainNetwork network, const BrainData data)
         do
         {
             // then train the network
-            error += train_node(network, node, input_length, output_length);
+            error += step(network, node, input_length, output_length);
 
             // This is the total training error that
             // should be minimized other all th training set

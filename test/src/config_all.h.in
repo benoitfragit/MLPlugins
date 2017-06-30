@@ -1,0 +1,6 @@
+#ifndef CONFIG_ALL_H
+#define CONFIG_ALL_H
+
+#define TEST_CREATE_NETWORK "${CMAKE_CURRENT_BINARY_DIR}/src/test_create_network.xml"
+
+#endif /* CONFIG_ALL_H */

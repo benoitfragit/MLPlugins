@@ -185,7 +185,6 @@ new_neuron(const BrainUint number_of_inputs,
            BrainSignal     errors)
 {
     if ((out              != NULL)
-    &&  (errors           != NULL)
     &&  (number_of_inputs != 0))
     {
         BrainUint                index = 0;
@@ -200,7 +199,14 @@ new_neuron(const BrainUint number_of_inputs,
 
         for (index = 0; index < _neuron->_number_of_input; ++index)
         {
-            _neuron->_w[index] = new_weight(random_value_limit, &(errors[index]));
+            BrainSignal error = NULL;
+
+            if (errors != NULL)
+            {
+                error = &(errors[index]);
+            }
+
+            _neuron->_w[index] = new_weight(random_value_limit, error);
         }
 
         return _neuron;
