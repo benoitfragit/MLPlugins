@@ -39,7 +39,7 @@ update_neuron_using_backpropagation(BrainNeuron neuron,
                 const BrainDouble neuron_gradient_w = neuron_gradient * get_neuron_input(neuron, i);
                 BrainWeight neuron_weight = get_neuron_weight(neuron,i);
 
-                update_weight_loss(neuron_weight, loss);
+                update_error(neuron_weight, loss);
 
                 set_weight_correction(neuron_weight, - learning_rate * neuron_gradient_w);
             }
@@ -137,8 +137,8 @@ update_neuron_using_resilient(BrainNeuron neuron,
                 const BrainDouble neuron_gradient_w = neuron_gradient * get_neuron_input(neuron, i);
 
                 BrainWeight neuron_weight = get_neuron_weight(neuron, i);
-                //this is also valid in RProp mode
-                update_weight_loss(neuron_weight, loss);
+
+                update_error(neuron_weight, loss);
 
                 apply_neuron_rprop(rprop_eta_positive,
                                    rprop_eta_negative,

@@ -14,17 +14,17 @@
 /**
  * \fn BrainNeuron new_neuron(const BrainUint number_of_inputs,
  *                            BrainSignal out,
- *                            BrainSignal weighted_delta)
+ *                            BrainSignal errors)
  * \brief method to build a neuron
  *
  * \param number_of_inputs input_signal_size
  * \param out            a pointer to a BrainDouble owned by the BrainLayer
- * \param weighted_delta an array owned by the BrainLayer to update weighted deltas
+ * \param errors an array owned by the BrainLayer to update weights
  * \return a BrainNeuron or NULL if it failed
  */
 BrainNeuron new_neuron(const BrainUint     number_of_inputs,
                        BrainSignal         out,
-                       BrainSignal         weighted_delta);
+                       BrainSignal         errors);
 /**
  * \fn void delete_neuron(BrainNeuron neuron)
  * \brief free all BrainNeuron memory

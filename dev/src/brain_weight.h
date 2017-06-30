@@ -16,10 +16,10 @@
  * \brief build a new weight
  *
  * \param limit random value limit
- * \param weighted_loss each time a new input arrived each weight contributes to a certain rate of error
+ * \param error each time a new input arrived each weight contributes to a certain rate of error
  * \return a new BrainWeight
  */
-BrainWeight new_weight(const BrainDouble limit, BrainSignal weighted_loss);
+BrainWeight new_weight(const BrainDouble limit, BrainSignal error);
 /**
  * \fn void delete_weight(BrainWeight w)
  * \brief deleta a weight
@@ -99,11 +99,11 @@ BrainDouble get_weight_value(const BrainWeight w);
  */
 void apply_weight_correction(BrainWeight w);
 /**
- * \fn void update_weight_loss(BrainWeight w, const BrainDouble loss)
- * \brief apply a new loss
+ * \fn void update_error(BrainWeight w, const BrainDouble error)
+ * \brief append a new error
  *
  * \param w A BrainWeight
- * \param loss the new loss
+ * \param error An error value
  */
-void update_weight_loss(BrainWeight w, const BrainDouble loss);
+void update_error(BrainWeight w, const BrainDouble error);
 #endif /* BRAIN_WEIGHT_H */

@@ -182,10 +182,10 @@ delete_neuron(BrainNeuron neuron)
 BrainNeuron
 new_neuron(const BrainUint number_of_inputs,
            BrainSignal     out,
-           BrainSignal     weighted_delta)
+           BrainSignal     errors)
 {
     if ((out              != NULL)
-    &&  (weighted_delta   != NULL)
+    &&  (errors           != NULL)
     &&  (number_of_inputs != 0))
     {
         BrainUint                index = 0;
@@ -200,7 +200,7 @@ new_neuron(const BrainUint number_of_inputs,
 
         for (index = 0; index < _neuron->_number_of_input; ++index)
         {
-            _neuron->_w[index] = new_weight(random_value_limit, &(weighted_delta[index]));
+            _neuron->_w[index] = new_weight(random_value_limit, &(errors[index]));
         }
 
         return _neuron;

@@ -9,16 +9,16 @@
  */
 struct Weight
 {
-    BrainDouble _value;         /*!< Weight value             */
-    BrainDouble _gradient;      /*!< weights gradient values  */
-    BrainDouble _delta;         /*!< weights delta values     */
-    BrainDouble _correction;    /*!< weights correction value */
-    BrainDouble _last_correction; /*!< weights last correction value */
-    BrainSignal _weighted_loss; /*!< weight to correct in the layer */
+    BrainDouble _value;           /*!< Weight value                   */
+    BrainDouble _gradient;        /*!< weights gradient values        */
+    BrainDouble _delta;           /*!< weights delta values           */
+    BrainDouble _correction;      /*!< weights correction value       */
+    BrainDouble _last_correction; /*!< weights last correction value  */
+    BrainSignal _error;           /*!< error to correct in the layer */
 } Weight;
 
 BrainWeight
-new_weight(const BrainDouble limit, BrainSignal weighted_loss)
+new_weight(const BrainDouble limit, BrainSignal error)
 {
     BrainWeight w = (BrainWeight)calloc(1, sizeof(Weight));
 
@@ -27,7 +27,7 @@ new_weight(const BrainDouble limit, BrainSignal weighted_loss)
     w->_last_correction = 0.0;
     w->_gradient   = 0.0;
     w->_delta      = 0.01;
-    w->_weighted_loss = weighted_loss;
+    w->_error      = error;
 
     return w;
 }
@@ -134,10 +134,10 @@ apply_weight_correction(BrainWeight w)
 }
 
 void
-update_weight_loss(BrainWeight w, const BrainDouble loss)
+update_error(BrainWeight w, const BrainDouble error)
 {
-    if (w->_weighted_loss != NULL)
+    if (w->_error != NULL)
     {
-        *(w->_weighted_loss) = *(w->_weighted_loss) + loss;
+        *(w->_error) = *(w->_error) + error * w->_value;
     }
 }

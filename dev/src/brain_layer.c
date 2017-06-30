@@ -12,7 +12,7 @@ struct Layer
 {
     BrainNeuron* _neurons;          /*!< An array of BrainNeuron           */
     BrainSignal  _out;              /*!< Output vector of the Layer        */
-    BrainSignal  _weighted_deltas;  /*!< An array of weighted delta        */
+    BrainSignal  _errors;           /*!< An array of errors                */
     BrainUint    _number_of_neuron; /*!< The number of BrainNeuron         */
     BrainLayer   _next;             /*!< The next layer in the network     */
     BrainLayer   _prev;             /*!< The previous layer in the network */
@@ -82,9 +82,9 @@ delete_layer(BrainLayer layer)
             free(layer->_out);
         }
 
-        if (layer->_weighted_deltas)
+        if (layer->_errors)
         {
-            free(layer->_weighted_deltas);
+            free(layer->_errors);
         }
 
         free(layer);
@@ -118,7 +118,7 @@ new_layer(const BrainUint     number_of_neurons,
     &&  (number_of_neurons != 0))
     {
         BrainLayer _layer = NULL;
-        BrainSignal previous_weighted_delta = NULL;
+        BrainSignal previous_errors = NULL;
 
         _layer                    = (BrainLayer)calloc(1, sizeof(Layer));
         _layer->_number_of_neuron = number_of_neurons;
@@ -129,27 +129,29 @@ new_layer(const BrainUint     number_of_neurons,
         // setting the next layer on the current layer
         _layer->_next             = NULL;
 
-        // setting the next layer on the previous layer
         if (prev != NULL)
         {
+            // setting the next layer on the previous layer
             prev->_next = _layer;
 
-            previous_weighted_delta = prev->_weighted_deltas;
+            // grabs errors from previous to make all next weights able to
+            // automatically modify errors values
+            previous_errors = prev->_errors;
         }
 
         if (0 != _layer->_number_of_neuron)
         {
             BrainUint index = 0;
 
-            _layer->_neurons         = (BrainNeuron *)calloc(_layer->_number_of_neuron, sizeof(BrainNeuron));
-            _layer->_out             = (BrainSignal  )calloc(_layer->_number_of_neuron, sizeof(BrainDouble));
-            _layer->_weighted_deltas = (BrainSignal)calloc(_layer->_number_of_neuron, sizeof(BrainDouble));
+            _layer->_neurons = (BrainNeuron *)calloc(_layer->_number_of_neuron, sizeof(BrainNeuron));
+            _layer->_out     = (BrainSignal  )calloc(_layer->_number_of_neuron, sizeof(BrainDouble));
+            _layer->_errors  = (BrainSignal)calloc(_layer->_number_of_neuron, sizeof(BrainDouble));
 
             for (index = 0; index < _layer->_number_of_neuron; ++index)
             {
                 _layer->_neurons[index] = new_neuron(number_of_inputs,
                                                      &(_layer->_out[index]),
-                                                     previous_weighted_delta);
+                                                     previous_errors);
             }
         }
 
@@ -182,25 +184,27 @@ get_layer_number_of_neuron(const BrainLayer layer)
 }
 
 static void
-reset_layer_delta(BrainLayer layer)
+reset_layer_errors(BrainLayer layer)
 {
+    // Before backpropagating an error we should
+    // reset the error on the previous layer
     if ((layer != NULL)
     &&  (layer->_prev != NULL)
-    &&  (layer->_prev->_weighted_deltas))
+    &&  (layer->_prev->_errors))
     {
-        memset(layer->_prev->_weighted_deltas, 0, layer->_prev->_number_of_neuron * sizeof(BrainDouble));
+        memset(layer->_prev->_errors, 0, layer->_prev->_number_of_neuron * sizeof(BrainDouble));
     }
 }
 
 static BrainDouble
-get_layer_weighted_delta(const BrainLayer layer,
-                         const BrainUint input_index)
+get_layer_error(const BrainLayer layer,
+                const BrainUint input_index)
 {
     if ((layer != NULL)
-    &&  (layer->_weighted_deltas != NULL)
+    &&  (layer->_errors != NULL)
     &&  (input_index < layer->_number_of_neuron))
     {
-        return layer->_weighted_deltas[input_index];
+        return layer->_errors[input_index];
     }
 
     return 0.0;
@@ -230,7 +234,7 @@ backpropagate_output_layer(BrainLayer output_layer,
 
                 BrainUint output_index = 0;
 
-                reset_layer_delta(output_layer);
+                reset_layer_errors(output_layer);
 
                 for (output_index = 0;
                      output_index < number_of_output;
@@ -269,7 +273,7 @@ backpropagate_hidden_layer(BrainLayer hidden_layer)
 
             BrainUint i = 0;
 
-            reset_layer_delta(hidden_layer);
+            reset_layer_errors(hidden_layer);
 
             for (i = 0; i < current_number_of_neuron; ++i)
             {
@@ -277,7 +281,7 @@ backpropagate_hidden_layer(BrainLayer hidden_layer)
 
                 if (current_neuron != NULL)
                 {
-                    const BrainDouble loss = get_layer_weighted_delta(hidden_layer, i);
+                    const BrainDouble loss = get_layer_error(hidden_layer, i);
 
                     learning_function(current_neuron, loss);
                 }
