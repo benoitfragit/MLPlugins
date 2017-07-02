@@ -13,6 +13,8 @@ static const int NUMBER_OF_INPUTS[]  = {5, 3, 6};
 int
 main(int argc, char** argv)
 {
+    BrainUint result = EXIT_FAILURE;
+
     const BrainNetwork network = new_network_from_context(TEST_CREATE_NETWORK);
 
     if (network != NULL)
@@ -54,7 +56,7 @@ main(int argc, char** argv)
                         }
                     }
 
-                    if (valid == BRAIN_TRUE)
+                    if (valid)
                     {
                         ++ number_of_layers;
                     }
@@ -69,10 +71,12 @@ main(int argc, char** argv)
 
             if (number_of_layers == NUMBER_OF_LAYERS)
             {
-                return EXIT_SUCCESS;
+                result = EXIT_SUCCESS;
             }
         }
+
+        delete_network(network);
     }
 
-    return EXIT_FAILURE;
+    return result;
 }
