@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema'>
-    <xs::complexType name="NeuronInitType">
+    <xs:complexType name="NeuronInitType">
         <xs:sequence minOccurs="1" maxOccurs="unbounded">
             <xs:element name="weight" type="xs:decimal" use="required"/>
         </xs:sequence>
         <xs:attribute name="bias" type="xs:decimal" use="required"/>
-    </xs::complexType>
+    </xs:complexType>
 
     <xs:complexType name="LayerInitType">
         <xs:sequence minOccurs="1" maxOccurs="unbounded">

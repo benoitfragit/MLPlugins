@@ -13,7 +13,7 @@ static const int NUMBER_OF_INPUTS[]  = {5, 3, 6};
 int
 main(int argc, char** argv)
 {
-    BrainUint result = EXIT_FAILURE;
+    BrainInt result = EXIT_FAILURE;
 
     const BrainNetwork network = new_network_from_context(TEST_CREATE_NETWORK);
 

@@ -7,7 +7,7 @@
 int
 main(int argc, char** argv)
 {
-    BrainUint result = EXIT_FAILURE;
+    BrainInt result = EXIT_FAILURE;
 
     new_settings_from_context(TEST_CREATE_SETTINGS);
 

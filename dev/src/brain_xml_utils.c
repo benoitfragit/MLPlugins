@@ -241,9 +241,22 @@ create_document(BrainString filepath, BrainString encoding)
 {
     Writer writer = xmlNewTextWriterFilename(filepath, 0);
 
-    if (writer != NULL && xmlTextWriterStartDocument(writer, NULL, encoding, NULL))
+    if (writer != NULL)
     {
-        return writer;
+        if (0 <= xmlTextWriterStartDocument(writer, NULL, encoding, NULL))
+        {
+            xmlTextWriterSetIndent(writer, BRAIN_TRUE);
+
+            return writer;
+        }
+        else
+        {
+            BRAIN_CRITICAL("%s", "Unable to open document for writing");
+        }
+    }
+    else
+    {
+        BRAIN_CRITICAL("%s", "Unable to create document");
     }
 
     return NULL;
@@ -254,10 +267,16 @@ start_element(Writer writer,
                   BrainString element)
 {
     if ((writer != NULL)
-    &&  (element != NULL)
-    &&   xmlTextWriterStartElement(writer, BAD_CAST element))
+    &&  (element != NULL))
     {
-        return BRAIN_TRUE;
+        if (0 <= xmlTextWriterStartElement(writer, BAD_CAST element))
+        {
+            return BRAIN_TRUE;
+        }
+        else
+        {
+            BRAIN_CRITICAL("%s:%s", "Unable to create element", element);
+        }
     }
 
     BRAIN_CRITICAL("Unable to create element: %s\n", element);
