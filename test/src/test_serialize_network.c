@@ -91,8 +91,8 @@ main(int argc, char** argv)
 
                 for (input_index = 0; input_index < original_neuron_input; ++input_index)
                 {
-                    const BrainWeight original_weight = get_neuron_weight(original_neuron);
-                    const BrainWeight loaded_weight.  = get_neuron_weight(loaded_neuron);
+                    const BrainWeight original_weight = get_neuron_weight(original_neuron, input_index);
+                    const BrainWeight loaded_weight.  = get_neuron_weight(loaded_neuron, input_index);
 
                     const BrainDouble original_value = get_weight_value(original_weight);
                     const BrainDouvle loaded_value   = get_weight_value(loaded_weight);
