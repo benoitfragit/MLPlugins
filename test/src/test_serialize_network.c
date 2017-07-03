@@ -84,6 +84,7 @@ main(int argc, char** argv)
                 {
                     result = EXIT_FAILURE;
                     BRAIN_CRITICAL("%s", "bias are not equal");
+                    break;
                 }
             }
 
