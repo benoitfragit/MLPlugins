@@ -100,7 +100,7 @@ main(int argc, char** argv)
                     if (_epsilon_double_comparaison < fabs(original_value - loaded_value))
                     {
                         result = EXIT_FAILURE;
-                        BRAIN_CRITICAL(«%s», «Weights are not equals»);
+                        BRAIN_CRITICAL("%s", "Weights are not equals");
                         break;
                     }
                 }
