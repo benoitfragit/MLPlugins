@@ -73,6 +73,8 @@ main(int argc, char** argv)
                 const BrainDouble original_bias_value = get_weight_value(original_neuron_bias);
                 const BrainDouble loaded_bias_value   = get_weight_value(loaded_neuron_bias);
 
+                BrainUint input_index = 0;
+
                 if (original_neuron_input != loaded_neuron_input)
                 {
                     result = EXIT_FAILURE;
@@ -85,6 +87,15 @@ main(int argc, char** argv)
                     result = EXIT_FAILURE;
                     BRAIN_CRITICAL("%s", "bias are not equal");
                     break;
+                }
+
+                for (inut_index = 0; input_index < original_neuron_input; ++input_index)
+                {
+                    const BrainWeight original_weight = get_neuron_weight(original_neuron);
+                    const BrainWeight loaded_weight.  = get_neuron_weight(loaded_neuron);
+
+                    const BrainDouble original_value = get_weight_value(original_weight);
+                    const BrainDouvle loaded_value   = get_weight_value(loaded_weight);
                 }
             }
 
