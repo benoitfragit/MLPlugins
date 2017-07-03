@@ -85,22 +85,24 @@ main(int argc, char** argv)
                 if (_epsilon_double_comparaison < fabs(original_bias_value - loaded_bias_value))
                 {
                     result = EXIT_FAILURE;
-                    BRAIN_CRITICAL("%s", "bias are not equal");
+                    BRAIN_CRITICAL("bias are not equal: %lf, %lf", original_bias_value,
+                                                                   loaded_bias_value);
                     break;
                 }
 
                 for (input_index = 0; input_index < original_neuron_input; ++input_index)
                 {
                     const BrainWeight original_weight = get_neuron_weight(original_neuron, input_index);
-                    const BrainWeight loaded_weight.  = get_neuron_weight(loaded_neuron, input_index);
+                    const BrainWeight loaded_weight   = get_neuron_weight(loaded_neuron, input_index);
 
                     const BrainDouble original_value = get_weight_value(original_weight);
-                    const BrainDouvle loaded_value   = get_weight_value(loaded_weight);
+                    const BrainDouble loaded_value   = get_weight_value(loaded_weight);
 
                     if (_epsilon_double_comparaison < fabs(original_value - loaded_value))
                     {
                         result = EXIT_FAILURE;
-                        BRAIN_CRITICAL("%s", "Weights are not equals");
+                        BRAIN_CRITICAL("Weight are not equals: %lf, %lf", original_value,
+                                                                          loaded_value);
                         break;
                     }
                 }

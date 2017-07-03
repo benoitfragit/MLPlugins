@@ -310,7 +310,7 @@ initialize_neuron_from_context(BrainNeuron neuron,
         {
             Context subcontext = get_node_with_name_and_index(context, "weight", index);
 
-            const BrainDouble weight    = node_get_double(subcontext, "value",  0.0);
+            const BrainDouble weight    = node_get_content_as_double(subcontext);
 
             set_neuron_weight(neuron, index, weight);
         }
@@ -381,6 +381,10 @@ deserialize(BrainNetwork network,
 
             close_document(init_document);
         }
+    }
+    else
+    {
+        BRAIN_CRITICAL("Unable to deserialize file\n");
     }
 }
 

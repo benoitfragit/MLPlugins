@@ -83,6 +83,23 @@ node_get_prop(Context node, BrainString key)
     return res;
 }
 
+
+BrainDouble
+node_get_content_as_double(Context node)
+{
+    BrainDouble value = 0.0;
+
+    if (node)
+    {
+        xmlChar* res;
+        res = xmlNodeGetContent(node);
+        value = atof((BrainString)res);
+        xmlFree(res);
+    }
+
+    return value;
+}
+
 BrainBool
 node_get_bool(Context node,
               BrainString key,
@@ -317,5 +334,8 @@ close_writer(Writer writer)
     if (writer != NULL)
     {
         xmlTextWriterEndDocument(writer);
+        xmlFreeTextWriter(writer);
+        xmlCleanupParser();
+        xmlMemoryDump();
     }
 }

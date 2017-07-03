@@ -180,4 +180,12 @@ void write_element(Writer writer, BrainString element, BrainString value);
  * \param writer the writter to be close
  */
 void close_writer(Writer writer);
+/**
+ * \fn BrainDouble node_get_content_as_double(Context node)
+ * \brief grab the content of a node as a double value
+ *
+ * \param a node
+ * \return the content as a double value
+ */
+BrainDouble node_get_content_as_double(Context node);
 #endif /*BRAIN_XML_UTILS_H*/
