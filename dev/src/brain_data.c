@@ -1,5 +1,9 @@
 #include "brain_data.h"
+#include "brain_logging_utils.h"
 #include "brain_random.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
 /**
  * \struct Node
@@ -31,6 +35,201 @@ struct Data
     BrainSignal _sigmas;           /*!< standerd deviation input vector */
     BrainUint   _children;         /*!< number of children */
 } Data;
+
+typedef BrainChar Array[50];
+typedef Array* BrainLabels;
+
+static BrainChar*
+parse_line(BrainChar* line,
+           const BrainUint size,
+           const BrainString tokenizer,
+           BrainSignal signal)
+{
+    BrainChar* buffer = NULL;
+
+    if (line      != NULL &&
+        tokenizer != NULL &&
+        signal    != NULL )
+    {
+        // reading output signal
+        buffer = strtok(line, tokenizer);
+        BrainUint k = 0;
+
+        for (k = 0; k < size; ++k)
+        {
+            if (buffer != NULL)
+            {
+                sscanf(buffer, "%lf", &(signal[k]));
+                buffer = strtok(NULL, tokenizer);
+            }
+        }
+    }
+
+    return buffer;
+}
+
+static void
+parse_labels(BrainChar* line,
+             const BrainUint length,
+             BrainSignal output,
+             BrainLabels labels)
+{
+    if (line != NULL && output != NULL)
+    {
+        BrainUint index = 0;
+        BrainInt i = -1;
+        BrainUint line_size = 0;
+        BrainChar* start = line;
+        const BrainUint size = sizeof(Array);
+
+        Array buffer;
+
+        do {
+            ++line_size;
+            ++start;
+        } while (start != NULL && *start != '\n' && *start != '\0');
+
+        // we only keep three first caractere
+        if (size < line_size)
+        {
+            line_size = size;
+        }
+
+        memcpy(buffer, line, line_size * sizeof(BrainChar));
+
+        for (index = 0; index < length; ++index)
+        {
+            if (!strcmp(buffer, labels[index]))
+            {
+                output[index] = 1.0;
+                return;
+            }
+
+            if (labels[index][0] == '\0' && i == -1)
+            {
+                i = index;
+            }
+        }
+
+        if (0 <= i)
+        {
+            memcpy(labels[i], buffer, sizeof(Array));
+            output[i] = 1.0;
+        }
+    }
+}
+
+static void
+parse_csv_repository(BrainData       data,
+                     BrainString     repository_path,
+                     BrainString     tokenizer,
+                     const BrainBool line_break,
+                     const BrainBool classify)
+{
+    if ((data            != NULL) &&
+        (repository_path != NULL) &&
+        (tokenizer       != NULL) )
+    {
+        // opening the file for reading
+        FILE *repository = fopen(repository_path, "r");
+
+        if (repository != NULL)
+        {
+            const BrainUint input_length = get_input_signal_length(data);
+            const BrainUint output_length = get_output_signal_length(data);
+
+            BrainBool  read_input = BRAIN_TRUE;
+            BrainChar* line   = NULL;
+            size_t     len    = 0;
+
+            BrainSignal input = NULL;
+            BrainSignal output = NULL;
+
+            BrainLabels labels = NULL;
+            if (classify)
+            {
+                labels = (BrainLabels)calloc(output_length, sizeof(Array));
+                memset(labels, 0, output_length*sizeof(Array));
+            }
+
+            while (getline(&line, &len, repository) != -1)
+            {
+                if ((len > 0) && (line != NULL))
+                {
+                    BrainChar* buffer = NULL;
+
+                    // remove ending '\n'
+                    line[len - 1] = '\0';
+
+                    // parse input signal
+                    if (read_input)
+                    {
+                        input  = (BrainSignal)calloc(input_length,  sizeof(BrainDouble));
+
+                        buffer = parse_line(line,
+                                            input_length,
+                                            tokenizer,
+                                            input);
+                    }
+
+                    // parse output signal if needed
+                    if (!line_break || !read_input)
+                    {
+                        BrainChar* output_line = line;
+
+                        if (!line_break)
+                        {
+                            output_line = buffer;
+                        }
+
+                        output = (BrainSignal)calloc(output_length, sizeof(BrainDouble));
+
+                        if (!classify)
+                        {
+                            parse_line(output_line,
+                                       output_length,
+                                       tokenizer,
+                                       output);
+                        }
+                        else
+                        {
+                            parse_labels(output_line,
+                                         output_length,
+                                         output,
+                                         labels);
+                        }
+
+                        //output should be read next time
+                        read_input = BRAIN_TRUE;
+
+                        // add this couple of input and output
+                        new_node(data, input, output);
+
+                        input  = NULL;
+                        output = NULL;
+                    }
+                    else
+                    {
+                        if (read_input)
+                        {
+                            read_input = BRAIN_FALSE;
+                        }
+                    }
+                }
+            }
+
+            fclose(repository);
+        }
+        else
+        {
+            BRAIN_CRITICAL("Unable to open %s for reading\n", repository_path);
+        }
+    }
+    else
+    {
+        BRAIN_CRITICAL("Unable to parse csv repository because file is invalid");
+    }
+}
 
 BrainData
 new_data(const BrainUint input_length,

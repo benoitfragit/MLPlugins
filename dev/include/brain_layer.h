@@ -14,18 +14,21 @@
 /**
  * \fn BrainLayer new_layer(const BrainUint number_of_neurons,
  *                          const BrainUint number_of_inputs,
- *                          BrainLayer prev)
+ *                          const BrainSignal in,
+ *                          BrainSignal previous_errors)
  * \brief Fonction to create a BrainLayer from an XML context
  *
  * \param number_of_neurons Number of neurons in this layer
  * \param number_of_inputs size of the input signal
- * \param prev the previous layer
+ * \param in input signal
+ * \param previous_errors errors vector of the prevous layer
  *
  * \return a new allocated BrainLayer or NULL if it failed
  */
-BrainLayer  new_layer                 (const BrainUint number_of_neurons,
-                                       const BrainUint number_of_inputs,
-                                       BrainLayer prev);
+BrainLayer  new_layer                 (const BrainUint   number_of_neurons,
+                                       const BrainUint   number_of_inputs,
+                                       const BrainSignal in,
+                                       BrainSignal       previous_errors);
 /**
  * \fn BrainNeuron get_layer_neuron(const BrainLayer layer, const BrainUint index)
  * \brief get a Neuron from the layer
@@ -53,14 +56,6 @@ BrainUint   get_layer_number_of_neuron(const BrainLayer layer);
  */
 BrainSignal get_layer_output          (const BrainLayer layer);
 /**
- * \fn BrainLayer get_layer_next_layer(const BrainLayer layer)
- * \brief get the next layer
- *
- * \param layer a BrainLayerex
- * \return a BrainLayer or NULL if it is the output layer
- */
-BrainLayer  get_layer_next_layer      (const BrainLayer layer);
-/**
  * \fn BrainLayer get_layer_previous_layer(const BrainLayer layer)
  * \brief get the previous layer
  *
@@ -75,22 +70,6 @@ BrainLayer  get_layer_previous_layer      (const BrainLayer layer);
  * \param layer a BrainLayer
  */
 void        delete_layer              (BrainLayer layer);
-/**
- * \fn void set_layer_input(const BrainLayer layer,
- *                          const BrainUint number_of_inputs,
- *                          const BrainSignal in)
- * \brief set the layer input
- *
- * this method set the input of a layer, then compute the activation
- * before sending the layer's output to the next_layer
- *
- * \param layer            a BrainLayer
- * \param number_of_inputs length of the input signal
- * \param in               the input_signal
- */
-void        set_layer_input           (BrainLayer layer,
-                                       const BrainUint number_of_inputs,
-                                       const BrainSignal in);
 /**
  * \fn BrainDouble backpropagate_output_layer(BrainLayer output_layer, const BrainUint number_of_output, const BrainSignal output, const BrainSignal desired)
  * \brief apply backpropagation algorithm on an output layer and return the error between computed and desired outputs
@@ -118,4 +97,20 @@ void backpropagate_hidden_layer(BrainLayer hidden_layer);
  * \param layer a BrainLayer
  */
 void apply_layer_correction(BrainLayer layer);
+/**
+ * \fn BrainSignal get_layer_errors(BrainLayer layer)
+ * \brief get the layer errors
+ *
+ * \param layer a BrainLayer
+ * \return errors signal
+ */
+BrainSignal get_layer_errors(const BrainLayer layer);
+/**
+ * \fn void activate_layer(BrainLayer layer, const BrainBool hidden_layer)
+ * \brief activate the layer
+ *
+ * \param layer a BrainLayer
+ * \param hidden_layer is this layer an hidden layer
+ */
+void activate_layer(const BrainLayer layer, const BrainBool hidden_layer);
 #endif /* BRAIN_LAYER_H */

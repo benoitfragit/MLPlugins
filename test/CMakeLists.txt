@@ -7,11 +7,6 @@ configure_file ("${CMAKE_CURRENT_SOURCE_DIR}/src/config_all.h.in"
 
 file(GLOB TEST_SRCS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} src/*.c)
 
-set(GCC_COVERAGE_COMPILE_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
-#set(GCC_COVERAGE_LINK_FLAGS "-fprofile-arcs -ftest-coverage")
-set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS})
-set(CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS} ${GCC_COVERAGE_LINK_FLAGS})
-
 foreach(testSrc ${TEST_SRCS})
         get_filename_component(testName ${testSrc} NAME_WE)
 

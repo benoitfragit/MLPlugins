@@ -87,7 +87,7 @@ set_neuron_bias(BrainNeuron       neuron,
     }
 }
 
-static void
+void
 activate_neuron(BrainNeuron neuron,
                 const BrainBool is_an_hidden_unit)
 {

@@ -55,14 +55,15 @@ void feedforward(BrainNetwork      network,
  */
 BrainSignal get_network_output(const BrainNetwork network);
 /**
- * \fn BrainLayer get_network_input_layer(const BrainNetwork network)
+ * \fn BrainLayer get_network_layer(const BrainNetwork network, const BrainUint index)
  * \brief retrieve the input layer
  *
  * \param network      the BrainNetwork to train
+ * \param index         index of the requested layer
  *
  * \return a BrainLayer
  */
-BrainLayer get_network_input_layer(const BrainNetwork network);
+BrainLayer get_network_layer(const BrainNetwork network, const BrainUint index);
 /**
  * \fn BrainDouble backpropagate(BrainNetwork network, const BrainUint number_of_output, const BrainSignal desired)
  * \brief backpropagate an input signal from the error signal

@@ -221,17 +221,15 @@ new_data_from_context(BrainString filepath)
             if (context && is_node_with_name(context, "data"))
             {
                 BrainChar* buffer = NULL;
-                BrainChar*   part = NULL;
-                BrainUint       i = 0;
-                BrainUint       k = 0;
+                BrainChar* part   = NULL;
+                BrainUint  i      = 0;
+                BrainUint  k      = 0;
 
                 const BrainUint number_of_signals  = get_number_of_node_with_name(context, "signal");
-                const BrainUint input_length      = node_get_int(context, "signal-length", 0);
-                const BrainUint output_length = node_get_int(context, "observation-length", 0);
+                const BrainUint input_length       = node_get_int(context, "signal-length", 0);
+                const BrainUint output_length      = node_get_int(context, "observation-length", 0);
 
-                _data = new_data(input_length,
-                                 output_length,
-                                 BRAIN_TRUE);
+                _data = new_data(input_length, output_length, BRAIN_TRUE);
 
                 for (i = 0; i < number_of_signals; ++i)
                 {
@@ -246,7 +244,7 @@ new_data_from_context(BrainString filepath)
 
                         // reading input signal
                         buffer = (BrainChar *)node_get_prop(signal_context, "input");
-                        part = strtok(buffer, TOKENIZER);
+                        part   = strtok(buffer, TOKENIZER);
 
                         for (k = 0; k < input_length; ++k)
                         {
@@ -264,7 +262,7 @@ new_data_from_context(BrainString filepath)
 
                         // reading output signal
                         buffer = (BrainChar *)node_get_prop(signal_context, "output");
-                        part = strtok(buffer, TOKENIZER);
+                        part   = strtok(buffer, TOKENIZER);
 
                         for (k = 0; k < output_length; ++k)
                         {
@@ -335,21 +333,24 @@ deserialize(BrainNetwork network,
             {
                 const BrainUint number_of_layer = get_number_of_node_with_name(context, "layer");
 
-                BrainLayer layer = get_network_input_layer(network);
 
-                if (number_of_layer > 0 && layer != NULL)
+                if (number_of_layer > 0)
                 {
                     BrainUint layer_index = 0;
+                    BrainLayer layer = NULL;
 
                     do
                     {
+
                         Context layer_context = get_node_with_name_and_index(context, "layer", layer_index);
 
                         if (layer_context != NULL)
                         {
                             const BrainUint number_of_neuron = get_number_of_node_with_name(layer_context, "neuron");
 
-                            if (number_of_neuron == get_layer_number_of_neuron(layer))
+                            layer = get_network_layer(network, layer_index);
+
+                            if (layer != NULL && number_of_neuron == get_layer_number_of_neuron(layer))
                             {
                                 BrainUint neuron_index = 0;
 
@@ -373,7 +374,7 @@ deserialize(BrainNetwork network,
                                 return;
                             }
                         }
-                        layer = get_layer_next_layer(layer);
+
                         ++layer_index;
                     } while (layer != NULL && layer_index < number_of_layer);
                 }
@@ -403,64 +404,71 @@ serialize(const BrainNetwork network, BrainString filepath)
                 if (start_element(writer, "network"))
                 {
                     // serialize all layers
-                    BrainLayer layer = get_network_input_layer(network);
+                    BrainUint layer_index = 0;
+                    BrainLayer layer = NULL;
 
-                    while (layer != NULL)
+                    do
                     {
-                        // serialize all neurons
-                        const BrainUint number_of_neurons = get_layer_number_of_neuron(layer);
+                        layer = get_network_layer(network, layer_index);
 
-                        if (start_element(writer, "layer"))
+                        if (layer != NULL)
                         {
-                            BrainUint index_neuron = 0;
+                            // serialize all neurons
+                            const BrainUint number_of_neurons = get_layer_number_of_neuron(layer);
 
-                            for (index_neuron = 0;
-                                 index_neuron < number_of_neurons;
-                                 ++index_neuron)
+                            if (start_element(writer, "layer"))
                             {
-                                const BrainNeuron neuron = get_layer_neuron(layer, index_neuron);
+                                BrainUint index_neuron = 0;
 
-                                if (neuron != NULL)
+                                for (index_neuron = 0;
+                                     index_neuron < number_of_neurons;
+                                     ++index_neuron)
                                 {
-                                    const BrainUint number_of_inputs = get_neuron_number_of_input(neuron);
+                                    const BrainNeuron neuron = get_layer_neuron(layer, index_neuron);
 
-                                    if (start_element(writer, "neuron"))
+                                    if (neuron != NULL)
                                     {
-                                        const BrainWeight bias = get_neuron_bias(neuron);
-                                        BrainUint index_input = 0;
-                                        BrainChar buffer[50];
+                                        const BrainUint number_of_inputs = get_neuron_number_of_input(neuron);
 
-                                        if (bias != NULL)
+                                        if (start_element(writer, "neuron"))
                                         {
-                                            sprintf(buffer, "%lf", get_weight_value(bias));
+                                            const BrainWeight bias = get_neuron_bias(neuron);
+                                            BrainUint index_input = 0;
+                                            BrainChar buffer[50];
 
-                                            add_attribute(writer, "bias", buffer);
-                                        }
-
-                                        for (index_input = 0;
-                                             index_input < number_of_inputs;
-                                             ++index_input)
-                                        {
-                                            const BrainWeight weight = get_neuron_weight(neuron, index_input);
-
-                                            if (weight != NULL)
+                                            if (bias != NULL)
                                             {
-                                                sprintf(buffer, "%lf", get_weight_value(weight));
+                                                sprintf(buffer, "%lf", get_weight_value(bias));
 
-                                                write_element(writer, "weight", buffer);
+                                                add_attribute(writer, "bias", buffer);
                                             }
-                                        }
 
-                                        stop_element(writer);
+                                            for (index_input = 0;
+                                                 index_input < number_of_inputs;
+                                                 ++index_input)
+                                            {
+                                                const BrainWeight weight = get_neuron_weight(neuron, index_input);
+
+                                                if (weight != NULL)
+                                                {
+                                                    sprintf(buffer, "%lf", get_weight_value(weight));
+
+                                                    write_element(writer, "weight", buffer);
+                                                }
+                                            }
+
+                                            stop_element(writer);
+                                        }
                                     }
                                 }
+
+                                stop_element(writer);
                             }
 
-                            stop_element(writer);
+                            ++layer_index;
                         }
 
-                        layer = get_layer_next_layer(layer);
-                    }
+                    } while (layer != NULL);
 
                     stop_element(writer);
                 }

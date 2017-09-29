@@ -33,24 +33,13 @@ BrainNeuron new_neuron(const BrainUint     number_of_inputs,
  */
 void        delete_neuron              (BrainNeuron       neuron);
 /**
- * \fn void set_neuron_input(BrainNeuron       neuron,
- *                           const BrainUint   number_of_inputs,
- *                           const BrainSignal in,
- *                           const BrainBool   is_an_hidden_unit)
- * \brief set the input signal on a neuron
- *
- * Each time a new input comes to a Neuron then if the neuron stay activated because of the
- * dropout selection then we compute the activation
+ * \fn void activate_neuron(BrainNeuron neuron, const BrainBool   is_an_hidden_unit)
+ * \brief activate the input neuron
  *
  * \param neuron            a BrainNeuron
- * \param number_of_inputs  input signal's length
- * \param in                the input signal
  * \param is_an_hidden_unit is this neuron in an hidden layer
  */
-void set_neuron_input(BrainNeuron       neuron,
-                      const BrainUint   number_of_inputs,
-                      const BrainSignal in,
-                      const BrainBool   is_an_hidden_unit);
+void activate_neuron(BrainNeuron neuron, const BrainBool is_an_hidden_unit);
 /**
  * \fn void set_neuron_bias(BrainNeuron neuron, const BrainDouble bias)
  * \brief set the bias of a neuron
