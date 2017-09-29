@@ -18,7 +18,6 @@ struct Layer
 
     BrainSignal  _out;              /*!< Output vector of the Layer        */
     BrainSignal  _out_errors;       /*!< Output vector errors              */
-    BrainSignal  _errors;           /*!< An array of errors                */
 } Layer;
 
 BrainNeuron
