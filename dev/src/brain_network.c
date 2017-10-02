@@ -125,7 +125,7 @@ new_network(const BrainUint signal_input_length,
             {
                 const BrainUint number_of_neurons = neuron_per_layers[index];
 
-                BrainSignal in = NULL;
+                BrainSignal in = _network->_input;
                 BrainSignal previous_errors = NULL;
 
                 if (index != 0)
