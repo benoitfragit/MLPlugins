@@ -15,8 +15,6 @@
 #include "brain_xml_utils.h"
 #include "brain_config.h"
 
-#define TOKENIZER ", "
-
 BrainNetwork
 new_network_from_context(BrainString filepath)
 {
@@ -203,93 +201,6 @@ new_settings_from_context(BrainString filepath)
             close_document(settings_document);
         }
     }
-}
-
-BrainData
-new_data_from_context(BrainString filepath)
-{
-    BrainData _data = NULL;
-
-    if (filepath != NULL && validate_with_xsd(filepath, DATA_XSD_FILE))
-    {
-        Document data_document = open_document(filepath);
-
-        if (data_document != NULL)
-        {
-            Context context = get_root_node(data_document);
-
-            if (context && is_node_with_name(context, "data"))
-            {
-                BrainChar* buffer = NULL;
-                BrainChar* part   = NULL;
-                BrainUint  i      = 0;
-                BrainUint  k      = 0;
-
-                const BrainUint number_of_signals  = get_number_of_node_with_name(context, "signal");
-                const BrainUint input_length       = node_get_int(context, "signal-length", 0);
-                const BrainUint output_length      = node_get_int(context, "observation-length", 0);
-
-                _data = new_data(input_length, output_length, BRAIN_TRUE);
-
-                for (i = 0; i < number_of_signals; ++i)
-                {
-                    Context signal_context = get_node_with_name_and_index(context,
-                                                                          "signal",
-                                                                          i);
-
-                    if (signal_context != NULL)
-                    {
-                        BrainSignal input  = (BrainSignal)calloc(input_length,      sizeof(BrainDouble));
-                        BrainSignal output = (BrainSignal)calloc(output_length, sizeof(BrainDouble));
-
-                        // reading input signal
-                        buffer = (BrainChar *)node_get_prop(signal_context, "input");
-                        part   = strtok(buffer, TOKENIZER);
-
-                        for (k = 0; k < input_length; ++k)
-                        {
-                            if (part != NULL)
-                            {
-                                sscanf(part, "%lf", &(input[k]));
-                                part = strtok(NULL, TOKENIZER);
-                            }
-                        }
-
-                        if (buffer)
-                        {
-                            free(buffer);
-                        }
-
-                        // reading output signal
-                        buffer = (BrainChar *)node_get_prop(signal_context, "output");
-                        part   = strtok(buffer, TOKENIZER);
-
-                        for (k = 0; k < output_length; ++k)
-                        {
-                            if (part != NULL)
-                            {
-                                sscanf(part, "%lf", &(output[k]));
-                                part = strtok(NULL, TOKENIZER);
-                            }
-                        }
-
-                        if (buffer)
-                        {
-                            free(buffer);
-                        }
-
-                        new_node(_data, input, output);
-                    }
-                }
-
-                preprocess(_data);
-            }
-
-            close_document(data_document);
-        }
-    }
-
-    return _data;
 }
 
 static void
@@ -492,77 +403,122 @@ serialize(const BrainNetwork network, BrainString filepath)
 }
 
 static BrainDouble
-step(BrainNetwork network,
-     const BrainNode node,
-     const BrainUint input_length,
-     const BrainUint output_length)
+distance(const BrainSignal a, const BrainSignal b, const BrainUint size)
 {
-    BrainDouble error = 0.0;
+    BrainDouble ret = 0.0;
 
-    if (network != NULL && node != NULL)
+    if ((a != NULL)
+    &&  (b != NULL)
+    &&  (0 < size))
     {
-        const BrainSignal input      = get_node_input_signal(node);
-        const BrainSignal output     = get_node_output_signal(node);
-        const BrainNode   next_node  = get_next_node(node);
+        BrainUint i = 0;
 
-        // feed the network to find the corresponding output
-        feedforward(network, input_length, input);
+        for (i = 0; i < size; ++i)
+        {
+            ret += (a[i] - b[i])*(a[i] - b[i]);
+        }
 
-        // backpropagate the error and accumulate it
-        error += backpropagate(network, output_length, output);
-
-        // do not forget to train the network using childs
-        error += step(network, next_node,  input_length, output_length);
+        ret = sqrt(ret);
+    }
+    else
+    {
+        ret = -1.0;
     }
 
-    return error;
+    return ret;
 }
 
-BrainBool
-train(BrainNetwork network, const BrainData data)
+static BrainBool
+isNetworkTrainingRequired(BrainNetwork network, const BrainData data)
 {
-    BrainBool is_trained = BRAIN_FALSE;
+    /********************************************************/
+    /**       Check if we need to train this network       **/
+    /********************************************************/
+    BrainBool ret = BRAIN_FALSE;
 
     if ((network != NULL) &&
         (data    != NULL))
     {
-        const BrainUint   max_iteration = get_settings_max_iterations();
         const BrainDouble target_error  = get_settings_target_error();
 
-        const BrainUint   input_length  = get_input_signal_length(data);
-        const BrainUint   output_length = get_output_signal_length(data);
+        const BrainUint input_length  = get_input_signal_length(data);
+        const BrainUint output_length = get_output_signal_length(data);
 
-        BrainDouble error     = 0.0;
-        BrainUint   iteration = 0;
-        BrainNode   node      = get_training_node(data);
+        const BrainUint number_of_evaluating_sample = get_number_of_evaluating_sample(data);
 
-        const BrainUint number_of_children = get_node_children(data);
+        BrainSignal input = NULL;
+        BrainSignal target = NULL;
+        BrainSignal output = NULL;
 
-        do
+        BrainDouble error = 0.0;
+        BrainUint   i = 0;
+
+        for (i = 0; i < number_of_evaluating_sample; ++i)
         {
-            // then train the network
-            error += step(network, node, input_length, output_length);
+            input  = get_evaluating_input_signal(data, i);
+            target = get_evaluating_output_signal(data, i);
 
-            // This is the total training error that
-            // should be minimized other all th training set
-            error /= (BrainDouble)number_of_children;
+            // only propagate the signal threw all layers
+            feedforward(network, input_length, input, BRAIN_FALSE);
 
-            if (error < target_error)
+            // grab the network output and compute the error
+            // between the target and the real output
+            output = get_network_output(network);
+
+            error += distance(target, output, output_length);
+        }
+
+        error /= number_of_evaluating_sample;
+
+        if (target_error < error)
+        {
+            ret = BRAIN_TRUE;
+        }
+    }
+
+    return ret;
+}
+
+void
+train(BrainNetwork network, const BrainData data)
+{
+    /********************************************************/
+    /**   Train the neural network using the training set  **/
+    /********************************************************/
+    if ((network != NULL) &&
+        (data    != NULL))
+    {
+        const BrainUint max_iteration = get_settings_max_iterations();
+        const BrainUint input_length  = get_input_signal_length(data);
+        const BrainUint output_length = get_output_signal_length(data);
+
+        const BrainUint number_of_training_sample = get_number_of_training_sample(data);
+
+        BrainSignal input = NULL;
+        BrainSignal target = NULL;
+
+        BrainUint   iteration = 0;
+        BrainUint   i = 0;
+
+        while ((iteration < max_iteration)
+        &&     isNetworkTrainingRequired(network, data))
+        {
+            for (i = 0; i < number_of_training_sample; ++i)
             {
-                is_trained = BRAIN_TRUE;
-            }
-            else
-            {
-                // if the total error is too big
-                // then, apply all accumulated corrections
-                // to all weights.
+                input = get_training_input_signal(data, i);
+                target = get_training_output_signal(data, i);
+
+                // feed the network to find the corresponding output
+                feedforward(network, input_length, input, BRAIN_TRUE);
+
+                // backpropagate the error and accumulate it
+                backpropagate(network, output_length, target);
+
+                // apply network correction
                 apply_network_correction(network);
             }
 
-            error = 0.0;
             ++iteration;
-        } while ((iteration < max_iteration) && (is_trained == BRAIN_FALSE));
+        }
     }
-
-    return is_trained;
 }

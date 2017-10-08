@@ -51,13 +51,11 @@ void new_settings_from_context(BrainString filepath);
  */
 void serialize(const BrainNetwork network, const BrainString filepath);
 /**
- * \fn BrainBool train(BrainNetwork network, const BrainData data)
+ * \fn void train(BrainNetwork network, const BrainData data)
  * \brief launch the training process for the neural network
  *
  * \param network      the BrainNetwork to train
  * \param data         Training dataset
- *
- * \return BRAIN_TRUE if training work else BRAIN_FALSE
  */
-BrainBool train(BrainNetwork network, const BrainData data);
+void train(BrainNetwork network, const BrainData data);
 #endif /* BRAIN_BUILDER_H */

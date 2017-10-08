@@ -11,12 +11,12 @@
  *
  * All protected fields for a BrainNode
  */
-struct Node
+typedef struct Dataset
 {
-    BrainSignal _input;    /*!< The input signal */
-    BrainSignal _output;   /*!< The output signal */
-    BrainNode   _next;     /*!< The next node */
-} Node;
+    BrainSignal* _input;    /*!< The input signal */
+    BrainSignal* _output;   /*!< The output signal */
+    BrainUint   _children; /*!< The number of children */
+} Dataset;
 
 /**
  * \struct Data
@@ -26,105 +26,23 @@ struct Node
  */
 struct Data
 {
-    BrainNode   _training;         /*!< This is the training node       */
-    BrainNode   _evaluating;       /*!< This is the evaluating node     */
-    BrainBool   _is_data_splitted; /*!< is data automatically splitter  */
+    Dataset     _training;         /*!< This is the training node       */
+    Dataset     _evaluating;       /*!< This is the evaluating node     */
+
     BrainUint   _input_length;     /*!< input signal length             */
     BrainUint   _output_length;    /*!< output signal length            */
+
     BrainSignal _means;            /*!< mean input vector               */
     BrainSignal _sigmas;           /*!< standerd deviation input vector */
+
     BrainUint   _children;         /*!< number of children */
 } Data;
-
-typedef BrainChar Array[50];
-typedef Array* BrainLabels;
-
-static BrainChar*
-parse_line(BrainChar* line,
-           const BrainUint size,
-           const BrainString tokenizer,
-           BrainSignal signal)
-{
-    BrainChar* buffer = NULL;
-
-    if (line      != NULL &&
-        tokenizer != NULL &&
-        signal    != NULL )
-    {
-        // reading output signal
-        buffer = strtok(line, tokenizer);
-        BrainUint k = 0;
-
-        for (k = 0; k < size; ++k)
-        {
-            if (buffer != NULL)
-            {
-                sscanf(buffer, "%lf", &(signal[k]));
-                buffer = strtok(NULL, tokenizer);
-            }
-        }
-    }
-
-    return buffer;
-}
-
-static void
-parse_labels(BrainChar* line,
-             const BrainUint length,
-             BrainSignal output,
-             BrainLabels labels)
-{
-    if (line != NULL && output != NULL)
-    {
-        BrainUint index = 0;
-        BrainInt i = -1;
-        BrainUint line_size = 0;
-        BrainChar* start = line;
-        const BrainUint size = sizeof(Array);
-
-        Array buffer;
-
-        do {
-            ++line_size;
-            ++start;
-        } while (start != NULL && *start != '\n' && *start != '\0');
-
-        // we only keep three first caractere
-        if (size < line_size)
-        {
-            line_size = size;
-        }
-
-        memcpy(buffer, line, line_size * sizeof(BrainChar));
-
-        for (index = 0; index < length; ++index)
-        {
-            if (!strcmp(buffer, labels[index]))
-            {
-                output[index] = 1.0;
-                return;
-            }
-
-            if (labels[index][0] == '\0' && i == -1)
-            {
-                i = index;
-            }
-        }
-
-        if (0 <= i)
-        {
-            memcpy(labels[i], buffer, sizeof(Array));
-            output[i] = 1.0;
-        }
-    }
-}
 
 static void
 parse_csv_repository(BrainData       data,
                      BrainString     repository_path,
                      BrainString     tokenizer,
-                     const BrainBool line_break,
-                     const BrainBool classify)
+                     const BrainBool is_data_splitted)
 {
     if ((data            != NULL) &&
         (repository_path != NULL) &&
@@ -135,23 +53,41 @@ parse_csv_repository(BrainData       data,
 
         if (repository != NULL)
         {
-            const BrainUint input_length = get_input_signal_length(data);
-            const BrainUint output_length = get_output_signal_length(data);
+            const BrainUint input_length = data->_input_length;
+            const BrainUint output_length = data->_output_length;
 
-            BrainBool  read_input = BRAIN_TRUE;
+            BrainUint  counter = 0;
             BrainChar* line   = NULL;
+            BrainUint  k = 0;
+            BrainUint  j = 0;
+            BrainUint  m = 0;
             size_t     len    = 0;
 
-            BrainSignal input = NULL;
-            BrainSignal output = NULL;
-
-            BrainLabels labels = NULL;
-            if (classify)
+            /****************************************************************/
+            /**                Find the number of signal                   **/
+            /****************************************************************/
+            while (getline(&line, &len, repository) != -1)
             {
-                labels = (BrainLabels)calloc(output_length, sizeof(Array));
-                memset(labels, 0, output_length*sizeof(Array));
+                if ((len > 0) && (line != NULL))
+                {
+                    ++counter;
+                }
             }
 
+            // Back to the file starting position
+            rewind(repository);
+
+            // Dynamic allocation of both training and evaluaing dataset
+            data->_training._input    = (BrainSignal*)calloc(counter, sizeof(BrainSignal));
+            data->_training._output   = (BrainSignal*)calloc(counter, sizeof(BrainSignal));
+            data->_evaluating._input  = (BrainSignal*)calloc(counter, sizeof(BrainSignal));
+            data->_evaluating._output = (BrainSignal*)calloc(counter, sizeof(BrainSignal));
+            data->_training._children   = 0;
+            data->_evaluating._children = 0;
+
+            /****************************************************************/
+            /**                 Browse the repository file                 **/
+            /****************************************************************/
             while (getline(&line, &len, repository) != -1)
             {
                 if ((len > 0) && (line != NULL))
@@ -161,64 +97,98 @@ parse_csv_repository(BrainData       data,
                     // remove ending '\n'
                     line[len - 1] = '\0';
 
-                    // parse input signal
-                    if (read_input)
+                    /****************************************************************/
+                    /**              Randomly choose signal storage                **/
+                    /****************************************************************/
+                    Dataset* dataset = &(data->_training);
+                    if ((is_data_splitted == BRAIN_FALSE) ||
+                        (0.55 < get_random_double_value()))
                     {
-                        input  = (BrainSignal)calloc(input_length,  sizeof(BrainDouble));
-
-                        buffer = parse_line(line,
-                                            input_length,
-                                            tokenizer,
-                                            input);
+                        dataset = &(data->_evaluating);
                     }
 
-                    // parse output signal if needed
-                    if (!line_break || !read_input)
+                    dataset->_input[counter]  = (BrainSignal)calloc(input_length, sizeof(BrainDouble));
+                    dataset->_output[counter] = (BrainSignal)calloc(output_length, sizeof(BrainDouble));
+
+                    /****************************************************************/
+                    /**                        Parsing signals                     **/
+                    /****************************************************************/
+                    buffer = strtok(line, tokenizer);
+
+                    while(k < input_length + output_length)
                     {
-                        BrainChar* output_line = line;
+                        BrainDouble* value = NULL;
+                        BrainUint kp = k;
 
-                        if (!line_break)
+                        if (k < input_length)
                         {
-                            output_line = buffer;
-                        }
-
-                        output = (BrainSignal)calloc(output_length, sizeof(BrainDouble));
-
-                        if (!classify)
-                        {
-                            parse_line(output_line,
-                                       output_length,
-                                       tokenizer,
-                                       output);
+                            value = &((dataset->_input[counter])[k]);
                         }
                         else
                         {
-                            parse_labels(output_line,
-                                         output_length,
-                                         output,
-                                         labels);
+                            kp -= input_length;
+
+                            if (kp < output_length)
+                            {
+                                value = &((dataset->_output[counter])[kp]);
+                            }
                         }
 
-                        //output should be read next time
-                        read_input = BRAIN_TRUE;
-
-                        // add this couple of input and output
-                        new_node(data, input, output);
-
-                        input  = NULL;
-                        output = NULL;
-                    }
-                    else
-                    {
-                        if (read_input)
+                        if (buffer != NULL)
                         {
-                            read_input = BRAIN_FALSE;
+                            sscanf(buffer, "%lf", value);
+
+                            buffer = strtok(NULL, tokenizer);
+
+                            /****************************************************************/
+                            /**           Directly compute cenering parameters             **/
+                            /****************************************************************/
+                            if (k < input_length)
+                            {
+                                data->_means[k]  += *value;
+                                data->_sigmas[k] += (*value) * (*value);
+                            }
+
+                            ++k;
                         }
                     }
+
+                    ++dataset->_children;
+                    ++counter;
                 }
             }
 
+
             fclose(repository);
+
+            /****************************************************************/
+            /**                 Normalizing inputs data                    **/
+            /****************************************************************/
+            m = data->_training._children;
+            if (m < data->_evaluating._children)
+            {
+                m = data->_evaluating._children;
+            }
+
+            for (k = 0; k < input_length; ++k)
+            {
+                data->_means[k] /= counter;
+                data->_sigmas[k] = (data->_sigmas[k] / counter) - data->_means[k] * data->_means[k];
+
+                for (j = 0; j < m; ++j)
+                {
+                    if (j < data->_evaluating._children)
+                    {
+                        (data->_evaluating._input[j])[k] -= data->_means[k];
+                        (data->_evaluating._input[j])[k] /= data->_sigmas[k];
+                    }
+                    if (j < data->_training._children)
+                    {
+                        (data->_training._input[j])[k] -= data->_means[k];
+                        (data->_training._input[j])[k] /= data->_sigmas[k];
+                    }
+                }
+            }
         }
         else
         {
@@ -232,154 +202,27 @@ parse_csv_repository(BrainData       data,
 }
 
 BrainData
-new_data(const BrainUint input_length,
+new_data(BrainString repository_path,
+         BrainString tokenizer,
+         const BrainUint input_length,
          const BrainUint output_length,
          const BrainBool is_data_splitted)
 {
-    BrainData _data = (BrainData)calloc(1, sizeof(Data));
+    BrainData _data = NULL;
 
-    _data->_training         = NULL;
-    _data->_evaluating       = NULL;
-    _data->_is_data_splitted = is_data_splitted;
-    _data->_input_length     = input_length;
-    _data->_output_length    = output_length;
-    _data->_means            = (BrainSignal)calloc(input_length, sizeof(BrainDouble));
-    _data->_sigmas           = (BrainSignal)calloc(input_length, sizeof(BrainDouble));
-    _data->_children         = 0;
+    if (repository_path && tokenizer)
+    {
+        _data = (BrainData)calloc(1, sizeof(Data));
+
+        _data->_input_length     = input_length;
+        _data->_output_length    = output_length;
+        _data->_means            = (BrainSignal)calloc(input_length, sizeof(BrainDouble));
+        _data->_sigmas           = (BrainSignal)calloc(input_length, sizeof(BrainDouble));
+
+        parse_csv_repository(_data, repository_path, tokenizer, is_data_splitted);
+    }
 
     return _data;
-}
-
-static void
-compute_data_means(const BrainNode node,
-                   const BrainUint input_length,
-                   const BrainUint number_of_signal,
-                   BrainSignal means)
-{
-    if (node != NULL && means != NULL)
-    {
-        if (node->_input != NULL)
-        {
-            BrainUint index = 0;
-
-            for (index = 0; index < input_length; ++index)
-            {
-                means[index] += node->_input[index] / (BrainDouble)number_of_signal;
-            }
-        }
-
-        compute_data_means(node->_next,  input_length, number_of_signal, means);
-    }
-}
-
-static void
-compute_data_sigmas(const BrainNode node,
-                    const BrainUint input_length,
-                    const BrainUint number_of_signal,
-                    BrainSignal sigmas)
-{
-    if (node != NULL && sigmas != NULL)
-    {
-        if (node->_input != NULL)
-        {
-            BrainUint index = 0;
-
-            for (index = 0; index < input_length; ++index)
-            {
-                sigmas[index] += node->_input[index]*node->_input[index] / (BrainDouble)number_of_signal;
-            }
-        }
-
-        compute_data_sigmas(node->_next,  input_length, number_of_signal, sigmas);
-    }
-}
-
-static void
-center_data(BrainNode node, const BrainUint input_length, const BrainSignal means)
-{
-    if (node != NULL && means != NULL)
-    {
-        if (node->_input != NULL)
-        {
-            BrainUint index = 0;
-
-            for (index = 0; index < input_length; ++index)
-            {
-                node->_input[index] -= means[index];
-            }
-        }
-
-        center_data(node->_next, input_length, means);
-    }
-}
-
-static void
-normalize_data(BrainNode node, const BrainUint input_length, const BrainSignal sigmas)
-{
-    if (node != NULL && sigmas != NULL)
-    {
-        if (node->_input != NULL)
-        {
-            BrainUint index = 0;
-
-            for (index = 0; index < input_length; ++index)
-            {
-                node->_input[index] /= sigmas[index];
-            }
-        }
-
-        normalize_data(node->_next,  input_length, sigmas);
-    }
-}
-
-void
-preprocess(BrainData data)
-{
-    if (data != NULL && data->_training != NULL)
-    {
-        const BrainUint number_of_signal = data->_children;
-
-        // data centering
-        compute_data_means(data->_training,
-                           data->_input_length,
-                           number_of_signal,
-                           data->_means);
-
-        center_data(data->_training,
-                    data->_input_length,
-                    data->_means);
-
-        // data normalization
-        compute_data_sigmas(data->_training,
-                            data->_input_length,
-                            number_of_signal,
-                            data->_sigmas);
-
-        normalize_data(data->_training,
-                       data->_input_length,
-                       data->_sigmas);
-    }
-}
-
-static void
-delete_node(BrainNode node)
-{
-    if (node != NULL)
-    {
-        delete_node(node->_next);
-
-        if (node->_input != NULL)
-        {
-            free(node->_input);
-        }
-
-        if (node->_output != NULL)
-        {
-            free(node->_output);
-        }
-
-        free(node);
-    }
 }
 
 void
@@ -387,8 +230,31 @@ delete_data(BrainData data)
 {
     if (data != NULL)
     {
-        delete_node(data->_training);
-        delete_node(data->_evaluating);
+        BrainUint k = 0;
+        BrainUint m = data->_training._children;
+        if (m < data->_evaluating._children)
+        {
+            m = data->_evaluating._children;
+        }
+
+        for (k = 0; k < m; ++k)
+        {
+            if (k < data->_evaluating._children)
+            {
+                free(data->_evaluating._input[k]);
+                free(data->_evaluating._output[k]);
+            }
+            if (k < data->_training._children)
+            {
+                free(data->_training._input[k]);
+                free(data->_training._output[k]);
+            }
+        }
+
+        free(data->_evaluating._input);
+        free(data->_evaluating._output);
+        free(data->_training._input);
+        free(data->_training._output);
 
         if (data->_means != NULL)
         {
@@ -404,85 +270,86 @@ delete_data(BrainData data)
     }
 }
 
-BrainNode
-get_training_node(const BrainData data)
+BrainUint
+get_number_of_evaluating_sample(const BrainData data)
 {
-    if (data != NULL)
+    BrainUint ret = 0;
+
+    if (data)
     {
-        return data->_training;
+        ret = data->_evaluating._children;
     }
 
-    return NULL;
-}
-
-BrainNode
-get_evaluating_node(const BrainData data)
-{
-    if (data != NULL)
-    {
-        return data->_evaluating;
-    }
-
-    return NULL;
-}
-
-BrainNode
-get_next_node(const BrainNode node)
-{
-    if (node != NULL)
-    {
-        return node->_next;
-    }
-
-    return NULL;
+    return ret;
 }
 
 BrainSignal
-get_node_input_signal(const BrainNode node)
+get_evaluating_input_signal(const BrainData data, const BrainUint index)
 {
-    if (node != NULL)
+    BrainSignal ret = NULL;
+
+    if ((data != NULL)
+    &&  (index < data->_evaluating._children))
     {
-        return node->_input;
+        ret = data->_evaluating._input[index];
     }
 
-    return NULL;
+    return ret;
 }
 
 BrainSignal
-get_node_output_signal(const BrainNode node)
+get_evaluating_output_signal(const BrainData data, const BrainUint index)
 {
-    if (node != NULL)
+    BrainSignal ret = NULL;
+
+    if ((data != NULL)
+    &&  (index < data->_evaluating._children))
     {
-        return node->_output;
+        ret = data->_evaluating._output[index];
     }
 
-    return NULL;
+    return ret;
 }
 
-void
-new_node(BrainData data, BrainSignal input, BrainSignal output)
+BrainUint
+get_number_of_training_sample(const BrainData data)
 {
-    if (data != NULL)
+    BrainUint ret = 0;
+
+    if (data)
     {
-        BrainNode new_node = (BrainNode)calloc(1, sizeof(Node));
-
-        new_node->_input  = input;
-        new_node->_output = output;
-
-        data->_children   += 1;
-
-        // data auto separation into 2 sets testing
-        if ((data->_is_data_splitted == BRAIN_TRUE) && get_random_double_value() < 0.5)
-        {
-            new_node->_next = data->_training;
-            data->_training = new_node;
-        }
-        else
-        {
-            new_node->_next = data->_evaluating;
-            data->_evaluating = new_node;
-        }
+        ret = data->_training._children;
     }
+
+    return ret;
+}
+
+BrainSignal
+get_training_input_signal(const BrainData data, const BrainUint index)
+{
+    BrainSignal ret = NULL;
+
+    if ((data != NULL)
+    &&  (index < data->_training._children))
+    {
+        ret = data->_training._input[index];
+    }
+
+    return ret;
+}
+
+BrainSignal
+get_training_output_signal(const BrainData data, const BrainUint index)
+{
+    BrainSignal ret = NULL;
+
+    if ((data != NULL)
+    &&  (index < data->_training._children))
+    {
+        ret = data->_training._output[index];
+    }
+
+    return ret;
 }
 
 BrainUint
@@ -502,17 +369,6 @@ get_output_signal_length(const BrainData data)
     if (data != NULL)
     {
         return data->_output_length;
-    }
-
-    return 0;
-}
-
-BrainUint
-get_node_children(const BrainData data)
-{
-    if (data != NULL)
-    {
-        return data->_children;
     }
 
     return 0;

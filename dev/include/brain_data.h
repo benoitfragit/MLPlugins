@@ -12,55 +12,68 @@
 #include "brain_types.h"
 
 /**
- * \fn BrainData new_data(const BrainUint input_length, const BrainUint output_length, const BrainBool is_data_splitted)
+ * \fn BrainData new_data(BrainString repository_path, BrainString tokenizer, const BrainUint input_length, const BrainUint output_length, const BrainBool is_data_splitted)
  * \brief create a data list
- *
+ * \param repository_path give the path of the repository
+ * \param tokenizer list of separators
  * \param input_length size of all input signal
  * \param output_length size of all output signal
  * \param is_data_splitted automatically split data into 2 subsets
  * \return a BrainData
  */
-BrainData   new_data(const BrainUint input_length, const BrainUint output_length, const BrainBool is_data_splitted);
+BrainData   new_data(BrainString repository_path, BrainString tokenizer, const BrainUint input_length, const BrainUint output_length, const BrainBool is_data_splitted);
 /**
- * \fn BrainNode get_training_node(const BrainData data);
- * \brief get the training root node
+ * \fn BrainUint get_number_of_evaluating_sample(const BrainData data);
+ * \brief get the number of trainng sample
  *
  * \param data a BrainData
- * \return a BrainNode
+ * \return a BrainUint
  */
-BrainNode   get_training_node(const BrainData data);
+BrainUint get_number_of_evaluating_sample(const BrainData data);
 /**
- * \fn BrainNode get_evaluating_node(const BrainData data);
- * \brief get the evaluating root node
- *
- * \param data a BrainData
- * \return a BrainNode
- */
-BrainNode   get_evaluating_node(const BrainData data);
-/**
- * \fn BrainNode get_next_node(const BrainNode node);
- * \brief get the next node
- *
- * \param node a BrainNode
- * \return a BrainNode
- */
-BrainNode   get_next_node(const BrainNode node);
-/**
- * \fn BrainSignal get_node_input_signal(const BrainNode node);
+ * \fn BrainSignal get_evaluating_input_signal(const BrainData data, const BrainUint index);
  * \brief get the input signal
  *
- * \param node a BrainNode
+ * \param data a BrainData
+ * \param index Index of the input evaluating signal
  * \return a BrainSignal
  */
-BrainSignal get_node_input_signal(const BrainNode node);
+BrainSignal get_evaluating_input_signal(const BrainData data, const BrainUint index);
 /**
- * \fn BrainSignal get_node_output_signal(const BrainNode node);
+ * \fn BrainSignal get_evaluating_output_signal(const BrainData data, const BrainUint index);
  * \brief get the output signal
  *
- * \param node a BrainNode
+ * \param data a BrainData
+ * \param index Index of the output signal
  * \return a BrainSignal
  */
-BrainSignal get_node_output_signal(const BrainNode node);
+BrainSignal get_evaluating_output_signal(const BrainData data, const BrainUint index);
+/**
+ * \fn BrainUint get_number_of_training_sample(const BrainData data);
+ * \brief get the number of trainng sample
+ *
+ * \param data a BrainData
+ * \return a BrainUint
+ */
+BrainUint get_number_of_training_sample(const BrainData data);
+/**
+ * \fn BrainSignal get_training_input_signal(const BrainData data, const BrainUint index);
+ * \brief get the input signal
+ *
+ * \param data a BrainData
+ * \param index Index of the input training signal
+ * \return a BrainSignal
+ */
+BrainSignal get_training_input_signal(const BrainData data, const BrainUint index);
+/**
+ * \fn BrainSignal get_training_output_signal(const BrainData data, const BrainUint index);
+ * \brief get the output signal
+ *
+ * \param data a BrainData
+ * \param index Index of the output signal
+ * \return a BrainSignal
+ */
+BrainSignal get_training_output_signal(const BrainData data, const BrainUint index);
 /**
  * \fn void delete_data(const BrainData data);
  * \brief delete a data
@@ -68,15 +81,6 @@ BrainSignal get_node_output_signal(const BrainNode node);
  * \param data A BrainData
  */
 void        delete_data(BrainData data);
-/**
- * \fn void new_node(BrainData data, BrainSignal input, BrainSignal output)
- * \brief create a new node
- *
- * \param data a BrainData
- * \param input a BrainSignal
- * \param output a BrainSignal
- */
-void        new_node(BrainData data, BrainSignal input, BrainSignal output);
 /**
  * \fn BrainUint get_input_signal_length(const BrainData data)
  * \brief get all input signal size
@@ -93,19 +97,5 @@ BrainUint get_input_signal_length(const BrainData data);
  * \return size of all output signal
  */
 BrainUint get_output_signal_length(const BrainData data);
-/**
- * \fn BrainUint get_node_children(const BrainData data)
- * \brief get the number of children for this node including this node
- *
- * \param data a BrainData
- * \return number of node
- */
-BrainUint get_node_children(const BrainData data);
-/**
- * \fn void preprocess(BrainData data)
- * \brief preprocess data tree by using centering and normalization
- *
- * \param data a BrainData
- */
-void preprocess(BrainData data);
+
 #endif /* BRAIN_DATA_H */

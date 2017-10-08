@@ -35,13 +35,11 @@ get_network_layer(const BrainNetwork network, const BrainUint index)
     return ret;
 }
 
-BrainDouble
+void
 backpropagate(BrainNetwork network,
               const BrainUint number_of_output,
               const BrainSignal desired)
 {
-    BrainDouble error = 0.0;
-
     if ((network                   != NULL) &&
         (network->_layers          != NULL) &&
         (network->_number_of_layers!= 0)    &&
@@ -50,9 +48,7 @@ backpropagate(BrainNetwork network,
         int i = 0;
         BrainLayer output_layer = network->_layers[network->_number_of_layers - 1];
 
-        error = backpropagate_output_layer(output_layer,
-                                           number_of_output,
-                                           desired);
+        backpropagate_output_layer(output_layer, number_of_output, desired);
 
         for (i = network->_number_of_layers - 2; i >= 0; --i)
         {
@@ -61,8 +57,6 @@ backpropagate(BrainNetwork network,
             backpropagate_hidden_layer(hidden_layer);
         }
     }
-
-    return error;
 }
 
 BrainSignal
@@ -151,7 +145,8 @@ new_network(const BrainUint signal_input_length,
 void
 feedforward(BrainNetwork      network,
             const BrainUint   number_of_input,
-            const BrainSignal in)
+            const BrainSignal in,
+            const BrainBool   use_dropout)
 {
     if ((in != NULL) &&
         (network != NULL) &&
@@ -165,7 +160,7 @@ feedforward(BrainNetwork      network,
         {
             BrainLayer layer = network->_layers[i];
 
-            activate_layer(layer, (i != network->_number_of_layers - 1));
+            activate_layer(layer, use_dropout && (i != network->_number_of_layers - 1));
         }
     }
 }

@@ -36,16 +36,18 @@ BrainNetwork new_network(const BrainUint             signal_input_length,
  */
 void delete_network(BrainNetwork network);
 /**
- * \fn void feedforward(BrainNetwork network, const BrainUint number_of_input, const BrainSignal in)
+ * \fn void feedforward(BrainNetwork network, const BrainUint number_of_input, const BrainSignal in, const BrainBool use_dropout)
  * \brief propagate an input signal from the input signal to the output layer
  *
  * \param network the network to feed
  * \param number_of_input the length of the input signal
  * \param in the input signal
+ * \param use_dropout ativate the dropout
  */
 void feedforward(BrainNetwork      network,
                  const BrainUint   number_of_input,
-                 const BrainSignal in);
+                 const BrainSignal in,
+                 const BrainBool   use_dropout);
 /**
  * \fn BrainSignal get_network_output(const BrainNetwork network)
  * \brief get the output of the network
@@ -65,16 +67,14 @@ BrainSignal get_network_output(const BrainNetwork network);
  */
 BrainLayer get_network_layer(const BrainNetwork network, const BrainUint index);
 /**
- * \fn BrainDouble backpropagate(BrainNetwork network, const BrainUint number_of_output, const BrainSignal desired)
+ * \fn void backpropagate(BrainNetwork network, const BrainUint number_of_output, const BrainSignal desired)
  * \brief backpropagate an input signal from the error signal
  *
  * \param network the network to feed
  * \param number_of_output the length of the output signal
  * \param desired the desired output signal
- *
- * \return the error value
  */
-BrainDouble backpropagate(BrainNetwork network, const BrainUint number_of_output, const BrainSignal desired);
+void backpropagate(BrainNetwork network, const BrainUint number_of_output, const BrainSignal desired);
 /**
  * \fn void apply_network_correction(BrainNetwork network)
  * \brief apply all corrections to reduce the total error

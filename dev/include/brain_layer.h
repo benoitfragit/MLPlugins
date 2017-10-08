@@ -71,16 +71,14 @@ BrainLayer  get_layer_previous_layer      (const BrainLayer layer);
  */
 void        delete_layer              (BrainLayer layer);
 /**
- * \fn BrainDouble backpropagate_output_layer(BrainLayer output_layer, const BrainUint number_of_output, const BrainSignal output, const BrainSignal desired)
- * \brief apply backpropagation algorithm on an output layer and return the error between computed and desired outputs
+ * \fn void backpropagate_output_layer(BrainLayer output_layer, const BrainUint number_of_output, const BrainSignal output, const BrainSignal desired)
+ * \brief apply backpropagation algorithm on an output layer
  *
  * \param output_layer the BrainLayer
  * \param number_of_output the size of the output vector
  * \param desired the desired output
- *
- * \return the error rate
  */
-BrainDouble backpropagate_output_layer(BrainLayer output_layer,
+void backpropagate_output_layer(BrainLayer output_layer,
                                 const BrainUint number_of_output,
                                 const BrainSignal desired);
 /**

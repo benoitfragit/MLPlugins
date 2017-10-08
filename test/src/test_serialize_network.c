@@ -22,18 +22,20 @@ main(int argc, char** argv)
         BrainLayer   original_layer = NULL;
         BrainLayer   loaded_layer   = NULL;
 
+        BrainUint    index          = 0;
+
         // first serialize this network
         serialize(original_network, TEST_SERIALIZE_NETWORK_PATH);
 
         // then deserialize it
         deserialize(loaded_network, TEST_SERIALIZE_NETWORK_PATH);
 
-        // finally compare it with the original one
-        original_layer = get_network_input_layer(original_network);
-        loaded_layer   = get_network_input_layer(loaded_network);
-
-        while (original_layer != NULL || loaded_layer != NULL)
+        do
         {
+            // finally compare it with the original one
+            original_layer = get_network_layer(original_network, index);
+            loaded_layer   = get_network_layer(loaded_network, index);
+
             BrainUint original_number_of_neuron = 0;
             BrainUint loaded_number_of_neuron = 0;
             BrainUint neuron_index = 0;
@@ -117,10 +119,7 @@ main(int argc, char** argv)
             {
                 break;
             }
-
-            loaded_layer   = get_layer_next_layer(loaded_layer);
-            original_layer = get_layer_next_layer(original_layer);
-        }
+        } while (original_layer != NULL || loaded_layer != NULL);
 
         // free all memory
         delete_network(loaded_network);
