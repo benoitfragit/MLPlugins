@@ -119,6 +119,8 @@ main(int argc, char** argv)
             {
                 break;
             }
+
+            ++index;
         } while (original_layer != NULL || loaded_layer != NULL);
 
         // free all memory

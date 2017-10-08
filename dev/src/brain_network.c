@@ -81,13 +81,17 @@ delete_network(BrainNetwork network)
             BrainUint i = 0;
             for (i = 0; i < network->_number_of_layers; ++i)
             {
-                BrainLayer layer = network->_layers[0];
+                BrainLayer layer = network->_layers[i];
 
                 delete_layer(layer);
             }
         }
 
-        free(network->_input);
+        if (network->_input)
+        {
+           free(network->_input);
+        }
+
         free(network);
     }
 }

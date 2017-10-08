@@ -3,6 +3,7 @@
 #include "brain_learning.h"
 #include "brain_activation.h"
 #include "brain_cost.h"
+#include "brain_builder.h"
 
 int
 main(int argc, char** argv)
