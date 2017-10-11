@@ -34,8 +34,6 @@ struct Data
 
     BrainSignal _means;            /*!< mean input vector               */
     BrainSignal _sigmas;           /*!< standerd deviation input vector */
-
-    BrainUint   _children;         /*!< number of children */
 } Data;
 
 static void
