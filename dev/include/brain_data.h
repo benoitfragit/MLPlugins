@@ -97,5 +97,21 @@ BrainUint get_input_signal_length(const BrainData data);
  * \return size of all output signal
  */
 BrainUint get_output_signal_length(const BrainData data);
+/**
+ * \fn BrainSignal get_input_sigmas(const BrainData data)
+ * \brief get input variances signal
+ *
+ * \param data a BrainData
+ * \return variance vector
+ */
+BrainSignal get_input_sigmas(const BrainData data);
+/**
+ * \fn BrainSignal get_input_means(const BrainData data)
+ * \brief get input means signal
+ *
+ * \param data a BrainData
+ * \return means vector
+ */
+BrainSignal get_input_means(const BrainData data);
 
 #endif /* BRAIN_DATA_H */

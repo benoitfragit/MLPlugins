@@ -10,7 +10,7 @@ static const int NUMBER_OF_LAYERS    = 3;
 static const int NUMBER_OF_NEURONS[] = {3, 6, 2};
 static const int NUMBER_OF_INPUTS[]  = {5, 3, 6};
 
-int
+BrainInt
 main(int argc, char** argv)
 {
     BrainInt result = EXIT_FAILURE;

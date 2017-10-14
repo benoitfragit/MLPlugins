@@ -58,8 +58,8 @@ parse_csv_repository(BrainData       data,
 
             BrainUint  counter = 0;
             BrainChar* line   = NULL;
-            BrainUint  k = 0;
             BrainUint  j = 0;
+            BrainUint  k = 0;
             BrainUint  m = 0;
             size_t     len    = 0;
 
@@ -93,9 +93,7 @@ parse_csv_repository(BrainData       data,
                 if ((len > 0) && (line != NULL))
                 {
                     BrainChar* buffer = NULL;
-
-                    // remove ending '\n'
-                    line[len - 1] = '\0';
+                    k = 0;
 
                     /****************************************************************/
                     /**              Randomly choose signal storage                **/
@@ -107,8 +105,8 @@ parse_csv_repository(BrainData       data,
                         dataset = &(data->_evaluating);
                     }
 
-                    dataset->_input[counter]  = (BrainSignal)calloc(input_length, sizeof(BrainDouble));
-                    dataset->_output[counter] = (BrainSignal)calloc(output_length, sizeof(BrainDouble));
+                    dataset->_input[dataset->_children]  = (BrainSignal)calloc(input_length, sizeof(BrainDouble));
+                    dataset->_output[dataset->_children] = (BrainSignal)calloc(output_length, sizeof(BrainDouble));
 
                     /****************************************************************/
                     /**                        Parsing signals                     **/
@@ -122,7 +120,7 @@ parse_csv_repository(BrainData       data,
 
                         if (k < input_length)
                         {
-                            value = &((dataset->_input[counter])[k]);
+                            value = &((dataset->_input[dataset->_children])[k]);
                         }
                         else
                         {
@@ -130,7 +128,7 @@ parse_csv_repository(BrainData       data,
 
                             if (kp < output_length)
                             {
-                                value = &((dataset->_output[counter])[kp]);
+                                value = &((dataset->_output[dataset->_children])[kp]);
                             }
                         }
 
@@ -372,4 +370,30 @@ get_output_signal_length(const BrainData data)
     }
 
     return 0;
+}
+
+BrainSignal
+get_input_means(const BrainData data)
+{
+    BrainSignal ret = NULL;
+
+    if (data != NULL)
+    {
+        ret = data->_means;
+    }
+
+    return ret;
+}
+
+BrainSignal
+get_input_sigmas(const BrainData data)
+{
+    BrainSignal ret = NULL;
+
+    if (data != NULL)
+    {
+        ret = data->_sigmas;
+    }
+
+    return ret;
 }
