@@ -46,7 +46,7 @@ areEqualSignal(const BrainSignal left,
             error += (var - right[i]) * (var - right[i]);
         }
 
-        if (error < NUMBER_OF_TEST_SIGNAL)
+        if (error < ERROR_TEST_THRESHOLD)
         {
             ret = BRAIN_TRUE;
         }

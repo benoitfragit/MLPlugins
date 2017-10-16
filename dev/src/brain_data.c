@@ -130,7 +130,7 @@ parse_csv_repository(BrainData       data,
                             }
                         }
 
-                        if (buffer != NULL)
+                        if (buffer != NULL && value != NULL)
                         {
                             sscanf(buffer, "%lf", value);
 
