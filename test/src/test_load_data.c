@@ -58,7 +58,7 @@ areEqualSignal(const BrainSignal left,
 BrainInt
 main(int argc, char** argv)
 {
-    BrainInt result = BRAIN_TRUE;
+    BrainInt result = EXIT_SUCCESS;
 
     BrainData data = new_data(TEST_DATA_LOADING_PATH, ",", 3, 1, BRAIN_TRUE);
 
@@ -140,7 +140,7 @@ main(int argc, char** argv)
 
                     if (!found)
                     {
-                        result = BRAIN_FALSE;
+                        result = EXIT_FAILURE;
 
                         break;
                     }
@@ -150,14 +150,14 @@ main(int argc, char** argv)
             {
                 BRAIN_CRITICAL("Number of total signal are not equal\n");
 
-                result = BRAIN_FALSE;
+                result = EXIT_FAILURE;
             }
         }
         else
         {
             BRAIN_CRITICAL("Signal size are not equals\n");
 
-            result = BRAIN_FALSE;
+            result = EXIT_FAILURE;
         }
 
         delete_data(data);
@@ -166,7 +166,7 @@ main(int argc, char** argv)
     {
         BRAIN_CRITICAL("Impossible to create a BrainData");
 
-        result= BRAIN_FALSE;
+        result= EXIT_FAILURE;
     }
 
     return result;
