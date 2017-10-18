@@ -11,6 +11,11 @@
 
 #include "brain_types.h"
 /**
+ * \fn void initialize_random_generator()
+ * \brief initialize the random number generator
+ */
+void initialize_random_generator();
+/**
  * \fn BrainDouble get_random_double_value()
  * \brief get a random double value between 0 and 1
  *

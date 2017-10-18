@@ -3,6 +3,7 @@
 #include "brain_activation.h"
 #include "brain_layer.h"
 #include "brain_neuron.h"
+#include "brain_random.h"
 #include "brain_settings.h"
 
 /**
@@ -112,6 +113,9 @@ new_network(const BrainUint signal_input_length,
         _network->_input            = (BrainSignal)calloc(signal_input_length, sizeof(BrainDouble));
         _network->_layers           = (BrainLayer *)calloc(number_of_layers, sizeof(BrainLayer));
         _network->_number_of_layers = number_of_layers;
+
+        // initialize the random number generator
+        initialize_random_generator();
 
         if (0 < number_of_layers)
         {
