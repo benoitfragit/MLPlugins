@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<settings activation-function="Sigmoid" cost-function="Quadratic">
-    <training learning="BackPropagation" iterations="3000" error="0.01">
-        <dropout activate="true" factor="0.5"/>
-        <method>
-            <backprop learning-rate="0.01"/>
-        </method>
-    </training>
-</settings>

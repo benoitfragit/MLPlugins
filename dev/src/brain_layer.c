@@ -1,6 +1,6 @@
 #include "brain_layer.h"
 #include "brain_neuron.h"
-#include "brain_settings.h"
+#include "brain_cost.h"
 
 /**
  * \struct Layer
@@ -18,7 +18,47 @@ struct Layer
 
     BrainSignal  _out;              /*!< Output vector of the Layer        */
     BrainSignal  _out_errors;       /*!< Output vector errors              */
+
+    CostPtrFunc  _cost_function_derivative;
 } Layer;
+
+void
+set_layer_parameters(BrainLayer layer,
+                     const BrainActivationType   activation_type,
+                     const BrainCostFunctionType costfunction_type,
+                     const BrainBool             use_dropout,
+                     const BrainDouble           dropout_factor,
+                     const BrainLearningType     learning_type,
+                     const BrainDouble           backpropagation_learning_rate,
+                     const BrainDouble           resilient_delta_min,
+                     const BrainDouble           resilient_delta_max,
+                     const BrainDouble           resilient_eta_positive,
+                     const BrainDouble           resilient_eta_negative)
+{
+    if (layer)
+    {
+        const BrainUint number_of_neurons = layer->_number_of_neuron;
+        BrainUint i = 0;
+
+        layer->_cost_function_derivative = get_cost_function_derivative(costfunction_type);
+
+        for (i = 0; i < number_of_neurons; ++i)
+        {
+            BrainNeuron neuron = layer->_neurons[i];
+
+            set_neuron_parameters(neuron,
+                                    activation_type,
+                                    use_dropout,
+                                    dropout_factor,
+                                    learning_type,
+                                    backpropagation_learning_rate,
+                                    resilient_delta_min,
+                                    resilient_delta_max,
+                                    resilient_eta_positive,
+                                    resilient_eta_negative);
+        }
+    }
+}
 
 BrainNeuron
 get_layer_neuron(const BrainLayer layer,
@@ -80,6 +120,8 @@ new_layer(const BrainUint     number_of_neurons,
         _layer->_number_of_neuron = number_of_neurons;
         _layer->_in               = in;
         _layer->_out_errors       = out_errors;
+
+        _layer->_cost_function_derivative = get_cost_function_derivative(Quadratic);
 
         if (0 != _layer->_number_of_neuron)
         {
@@ -146,31 +188,26 @@ backpropagate_output_layer(BrainLayer output_layer,
     if ((output_layer != NULL)
     &&  (desired != NULL))
     {
-        LearningPtrFunc learning_function = get_settings_learning_function();
+        const BrainSignal output           = get_layer_output(output_layer);
+        const BrainUint   number_of_neuron = output_layer->_number_of_neuron;
 
-        if (learning_function != NULL)
+        if (number_of_neuron == number_of_output)
         {
-            const BrainSignal output           = get_layer_output(output_layer);
-            const BrainUint   number_of_neuron = get_layer_number_of_neuron(output_layer);
+            CostPtrFunc cost_function_derivative = output_layer->_cost_function_derivative;
 
-            if (number_of_neuron == number_of_output)
+            BrainUint output_index = 0;
+
+            for (output_index = 0;
+                 output_index < number_of_output;
+               ++output_index)
             {
-                CostPtrFunc cost_function_derivative = get_settings_network_cost_function_derivative();
+                const BrainDouble loss = cost_function_derivative(output[output_index], desired[output_index]);
 
-                BrainUint output_index = 0;
+                BrainNeuron output_neuron = get_layer_neuron(output_layer, output_index);
 
-                for (output_index = 0;
-                     output_index < number_of_output;
-                   ++output_index)
+                if (output_neuron != NULL)
                 {
-                    const BrainDouble loss = cost_function_derivative(output[output_index], desired[output_index]);
-
-                    BrainNeuron output_neuron = get_layer_neuron(output_layer, output_index);
-
-                    if (output_neuron != NULL)
-                    {
-                        learning_function(output_neuron, loss);
-                    }
+                    neuron_learning(output_neuron, loss);
                 }
             }
         }
@@ -182,24 +219,19 @@ backpropagate_hidden_layer(BrainLayer hidden_layer)
 {
     if (hidden_layer != NULL)
     {
-        LearningPtrFunc learning_function = get_settings_learning_function();
+        const BrainUint current_number_of_neuron = hidden_layer->_number_of_neuron;
 
-        if (learning_function != NULL)
+        BrainUint i = 0;
+
+        for (i = 0; i < current_number_of_neuron; ++i)
         {
-            const BrainUint current_number_of_neuron = get_layer_number_of_neuron(hidden_layer);
+            BrainNeuron current_neuron = hidden_layer->_neurons[i];
 
-            BrainUint i = 0;
-
-            for (i = 0; i < current_number_of_neuron; ++i)
+            if (current_neuron != NULL)
             {
-                BrainNeuron current_neuron = get_layer_neuron(hidden_layer, i);
+                const BrainDouble loss = hidden_layer->_in_errors[i];
 
-                if (current_neuron != NULL)
-                {
-                    const BrainDouble loss = hidden_layer->_in_errors[i];
-
-                    learning_function(current_neuron, loss);
-                }
+                neuron_learning(current_neuron, loss);
             }
         }
     }
@@ -210,12 +242,12 @@ apply_layer_correction(BrainLayer layer)
 {
     if (layer != NULL)
     {
-        const BrainUint number_of_neuron = get_layer_number_of_neuron(layer);
+        const BrainUint number_of_neuron = layer->_number_of_neuron;
         BrainUint i = 0;
 
         for (i = 0; i < number_of_neuron; ++i)
         {
-            BrainNeuron neuron = get_layer_neuron(layer, i);
+            BrainNeuron neuron = layer->_neurons[i];
 
             if (neuron != NULL)
             {

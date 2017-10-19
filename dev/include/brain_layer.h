@@ -111,4 +111,16 @@ BrainSignal get_layer_errors(const BrainLayer layer);
  * \param hidden_layer is this layer an hidden layer
  */
 void activate_layer(const BrainLayer layer, const BrainBool hidden_layer);
+
+void set_layer_parameters(BrainLayer layer,
+                             const BrainActivationType   activation_type,
+                             const BrainCostFunctionType costfunction_type,
+                             const BrainBool             use_dropout,
+                             const BrainDouble           dropout_factor,
+                             const BrainLearningType     learning_type,
+                             const BrainDouble           backpropagation_learning_rate,
+                             const BrainDouble           resilient_delta_min,
+                             const BrainDouble           resilient_delta_max,
+                             const BrainDouble           resilient_eta_positive,
+                             const BrainDouble           resilient_eta_negative);
 #endif /* BRAIN_LAYER_H */

@@ -1,8 +1,10 @@
 #include "brain_neuron.h"
 #include "brain_activation.h"
-#include "brain_settings.h"
 #include "brain_weight.h"
 #include "brain_random.h"
+
+#define MIN(a, b) ((a) < (b) ? a : b)
+#define MAX(a, b) ((a) < (b) ? b : a)
 
 /**
  * \struct Neuron
@@ -18,18 +20,199 @@ struct Neuron
     BrainWeight*  _w;               /*!< An array of weight without the bias                */
     BrainSignal   _out;             /*!< An output value pointer owned by the BrainLayer    */
     BrainDouble   _sum;             /*!< Summation of all input time weight                 */
+
+    BrainDouble   _rprop_eta_plus;
+    BrainDouble   _rprop_eta_minus;
+    BrainDouble   _rprop_delta_min;
+    BrainDouble   _rprop_delta_max;
+
+    BrainDouble   _backprop_learning_rate;
+
+    BrainDouble   _dropout_ratio;
+    BrainBool     _use_dropout;
+
+    ActivationPtrFunc _activation_function;
+    ActivationPtrFunc _derivative_function;
+
+    LearningPtrFunc _learning_function;
 } Neuron;
 
-BrainDouble
-get_neuron_input(const BrainNeuron neuron,
-                 const BrainUint index)
+static void
+update_neuron_using_backpropagation(BrainNeuron neuron,
+                                    const BrainDouble loss)
 {
-    if (neuron != NULL && index < neuron->_number_of_input)
+    if (neuron != NULL)
     {
-        return neuron->_in[index];
+        const BrainUint number_of_inputs = neuron->_number_of_input;
+
+        const BrainDouble learning_rate = neuron->_backprop_learning_rate;
+        ActivationPtrFunc derivative_function = neuron->_derivative_function;
+
+        if (derivative_function != NULL)
+        {
+            const BrainDouble neuron_derivative = derivative_function(neuron->_sum);
+            const BrainDouble neuron_gradient   = neuron_derivative * loss;
+
+            BrainUint i = 0;
+
+            set_weight_correction(neuron->_bias, - learning_rate * neuron_gradient);
+
+            for (i = 0; i < number_of_inputs; ++i)
+            {
+                const BrainDouble neuron_gradient_w = neuron_gradient * neuron->_in[i];
+
+                update_error(neuron->_w[i], loss);
+
+                set_weight_correction(neuron->_w[i], - learning_rate * neuron_gradient_w);
+            }
+        }
+    }
+}
+
+static void
+apply_neuron_rprop(const BrainDouble rprop_eta_positive,
+                   const BrainDouble rprop_eta_negative,
+                   const BrainDouble rprop_delta_max,
+                   const BrainDouble rprop_delta_min,
+                   const BrainDouble new_weight_gradient,
+                   BrainWeight weight)
+{
+    if (weight != NULL)
+    {
+        const BrainDouble gradient   = get_weight_gradient(weight);
+        const BrainDouble delta      = get_weight_delta(weight);
+        const BrainDouble correction = get_weight_last_correction(weight);
+
+        BrainDouble new_delta = 0.0;
+        BrainDouble new_correction = 0.0;
+
+        if (0.0 < gradient * new_weight_gradient)
+        {
+            new_delta      = MIN(delta * rprop_eta_positive, rprop_delta_max);
+            new_correction = new_delta;
+
+            if (0.0 < new_weight_gradient)
+            {
+                new_correction *= -1.0;
+            }
+
+            set_weight_delta(weight, new_delta);
+            set_weight_gradient(weight, new_weight_gradient);
+            set_weight_correction(weight, new_correction);
+        }
+        else if (gradient * new_weight_gradient < 0.0)
+        {
+            new_delta = MAX(delta * rprop_eta_negative, rprop_delta_min);
+
+            new_correction = -correction;
+
+            set_weight_gradient(weight, 0.0);
+            set_weight_correction(weight, new_correction);
+            set_weight_delta(weight, new_delta);
+        }
+        else if (gradient * new_weight_gradient == 0.0)
+        {
+            new_correction = delta;
+
+            if (0.0 < new_weight_gradient)
+            {
+                new_correction *= -1.0;
+            }
+
+            set_weight_gradient(weight, new_weight_gradient);
+            set_weight_correction(weight, new_correction);
+        }
+    }
+}
+
+static void
+update_neuron_using_resilient(BrainNeuron neuron,
+                              const BrainDouble loss)
+{
+    if (neuron != NULL)
+    {
+        const BrainDouble rprop_eta_positive  = neuron->_rprop_eta_plus;
+        const BrainDouble rprop_eta_negative  = neuron->_rprop_eta_minus;
+        const BrainDouble rprop_delta_min     = neuron->_rprop_delta_min;
+        const BrainDouble rprop_delta_max     = neuron->_rprop_delta_max;
+        ActivationPtrFunc derivative_function = neuron->_derivative_function;
+
+        if (derivative_function != NULL)
+        {
+            const BrainDouble neuron_derivative = derivative_function(neuron->_sum);
+            const BrainDouble neuron_gradient   = neuron_derivative * loss;
+            const BrainUint   number_of_inputs  = neuron->_number_of_input;
+            BrainUint i = 0;
+
+            //first update the bias using RProp algorithm
+            apply_neuron_rprop(rprop_eta_positive,
+                               rprop_eta_negative,
+                               rprop_delta_max,
+                               rprop_delta_min,
+                               neuron_gradient,
+                               neuron->_bias);
+
+            //then update all other weights using same technique
+            for (i = 0; i < number_of_inputs; ++i)
+            {
+                const BrainDouble neuron_gradient_w = neuron_gradient * neuron->_in[i];
+
+                update_error(neuron->_w[i], loss);
+
+                apply_neuron_rprop(rprop_eta_positive,
+                                   rprop_eta_negative,
+                                   rprop_delta_max,
+                                   rprop_delta_min,
+                                   neuron_gradient_w,
+                                   neuron->_w[i]);
+            }
+        }
+    }
+}
+
+static LearningPtrFunc
+get_learning_function(const BrainLearningType learning_type)
+{
+    switch (learning_type)
+    {
+        case BackPropagation: return &update_neuron_using_backpropagation;
+        case Resilient: return &update_neuron_using_resilient;
+        default:
+            break;
     }
 
-    return 0.0;
+    return &update_neuron_using_backpropagation;
+}
+
+void
+set_neuron_parameters(BrainNeuron neuron,
+                     const BrainActivationType   activation_type,
+                     const BrainBool             use_dropout,
+                     const BrainDouble           dropout_factor,
+                     const BrainLearningType     learning_type,
+                     const BrainDouble           backpropagation_learning_rate,
+                     const BrainDouble           resilient_delta_min,
+                     const BrainDouble           resilient_delta_max,
+                     const BrainDouble           resilient_eta_positive,
+                     const BrainDouble           resilient_eta_negative)
+{
+    if (neuron)
+    {
+        neuron->_use_dropout = use_dropout;
+        neuron->_dropout_ratio = dropout_factor;
+
+        neuron->_backprop_learning_rate = backpropagation_learning_rate;
+
+        neuron->_rprop_delta_max = resilient_delta_max;
+        neuron->_rprop_delta_min = resilient_delta_min;
+        neuron->_rprop_eta_plus  = resilient_eta_positive;
+        neuron->_rprop_eta_minus = resilient_eta_negative;
+
+        neuron->_activation_function = activation(activation_type);
+        neuron->_derivative_function = derivative(activation_type);
+
+        neuron->_learning_function = get_learning_function(learning_type);
+    }
 }
 
 BrainWeight
@@ -52,17 +235,6 @@ get_neuron_bias(const BrainNeuron neuron)
     }
 
     return NULL;
-}
-
-BrainDouble
-get_neuron_output(const BrainNeuron neuron)
-{
-    if (neuron != NULL && neuron->_out != NULL)
-    {
-        return *(neuron->_out);
-    }
-
-    return 0.0;
 }
 
 void
@@ -93,9 +265,9 @@ activate_neuron(BrainNeuron neuron,
 {
     if (neuron != NULL)
     {
-        ActivationPtrFunc activation_function = get_settings_neuron_activation();
-        const BrainDouble dropout_percent     = get_settings_dropout_percent();
-        const BrainBool   use_dropout         = get_settings_dropout_activated();
+        ActivationPtrFunc activation_function = neuron->_activation_function;
+        const BrainDouble dropout_percent     = neuron->_dropout_ratio;
+        const BrainBool   use_dropout         = neuron->_use_dropout;
         BrainDouble       dropout_factor      = 1.0;
 
         *(neuron->_out)         = 0.0;
@@ -133,21 +305,6 @@ activate_neuron(BrainNeuron neuron,
 
             *(neuron->_out) = activation_function(neuron->_sum) * dropout_factor;
         }
-    }
-}
-
-void
-set_neuron_input(BrainNeuron       neuron,
-                 const BrainUint   number_of_inputs,
-                 const BrainSignal in,
-                 const BrainBool   is_an_hidden_unit)
-{
-    if ((in     != NULL)
-    &&  (neuron != NULL)
-    &&  (neuron->_number_of_input == number_of_inputs))
-    {
-        neuron->_in = in;
-        activate_neuron(neuron, is_an_hidden_unit);
     }
 }
 
@@ -226,16 +383,6 @@ get_neuron_number_of_input(const BrainNeuron neuron)
     return 0;
 }
 
-BrainDouble
-get_neuron_summation(const BrainNeuron neuron)
-{
-    if (neuron != NULL)
-    {
-        return neuron->_sum;
-    }
-
-    return 0.0;
-}
 
 void
 apply_neuron_correction(BrainNeuron neuron)
@@ -259,6 +406,20 @@ apply_neuron_correction(BrainNeuron neuron)
             {
                 apply_weight_correction(w);
             }
+        }
+    }
+}
+
+void
+neuron_learning(BrainNeuron neuron, const BrainDouble loss)
+{
+    if (neuron)
+    {
+        LearningPtrFunc learning_function = neuron->_learning_function;
+
+        if (learning_function)
+        {
+            learning_function(neuron, loss);
         }
     }
 }

@@ -5,10 +5,8 @@
 #include "brain_weight.h"
 
 #include "brain_data.h"
-#include "brain_settings.h"
 
 #include "brain_activation.h"
-#include "brain_learning.h"
 #include "brain_cost.h"
 
 #include "brain_logging_utils.h"
@@ -68,9 +66,11 @@ new_network_from_context(BrainString filepath)
 }
 
 void
-new_settings_from_context(BrainString filepath)
+configure_network_with_context(BrainNetwork network, BrainString filepath)
 {
-    if (filepath != NULL && validate_with_xsd(filepath, SETTINGS_XSD_FILE))
+    if ((network != NULL) &&
+        (filepath != NULL) &&
+        validate_with_xsd(filepath, SETTINGS_XSD_FILE))
     {
         Document settings_document = open_document(filepath);
 
@@ -83,7 +83,7 @@ new_settings_from_context(BrainString filepath)
                 BrainUint             max_iter           = 1000;
                 BrainDouble           error              = 0.001;
                 BrainBool             use_dropout        = BRAIN_FALSE;
-                BrainDouble           dropout_percent    = 1.0;
+                BrainDouble           dropout_ratio      = 1.0;
                 BrainDouble           delta_min          = 0.000001;
                 BrainDouble           delta_max          = 50.0;
                 BrainDouble           eta_positive       = 1.2;
@@ -106,8 +106,8 @@ new_settings_from_context(BrainString filepath)
 
                     if (dropout_context != NULL)
                     {
-                        use_dropout     = node_get_bool(dropout_context, "activate", BRAIN_FALSE);
-                        dropout_percent = node_get_double(dropout_context, "factor", 1.0);
+                        use_dropout   = node_get_bool(dropout_context, "activate", BRAIN_FALSE);
+                        dropout_ratio = node_get_double(dropout_context, "factor", 1.0);
                     }
 
                     max_iter = node_get_int(training_context, "iterations", 1000);
@@ -184,18 +184,22 @@ new_settings_from_context(BrainString filepath)
                     free(buffer);
                 }
 
-                new_settings(max_iter,
-                             error,
-                             activation_type,
-                             cost_function_type,
-                             use_dropout,
-                             dropout_percent,
-                             learning_type,
-                             learning_rate,
-                             delta_min,
-                             delta_max,
-                             eta_positive,
-                             eta_negative);
+                /**********************************************/
+                /**        SET ALL NETWORKS PARAMETERS       **/
+                /**********************************************/
+                set_network_parameters(network,
+                                        max_iter,
+                                        error,
+                                        activation_type,
+                                        cost_function_type,
+                                        use_dropout,
+                                        dropout_ratio,
+                                        learning_type,
+                                        learning_rate,
+                                        delta_min,
+                                        delta_max,
+                                        eta_positive,
+                                        eta_negative);
             }
 
             close_document(settings_document);
@@ -399,126 +403,5 @@ serialize(const BrainNetwork network, BrainString filepath)
     else
     {
         BRAIN_CRITICAL("XML serializing file is not valid\n");
-    }
-}
-
-static BrainDouble
-distance(const BrainSignal a, const BrainSignal b, const BrainUint size)
-{
-    BrainDouble ret = 0.0;
-
-    if ((a != NULL)
-    &&  (b != NULL)
-    &&  (0 < size))
-    {
-        BrainUint i = 0;
-
-        for (i = 0; i < size; ++i)
-        {
-            ret += (a[i] - b[i])*(a[i] - b[i]);
-        }
-
-        ret = sqrt(ret);
-    }
-    else
-    {
-        ret = -1.0;
-    }
-
-    return ret;
-}
-
-static BrainBool
-isNetworkTrainingRequired(BrainNetwork network, const BrainData data)
-{
-    /********************************************************/
-    /**       Check if we need to train this network       **/
-    /********************************************************/
-    BrainBool ret = BRAIN_FALSE;
-
-    if ((network != NULL) &&
-        (data    != NULL))
-    {
-        const BrainDouble target_error  = get_settings_target_error();
-
-        const BrainUint input_length  = get_input_signal_length(data);
-        const BrainUint output_length = get_output_signal_length(data);
-
-        const BrainUint number_of_evaluating_sample = get_number_of_evaluating_sample(data);
-
-        BrainSignal input = NULL;
-        BrainSignal target = NULL;
-        BrainSignal output = NULL;
-
-        BrainDouble error = 0.0;
-        BrainUint   i = 0;
-
-        for (i = 0; i < number_of_evaluating_sample; ++i)
-        {
-            input  = get_evaluating_input_signal(data, i);
-            target = get_evaluating_output_signal(data, i);
-
-            // only propagate the signal threw all layers
-            feedforward(network, input_length, input, BRAIN_FALSE);
-
-            // grab the network output and compute the error
-            // between the target and the real output
-            output = get_network_output(network);
-
-            error += distance(target, output, output_length);
-        }
-
-        error /= number_of_evaluating_sample;
-
-        if (target_error < error)
-        {
-            ret = BRAIN_TRUE;
-        }
-    }
-
-    return ret;
-}
-
-void
-train(BrainNetwork network, const BrainData data)
-{
-    /********************************************************/
-    /**   Train the neural network using the training set  **/
-    /********************************************************/
-    if ((network != NULL) &&
-        (data    != NULL))
-    {
-        const BrainUint max_iteration = get_settings_max_iterations();
-        const BrainUint input_length  = get_input_signal_length(data);
-        const BrainUint output_length = get_output_signal_length(data);
-
-        const BrainUint number_of_training_sample = get_number_of_training_sample(data);
-
-        BrainSignal input = NULL;
-        BrainSignal target = NULL;
-
-        BrainUint   iteration = 0;
-        BrainUint   i = 0;
-
-        while ((iteration < max_iteration)
-        &&     isNetworkTrainingRequired(network, data))
-        {
-            for (i = 0; i < number_of_training_sample; ++i)
-            {
-                input = get_training_input_signal(data, i);
-                target = get_training_output_signal(data, i);
-
-                // feed the network to find the corresponding output
-                feedforward(network, input_length, input, BRAIN_TRUE);
-
-                // backpropagate the error and accumulate it
-                backpropagate(network, output_length, target);
-
-                // apply network correction
-                apply_network_correction(network);
-            }
-
-            ++iteration;
-        }
     }
 }

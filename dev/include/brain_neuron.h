@@ -69,14 +69,6 @@ void set_neuron_weight(BrainNeuron neuron,
  */
 BrainUint get_neuron_number_of_input(const BrainNeuron neuron);
 /**
- * \fn BrainDouble get_neuron_output(const BrainNeuron neuron)
- * \brief retrieve neuron output
- *
- * \param neuron the Neuron
- * \return the neuron output
- */
-BrainDouble get_neuron_output(const BrainNeuron neuron);
-/**
  * \fn BrainWeight get_neuron_bias(const BrainNeuron neuron)
  * \brief retrieve neuron bias
  *
@@ -94,27 +86,25 @@ BrainWeight get_neuron_bias(const BrainNeuron neuron);
  */
 BrainWeight get_neuron_weight(const BrainNeuron neuron, const BrainUint index);
 /**
- * \fn BrainDouble get_neuron_input(const BrainNeuron neuron, const BrainUint index)
- * \brief retrieve neuron input
- *
- * \param neuron the Neuron
- * \param index input index
- * \return the neuron input at index
- */
-BrainDouble get_neuron_input(const BrainNeuron neuron, const BrainUint index);
-/**
- * \fn BrainDouble get_neuron_summation(const BrainNeuron neuron)
- * \brief retrieve neuron summation
- *
- * \param neuron the Neuron
- * \return the neuron summation
- */
-BrainDouble get_neuron_summation(const BrainNeuron neuron);
-/**
  * \fn void apply_neuron_correction(BrainNeuron reuron)
  * \brief apply correction to a neuron to reduce the total error
  *
  * \param neuron a BrainNeuron
  */
 void apply_neuron_correction(BrainNeuron neuron);
+
+
+
+void
+set_neuron_parameters(BrainNeuron neuron,
+                     const BrainActivationType   activation_type,
+                     const BrainBool             use_dropout,
+                     const BrainDouble           dropout_factor,
+                     const BrainLearningType     learning_type,
+                     const BrainDouble           backpropagation_learning_rate,
+                     const BrainDouble           resilient_delta_min,
+                     const BrainDouble           resilient_delta_max,
+                     const BrainDouble           resilient_eta_positive,
+                     const BrainDouble           resilient_eta_negative);
+void neuron_learning(BrainNeuron neuron, const BrainDouble loss);
 #endif /* BRAIN_NEURON_H */

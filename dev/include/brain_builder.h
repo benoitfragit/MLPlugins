@@ -36,12 +36,13 @@ void deserialize(BrainNetwork network,
  */
 BrainData new_data_from_context(BrainString filepath);
 /**
- * \fn void new_settings_from_context(BrainString filepath)
+ * \fn void configure_network_with_context(BrainNetwork network, BrBrainString filepath)
  * \brief Load settings from an XML context
  *
+ * \param network  the BrainNetwork to configure
  * \param filepath the XML context to use
  */
-void new_settings_from_context(BrainString filepath);
+void configure_network_with_context(BrainNetwork network, BrainString filepath);
 /**
  * \fn void serialize(const BrainNetwork network, const BrainString filepath)
  * \brief serialize a network to a file
@@ -50,12 +51,4 @@ void new_settings_from_context(BrainString filepath);
  * \param filepath the file that will be created
  */
 void serialize(const BrainNetwork network, const BrainString filepath);
-/**
- * \fn void train(BrainNetwork network, const BrainData data)
- * \brief launch the training process for the neural network
- *
- * \param network      the BrainNetwork to train
- * \param data         Training dataset
- */
-void train(BrainNetwork network, const BrainData data);
 #endif /* BRAIN_BUILDER_H */

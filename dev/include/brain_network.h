@@ -82,4 +82,27 @@ void backpropagate(BrainNetwork network, const BrainUint number_of_output, const
  * \param network the BrainNetwork to correct
  */
 void apply_network_correction(BrainNetwork network);
+/**
+ * \fn void train(BrainNetwork network, const BrainData data)
+ * \brief launch the training process for the neural network
+ *
+ * \param network      the BrainNetwork to train
+ * \param data         Training dataset
+ */
+void train(BrainNetwork network, const BrainData data);
+
+void set_network_parameters( BrainNetwork network,
+                             const BrainUint             iterations,
+                             const BrainDouble           error,
+                             const BrainActivationType   activation_type,
+                             const BrainCostFunctionType costfunction_type,
+                             const BrainBool             use_dropout,
+                             const BrainDouble           dropout_factor,
+                             const BrainLearningType     learning_type,
+                             const BrainDouble           backpropagation_learning_rate,
+                             const BrainDouble           resilient_delta_min,
+                             const BrainDouble           resilient_delta_max,
+                             const BrainDouble           resilient_eta_positive,
+                             const BrainDouble           resilient_eta_negative);
+BrainLearningType get_learning_type(BrainString learning_name);
 #endif /* BRAIN_NETWORK_H */
