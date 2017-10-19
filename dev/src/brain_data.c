@@ -5,11 +5,13 @@
 #include <stdio.h>
 #include <string.h>
 
+#define TRAINING_DATASET_RATIO 0.55
+
 /**
- * \struct Node
- * \brief  Internal model for a BrainNode
+ * \struct Dataset
+ * \brief  Internal model for a Dataset
  *
- * All protected fields for a BrainNode
+ * All protected fields for a Dataset
  */
 typedef struct Dataset
 {
@@ -76,11 +78,16 @@ parse_csv_repository(BrainData       data,
             rewind(repository);
 
             // Dynamic allocation of both training and evaluaing dataset
-            data->_training._input    = (BrainSignal*)calloc(counter, sizeof(BrainSignal));
-            data->_training._output   = (BrainSignal*)calloc(counter, sizeof(BrainSignal));
-            data->_evaluating._input  = (BrainSignal*)calloc(counter, sizeof(BrainSignal));
-            data->_evaluating._output = (BrainSignal*)calloc(counter, sizeof(BrainSignal));
             data->_training._children   = 0;
+
+            if (is_data_splitted)
+            {
+                data->_training._input        = (BrainSignal*)calloc(counter, sizeof(BrainSignal));
+                data->_training._output      = (BrainSignal*)calloc(counter, sizeof(BrainSignal));
+            }
+
+            data->_evaluating._input      = (BrainSignal*)calloc(counter, sizeof(BrainSignal));
+            data->_evaluating._output    = (BrainSignal*)calloc(counter, sizeof(BrainSignal));
             data->_evaluating._children = 0;
 
             /****************************************************************/
@@ -96,11 +103,11 @@ parse_csv_repository(BrainData       data,
                     /****************************************************************/
                     /**              Randomly choose signal storage                **/
                     /****************************************************************/
-                    Dataset* dataset = &(data->_training);
-                    if ((is_data_splitted == BRAIN_FALSE) ||
-                        (0.55 < get_random_double_value()))
+                    Dataset* dataset = &(data->_evaluating);
+                    if (is_data_splitted ||
+                        (get_random_double_value()) <  TRAINING_DATASET_RATIO)
                     {
-                        dataset = &(data->_evaluating);
+                        dataset = &(data->_training);
                     }
 
                     dataset->_input[dataset->_children]  = (BrainSignal)calloc(input_length, sizeof(BrainDouble));
@@ -249,8 +256,12 @@ delete_data(BrainData data)
 
         free(data->_evaluating._input);
         free(data->_evaluating._output);
-        free(data->_training._input);
-        free(data->_training._output);
+
+        if (data->_training._input)
+        {
+            free(data->_training._input);
+            free(data->_training._output);
+        }
 
         if (data->_means != NULL)
         {
