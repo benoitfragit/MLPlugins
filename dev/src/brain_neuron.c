@@ -329,11 +329,17 @@ new_neuron(const BrainUint number_of_inputs,
         BrainDouble random_value_limit = (BrainDouble)number_of_inputs;
 
         BrainNeuron _neuron       = (BrainNeuron)calloc(1, sizeof(Neuron));
+        
         _neuron->_out             = out;
         _neuron->_number_of_input = number_of_inputs;
         _neuron->_w               = (BrainWeight *)calloc(_neuron->_number_of_input, sizeof(BrainWeight));
         _neuron->_bias            = new_weight(random_value_limit, NULL);
         _neuron->_sum             = 0.0;
+        _neuron->_backprop_learning_rate = 1.12;
+        _neuron->_rprop_eta_plus = 1.2;
+        _neuron->_rprop_eta_minus = 0.95;
+        _neuron->_rprop_delta_min = 0.000001;
+        _neuron->_rprop_delta_max = 50;
 
         for (index = 0; index < _neuron->_number_of_input; ++index)
         {
