@@ -1,6 +1,5 @@
 #include <math.h>
 #include "config_all.h"
-#include "brain_builder.h"
 #include "brain_network.h"
 #include "brain_layer.h"
 #include "brain_neuron.h"
@@ -25,10 +24,10 @@ main(int argc, char** argv)
         BrainUint    index          = 0;
 
         // first serialize this network
-        serialize(original_network, TEST_SERIALIZE_NETWORK_PATH);
+        serialize_network(original_network, TEST_SERIALIZE_NETWORK_PATH);
 
         // then deserialize it
-        deserialize(loaded_network, TEST_SERIALIZE_NETWORK_PATH);
+        deserialize_network(loaded_network, TEST_SERIALIZE_NETWORK_PATH);
 
         do
         {

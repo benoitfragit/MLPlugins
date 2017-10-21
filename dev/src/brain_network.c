@@ -3,8 +3,12 @@
 #include "brain_activation.h"
 #include "brain_layer.h"
 #include "brain_neuron.h"
+#include "brain_weight.h"
 #include "brain_random.h"
 #include "brain_data.h"
+#include "brain_xml_utils.h"
+#include "brain_logging_utils.h"
+#include "brain_config.h"
 
 /**
  * \struct Network
@@ -14,16 +18,23 @@
  */
 struct Network
 {
+    /*********************************************************************/
+    /**                      STRUCTURAL PARAMETERS                      **/
+    /*********************************************************************/
     BrainLayer*   _layers;           /*!< layers                         */
     BrainSignal   _output;           /*!< Output signal of the network   */
     BrainSignal   _input;            /*!< Input signal of the network    */
     BrainUint     _number_of_inputs; /*!< Number of inputs               */
     BrainUint     _number_of_layers; /*!< Number of layers               */
-
-    BrainDouble   _max_error;
-    BrainUint     _max_iter;
-
-    CostPtrFunc   _cost_function;
+    /*********************************************************************/
+    /**                      TRAINING PARAMETERS                        **/
+    /*********************************************************************/
+    BrainDouble   _max_error;        /*!< Maximum error threshold        */
+    BrainUint     _max_iter;         /*!< Maximum iteration              */
+    /*********************************************************************/
+    /**                      FUNCTIONAL PARAMETERS                      **/
+    /*********************************************************************/
+    CostPtrFunc   _cost_function;    /*!< Cost function                  */
 } Network;
 
 static BrainString _learning_names[] =
@@ -32,7 +43,7 @@ static BrainString _learning_names[] =
     "Resilient"
 };
 
-BrainLearningType
+static BrainLearningType
 get_learning_type(BrainString learning_name)
 {
     BrainUint i = 0;
@@ -49,7 +60,7 @@ get_learning_type(BrainString learning_name)
     return Invalid_Learning;
 }
 
-void
+static void
 set_network_parameters( BrainNetwork network,
                          const BrainUint             iterations,
                          const BrainDouble           error,
@@ -92,6 +103,147 @@ set_network_parameters( BrainNetwork network,
     }
 }
 
+void
+configure_network_with_context(BrainNetwork network, BrainString filepath)
+{
+    if ((network != NULL) &&
+        (filepath != NULL) &&
+        validate_with_xsd(filepath, SETTINGS_XSD_FILE))
+    {
+        Document settings_document = open_document(filepath);
+
+        if (settings_document != NULL)
+        {
+            Context settings_context = get_root_node(settings_document);
+
+            if (settings_context && is_node_with_name(settings_context, "settings"))
+            {
+                BrainUint             max_iter           = 1000;
+                BrainDouble           error              = 0.001;
+                BrainBool             use_dropout        = BRAIN_FALSE;
+                BrainDouble           dropout_ratio      = 1.0;
+                BrainDouble           delta_min          = 0.000001;
+                BrainDouble           delta_max          = 50.0;
+                BrainDouble           eta_positive       = 1.2;
+                BrainDouble           eta_negative       = 0.95;
+                BrainDouble           learning_rate      = 1.12;
+                BrainLearningType     learning_type      = BackPropagation;
+                BrainActivationType   activation_type    = Sigmoid;
+                BrainCostFunctionType cost_function_type = CrossEntropy;
+                BrainChar*            buffer             = NULL;
+
+                Context training_context = get_node_with_name_and_index(settings_context,
+                                                                        "training",
+                                                                        0);
+
+                if (training_context != NULL)
+                {
+                    Context dropout_context = get_node_with_name_and_index(training_context,
+                                                                           "dropout",
+                                                                           0);
+
+                    if (dropout_context != NULL)
+                    {
+                        use_dropout   = node_get_bool(dropout_context, "activate", BRAIN_FALSE);
+                        dropout_ratio = node_get_double(dropout_context, "factor", 1.0);
+                    }
+
+                    max_iter = node_get_int(training_context, "iterations", 1000);
+                    error    = node_get_double(training_context, "error", 0.001);
+
+                    buffer = (BrainChar *)node_get_prop(training_context, "learning");
+                    learning_type = get_learning_type(buffer);
+
+                    if (buffer != NULL)
+                    {
+                        free(buffer);
+                    }
+
+                    Context method_context = get_node_with_name_and_index(training_context,
+                                                                          "method",
+                                                                          0);
+
+                    if (method_context != NULL)
+                    {
+                        switch (learning_type)
+                        {
+                            case BackPropagation:
+                            {
+                                Context backprop_context = get_node_with_name_and_index(method_context, "backprop", 0);
+
+                                if (backprop_context != NULL)
+                                {
+                                    learning_rate = node_get_double(backprop_context, "learning-rate", 1.2);
+                                }
+                            }
+                                break;
+                            case Resilient:
+                            {
+                                Context rprop_context = get_node_with_name_and_index(method_context, "rprop", 0);
+
+                                if (rprop_context != NULL)
+                                {
+                                    Context eta_context   = get_node_with_name_and_index(rprop_context, "resilient-eta", 0);
+                                    Context delta_context = get_node_with_name_and_index(rprop_context, "resilient-delta", 0);
+
+                                    if (eta_context != NULL)
+                                    {
+                                        eta_positive = node_get_double(eta_context, "positive", 1.25);
+                                        eta_negative = node_get_double(eta_context, "negative", 0.95);
+                                    }
+
+                                    if (delta_context != NULL)
+                                    {
+                                        delta_max = node_get_double(delta_context, "max", 50.0);
+                                        delta_min = node_get_double(delta_context, "min", 0.000001);
+                                    }
+                                }
+                            }
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+
+                buffer             = (BrainChar *)node_get_prop(settings_context, "cost-function");
+                cost_function_type = get_cost_function_type(buffer);
+
+                if (buffer != NULL)
+                {
+                    free(buffer);
+                }
+
+                buffer             = (BrainChar *)node_get_prop(settings_context, "activation-function");
+                activation_type    = get_activation_type(buffer);
+
+                if (buffer != NULL)
+                {
+                    free(buffer);
+                }
+
+                /**********************************************/
+                /**        SET ALL NETWORKS PARAMETERS       **/
+                /**********************************************/
+                set_network_parameters(network,
+                                        max_iter,
+                                        error,
+                                        activation_type,
+                                        cost_function_type,
+                                        use_dropout,
+                                        dropout_ratio,
+                                        learning_type,
+                                        learning_rate,
+                                        delta_min,
+                                        delta_max,
+                                        eta_positive,
+                                        eta_negative);
+            }
+
+            close_document(settings_document);
+        }
+    }
+}
 
 BrainLayer
 get_network_layer(const BrainNetwork network, const BrainUint index)
@@ -108,11 +260,24 @@ get_network_layer(const BrainNetwork network, const BrainUint index)
     return ret;
 }
 
-void
+static void
 backpropagate(BrainNetwork network,
               const BrainUint number_of_output,
               const BrainSignal desired)
 {
+    /******************************************************************/
+    /**                      BACKPROP ALGORITHM                      **/
+    /**                                                              **/
+    /** The goal of this algorithm is to reduce the error between a  **/
+    /** the output signal and the targer signal.                     **/
+    /**                                                              **/
+    /** If we not C(W) = E(w_1,...,w_n) the error between the output **/
+    /** signal and the target signal computed using a cost function  **/
+    /**                                                              **/
+    /** For each weight w_i,we want to find µ_i such that C(W)       **/
+    /** decrease to a minimum. The way to do that is to backpropagate**/
+    /** the gradient of C(W)                                         **/
+    /******************************************************************/
     if ((network                   != NULL) &&
         (network->_layers          != NULL) &&
         (network->_number_of_layers!= 0)    &&
@@ -120,15 +285,60 @@ backpropagate(BrainNetwork network,
     {
         int i = 0;
         BrainLayer output_layer = network->_layers[network->_number_of_layers - 1];
-
+        /**************************************************************/
+        /**         BACKPROPAGATE THE ERROR ON THE OUTPUT LAYER      **/
+        /**                                                          **/
+        /** For the output layer:                                    **/
+        /**                                                          **/
+        /**                   µ_i = d C(W_i) / d w_ji                **/
+        /**                                                          **/
+        /** Using the chain rule:                                    **/
+        /**                                                          **/
+        /**         µ_i = (d out / d w_ji) * (d C(W_i) / d out)      **/
+        /**                                                          **/
+        /** where out is the output of the neuron                    **/
+        /** We can easily compute the second member using the        **/
+        /** derivative of the network cost function                  **/
+        /** Then we could rewrite the first member:                  **/
+        /**                                                          **/
+        /**   µ_i = (dA(<in_j, W_i>) / d w_ji) * (d C(W_i) / d out)  **/
+        /**                                                          **/
+        /** where A is the activation function and <in, W> is the dot**/
+        /** product between the input vector and the weight vector   **/
+        /**                                                          **/
+        /** µ_i=(d<in_j,W_i>/dw_ji)*(dA/d<in_j,W_i>)*(dC(W_i)/d out) **/
+        /**                                                          **/
+        /** We can easily compute the second member using the        **/
+        /** derivative of the activation function                    **/
+        /** The first member is the simply in_i, so:                 **/
+        /**                                                          **/
+        /**  µ_i = in_i * (d A_i/d <in_j,W_i>) * (d C(W_i)/d out_j)  **/
+        /**                                                          **/
+        /** Last detail, for the output neuron we can note $_j the   **/
+        /** the error rate cause by the j th neuron of the previous  **/
+        /** for this layer $_j = (d A/d <in,W>) * (d C(w)/d out)     **/
+        /**************************************************************/
         backpropagate_output_layer(output_layer, number_of_output, desired);
 
         for (i = network->_number_of_layers - 2; i >= 0; --i)
         {
             BrainLayer hidden_layer = network->_layers[i];
-
+            /**********************************************************/
+            /**     BACKPROPAGATE THE ERROR ON THE HIDDEN LAYER      **/
+            /**                                                      **/
+            /** For the hidden layer, we have :                      **/
+            /**                                                      **/
+            /** µ_j = in_l * SUM (w_lj * $_j) * (d A_j/d <in_l,W_j>) **/
+            /**********************************************************/
             backpropagate_hidden_layer(hidden_layer);
         }
+        /**************************************************************/
+        /** Then for each weight wij ve have :                       **/
+        /**                                                          **/
+        /**                      wij -= n * u_j                      **/
+        /**                                                          **/
+        /** where n is the learning rate                             **/
+        /**************************************************************/
     }
 }
 
@@ -187,8 +397,11 @@ new_network(const BrainUint signal_input_length,
         _network->_number_of_layers = number_of_layers;
         _network->_max_iter         = 1000;
         _network->_max_error        = 0.0001;
+        _network->_cost_function    = get_cost_function(Quadratic);
 
-        // initialize the random number generator
+        /**************************************************************/
+        /**                INITIALE THE RANDOM GENERATOR             **/
+        /**************************************************************/
         initialize_random_generator();
 
         if (0 < number_of_layers)
@@ -211,12 +424,30 @@ new_network(const BrainUint signal_input_length,
                     number_of_inputs = neuron_per_layers[index - 1];
                 }
 
+                /******************************************************/
+                /**                 CREATE A NEW LAYER               **/
+                /**                                                  **/
+                /** All neurons in this layer are fully connected    **/
+                /** to all neurons from the previous layer. Besides  **/
+                /** All neurons have also a backprop connection      **/
+                /** to automatically backpropagate their error to    **/
+                /** their previous layer                             **/
+                /**                                                  **/
+                /**                   output vector                  **/
+                /**               --------------------->             **/
+                /** PreviousLayer                        Next Layer  **/
+                /**               <---------------------             **/
+                /**                    error vector                  **/
+                /******************************************************/
                 _network->_layers[index] = new_layer(number_of_neurons,
                                                      number_of_inputs,
                                                      in,
                                                      previous_errors);
             }
 
+            /**********************************************************/
+            /**          AUTOMATICALLY SET THE OUTPUT VECTOR         **/
+            /**********************************************************/
             _network->_output = get_layer_output(_network->_layers[number_of_layers -1]);
         }
     }
@@ -236,35 +467,19 @@ feedforward(BrainNetwork      network,
     {
         BrainUint i = 0;
 
+        /**************************************************************/
+        /**           FEED THE NETWORK WITH INPUT VECTOR             **/
+        /**************************************************************/
         memcpy(network->_input, in, number_of_input * sizeof(BrainDouble));
 
         for (i = 0; i < network->_number_of_layers; ++i)
         {
             BrainLayer layer = network->_layers[i];
 
+            /**********************************************************/
+            /**                    ACTIVATE ALL LAYERS               **/
+            /**********************************************************/
             activate_layer(layer, use_dropout && (i != network->_number_of_layers - 1));
-        }
-    }
-}
-
-
-void
-apply_network_correction(BrainNetwork network)
-{
-    if ((network               != NULL) &&
-        (network->_layers      != NULL) &&
-        (network->_number_of_layers != 0))
-    {
-        BrainUint i = 0;
-
-        for (i = 0; i < network->_number_of_layers; ++i)
-        {
-            BrainLayer layer = network->_layers[i];
-
-            if (layer != NULL)
-            {
-                apply_layer_correction(layer);
-            }
         }
     }
 }
@@ -347,6 +562,9 @@ train(BrainNetwork network, const BrainData data)
         BrainUint   iteration = 0;
         BrainUint   i = 0;
 
+        /**************************************************************/
+        /**              TRAIN OVER ALL TRAINING EXAMPLES            **/
+        /**************************************************************/
         while ((iteration < max_iteration)
         &&     isNetworkTrainingRequired(network, data))
         {
@@ -354,18 +572,243 @@ train(BrainNetwork network, const BrainData data)
             {
                 input = get_training_input_signal(data, i);
                 target = get_training_output_signal(data, i);
-
-                // feed the network to find the corresponding output
+                /******************************************************/
+                /**         FORWARD PROPAGATION OF THE SIGNAL        **/
+                /******************************************************/
                 feedforward(network, input_length, input, BRAIN_TRUE);
-
-                // backpropagate the error and accumulate it
+                /******************************************************/
+                /**     BACKPROPAGATION USING THE TARGET SIGNAL      **/
+                /******************************************************/
                 backpropagate(network, output_length, target);
-
-                // apply network correction
-                apply_network_correction(network);
             }
 
             ++iteration;
         }
     }
+}
+
+void
+deserialize_network(BrainNetwork network, BrainString filepath)
+{
+    if ((network != NULL)
+    &&  (filepath != NULL)
+    &&  validate_with_xsd(filepath, INIT_XSD_FILE))
+    {
+        Document init_document = open_document(filepath);
+
+        if (init_document != NULL)
+        {
+            Context context = get_root_node(init_document);
+
+            if (context != NULL)
+            {
+                const BrainUint number_of_layer = get_number_of_node_with_name(context, "layer");
+
+                if (number_of_layer > 0)
+                {
+                    BrainUint layer_index = 0;
+                    BrainLayer layer = NULL;
+
+                    do
+                    {
+
+                        Context layer_context = get_node_with_name_and_index(context, "layer", layer_index);
+
+                        if (layer_context != NULL)
+                        {
+                            const BrainUint number_of_neuron = get_number_of_node_with_name(layer_context, "neuron");
+
+                            layer = get_network_layer(network, layer_index);
+
+                            if (layer != NULL && number_of_neuron == get_layer_number_of_neuron(layer))
+                            {
+                                BrainUint neuron_index = 0;
+
+                                for (neuron_index = 0;
+                                     neuron_index < number_of_neuron;
+                                     ++neuron_index )
+                                {
+                                    Context neuron_context = get_node_with_name_and_index(layer_context, "neuron", neuron_index);
+                                    BrainNeuron neuron = get_layer_neuron(layer, neuron_index);
+
+                                    if (neuron_context != NULL && neuron != NULL)
+                                    {
+                                        initialize_neuron_from_context(neuron, neuron_context);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                BRAIN_CRITICAL("Unable to initialize the network");
+
+                                return;
+                            }
+                        }
+
+                        ++layer_index;
+                    } while (layer != NULL && layer_index < number_of_layer);
+                }
+            }
+
+            close_document(init_document);
+        }
+    }
+    else
+    {
+        BRAIN_CRITICAL("Unable to deserialize file\n");
+    }
+}
+
+void
+serialize_network(const BrainNetwork network, BrainString filepath)
+{
+    if (filepath != NULL)
+    {
+        if (network != NULL)
+        {
+            Writer writer = create_document(filepath, BRAIN_ENCODING);
+
+            if (writer != NULL)
+            {
+                // serialize the network
+                if (start_element(writer, "network"))
+                {
+                    // serialize all layers
+                    BrainUint layer_index = 0;
+                    BrainLayer layer = NULL;
+
+                    do
+                    {
+                        layer = get_network_layer(network, layer_index);
+
+                        if (layer != NULL)
+                        {
+                            // serialize all neurons
+                            const BrainUint number_of_neurons = get_layer_number_of_neuron(layer);
+
+                            if (start_element(writer, "layer"))
+                            {
+                                BrainUint index_neuron = 0;
+
+                                for (index_neuron = 0;
+                                     index_neuron < number_of_neurons;
+                                     ++index_neuron)
+                                {
+                                    const BrainNeuron neuron = get_layer_neuron(layer, index_neuron);
+
+                                    if (neuron != NULL)
+                                    {
+                                        const BrainUint number_of_inputs = get_neuron_number_of_input(neuron);
+
+                                        if (start_element(writer, "neuron"))
+                                        {
+                                            const BrainWeight bias = get_neuron_bias(neuron);
+                                            BrainUint index_input = 0;
+                                            BrainChar buffer[50];
+
+                                            if (bias != NULL)
+                                            {
+                                                sprintf(buffer, "%lf", get_weight_value(bias));
+
+                                                add_attribute(writer, "bias", buffer);
+                                            }
+
+                                            for (index_input = 0;
+                                                 index_input < number_of_inputs;
+                                                 ++index_input)
+                                            {
+                                                const BrainWeight weight = get_neuron_weight(neuron, index_input);
+
+                                                if (weight != NULL)
+                                                {
+                                                    sprintf(buffer, "%lf", get_weight_value(weight));
+
+                                                    write_element(writer, "weight", buffer);
+                                                }
+                                            }
+
+                                            stop_element(writer);
+                                        }
+                                    }
+                                }
+
+                                stop_element(writer);
+                            }
+
+                            ++layer_index;
+                        }
+
+                    } while (layer != NULL);
+
+                    stop_element(writer);
+                }
+
+                close_writer(writer);
+            }
+            else
+            {
+                BRAIN_CRITICAL("Unable to create XML writer\n");
+            }
+        }
+        else
+        {
+            BRAIN_CRITICAL("Network is not valid\n");
+        }
+    }
+    else
+    {
+        BRAIN_CRITICAL("XML serializing file is not valid\n");
+    }
+}
+
+BrainNetwork
+new_network_from_context(BrainString filepath)
+{
+    BrainNetwork  network  = NULL;
+
+    if (filepath != NULL && validate_with_xsd(filepath, NETWORK_XSD_FILE))
+    {
+        Document network_document = open_document(filepath);
+
+        if (network_document != NULL)
+        {
+            Context context = get_root_node(network_document);
+
+            if (context && is_node_with_name(context, "network"))
+            {
+                const BrainUint  number_of_inputs = node_get_int(context, "inputs", 1);
+
+                Context layers_context = get_node_with_name_and_index(context, "layers", 0);
+
+                if (layers_context != NULL)
+                {
+                    const BrainUint  number_of_layers = get_number_of_node_with_name(layers_context, "layer");
+                    BrainUint* neuron_per_layers = (BrainUint *)calloc(number_of_layers, sizeof(BrainUint));
+                    BrainUint  index = 0;
+
+                    for (index = 0; index < number_of_layers; ++index)
+                    {
+                        Context subcontext = get_node_with_name_and_index(layers_context,
+                                                                          "layer",
+                                                                          index);
+
+                        neuron_per_layers[index] = node_get_int(subcontext, "neurons", 1);
+                    }
+
+                    network = new_network(number_of_inputs,
+                                          number_of_layers,
+                                          neuron_per_layers);
+
+                    if (neuron_per_layers != NULL)
+                    {
+                        free(neuron_per_layers);
+                    }
+                }
+            }
+
+            close_document(network_document);
+        }
+    }
+
+    return network;
 }

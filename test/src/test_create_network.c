@@ -1,6 +1,5 @@
 #include "config_all.h"
 #include "brain_types.h"
-#include "brain_builder.h"
 #include "brain_network.h"
 #include "brain_layer.h"
 #include "brain_neuron.h"

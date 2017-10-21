@@ -12,7 +12,6 @@ struct Weight
     BrainDouble _value;           /*!< Weight value                   */
     BrainDouble _gradient;        /*!< weights gradient values        */
     BrainDouble _delta;           /*!< weights delta values           */
-    BrainDouble _correction;      /*!< weights correction value       */
     BrainDouble _last_correction; /*!< weights last correction value  */
     BrainSignal _error;           /*!< error to correct in the layer */
 } Weight;
@@ -23,7 +22,6 @@ new_weight(const BrainDouble limit, BrainSignal error)
     BrainWeight w = (BrainWeight)calloc(1, sizeof(Weight));
 
     w->_value      = get_random_double_value_in_range(-limit, limit);
-    w->_correction = 0.0;
     w->_last_correction = 0.0;
     w->_gradient   = 0.0;
     w->_delta      = 0.01;
@@ -64,7 +62,7 @@ set_weight_correction(BrainWeight w, const BrainDouble corr)
 {
     if (w != NULL)
     {
-        w->_correction += corr;
+        w->_value += corr;
         w->_last_correction = corr;
     }
 }
@@ -120,17 +118,6 @@ get_weight_last_correction(const BrainWeight w)
     }
 
     return 0.0;
-}
-
-void
-apply_weight_correction(BrainWeight w)
-{
-    if (w != NULL)
-    {
-        w->_value += w->_correction;
-        w->_correction = 0.0;
-        w->_last_correction = 0.0;
-    }
 }
 
 void

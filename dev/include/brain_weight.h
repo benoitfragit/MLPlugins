@@ -92,13 +92,6 @@ BrainDouble get_weight_gradient(const BrainWeight w);
  */
 BrainDouble get_weight_value(const BrainWeight w);
 /**
- * \fn void apply_weight_correction(BrainWeight w)
- * \brief apply the correction
- *
- * \param w A BrainWeight
- */
-void apply_weight_correction(BrainWeight w);
-/**
  * \fn void update_error(BrainWeight w, const BrainDouble error)
  * \brief append a new error
  *

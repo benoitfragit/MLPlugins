@@ -56,14 +56,6 @@ BrainUint   get_layer_number_of_neuron(const BrainLayer layer);
  */
 BrainSignal get_layer_output          (const BrainLayer layer);
 /**
- * \fn BrainLayer get_layer_previous_layer(const BrainLayer layer)
- * \brief get the previous layer
- *
- * \param layer a BrainLayer
- * \return a BrainLayer or NULL if it is the input layer
- */
-BrainLayer  get_layer_previous_layer      (const BrainLayer layer);
-/**
  * \fn void delete_layer(BrainLayer layer)
  * \brief free all layer allocated memory
  *
@@ -89,13 +81,6 @@ void backpropagate_output_layer(BrainLayer output_layer,
  */
 void backpropagate_hidden_layer(BrainLayer hidden_layer);
 /**
- * \fn void apply_layer_correction(BrainLayer layer)
- * \brief apply correction to a layer to reduce total error
- *
- * \param layer a BrainLayer
- */
-void apply_layer_correction(BrainLayer layer);
-/**
  * \fn BrainSignal get_layer_errors(BrainLayer layer)
  * \brief get the layer errors
  *
@@ -111,7 +96,32 @@ BrainSignal get_layer_errors(const BrainLayer layer);
  * \param hidden_layer is this layer an hidden layer
  */
 void activate_layer(const BrainLayer layer, const BrainBool hidden_layer);
-
+/**
+ * \fn void set_layer_parameters( BrainLayer layer,
+                                     const BrainActivationType   activation_type,
+                                     const BrainCostFunctionType costfunction_type,
+                                     const BrainBool             use_dropout,
+                                     const BrainDouble           dropout_factor,
+                                     const BrainLearningType     learning_type,
+                                     const BrainDouble           backpropagation_learning_rate,
+                                     const BrainDouble           resilient_delta_min,
+                                     const BrainDouble           resilient_delta_max,
+                                     const BrainDouble           resilient_eta_positive,
+                                     const BrainDouble           resilient_eta_negative);
+ * \brief customize neural network parameters
+ *
+ * \param layer             The BrainLayer to train
+ * \param activation_type   The activation function type
+ * \param costfunction_tye  The cost function type
+ * \param use_droput        Activate or not the dropout rejection
+ * \param dropout_factor    Set the dropout rejection threshold
+ * \param learning_type     Set the learning function type
+ * \param backpropagation_learning_rate Set the BACKPROP learning rate
+ * \param resilient_delta_min Set RPROP min delta value
+ * \param resilient_delta_max Set RPROP max delta value
+ * \param resilient_eta_positive Set RPROP eta for positive gradient sign
+ * \param resilient_eta_negative Set RPROP eta for negative gradient sign
+ */
 void set_layer_parameters(BrainLayer layer,
                              const BrainActivationType   activation_type,
                              const BrainCostFunctionType costfunction_type,

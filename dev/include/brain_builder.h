@@ -10,45 +10,4 @@
 
 #include "brain_types.h"
 
-/**
- * \fn BrainNetwork new_network_from_context(BrainString filepath)
- * \brief Fonction to create a BrainNetwork from an XML context
- *
- * \param filepath XML Network definition file
- * \return a new allocated BrainNetwork or NULL if it failed
- */
-BrainNetwork new_network_from_context(BrainString filepath);
-/**
- * \fn void deserialize(BrainNetwork network, BrainString filepath)
- * \brief load previously trained neural network's weight
- *
- * \param network BrainNetwork to be initialized
- * \param filepath XML file to load
- */
-void deserialize(BrainNetwork network,
-                 BrainString filepath);
-/**
- * \fn BrainData new_data_from_context(BrainString filepath)
- * \brief Load training data from an XML context
- *
- * \param filepath the XML context to use
- * \return a newly allocated BrainTree
- */
-BrainData new_data_from_context(BrainString filepath);
-/**
- * \fn void configure_network_with_context(BrainNetwork network, BrBrainString filepath)
- * \brief Load settings from an XML context
- *
- * \param network  the BrainNetwork to configure
- * \param filepath the XML context to use
- */
-void configure_network_with_context(BrainNetwork network, BrainString filepath);
-/**
- * \fn void serialize(const BrainNetwork network, const BrainString filepath)
- * \brief serialize a network to a file
- *
- * \param network the BrainNetwork to serialize
- * \param filepath the file that will be created
- */
-void serialize(const BrainNetwork network, const BrainString filepath);
 #endif /* BRAIN_BUILDER_H */

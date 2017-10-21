@@ -67,22 +67,6 @@ BrainSignal get_network_output(const BrainNetwork network);
  */
 BrainLayer get_network_layer(const BrainNetwork network, const BrainUint index);
 /**
- * \fn void backpropagate(BrainNetwork network, const BrainUint number_of_output, const BrainSignal desired)
- * \brief backpropagate an input signal from the error signal
- *
- * \param network the network to feed
- * \param number_of_output the length of the output signal
- * \param desired the desired output signal
- */
-void backpropagate(BrainNetwork network, const BrainUint number_of_output, const BrainSignal desired);
-/**
- * \fn void apply_network_correction(BrainNetwork network)
- * \brief apply all corrections to reduce the total error
- *
- * \param network the BrainNetwork to correct
- */
-void apply_network_correction(BrainNetwork network);
-/**
  * \fn void train(BrainNetwork network, const BrainData data)
  * \brief launch the training process for the neural network
  *
@@ -90,19 +74,36 @@ void apply_network_correction(BrainNetwork network);
  * \param data         Training dataset
  */
 void train(BrainNetwork network, const BrainData data);
-
-void set_network_parameters( BrainNetwork network,
-                             const BrainUint             iterations,
-                             const BrainDouble           error,
-                             const BrainActivationType   activation_type,
-                             const BrainCostFunctionType costfunction_type,
-                             const BrainBool             use_dropout,
-                             const BrainDouble           dropout_factor,
-                             const BrainLearningType     learning_type,
-                             const BrainDouble           backpropagation_learning_rate,
-                             const BrainDouble           resilient_delta_min,
-                             const BrainDouble           resilient_delta_max,
-                             const BrainDouble           resilient_eta_positive,
-                             const BrainDouble           resilient_eta_negative);
-BrainLearningType get_learning_type(BrainString learning_name);
+/**
+ * \fn void configure_network_with_context(BrainNetwork network, BrBrainString filepath)
+ * \brief Load settings from an XML context
+ *
+ * \param network  the BrainNetwork to configure
+ * \param filepath the XML context to use
+ */
+void configure_network_with_context(BrainNetwork network, BrainString filepath);
+/**
+ * \fn void deserialize_network(BrainNetwork network, BrainString filepath)
+ * \brief load previously trained neural network's weight
+ *
+ * \param network BrainNetwork to be initialized
+ * \param filepath XML file to load
+ */
+void deserialize_network(BrainNetwork network, BrainString filepath);
+                 /**
+ * \fn void serialize_network(const BrainNetwork network, const BrainString filepath)
+ * \brief serialize a network to a file
+ *
+ * \param network the BrainNetwork to serialize
+ * \param filepath the file that will be created
+ */
+void serialize_network(const BrainNetwork network, const BrainString filepath);
+/**
+ * \fn BrainNetwork new_network_from_context(BrainString filepath)
+ * \brief Fonction to create a BrainNetwork from an XML context
+ *
+ * \param filepath XML Network definition file
+ * \return a new allocated BrainNetwork or NULL if it failed
+ */
+BrainNetwork new_network_from_context(BrainString filepath);
 #endif /* BRAIN_NETWORK_H */

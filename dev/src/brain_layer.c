@@ -10,16 +10,19 @@
  */
 struct Layer
 {
-    BrainUint    _number_of_neuron; /*!< The number of BrainNeuron         */
-    BrainNeuron* _neurons;          /*!< An array of BrainNeuron           */
-
-    BrainSignal  _in;               /*!< Input vector of the layer         */
-    BrainSignal  _in_errors;        /*!< Input vector errors               */
-
-    BrainSignal  _out;              /*!< Output vector of the Layer        */
-    BrainSignal  _out_errors;       /*!< Output vector errors              */
-
-    CostPtrFunc  _cost_function_derivative;
+    /******************************************************************/
+    /**                      STRUCTURAL PARAMETERS                   **/
+    /******************************************************************/
+    BrainUint    _number_of_neuron; /*!< The number of BrainNeuron    */
+    BrainNeuron* _neurons;          /*!< An array of BrainNeuron      */
+    BrainSignal  _in;               /*!< Input vector of the layer    */
+    BrainSignal  _in_errors;        /*!< Input vector errors          */
+    BrainSignal  _out;              /*!< Output vector of the Layer   */
+    BrainSignal  _out_errors;       /*!< Output vector errors         */
+    /******************************************************************/
+    /**                      FUNCTIONAL PARAMETERS                   **/
+    /******************************************************************/
+    CostPtrFunc  _cost_function_derivative; /*!< Cost function derivative function */
 } Layer;
 
 void
@@ -110,6 +113,9 @@ new_layer(const BrainUint     number_of_neurons,
           const BrainSignal   in,
           BrainSignal         out_errors)
 {
+    /******************************************************************/
+    /**                       CREATE A NEW LAYER                     **/
+    /******************************************************************/
     BrainLayer _layer = NULL;
 
     if ((number_of_inputs  != 0)
@@ -119,8 +125,14 @@ new_layer(const BrainUint     number_of_neurons,
         _layer                    = (BrainLayer)calloc(1, sizeof(Layer));
         _layer->_number_of_neuron = number_of_neurons;
         _layer->_in               = in;
+        /**************************************************************/
+        /** ERROR VECTOR SENT TO THE NEXT LAYER                      **/
+        /**************************************************************/
         _layer->_out_errors       = out_errors;
-
+        /**************************************************************/
+        /** THIS THE COST FUNCTION DERIVATIVE USED TO COMPUTE THE    **/
+        /** BACKPROPAGATION ALGORITHM                                **/
+        /**************************************************************/
         _layer->_cost_function_derivative = get_cost_function_derivative(Quadratic);
 
         if (0 != _layer->_number_of_neuron)
@@ -135,6 +147,20 @@ new_layer(const BrainUint     number_of_neurons,
                  (index < _layer->_number_of_neuron);
                  ++index)
             {
+                /******************************************************/
+                /**              CREATE A NEW NEURON                 **/
+                /**                                                  **/
+                /** The neuron output is automatically connected to  **/
+                /** its parent layer                                 **/
+                /**                                                  **/
+                /** There are 2 main flows :                         **/
+                /**                                                  **/
+                /**                  input         output            **/
+                /**                -------->      ------->           **/
+                /**   PreviousLayer         Neuron        NextLayer  **/
+                /**                <--------      <-------           **/
+                /**                out_error      in_error           **/
+                /******************************************************/
                 _layer->_neurons[index] = new_neuron(number_of_inputs,
                                                      &(_layer->_out[index]),
                                                      out_errors);
@@ -185,6 +211,9 @@ backpropagate_output_layer(BrainLayer output_layer,
                            const BrainUint number_of_output,
                            const BrainSignal desired)
 {
+    /******************************************************************/
+    /**               BACKPROPAGATE THE OUTPUT LAYER                 **/
+    /******************************************************************/
     if ((output_layer != NULL)
     &&  (desired != NULL))
     {
@@ -238,26 +267,6 @@ backpropagate_hidden_layer(BrainLayer hidden_layer)
 }
 
 void
-apply_layer_correction(BrainLayer layer)
-{
-    if (layer != NULL)
-    {
-        const BrainUint number_of_neuron = layer->_number_of_neuron;
-        BrainUint i = 0;
-
-        for (i = 0; i < number_of_neuron; ++i)
-        {
-            BrainNeuron neuron = layer->_neurons[i];
-
-            if (neuron != NULL)
-            {
-                apply_neuron_correction(neuron);
-            }
-        }
-    }
-}
-
-void
 activate_layer(BrainLayer layer, const BrainBool hidden_layer)
 {
     if (layer != NULL)
@@ -268,7 +277,7 @@ activate_layer(BrainLayer layer, const BrainBool hidden_layer)
 
         for (i = 0; i < layer->_number_of_neuron; ++i)
         {
-            BrainNeuron neuron = get_layer_neuron(layer, i);
+            BrainNeuron neuron = layer->_neurons[i];
             activate_neuron(neuron, hidden_layer);
         }
     }
