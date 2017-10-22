@@ -277,68 +277,33 @@ backpropagate(BrainNetwork network,
     /** For each weight w_i,we want to find µ_i such that C(W)       **/
     /** decrease to a minimum. The way to do that is to backpropagate**/
     /** the gradient of C(W)                                         **/
+    /**                                                              **/
+    /** We write:                                                    **/
+    /**                                                              **/
+    /**                      µ_ji = in_i * $_ji                      **/
+    /**                                                              **/
+    /** Then the weight wij is adjusted :                            **/
+    /**                                                              **/
+    /**                      w_ji -= n * µ_ji                        **/
+    /**                                                              **/
+    /** where n is the learning rate                                 **/
     /******************************************************************/
     if ((network                   != NULL) &&
         (network->_layers          != NULL) &&
         (network->_number_of_layers!= 0)    &&
         (desired                   != NULL))
     {
-        int i = 0;
+        BrainInt i = 0;
         BrainLayer output_layer = network->_layers[network->_number_of_layers - 1];
-        /**************************************************************/
-        /**         BACKPROPAGATE THE ERROR ON THE OUTPUT LAYER      **/
-        /**                                                          **/
-        /** For the output layer:                                    **/
-        /**                                                          **/
-        /**                   µ_i = d C(W_i) / d w_ji                **/
-        /**                                                          **/
-        /** Using the chain rule:                                    **/
-        /**                                                          **/
-        /**         µ_i = (d out / d w_ji) * (d C(W_i) / d out)      **/
-        /**                                                          **/
-        /** where out is the output of the neuron                    **/
-        /** We can easily compute the second member using the        **/
-        /** derivative of the network cost function                  **/
-        /** Then we could rewrite the first member:                  **/
-        /**                                                          **/
-        /**   µ_i = (dA(<in_j, W_i>) / d w_ji) * (d C(W_i) / d out)  **/
-        /**                                                          **/
-        /** where A is the activation function and <in, W> is the dot**/
-        /** product between the input vector and the weight vector   **/
-        /**                                                          **/
-        /** µ_i=(d<in_j,W_i>/dw_ji)*(dA/d<in_j,W_i>)*(dC(W_i)/d out) **/
-        /**                                                          **/
-        /** We can easily compute the second member using the        **/
-        /** derivative of the activation function                    **/
-        /** The first member is the simply in_i, so:                 **/
-        /**                                                          **/
-        /**  µ_i = in_i * (d A_i/d <in_j,W_i>) * (d C(W_i)/d out_j)  **/
-        /**                                                          **/
-        /** Last detail, for the output neuron we can note $_j the   **/
-        /** the error rate cause by the j th neuron of the previous  **/
-        /** for this layer $_j = (d A/d <in,W>) * (d C(w)/d out)     **/
-        /**************************************************************/
+
         backpropagate_output_layer(output_layer, number_of_output, desired);
 
         for (i = network->_number_of_layers - 2; i >= 0; --i)
         {
             BrainLayer hidden_layer = network->_layers[i];
-            /**********************************************************/
-            /**     BACKPROPAGATE THE ERROR ON THE HIDDEN LAYER      **/
-            /**                                                      **/
-            /** For the hidden layer, we have :                      **/
-            /**                                                      **/
-            /** µ_j = in_l * SUM (w_lj * $_j) * (d A_j/d <in_l,W_j>) **/
-            /**********************************************************/
+
             backpropagate_hidden_layer(hidden_layer);
         }
-        /**************************************************************/
-        /** Then for each weight wij ve have :                       **/
-        /**                                                          **/
-        /**                      wij -= n * u_j                      **/
-        /**                                                          **/
-        /** where n is the learning rate                             **/
-        /**************************************************************/
     }
 }
 
@@ -611,7 +576,6 @@ deserialize_network(BrainNetwork network, BrainString filepath)
 
                     do
                     {
-
                         Context layer_context = get_node_with_name_and_index(context, "layer", layer_index);
 
                         if (layer_context != NULL)

@@ -4,8 +4,8 @@
 #include "brain_random.h"
 #include "brain_xml_utils.h"
 
-#define MIN(a, b) ((a) < (b) ? a : b)
-#define MAX(a, b) ((a) < (b) ? b : a)
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
+#define MAX(a, b) ((a) < (b) ? (b) : (a))
 
 /**
  * \struct Neuron
@@ -15,31 +15,31 @@
  */
 struct Neuron
 {
-    /*********************************************************************/
-    /**                      STRUCTURAL PARAMETERS                      **/
-    /*********************************************************************/
-    BrainSignal         _in;                        /*!< Input signal of an BrainNeuron                     */
-    BrainUint           _number_of_input;           /*!< Number of inputs of the neuron                     */
-    BrainWeight         _bias;                      /*!< Bias of the neuron                                 */
-    BrainWeight*        _w;                         /*!< An array of weight without the bias                */
-    BrainSignal         _out;                       /*!< An output value pointer owned by the BrainLayer    */
-    BrainDouble         _sum;                       /*!< Summation of all input time weight                 */
-    /*********************************************************************/
-    /**                        TRAINING PARAMETERS                      **/
-    /*********************************************************************/
-    BrainDouble         _rprop_eta_plus;            /*!< Rprop eta for positive gradient transition */
-    BrainDouble         _rprop_eta_minus;           /*!< Rprop eta for negative gradient transition */
-    BrainDouble         _rprop_delta_min;           /*!< Rprop delta min */
-    BrainDouble         _rprop_delta_max;           /*!< Rprop delta max */
-    BrainDouble         _backprop_learning_rate;    /*!< BackProp learning rate */
-    BrainDouble         _dropout_ratio;             /*!< Dropout filtering raion */
-    BrainBool           _use_dropout;               /*!< Dropout activation */
-    /*********************************************************************/
-    /**                      FUNCTIONAL PARAMETERS                      **/
-    /*********************************************************************/
-    ActivationPtrFunc   _activation_function;       /*!< Activation function */
-    ActivationPtrFunc   _derivative_function;       /*!< Derivative function */
-    LearningPtrFunc     _learning_function;         /*!< Learning function */
+    /******************************************************************/
+    /**                      STRUCTURAL PARAMETERS                   **/
+    /******************************************************************/
+    BrainSignal       _in;                    /*!< Input signal of an BrainNeuron                     */
+    BrainUint         _number_of_input;       /*!< Number of inputs of the neuron                     */
+    BrainWeight       _bias;                  /*!< Bias of the neuron                                 */
+    BrainWeight*      _w;                     /*!< An array of weight without the bias                */
+    BrainSignal       _out;                   /*!< An output value pointer owned by the BrainLayer    */
+    BrainDouble       _sum;                   /*!< Summation of all input time weight                 */
+    /******************************************************************/
+    /**                        TRAINING PARAMETERS                   **/
+    /******************************************************************/
+    BrainDouble       _rprop_eta_plus;        /*!< Rprop eta for positive gradient transition */
+    BrainDouble       _rprop_eta_minus;       /*!< Rprop eta for negative gradient transition */
+    BrainDouble       _rprop_delta_min;       /*!< Rprop delta min */
+    BrainDouble       _rprop_delta_max;       /*!< Rprop delta max */
+    BrainDouble       _backprop_learning_rate;/*!< BackProp learning rate */
+    BrainDouble       _dropout_ratio;         /*!< Dropout filtering raion */
+    BrainBool         _use_dropout;           /*!< Dropout activation */
+    /******************************************************************/
+    /**                      FUNCTIONAL PARAMETERS                   **/
+    /******************************************************************/
+    ActivationPtrFunc _activation_function;   /*!< Activation function */
+    ActivationPtrFunc _derivative_function;   /*!< Derivative function */
+    LearningPtrFunc   _learning_function;     /*!< Learning function */
 } Neuron;
 
 static void
@@ -251,8 +251,8 @@ activate_neuron(BrainNeuron neuron,
         const BrainBool   use_dropout         = neuron->_use_dropout;
         BrainDouble       dropout_factor      = 1.0;
 
-        *(neuron->_out)         = 0.0;
-        neuron->_sum   = 0.0;
+        *(neuron->_out) = 0.0;
+        neuron->_sum    = 0.0;
 
         //dropout is only available for hidden unit
         if (use_dropout
@@ -325,21 +325,24 @@ new_neuron(const BrainUint number_of_inputs,
     if ((out              != NULL)
     &&  (number_of_inputs != 0))
     {
-        BrainUint                index = 0;
-        BrainDouble random_value_limit = (BrainDouble)number_of_inputs;
+        BrainUint                index   = 0;
+        BrainDouble random_value_limit   = (BrainDouble)number_of_inputs;
 
-        BrainNeuron _neuron       = (BrainNeuron)calloc(1, sizeof(Neuron));
-        
-        _neuron->_out             = out;
-        _neuron->_number_of_input = number_of_inputs;
-        _neuron->_w               = (BrainWeight *)calloc(_neuron->_number_of_input, sizeof(BrainWeight));
-        _neuron->_bias            = new_weight(random_value_limit, NULL);
-        _neuron->_sum             = 0.0;
+        BrainNeuron _neuron              = (BrainNeuron)calloc(1, sizeof(Neuron));
+
+        _neuron->_out                    = out;
+        _neuron->_number_of_input        = number_of_inputs;
+        _neuron->_w                      = (BrainWeight *)calloc(_neuron->_number_of_input, sizeof(BrainWeight));
+        _neuron->_bias                   = new_weight(random_value_limit, NULL);
+        _neuron->_sum                    = 0.0;
         _neuron->_backprop_learning_rate = 1.12;
-        _neuron->_rprop_eta_plus = 1.2;
-        _neuron->_rprop_eta_minus = 0.95;
-        _neuron->_rprop_delta_min = 0.000001;
-        _neuron->_rprop_delta_max = 50;
+        _neuron->_rprop_eta_plus         = 1.2;
+        _neuron->_rprop_eta_minus        = 0.95;
+        _neuron->_rprop_delta_min        = 0.000001;
+        _neuron->_rprop_delta_max        = 50;
+        _neuron->_activation_function    = activation(Sigmoid);
+        _neuron->_derivative_function    = derivative(Sigmoid);
+        _neuron->_learning_function      = get_learning_function(BackPropagation);
 
         for (index = 0; index < _neuron->_number_of_input; ++index)
         {

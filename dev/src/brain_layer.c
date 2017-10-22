@@ -212,7 +212,39 @@ backpropagate_output_layer(BrainLayer output_layer,
                            const BrainSignal desired)
 {
     /******************************************************************/
-    /**               BACKPROPAGATE THE OUTPUT LAYER                 **/
+    /**         BACKPROPAGATE THE ERROR ON THE OUTPUT LAYER          **/
+    /**                                                              **/
+    /** For the output layer:                                        **/
+    /**                                                              **/
+    /**                   µ_ji = d C(W) / d w_ji                     **/
+    /**                                                              **/
+    /** Using the chain rule:                                        **/
+    /**                                                              **/
+    /**         µ_ji = (d out / d w_ji) * (d C(W) / d out)           **/
+    /**                                                              **/
+    /** where out is the output of the neuron                        **/
+    /** We can easily compute the second member using the            **/
+    /** derivative of the network cost function                      **/
+    /** Then we could rewrite the first member:                      **/
+    /**                                                              **/
+    /**     µ_ji = (dA(<in, W>) / d w_ji) * (d C(W) / d out)         **/
+    /**                                                              **/
+    /** where A is the activation function and <in, W> is the dot    **/
+    /** product between the input vector and the weight vector       **/
+    /**                                                              **/
+    /**    µ_ji = (d<in,W>/dw_ji)*(dA/d<in,W>)*(dC(W)/d out)         **/
+    /**                                                              **/
+    /** We can easily compute the second member using the            **/
+    /** derivative of the activation function                        **/
+    /** The first member is the simply in_i, so:                     **/
+    /**                                                              **/
+    /** µ_ji = in_i * (d A/d <in,W>) * (d C(W)/d out)                **/
+    /**                                                              **/
+    /** So for the output layer:                                     **/
+    /**                                                              **/
+    /**              $_ji = (d A/d <in,W>) * (d C(W)/d out)          **/
+    /**                                                              **/
+    /** the error rate cause by the j th neuron of the previous      **/
     /******************************************************************/
     if ((output_layer != NULL)
     &&  (desired != NULL))
@@ -230,12 +262,18 @@ backpropagate_output_layer(BrainLayer output_layer,
                  output_index < number_of_output;
                ++output_index)
             {
+                /******************************************************/
+                /**            COMPUTE THE COST DERIVATIVE           **/
+                /******************************************************/
                 const BrainDouble loss = cost_function_derivative(output[output_index], desired[output_index]);
 
                 BrainNeuron output_neuron = get_layer_neuron(output_layer, output_index);
 
                 if (output_neuron != NULL)
                 {
+                    /**************************************************/
+                    /**           CALL LEARNING FUNCTION             **/
+                    /**************************************************/
                     neuron_learning(output_neuron, loss);
                 }
             }
@@ -246,6 +284,35 @@ backpropagate_output_layer(BrainLayer output_layer,
 void
 backpropagate_hidden_layer(BrainLayer hidden_layer)
 {
+    /******************************************************************/
+    /**     BACKPROPAGATE THE ERROR ON THE HIDDEN LAYER              **/
+    /**                                                              **/
+    /** For the hidden layer, we have :                              **/
+    /**                                                              **/
+    /** µ_j = in_j * SUM (w_ji * $_ji) * (d A/d <in,W>)              **/
+    /**              ----------------                                **/
+    /**                     S                                        **/
+    /**                                                              **/
+    /** Where S denotes the total error cause in the next layer      **/
+    /**                                                              **/
+    /** During the forward pass, the error cause by a neuron is      **/
+    /** spread other all neurons from the next layer                 **/
+    /**                                                              **/
+    /**                   w1                                         **/
+    /**                ---------> next neuron 1 -------->            **/
+    /**               /   w2                             \           **/
+    /**        neuron-----------> next neuron 2 -------->   E        **/
+    /**               \   w3                             /           **/
+    /**                ---------> next neuron 3 -------->            **/
+    /**                                                              **/
+    /** So during the backward pass                                  **/
+    /**                 w1 * $_1                                     **/
+    /**                <-------- next neuron 1 <--------             **/
+    /**               / w2 * $_2                        \            **/
+    /**        neuron<---------- next neuron 2 <--------  E          **/
+    /**               \ w3 * $_3                        /            **/
+    /**                <-------- next neuron 3 <--------             **/
+    /******************************************************************/
     if (hidden_layer != NULL)
     {
         const BrainUint current_number_of_neuron = hidden_layer->_number_of_neuron;
@@ -278,6 +345,9 @@ activate_layer(BrainLayer layer, const BrainBool hidden_layer)
         for (i = 0; i < layer->_number_of_neuron; ++i)
         {
             BrainNeuron neuron = layer->_neurons[i];
+            /**********************************************************/
+            /**                    ACTIVATE ALL NEURONS              **/
+            /**********************************************************/
             activate_neuron(neuron, hidden_layer);
         }
     }
