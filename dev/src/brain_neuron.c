@@ -64,8 +64,14 @@ update_neuron_using_backpropagation(BrainNeuron neuron, const BrainDouble loss)
             {
                 const BrainDouble neuron_gradient_w = neuron_gradient * neuron->_in[i];
 
+                /******************************************************/
+                /**               BACKPROPAGATE $_i                  **/
+                /******************************************************/
                 update_error(neuron->_w[i], neuron_gradient);
 
+                /******************************************************/
+                /**               APPLY THE CORRECTION               **/
+                /******************************************************/
                 set_weight_correction(neuron->_w[i], - learning_rate * neuron_gradient_w);
             }
         }
@@ -254,7 +260,9 @@ activate_neuron(BrainNeuron neuron,
         *(neuron->_out) = 0.0;
         neuron->_sum    = 0.0;
 
-        //dropout is only available for hidden unit
+        /**************************************************************/
+        /**               APPLY DROPOUT REJECTION                    **/
+        /**************************************************************/
         if (use_dropout
         &&  is_an_hidden_unit
         && (0 <= dropout_percent)
@@ -270,10 +278,13 @@ activate_neuron(BrainNeuron neuron,
             }
         }
 
+        /**************************************************************/
+        /**                 COMPUTE A(<in, W>)                       **/
+        /**************************************************************/
         if ((activation_function != NULL)
         &&  (dropout_factor != 0.0))
         {
-            BrainUint     j = 0;
+            BrainUint j = 0;
 
             neuron->_sum = 0.0;
 
