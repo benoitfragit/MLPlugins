@@ -1,8 +1,0 @@
-[default]
-name=Défaut
-device=local
-runtime=host
-config-opts=
-prefix=/home/benoit/.cache/gnome-builder/install/libBrain/host
-app-id=
-default=true
