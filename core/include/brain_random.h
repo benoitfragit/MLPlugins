@@ -9,7 +9,7 @@
 #ifndef BRAIN_RANDOM_H
 #define BRAIN_RANDOM_H
 
-#include "brain_types.h"
+#include "brain_core_types.h"
 /**
  * \fn void initialize_random_generator()
  * \brief initialize the random number generator

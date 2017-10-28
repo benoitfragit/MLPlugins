@@ -9,7 +9,7 @@
 #ifndef BRAIN_XML_UTILS_H
 #define BRAIN_XML_UTILS_H
 
-#include "brain_types.h"
+#include "brain_core_types.h"
 
 /**
  * \fn BrainBool is_node_with_name(Context node, BrainString name)

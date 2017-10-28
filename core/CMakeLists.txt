@@ -1,33 +1,30 @@
 cmake_minimum_required(VERSION 2.8.9)
-project(Brain)
+project(BrainCore)
 
 set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-o2 -g3 -Wall -Wextra -Wshadow -Wunused -Wunused-parameter")
 
 find_package(LIBXML2 REQUIRED)
 
-configure_file ("${PROJECT_SOURCE_DIR}/include/brain_config.h.in"
-                "${PROJECT_BINARY_DIR}/include/brain_config.h")
-
-set(LIBBRAIN_SOURCE_DIR
+set(LIBBRAINCORE_SOURCE_DIR
     ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
-set(LIBBRAIN_INCLUDE_DIRS
+set(LIBBRAINCORE_INCLUDE_DIRS
     ${LIBXML2_INCLUDE_DIR}
     ${PROJECT_BINARY_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-include_directories(${LIBBRAIN_INCLUDE_DIRS})
+include_directories(${LIBBRAINCORE_INCLUDE_DIRS})
 
-file(GLOB_RECURSE SOURCES ${LIBBRAIN_SOURCE_DIR}/*.c)
+file(GLOB_RECURSE SOURCES ${LIBBRAINCORE_SOURCE_DIR}/*.c)
 file(GLOB_RECURSE HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h)
 
 #Generate the shared library from the sources
-add_library(Brain SHARED ${SOURCES} ${HEADERS})
+add_library(BrainCore SHARED ${SOURCES} ${HEADERS})
 
-target_link_libraries(Brain ${LIBXML2_LIBRARIES} "-lm")
-target_include_directories(Brain PUBLIC ${LIBBRAIN_INCLUDE_DIRS})
+target_link_libraries(BrainCore ${LIBXML2_LIBRARIES} "-lm")
+target_include_directories(BrainCore PUBLIC ${LIBBRAINCORE_INCLUDE_DIRS})
 
-install(TARGETS Brain
+install(TARGETS BrainCore
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib

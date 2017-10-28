@@ -11,7 +11,8 @@ file(GLOB_RECURSE HEADERS ${LIBBRAINBUILDER_INCLUDE_DIR}/*.h)
 
 add_executable(BrainBuilder ${SOURCES} ${HEADERS})
 
-target_link_libraries(BrainBuilder ${CMAKE_DL_LIBS})
+link_directories(${CMAKE_INSTALL_PREFIX}/lib)
+target_link_libraries(BrainBuilder BrainCore ${CMAKE_DL_LIBS})
 target_include_directories(BrainBuilder PUBLIC ${LIBBRAINBUILDER_INCLUDE_DIR})
 
 install(TARGETS BrainBuilder

@@ -9,13 +9,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "brain_core_types.h"
+
 #ifndef BRAIN_BUILDER_TYPES_H
 #define BRAIN_BUILDER_TYPES_H
-
-typedef struct Network* BrainNetwork;
-typedef const char*     BrainString;
-typedef unsigned int    BrainUint;
-typedef double*         BrainSignal;
 
 typedef BrainNetwork (*BrainLoaderPtrFunc)     (BrainString);
 typedef void         (*BrainConfigurePtrFunc)  (BrainNetwork,       BrainString);

@@ -14,27 +14,7 @@
 #include <time.h>
 #include <string.h>
 
-#include <libxml/tree.h>
-#include <libxml/xpath.h>
-#include <libxml/xmlwriter.h>
-
-/**
- * \def BRAIN_TRUE
- */
-#define BRAIN_TRUE  1
-/**
- * \def BRAIN_FALSE
- */
-#define BRAIN_FALSE 0
-
-typedef unsigned char BrainBool;
-typedef int           BrainInt;
-typedef unsigned int  BrainUint;
-typedef float         BrainFloat;
-typedef double        BrainDouble;
-typedef const char*   BrainString;
-typedef char          BrainChar;
-typedef BrainDouble*  BrainSignal;
+#include "brain_core_types.h"
 
 /**
  * \enum BrainActivationType
@@ -82,22 +62,6 @@ typedef enum BrainLearningType
     Last_Learning  = Resilient
 } BrainLearningType;
 
-/**
- * \brief define a XML Context
- */
-typedef xmlNodePtr Context;
-/**
- * \brief define an XML Document
- */
-typedef xmlDocPtr Document;
-/**
- * \brief Define an XML buffer
- */
-typedef xmlChar*  Buffer;
-/**
- * \brief define an XML writer
- */
-typedef xmlTextWriterPtr Writer;
 /**
  * \brief opaque pointer on Settings struct
  */

@@ -10,12 +10,13 @@ file(GLOB TEST_SRCS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} src/*.c)
 foreach(testSrc ${TEST_SRCS})
         get_filename_component(testName ${testSrc} NAME_WE)
 
-        include_directories(${CMAKE_CURRENT_BINARY_DIR}/src)
-
-        add_executable(${testName} ${testSrc})
+        include_directories(${CMAKE_CURRENT_BINARY_DIR}/src
+                            ${CMAKE_CURRENT_BINARY_DIR}/include
+                            ${LIBBRAINMLP_INCLUDE_DIRS})
 
         link_directories(${CMAKE_INSTALL_PREFIX}/lib)
-        target_link_libraries(${testName} Brain)
+        add_executable(${testName} ${testSrc})
+        target_link_libraries(${testName} BrainCore BrainMPL)
         target_include_directories(${testName} PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/src)
 
         add_test(NAME ${testName}
