@@ -61,6 +61,35 @@ get_learning_type(BrainString learning_name)
 }
 
 static void
+feedforward(BrainNetwork      network,
+            const BrainUint   number_of_input,
+            const BrainSignal in,
+            const BrainBool   use_dropout)
+{
+    if ((in != NULL) &&
+        (network != NULL) &&
+        (number_of_input == network->_number_of_inputs))
+    {
+        BrainUint i = 0;
+
+        /**************************************************************/
+        /**           FEED THE NETWORK WITH INPUT VECTOR             **/
+        /**************************************************************/
+        memcpy(network->_input, in, number_of_input * sizeof(BrainDouble));
+
+        for (i = 0; i < network->_number_of_layers; ++i)
+        {
+            BrainLayer layer = network->_layers[i];
+
+            /**********************************************************/
+            /**                    ACTIVATE ALL LAYERS               **/
+            /**********************************************************/
+            activate_layer(layer, use_dropout && (i != network->_number_of_layers - 1));
+        }
+    }
+}
+
+static void
 set_network_parameters( BrainNetwork network,
                          const BrainUint             iterations,
                          const BrainDouble           error,
@@ -421,32 +450,11 @@ new_network(const BrainUint signal_input_length,
 }
 
 void
-feedforward(BrainNetwork      network,
-            const BrainUint   number_of_input,
-            const BrainSignal in,
-            const BrainBool   use_dropout)
+predict(BrainNetwork      network,
+        const BrainUint   number_of_input,
+        const BrainSignal in)
 {
-    if ((in != NULL) &&
-        (network != NULL) &&
-        (number_of_input == network->_number_of_inputs))
-    {
-        BrainUint i = 0;
-
-        /**************************************************************/
-        /**           FEED THE NETWORK WITH INPUT VECTOR             **/
-        /**************************************************************/
-        memcpy(network->_input, in, number_of_input * sizeof(BrainDouble));
-
-        for (i = 0; i < network->_number_of_layers; ++i)
-        {
-            BrainLayer layer = network->_layers[i];
-
-            /**********************************************************/
-            /**                    ACTIVATE ALL LAYERS               **/
-            /**********************************************************/
-            activate_layer(layer, use_dropout && (i != network->_number_of_layers - 1));
-        }
-    }
+    feedforward(network, number_of_input, in, BRAIN_FALSE);
 }
 
 static BrainBool
@@ -483,7 +491,7 @@ isNetworkTrainingRequired(BrainNetwork network, const BrainData data)
             target = get_evaluating_output_signal(data, i);
 
             // only propagate the signal threw all layers
-            feedforward(network, input_length, input, BRAIN_FALSE);
+            predict(network, input_length, input);
 
             // grab the network output and compute the error
             // between the target and the real output
@@ -507,19 +515,16 @@ isNetworkTrainingRequired(BrainNetwork network, const BrainData data)
 }
 
 void
-train(BrainNetwork network, const BrainData data)
+train_network(BrainNetwork network, BrainString repository_path, BrainString tokenizer)
 {
     /********************************************************/
     /**   Train the neural network using the training set  **/
     /********************************************************/
-    if ((network != NULL) &&
-        (data    != NULL))
+    if (network != NULL)
     {
         const BrainUint max_iteration = network->_max_iter;
-        const BrainUint input_length  = get_input_signal_length(data);
-        const BrainUint output_length = get_output_signal_length(data);
-
-        const BrainUint number_of_training_sample = get_number_of_training_sample(data);
+        const BrainUint input_length  = network->_number_of_inputs;
+        const BrainUint output_length = get_layer_number_of_neuron(network->_layers[network->_number_of_layers - 1]);
 
         BrainSignal input = NULL;
         BrainSignal target = NULL;
@@ -527,27 +532,40 @@ train(BrainNetwork network, const BrainData data)
         BrainUint   iteration = 0;
         BrainUint   i = 0;
 
-        /**************************************************************/
-        /**              TRAIN OVER ALL TRAINING EXAMPLES            **/
-        /**************************************************************/
-        while ((iteration < max_iteration)
-        &&     isNetworkTrainingRequired(network, data))
-        {
-            for (i = 0; i < number_of_training_sample; ++i)
-            {
-                input = get_training_input_signal(data, i);
-                target = get_training_output_signal(data, i);
-                /******************************************************/
-                /**         FORWARD PROPAGATION OF THE SIGNAL        **/
-                /******************************************************/
-                feedforward(network, input_length, input, BRAIN_TRUE);
-                /******************************************************/
-                /**     BACKPROPAGATION USING THE TARGET SIGNAL      **/
-                /******************************************************/
-                backpropagate(network, output_length, target);
-            }
+        BrainData   data = NULL;
 
-            ++iteration;
+        if (repository_path
+        &&  tokenizer)
+        {
+            data = new_data(repository_path, tokenizer, input_length, output_length, BRAIN_TRUE);
+        }
+
+        if (data)
+        {
+            const BrainUint number_of_training_sample = get_number_of_training_sample(data);
+
+            /**************************************************************/
+            /**              TRAIN OVER ALL TRAINING EXAMPLES            **/
+            /**************************************************************/
+            while ((iteration < max_iteration)
+            &&     isNetworkTrainingRequired(network, data))
+            {
+                for (i = 0; i < number_of_training_sample; ++i)
+                {
+                    input = get_training_input_signal(data, i);
+                    target = get_training_output_signal(data, i);
+                    /******************************************************/
+                    /**         FORWARD PROPAGATION OF THE SIGNAL        **/
+                    /******************************************************/
+                    feedforward(network, input_length, input, BRAIN_TRUE);
+                    /******************************************************/
+                    /**     BACKPROPAGATION USING THE TARGET SIGNAL      **/
+                    /******************************************************/
+                    backpropagate(network, output_length, target);
+                }
+
+                ++iteration;
+            }
         }
     }
 }

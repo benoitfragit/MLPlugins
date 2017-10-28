@@ -36,18 +36,16 @@ BrainNetwork new_network(const BrainUint             signal_input_length,
  */
 void delete_network(BrainNetwork network);
 /**
- * \fn void feedforward(BrainNetwork network, const BrainUint number_of_input, const BrainSignal in, const BrainBool use_dropout)
+ * \fn void predict(BrainNetwork network, const BrainUint number_of_input, const BrainSignal in)
  * \brief propagate an input signal from the input signal to the output layer
  *
  * \param network the network to feed
  * \param number_of_input the length of the input signal
  * \param in the input signal
- * \param use_dropout ativate the dropout
  */
-void feedforward(BrainNetwork      network,
-                 const BrainUint   number_of_input,
-                 const BrainSignal in,
-                 const BrainBool   use_dropout);
+void predict(BrainNetwork      network,
+             const BrainUint   number_of_input,
+             const BrainSignal in);
 /**
  * \fn BrainSignal get_network_output(const BrainNetwork network)
  * \brief get the output of the network
@@ -67,13 +65,14 @@ BrainSignal get_network_output(const BrainNetwork network);
  */
 BrainLayer get_network_layer(const BrainNetwork network, const BrainUint index);
 /**
- * \fn void train(BrainNetwork network, const BrainData data)
+ * \fn void train_network(BrainNetwork network, BrainString repository_path, BrainString tokenizer)
  * \brief launch the training process for the neural network
  *
- * \param network      the BrainNetwork to train
- * \param data         Training dataset
+ * \param network         the BrainNetwork to train
+ * \param repository_path the repository path of the dataset
+ * \param tokenizer       the tokenizer
  */
-void train(BrainNetwork network, const BrainData data);
+void train_network(BrainNetwork network, BrainString repository_path, BrainString tokenizer);
 /**
  * \fn void configure_network_with_context(BrainNetwork network, BrBrainString filepath)
  * \brief Load settings from an XML context
