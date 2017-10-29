@@ -11,12 +11,11 @@ foreach(testSrc ${TEST_SRCS})
         get_filename_component(testName ${testSrc} NAME_WE)
 
         include_directories(${CMAKE_CURRENT_BINARY_DIR}/src
-                            ${CMAKE_CURRENT_BINARY_DIR}/include
-                            ${LIBBRAINMLP_INCLUDE_DIRS})
+                            ${CMAKE_CURRENT_BINARY_DIR}/include)
 
         link_directories(${CMAKE_INSTALL_PREFIX}/lib)
         add_executable(${testName} ${testSrc})
-        target_link_libraries(${testName} BrainCore BrainMPL)
+        target_link_libraries(${testName} BrainMLP BrainCore)
         target_include_directories(${testName} PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/src)
 
         add_test(NAME ${testName}

@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 2.8.9)
+
 add_subdirectory(core)
 add_subdirectory(builder)
 add_subdirectory(plugins)
-add_subdirectory(data)
 
 if(CMAKE_ENABLE_DOC)
     find_package(Doxygen)

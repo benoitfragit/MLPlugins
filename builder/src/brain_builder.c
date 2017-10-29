@@ -1,4 +1,5 @@
 #include "brain_builder.h"
+#include "brain_logging_utils.h"
 #include <dlfcn.h>
 
 struct Builder
@@ -68,7 +69,11 @@ new_brain_builder(BrainString plugin,
 
     if (!builder)
     {
-        printf("Unable to load plugin\n");
+        BRAIN_WARNING("Unable to load plugin:%s\n", plugin);
+    }
+    else
+    {
+        BRAIN_INFO("Plugin:%s has been loaded\n", plugin);
     }
 
     return builder;

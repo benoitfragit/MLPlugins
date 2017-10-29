@@ -1,9 +1,9 @@
 #include "brain_builder.h"
 
-int
-main(int argc, char** argv)
+BrainInt
+main(BrainInt argc, BrainChar** argv)
 {
-    int ret = EXIT_FAILURE;
+    BrainInt ret = EXIT_FAILURE;
 
     BrainBuilder builder = new_brain_builder("Brain",
                                              "new_network_from_context",
@@ -15,8 +15,6 @@ main(int argc, char** argv)
 
     if (builder)
     {
-        printf("Ok, builder is loaded\n");
-
         ret = EXIT_SUCCESS;
     }
 

@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 2.8.9)
 project(BrainCore)
 
-set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-o2 -g3 -Wall -Wextra -Wshadow -Wunused -Wunused-parameter")
+set(CMAKE_C_FLAGS
+    ${CMAKE_C_FLAGS}
+    "-o2 -g3 -Wall -Wextra -Wshadow -Wunused -Wunused-parameter")
 
 find_package(LIBXML2 REQUIRED)
 

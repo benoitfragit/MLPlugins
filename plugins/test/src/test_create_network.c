@@ -1,9 +1,11 @@
 #include "config_all.h"
-#include "brain_types.h"
+
+#include "brain_logging_utils.h"
+
 #include "brain_network.h"
 #include "brain_layer.h"
 #include "brain_neuron.h"
-#include "brain_logging_utils.h"
+#include "brain_types.h"
 
 static const int NUMBER_OF_LAYERS    = 3;
 static const int NUMBER_OF_NEURONS[] = {3, 6, 2};
