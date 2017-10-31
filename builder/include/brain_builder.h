@@ -10,12 +10,6 @@
 
 #include "brain_builder_types.h"
 
-BrainBuilder new_brain_builder(BrainString plugin,
-                               BrainString plugin_load_function,
-                               BrainString plugin_configure,
-                               BrainString plugin_serialize,
-                               BrainString plugin_deserialize,
-                               BrainString plugin_train_function,
-                               BrainString plugin_predict_function);
+BrainBuilder new_brain_builder(BrainString plugin_definition_file);
 
 #endif /* BRAIN_BUILDER_H */

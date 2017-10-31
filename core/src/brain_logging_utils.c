@@ -2,6 +2,13 @@
 #include "brain_core_types.h"
 #include <string.h>
 
+#define MESSAGE() va_list args;                                        \
+                  va_start(args, format);                              \
+                  char buffer[1000];                                   \
+                  vsprintf(buffer, format, args);                      \
+                  printf("%s\n", buffer);                              \
+                  va_end(args);
+
 typedef enum BrainLogLevel
 {
     LOG_NONE     = 0,
@@ -46,12 +53,7 @@ BRAIN_DEBUG(BrainString format, ...)
 
     if (level <= LOG_DEBUG)
     {
-        va_list args;
-        va_start(args, format);
-        char buffer[1000];
-        vsprintf(buffer, format, args);
-        printf("%s\n", buffer);
-        va_end(args);
+        MESSAGE()
     }
 }
 
@@ -62,12 +64,7 @@ BRAIN_INFO(BrainString format, ...)
 
     if (level <= LOG_INFO)
     {
-        va_list args;
-        va_start(args, format);
-        char buffer[1000];
-        vsprintf(buffer, format, args);
-        printf("%s\n", buffer);
-        va_end(args);
+        MESSAGE()
     }
 }
 
@@ -78,12 +75,7 @@ BRAIN_WARNING(BrainString format, ...)
 
     if (level <= LOG_WARNING)
     {
-        va_list args;
-        va_start(args, format);
-        char buffer[1000];
-        vsprintf(buffer, format, args);
-        printf("%s\n", buffer);
-        va_end(args);
+        MESSAGE()
     }
 }
 
@@ -94,11 +86,6 @@ BRAIN_CRITICAL(BrainString format, ...)
 
     if (level <= LOG_CRITICAL)
     {
-        va_list args;
-        va_start(args, format);
-        char buffer[1000];
-        vsprintf(buffer, format, args);
-        printf("%s\n", buffer);
-        va_end(args);
+        MESSAGE()
     }
 }

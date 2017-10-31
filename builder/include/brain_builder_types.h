@@ -20,6 +20,7 @@ typedef void         (*BrainSerializePtrFunc)  (const BrainNetwork, BrainString)
 typedef void         (*BrainDeserializePtrFunc)(BrainNetwork,       BrainString);
 typedef void         (*BrainTrainPtrFunc)      (BrainNetwork,       BrainString,     BrainString);
 typedef void         (*BrainPredictPtrFunc)    (BrainNetwork,       const BrainUint, const BrainSignal);
+typedef void         (*BrainDeletePtrFunc)     (BrainNetwork);
 
 typedef struct Builder* BrainBuilder;
 
