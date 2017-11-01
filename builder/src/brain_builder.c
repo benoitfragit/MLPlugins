@@ -4,13 +4,53 @@
 #include "brain_xml_utils.h"
 #include <dlfcn.h>
 
+#define GET_PLUGIN_SYMBOL(context, field, handle, function)            \
+        {                                                              \
+            BrainChar* xml_buffer = NULL;                              \
+            BrainString keyword = get_plugin_api_keyword(field);       \
+            function = NULL;                                           \
+            if (keyword)                                               \
+            {                                                          \
+                xml_buffer = (BrainChar *)node_get_prop(context, keyword);\
+                if (buffer)                                            \
+                {                                                      \
+                    function = dlsym(handle, xml_buffer);              \
+                    free(xml_buffer);                                  \
+                }                                                      \
+            }                                                          \
+        }
+
+static BrainString _plugin_api_keywords[] = {
+    "load",
+    "configure",
+    "serialize",
+    "deserialize",
+    "train",
+    "predict",
+    "delete"
+};
+
+typedef enum PluginApiEnum
+{
+    BUILDER_API_LOAD        = 0,
+    BUILDER_API_CONFIGURE   = 1,
+    BUILDER_API_SERIALIZE   = 2,
+    BUILDER_API_DESERIALIZE = 3,
+    BUILDER_API_TRAIN       = 4,
+    BUILDER_API_PREDICT     = 5,
+    BUILDER_API_DELETE      = 6,
+
+    BUILDER_API_FIRST = BUILDER_API_LOAD,
+    BUILDER_API_LAST  = BUILDER_API_DELETE
+} PluginApiEnum;
+
 struct Builder
 {
     /******************************************************************/
     /**                     INTERNAL PARAMETERS                      **/
     /******************************************************************/
     BrainChar*              _name;
-    void*                   _handle;
+    BrainHandle             _handle;
     /******************************************************************/
     /**                   FUNCTIONAL PARAMETERS                      **/
     /******************************************************************/
@@ -22,6 +62,24 @@ struct Builder
     BrainPredictPtrFunc     _predict;
     BrainDeletePtrFunc      _delete;
 } Builder;
+
+static BrainString
+get_plugin_api_keyword(const PluginApiEnum field)
+{
+    BrainString keyword = NULL;
+    BrainUint i = 0;
+
+    for (i = BUILDER_API_FIRST; i <= BUILDER_API_LAST; ++i)
+    {
+        if (i == field)
+        {
+            keyword = _plugin_api_keywords[i];
+            break;
+        }
+    }
+
+    return keyword;
+}
 
 BrainBuilder
 new_brain_builder(BrainString plugin_definition_file)
@@ -54,60 +112,21 @@ new_brain_builder(BrainString plugin_definition_file)
 
                         if (builder->_handle)
                         {
-                            builder->_load        = NULL;
-                            builder->_configure   = NULL;
-                            builder->_serialize   = NULL;
-                            builder->_deserialize = NULL;
-                            builder->_train       = NULL;
-                            builder->_predict     = NULL;
-                            builder->_delete      = NULL;
-
                             builder->_name = (BrainChar*)calloc(s, sizeof(BrainChar));
                             strcpy(builder->_name, buffer);
                             free(buffer);
 
-                            buffer = (BrainChar *)node_get_prop(plugin_context, "load");
-                            if (buffer)
-                            {
-                                builder->_load = dlsym(builder->_handle, buffer);
-                                free(buffer);
-                            }
-                            buffer = (BrainChar *)node_get_prop(plugin_context, "configure");
-                            if (buffer)
-                            {
-                                builder->_configure = dlsym(builder->_handle, buffer);
-                                free(buffer);
-                            }
-                            buffer = (BrainChar *)node_get_prop(plugin_context, "serialize");
-                            if (buffer)
-                            {
-                                builder->_serialize = dlsym(builder->_handle, buffer);
-                                free(buffer);
-                            }
-                            buffer = (BrainChar *)node_get_prop(plugin_context, "deserialize");
-                            if (buffer)
-                            {
-                                builder->_deserialize = dlsym(builder->_handle, buffer);
-                                free(buffer);
-                            }
-                            buffer = (BrainChar *)node_get_prop(plugin_context, "train");
-                            if (buffer)
-                            {
-                                builder->_train = dlsym(builder->_handle, buffer);
-                                free(buffer);
-                            }
-                            buffer = (BrainChar *)node_get_prop(plugin_context, "redict");
-                            if (buffer)
-                            {
-                                builder->_predict = dlsym(builder->_handle, buffer);
-                                free(buffer);
-                            }
-                            buffer = (BrainChar *)node_get_prop(plugin_context, "delete");
-                            if (buffer)
-                            {
-                                builder->_delete = dlsym(builder->_handle, buffer);
-                                free(buffer);
-                            }
+                            GET_PLUGIN_SYMBOL(plugin_context, BUILDER_API_LOAD,         builder->_handle, builder->_load);
+                            GET_PLUGIN_SYMBOL(plugin_context, BUILDER_API_CONFIGURE,    builder->_handle, builder->_configure);
+                            GET_PLUGIN_SYMBOL(plugin_context, BUILDER_API_SERIALIZE,    builder->_handle, builder->_serialize);
+                            GET_PLUGIN_SYMBOL(plugin_context, BUILDER_API_DESERIALIZE,  builder->_handle, builder->_deserialize);
+                            GET_PLUGIN_SYMBOL(plugin_context, BUILDER_API_TRAIN,        builder->_handle, builder->_train);
+                            GET_PLUGIN_SYMBOL(plugin_context, BUILDER_API_PREDICT,      builder->_handle, builder->_predict);
+                            GET_PLUGIN_SYMBOL(plugin_context, BUILDER_API_DELETE,       builder->_handle, builder->_delete);
+                        }
+                        else
+                        {
+                            BRAIN_CRITICAL("Unable to open the %s plugin\n", buf);
                         }
                     }
 
@@ -155,4 +174,23 @@ new_brain_builder(BrainString plugin_definition_file)
     }
 
     return builder;
+}
+
+void
+delete_builder(BrainBuilder builder)
+{
+    if (builder)
+    {
+        if (builder->_name)
+        {
+            free(builder->_name);
+        }
+
+        if (builder->_handle)
+        {
+            dlclose(builder->_handle);
+        }
+
+        free(builder);
+    }
 }

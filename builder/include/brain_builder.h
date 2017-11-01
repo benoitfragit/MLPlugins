@@ -11,5 +11,6 @@
 #include "brain_builder_types.h"
 
 BrainBuilder new_brain_builder(BrainString plugin_definition_file);
+void         delete_builder(BrainBuilder builder);
 
 #endif /* BRAIN_BUILDER_H */

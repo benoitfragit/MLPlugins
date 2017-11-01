@@ -5,7 +5,7 @@ main(BrainInt argc, BrainChar** argv)
 {
     BrainInt ret = EXIT_FAILURE;
 
-    BrainBuilder builder = new_brain_builder("plugin_brain.xml");
+    BrainBuilder builder = new_brain_builder("install/debug/libbrain-1.0.0/api/mlp.xml");
 
     if (builder)
     {

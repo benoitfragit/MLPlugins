@@ -39,6 +39,10 @@ install(FILES ${HEADERS}
         DESTINATION ${CMAKE_INSTALL_PREFIX}/include
         COMPONENT headers)
 
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/mlp.xml
+        DESTINATION ${CMAKE_INSTALL_PREFIX}/api
+        COMPONENT api)
+
 install(DIRECTORY   ${CMAKE_CURRENT_SOURCE_DIR}/schemas/
         DESTINATION ${CMAKE_INSTALL_PREFIX}/schemas
         FILES_MATCHING PATTERN "*.xsd"  PATTERN "*.xsd")
