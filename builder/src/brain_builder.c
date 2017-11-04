@@ -99,7 +99,7 @@ load_builder_function(BrainBuilder builder, Context context)
                 switch(field)
                 {
                     case BUILDER_API_LOAD:
-                        LOAD       = GET_PLUGIN_SYMBOL(HANDLE, symbol);
+                        LOAD        = GET_PLUGIN_SYMBOL(HANDLE, symbol);
                         break;
                     case BUILDER_API_CONFIGURE:
                         CONFIGURE   = GET_PLUGIN_SYMBOL(HANDLE, symbol);
@@ -342,4 +342,17 @@ deserialize_network_at_index(BrainBuilder builder,
     {
         DESERIALIZE(NETWORKS[index], filename);
     }
+}
+
+BrainUint
+get_builder_number_of_networks(BrainBuilder builder)
+{
+    BrainUint ret = 0;
+
+    if (builder)
+    {
+        ret = LENGTH;
+    }
+
+    return ret;
 }
