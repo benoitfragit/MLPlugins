@@ -1,2 +1,10 @@
 <?xml version="1.0"?>
-<plugin name="BrainMLP" load="new_network_from_context" configure="configure_network_with_context" serialize="serialize_network" deserialize="deserialize_network" train="train_network" predict="predict" delete="delete_network"/>
+<plugin name="BrainMLP">
+    <function name="load"        symbol="new_network_from_context"/>
+    <function name="configure"   symbol="configure_network_with_context"/>
+    <function name="serialize"   symbol="serialize_network"/>
+    <function name="deserialize" symbol="deserialize_network"/>
+    <function name="train"       symbol="train_network"/>
+    <function name="predict"     symbol="predict"/>
+    <function name="delete"      symbol="delete_network"/>
+</plugin>

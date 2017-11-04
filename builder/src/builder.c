@@ -9,6 +9,7 @@ main(BrainInt argc, BrainChar** argv)
 
     if (builder)
     {
+        delete_brain_builder(builder);
         ret = EXIT_SUCCESS;
     }
 
