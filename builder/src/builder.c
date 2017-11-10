@@ -1,19 +1,20 @@
-#include "brain_builder.h"
+#include "brain_plugin.h"
 
 BrainInt
 main(BrainInt argc, BrainChar** argv)
 {
     BrainInt ret = EXIT_FAILURE;
 
-    BrainBuilder builder = new_brain_builder("install/debug/libbrain-1.0.0/api/mlp.xml");
+    BrainPlugin plugin = new_brain_plugin("install/debug/libbrain-1.0.0/api/mlp.xml");
 
-    if (builder)
+    if (plugin)
     {
-        new_builder_network(builder, "/home/benoit/Documents/projets/C/libBrain/plugins/test/src/test_create_network.xml");
+        new_plugin_network(plugin, "/home/benoit/Documents/projets/C/libBrain/plugins/test/src/test_create_network.xml");
 
-        serialize_network_at_index(builder, "/tmp/serialize.xml", 0);
+        serialize_network_at_index(plugin, "/tmp/serialize.xml", 0);
 
-        delete_brain_builder(builder);
+        delete_brain_plugin(plugin);
+
         ret = EXIT_SUCCESS;
     }
 

@@ -97,40 +97,11 @@ BrainSignal get_layer_errors(const BrainLayer layer);
  */
 void activate_layer(const BrainLayer layer, const BrainBool hidden_layer);
 /**
- * \fn void set_layer_parameters( BrainLayer layer,
-                                     const BrainActivationType   activation_type,
-                                     const BrainCostFunctionType costfunction_type,
-                                     const BrainBool             use_dropout,
-                                     const BrainDouble           dropout_factor,
-                                     const BrainLearningType     learning_type,
-                                     const BrainDouble           backpropagation_learning_rate,
-                                     const BrainDouble           resilient_delta_min,
-                                     const BrainDouble           resilient_delta_max,
-                                     const BrainDouble           resilient_eta_positive,
-                                     const BrainDouble           resilient_eta_negative);
+ * \fn void configure_layer_with_context( BrainLayer layer, Context context);
  * \brief customize neural network parameters
  *
- * \param layer             The BrainLayer to train
- * \param activation_type   The activation function type
- * \param costfunction_tye  The cost function type
- * \param use_droput        Activate or not the dropout rejection
- * \param dropout_factor    Set the dropout rejection threshold
- * \param learning_type     Set the learning function type
- * \param backpropagation_learning_rate Set the BACKPROP learning rate
- * \param resilient_delta_min Set RPROP min delta value
- * \param resilient_delta_max Set RPROP max delta value
- * \param resilient_eta_positive Set RPROP eta for positive gradient sign
- * \param resilient_eta_negative Set RPROP eta for negative gradient sign
+ * \param layer     The BrainLayer to train
+ * \param context   The XML context
  */
-void set_layer_parameters(BrainLayer layer,
-                             const BrainActivationType   activation_type,
-                             const BrainCostFunctionType costfunction_type,
-                             const BrainBool             use_dropout,
-                             const BrainDouble           dropout_factor,
-                             const BrainLearningType     learning_type,
-                             const BrainDouble           backpropagation_learning_rate,
-                             const BrainDouble           resilient_delta_min,
-                             const BrainDouble           resilient_delta_max,
-                             const BrainDouble           resilient_eta_positive,
-                             const BrainDouble           resilient_eta_negative);
+void configure_layer_with_context(BrainLayer, Context context);
 #endif /* BRAIN_LAYER_H */

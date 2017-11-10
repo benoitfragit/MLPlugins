@@ -42,6 +42,29 @@ struct Neuron
     LearningPtrFunc   _learning_function;     /*!< Learning function */
 } Neuron;
 
+static BrainString _learning_names[] =
+{
+    "BackPropagation",
+    "Resilient"
+};
+
+static BrainLearningType
+get_learning_type(BrainString learning_name)
+{
+    BrainUint i = 0;
+
+    for (i = First_Learning; i <= Last_Learning; ++i)
+    {
+        if (i != First_Learning
+        && !strcmp(_learning_names[i - First_Learning - 1], learning_name))
+        {
+            return i;
+        }
+    }
+
+    return Invalid_Learning;
+}
+
 static void
 update_neuron_using_backpropagation(BrainNeuron neuron, const BrainDouble loss)
 {
@@ -194,33 +217,88 @@ get_learning_function(const BrainLearningType learning_type)
 }
 
 void
-set_neuron_parameters(BrainNeuron neuron,
-                     const BrainActivationType   activation_type,
-                     const BrainBool             use_dropout,
-                     const BrainDouble           dropout_factor,
-                     const BrainLearningType     learning_type,
-                     const BrainDouble           backpropagation_learning_rate,
-                     const BrainDouble           resilient_delta_min,
-                     const BrainDouble           resilient_delta_max,
-                     const BrainDouble           resilient_eta_positive,
-                     const BrainDouble           resilient_eta_negative)
+configure_neuron_with_context(BrainNeuron neuron, Context context)
 {
-    if (neuron)
+    BrainLearningType     learning_type      = BackPropagation;
+    BrainActivationType   activation_type    = Sigmoid;
+
+    if (neuron && context)
     {
-        neuron->_use_dropout = use_dropout;
-        neuron->_dropout_ratio = dropout_factor;
+        BrainChar* buffer = NULL;
+        Context training_context = get_node_with_name_and_index(context, "training", 0);
 
-        neuron->_backprop_learning_rate = backpropagation_learning_rate;
+        if (training_context != NULL)
+        {
+            Context dropout_context = get_node_with_name_and_index(training_context, "dropout", 0);
+            Context method_context  = get_node_with_name_and_index(training_context, "method", 0);
 
-        neuron->_rprop_delta_max = resilient_delta_max;
-        neuron->_rprop_delta_min = resilient_delta_min;
-        neuron->_rprop_eta_plus  = resilient_eta_positive;
-        neuron->_rprop_eta_minus = resilient_eta_negative;
+            if (dropout_context != NULL)
+            {
+                neuron->_use_dropout   = node_get_bool(dropout_context, "activate", BRAIN_FALSE);
+                neuron->_dropout_ratio = node_get_double(dropout_context, "factor", 1.0);
+            }
 
+            buffer = (BrainChar *)node_get_prop(training_context, "learning");
+            learning_type = get_learning_type(buffer);
+            neuron->_learning_function = get_learning_function(learning_type);
+
+            if (buffer != NULL)
+            {
+                free(buffer);
+            }
+
+            if (method_context != NULL)
+            {
+                switch (learning_type)
+                {
+                    case BackPropagation:
+                    {
+                        Context backprop_context = get_node_with_name_and_index(method_context, "backprop", 0);
+
+                        if (backprop_context != NULL)
+                        {
+                            neuron->_backprop_learning_rate  = node_get_double(backprop_context, "learning-rate", 1.2);
+                        }
+                    }
+                        break;
+                    case Resilient:
+                    {
+                        Context rprop_context = get_node_with_name_and_index(method_context, "rprop", 0);
+
+                        if (rprop_context != NULL)
+                        {
+                            Context eta_context   = get_node_with_name_and_index(rprop_context, "resilient-eta", 0);
+                            Context delta_context = get_node_with_name_and_index(rprop_context, "resilient-delta", 0);
+
+                            if (eta_context != NULL)
+                            {
+                                neuron->_rprop_eta_plus  = node_get_double(eta_context, "positive", 1.25);
+                                neuron->_rprop_eta_minus = node_get_double(eta_context, "negative", 0.95);
+                            }
+
+                            if (delta_context != NULL)
+                            {
+                                neuron->_rprop_delta_max = node_get_double(delta_context, "max", 50.0);
+                                neuron->_rprop_delta_min = node_get_double(delta_context, "min", 0.000001);
+                            }
+                        }
+                    }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        buffer = (BrainChar *)node_get_prop(context, "activation-function");
+        activation_type = get_activation_type(buffer);
         neuron->_activation_function = activation(activation_type);
         neuron->_derivative_function = derivative(activation_type);
 
-        neuron->_learning_function = get_learning_function(learning_type);
+        if (buffer != NULL)
+        {
+            free(buffer);
+        }
     }
 }
 

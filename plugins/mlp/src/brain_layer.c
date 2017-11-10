@@ -1,6 +1,7 @@
 #include "brain_layer.h"
 #include "brain_neuron.h"
 #include "brain_cost.h"
+#include "brain_xml_utils.h"
 
 /**
  * \struct Layer
@@ -26,39 +27,28 @@ struct Layer
 } Layer;
 
 void
-set_layer_parameters(BrainLayer layer,
-                     const BrainActivationType   activation_type,
-                     const BrainCostFunctionType costfunction_type,
-                     const BrainBool             use_dropout,
-                     const BrainDouble           dropout_factor,
-                     const BrainLearningType     learning_type,
-                     const BrainDouble           backpropagation_learning_rate,
-                     const BrainDouble           resilient_delta_min,
-                     const BrainDouble           resilient_delta_max,
-                     const BrainDouble           resilient_eta_positive,
-                     const BrainDouble           resilient_eta_negative)
+configure_layer_with_context(BrainLayer layer, Context context)
 {
-    if (layer)
+    if (layer && context)
     {
         const BrainUint number_of_neurons = layer->_number_of_neuron;
         BrainUint i = 0;
 
-        layer->_cost_function_derivative = get_cost_function_derivative(costfunction_type);
+        BrainChar* buffer = (BrainChar *)node_get_prop(context, "cost-function");
+        BrainCostFunctionType cost_function_type = get_cost_function_type(buffer);
+
+        if (buffer != NULL)
+        {
+            free(buffer);
+        }
+
+        layer->_cost_function_derivative = get_cost_function_derivative(cost_function_type);
 
         for (i = 0; i < number_of_neurons; ++i)
         {
             BrainNeuron neuron = layer->_neurons[i];
 
-            set_neuron_parameters(neuron,
-                                    activation_type,
-                                    use_dropout,
-                                    dropout_factor,
-                                    learning_type,
-                                    backpropagation_learning_rate,
-                                    resilient_delta_min,
-                                    resilient_delta_max,
-                                    resilient_eta_positive,
-                                    resilient_eta_negative);
+            configure_neuron_with_context(neuron, context);
         }
     }
 }

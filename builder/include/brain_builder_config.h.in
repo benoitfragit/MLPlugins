@@ -1,6 +1,0 @@
-#ifndef BRAIN_BUILDER_CONFIG_H
-#define BRAIN_BUILDER_CONFIG_H
-
-#define PLUGIN_DEFINITION_XSD "${CMAKE_INSTALL_PREFIX}/schemas/plugin_api.xsd"
-
-#endif /* BRAIN_BUILDER_CONFIG */

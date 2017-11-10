@@ -3,8 +3,8 @@ project(BrainBuilder)
 
 set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-o2 -g3 -Wall -Wextra -Wshadow -Wunused -Wunused-parameter")
 
-configure_file ("${PROJECT_SOURCE_DIR}/include/brain_builder_config.h.in"
-                "${PROJECT_BINARY_DIR}/include/brain_builder_config.h")
+configure_file ("${PROJECT_SOURCE_DIR}/include/brain_plugin_config.h.in"
+                "${PROJECT_BINARY_DIR}/include/brain_plugin_config.h")
 
 set(LIBBRAINBUILDER_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(LIBBRAINBUILDER_INCLUDE_DIR

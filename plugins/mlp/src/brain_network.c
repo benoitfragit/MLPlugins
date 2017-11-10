@@ -37,29 +37,6 @@ struct Network
     CostPtrFunc   _cost_function;    /*!< Cost function                  */
 } Network;
 
-static BrainString _learning_names[] =
-{
-    "BackPropagation",
-    "Resilient"
-};
-
-static BrainLearningType
-get_learning_type(BrainString learning_name)
-{
-    BrainUint i = 0;
-
-    for (i = First_Learning; i <= Last_Learning; ++i)
-    {
-        if (i != First_Learning
-        && !strcmp(_learning_names[i - First_Learning - 1], learning_name))
-        {
-            return i;
-        }
-    }
-
-    return Invalid_Learning;
-}
-
 static void
 feedforward(BrainNetwork      network,
             const BrainUint   number_of_input,
@@ -89,49 +66,6 @@ feedforward(BrainNetwork      network,
     }
 }
 
-static void
-set_network_parameters( BrainNetwork network,
-                         const BrainUint             iterations,
-                         const BrainDouble           error,
-                         const BrainActivationType   activation_type,
-                         const BrainCostFunctionType costfunction_type,
-                         const BrainBool             use_dropout,
-                         const BrainDouble           dropout_factor,
-                         const BrainLearningType     learning_type,
-                         const BrainDouble           backpropagation_learning_rate,
-                         const BrainDouble           resilient_delta_min,
-                         const BrainDouble           resilient_delta_max,
-                         const BrainDouble           resilient_eta_positive,
-                         const BrainDouble           resilient_eta_negative)
-{
-    if (network)
-    {
-        const BrainUint number_of_layers = network->_number_of_layers;
-        BrainUint i = 0;
-
-        network->_max_iter  = iterations;
-        network->_max_error = error;
-        network->_cost_function = get_cost_function(costfunction_type);
-
-        for (i = 0; i < number_of_layers; ++i)
-        {
-            BrainLayer layer = network->_layers[i];
-
-            set_layer_parameters(layer,
-                                 activation_type,
-                                 costfunction_type,
-                                 use_dropout,
-                                 dropout_factor,
-                                 learning_type,
-                                 backpropagation_learning_rate,
-                                 resilient_delta_min,
-                                 resilient_delta_max,
-                                 resilient_eta_positive,
-                                 resilient_eta_negative);
-        }
-    }
-}
-
 void
 configure_network_with_context(BrainNetwork network, BrainString filepath)
 {
@@ -147,126 +81,33 @@ configure_network_with_context(BrainNetwork network, BrainString filepath)
 
             if (settings_context && is_node_with_name(settings_context, "settings"))
             {
-                BrainUint             max_iter           = 1000;
-                BrainDouble           error              = 0.001;
-                BrainBool             use_dropout        = BRAIN_FALSE;
-                BrainDouble           dropout_ratio      = 1.0;
-                BrainDouble           delta_min          = 0.000001;
-                BrainDouble           delta_max          = 50.0;
-                BrainDouble           eta_positive       = 1.2;
-                BrainDouble           eta_negative       = 0.95;
-                BrainDouble           learning_rate      = 1.12;
-                BrainLearningType     learning_type      = BackPropagation;
-                BrainActivationType   activation_type    = Sigmoid;
-                BrainCostFunctionType cost_function_type = CrossEntropy;
-                BrainChar*            buffer             = NULL;
+                const BrainUint number_of_layer = network->_number_of_layers;
+                BrainUint i = 0;
+
+                BrainChar* buffer = (BrainChar *)node_get_prop(settings_context, "cost-function");
+                BrainCostFunctionType cost_function_type = get_cost_function_type(buffer);
+                network->_cost_function = get_cost_function(cost_function_type);
+
+                if (buffer != NULL)
+                {
+                    free(buffer);
+                }
 
                 Context training_context = get_node_with_name_and_index(settings_context,
                                                                         "training",
                                                                         0);
-
                 if (training_context != NULL)
                 {
-                    Context dropout_context = get_node_with_name_and_index(training_context,
-                                                                           "dropout",
-                                                                           0);
-
-                    if (dropout_context != NULL)
-                    {
-                        use_dropout   = node_get_bool(dropout_context, "activate", BRAIN_FALSE);
-                        dropout_ratio = node_get_double(dropout_context, "factor", 1.0);
-                    }
-
-                    max_iter = node_get_int(training_context, "iterations", 1000);
-                    error    = node_get_double(training_context, "error", 0.001);
-
-                    buffer = (BrainChar *)node_get_prop(training_context, "learning");
-                    learning_type = get_learning_type(buffer);
-
-                    if (buffer != NULL)
-                    {
-                        free(buffer);
-                    }
-
-                    Context method_context = get_node_with_name_and_index(training_context,
-                                                                          "method",
-                                                                          0);
-
-                    if (method_context != NULL)
-                    {
-                        switch (learning_type)
-                        {
-                            case BackPropagation:
-                            {
-                                Context backprop_context = get_node_with_name_and_index(method_context, "backprop", 0);
-
-                                if (backprop_context != NULL)
-                                {
-                                    learning_rate = node_get_double(backprop_context, "learning-rate", 1.2);
-                                }
-                            }
-                                break;
-                            case Resilient:
-                            {
-                                Context rprop_context = get_node_with_name_and_index(method_context, "rprop", 0);
-
-                                if (rprop_context != NULL)
-                                {
-                                    Context eta_context   = get_node_with_name_and_index(rprop_context, "resilient-eta", 0);
-                                    Context delta_context = get_node_with_name_and_index(rprop_context, "resilient-delta", 0);
-
-                                    if (eta_context != NULL)
-                                    {
-                                        eta_positive = node_get_double(eta_context, "positive", 1.25);
-                                        eta_negative = node_get_double(eta_context, "negative", 0.95);
-                                    }
-
-                                    if (delta_context != NULL)
-                                    {
-                                        delta_max = node_get_double(delta_context, "max", 50.0);
-                                        delta_min = node_get_double(delta_context, "min", 0.000001);
-                                    }
-                                }
-                            }
-                                break;
-                            default:
-                                break;
-                        }
-                    }
+                    network->_max_iter  = node_get_int(training_context, "iterations", 1000);
+                    network->_max_error = node_get_double(training_context, "error", 0.001);
                 }
 
-                buffer             = (BrainChar *)node_get_prop(settings_context, "cost-function");
-                cost_function_type = get_cost_function_type(buffer);
-
-                if (buffer != NULL)
+                for (i = 0; i < number_of_layer; ++i)
                 {
-                    free(buffer);
+                    BrainLayer layer = network->_layers[i];
+
+                    configure_layer_with_context(layer, settings_context);
                 }
-
-                buffer             = (BrainChar *)node_get_prop(settings_context, "activation-function");
-                activation_type    = get_activation_type(buffer);
-
-                if (buffer != NULL)
-                {
-                    free(buffer);
-                }
-
-                /**********************************************/
-                /**        SET ALL NETWORKS PARAMETERS       **/
-                /**********************************************/
-                set_network_parameters(network,
-                                        max_iter,
-                                        error,
-                                        activation_type,
-                                        cost_function_type,
-                                        use_dropout,
-                                        dropout_ratio,
-                                        learning_type,
-                                        learning_rate,
-                                        delta_min,
-                                        delta_max,
-                                        eta_positive,
-                                        eta_negative);
             }
 
             close_document(settings_document);

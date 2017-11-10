@@ -66,42 +66,13 @@ BrainWeight get_neuron_bias(const BrainNeuron neuron);
  */
 BrainWeight get_neuron_weight(const BrainNeuron neuron, const BrainUint index);
 /**
- * \fn void set_neuron_parameters( BrainNeuron neuron,
-                                     const BrainActivationType   activation_type,
-                                     const BrainCostFunctionType costfunction_type,
-                                     const BrainBool             use_dropout,
-                                     const BrainDouble           dropout_factor,
-                                     const BrainLearningType     learning_type,
-                                     const BrainDouble           backpropagation_learning_rate,
-                                     const BrainDouble           resilient_delta_min,
-                                     const BrainDouble           resilient_delta_max,
-                                     const BrainDouble           resilient_eta_positive,
-                                     const BrainDouble           resilient_eta_negative);
+ * \fn void configure_neuron_with_context( BrainNeuron neuron, Context context);
  * \brief customize neural network parameters
  *
- * \param network           The BrainNetwork to train
- * \param activation_type   The activation function type
- * \param costfunction_tye  The cost function type
- * \param use_droput        Activate or not the dropout rejection
- * \param dropout_factor    Set the dropout rejection threshold
- * \param learning_type     Set the learning function type
- * \param backpropagation_learning_rate Set the BACKPROP learning rate
- * \param resilient_delta_min Set RPROP min delta value
- * \param resilient_delta_max Set RPROP max delta value
- * \param resilient_eta_positive Set RPROP eta for positive gradient sign
- * \param resilient_eta_negative Set RPROP eta for negative gradient sign
+ * \param neuron    The BrainNeuron to train
+ * \param context   The context
  */
-void
-set_neuron_parameters(BrainNeuron neuron,
-                     const BrainActivationType   activation_type,
-                     const BrainBool             use_dropout,
-                     const BrainDouble           dropout_factor,
-                     const BrainLearningType     learning_type,
-                     const BrainDouble           backpropagation_learning_rate,
-                     const BrainDouble           resilient_delta_min,
-                     const BrainDouble           resilient_delta_max,
-                     const BrainDouble           resilient_eta_positive,
-                     const BrainDouble           resilient_eta_negative);
+void configure_neuron_with_context(BrainNeuron neuron, Context context);
 /**
  * \fn void neuron_learning(BrainNeuron reuron, const BrainDouble loss)
  * \brief apply correction to a neuron to reduce the total error
