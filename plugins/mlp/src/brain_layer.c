@@ -342,3 +342,48 @@ activate_layer(BrainLayer layer, const BrainBool hidden_layer)
         }
     }
 }
+
+void
+serialize_layer(BrainLayer layer, Writer writer)
+{
+    if (writer && layer)
+    {
+        if (start_element(writer, "layer"))
+        {
+            const BrainUint number_of_neurons = layer->_number_of_neuron;
+            BrainUint i = 0;
+
+            for (i = 0; i < number_of_neurons; ++i)
+            {
+                const BrainNeuron neuron = layer->_neurons[i];
+
+                serialize_neuron(neuron, writer);
+            }
+
+            stop_element(writer);
+        }
+    }
+}
+
+void
+deserialize_layer(BrainLayer layer, Context context)
+{
+    if (layer && context)
+    {
+        const BrainUint number_of_serialized_neurons = get_number_of_node_with_name(context, "neuron");
+        const BrainUint number_of_neurons = layer->_number_of_neuron;
+
+        if (number_of_neurons == number_of_serialized_neurons)
+        {
+            BrainUint i = 0;
+
+            for (i = 0; i < number_of_neurons; ++i)
+            {
+                Context neuron_context = get_node_with_name_and_index(context, "neuron", i);
+                BrainNeuron neuron = layer->_neurons[i];
+
+                deserialize_neuron(neuron, neuron_context);
+            }
+        }
+    }
+}

@@ -82,11 +82,19 @@ void configure_neuron_with_context(BrainNeuron neuron, Context context);
  */
 void neuron_learning(BrainNeuron neuron, const BrainDouble loss);
 /**
- * \fn void initialize_neuron_from_context(BrainNeuron neuron, Context context)
- * \brief Initialize a neuron from a context
+ * \fn void deserialize_neuron(BrainNeuron neuron, Context context)
+ * \brief deserialize a neuron from a context
  *
  * \param neuron a BrainNeuron
  * \param context an xml context
  */
-void initialize_neuron_from_context(BrainNeuron neuron, Context context);
+void deserialize_neuron(BrainNeuron neuron, Context context);
+/**
+ * \fn void serialize_neuron(BrainNeuron neuron, Writer writer)
+ * \brief serialize a neuron
+ *
+ * \param neuron the neuron to be serialized
+ * \param writer the xml writer
+ */
+void serialize_neuron(BrainNeuron neuron, Writer writer);
 #endif /* BRAIN_NEURON_H */

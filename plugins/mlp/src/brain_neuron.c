@@ -477,7 +477,7 @@ neuron_learning(BrainNeuron neuron, const BrainDouble loss)
 }
 
 void
-initialize_neuron_from_context(BrainNeuron neuron, Context context)
+deserialize_neuron(BrainNeuron neuron, Context context)
 {
     if (neuron && context)
     {
@@ -494,6 +494,45 @@ initialize_neuron_from_context(BrainNeuron neuron, Context context)
             const BrainDouble weight    = node_get_content_as_double(subcontext);
 
             set_weight_value(neuron->_w[index], weight);
+        }
+    }
+}
+
+void
+serialize_neuron(BrainNeuron neuron, Writer writer)
+{
+    if (neuron && writer)
+    {
+        const BrainUint number_of_inputs = get_neuron_number_of_input(neuron);
+
+        if (start_element(writer, "neuron"))
+        {
+            const BrainWeight bias = get_neuron_bias(neuron);
+            BrainUint index_input = 0;
+            BrainChar buffer[50];
+
+            if (bias != NULL)
+            {
+                sprintf(buffer, "%lf", get_weight_value(bias));
+
+                add_attribute(writer, "bias", buffer);
+            }
+
+            for (index_input = 0;
+                 index_input < number_of_inputs;
+                 ++index_input)
+            {
+                const BrainWeight weight = get_neuron_weight(neuron, index_input);
+
+                if (weight != NULL)
+                {
+                    sprintf(buffer, "%lf", get_weight_value(weight));
+
+                    write_element(writer, "weight", buffer);
+                }
+            }
+
+            stop_element(writer);
         }
     }
 }

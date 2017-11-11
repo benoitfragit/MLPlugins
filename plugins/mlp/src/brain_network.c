@@ -426,50 +426,20 @@ deserialize_network(BrainNetwork network, BrainString filepath)
 
             if (context != NULL)
             {
-                const BrainUint number_of_layer = get_number_of_node_with_name(context, "layer");
+                const BrainUint number_of_serialized_layer = get_number_of_node_with_name(context, "layer");
+                const BrainUint number_of_layer = network->_number_of_layers;
 
-                if (number_of_layer > 0)
+                if (number_of_layer == number_of_serialized_layer)
                 {
-                    BrainUint layer_index = 0;
-                    BrainLayer layer = NULL;
+                    BrainUint i = 0;
 
-                    do
+                    for (i = 0; i < number_of_layer; ++i)
                     {
-                        Context layer_context = get_node_with_name_and_index(context, "layer", layer_index);
+                        BrainLayer layer = network->_layers[i];
+                        Context layer_context = get_node_with_name_and_index(context, "layer", i);
 
-                        if (layer_context != NULL)
-                        {
-                            const BrainUint number_of_neuron = get_number_of_node_with_name(layer_context, "neuron");
-
-                            layer = get_network_layer(network, layer_index);
-
-                            if (layer != NULL && number_of_neuron == get_layer_number_of_neuron(layer))
-                            {
-                                BrainUint neuron_index = 0;
-
-                                for (neuron_index = 0;
-                                     neuron_index < number_of_neuron;
-                                     ++neuron_index )
-                                {
-                                    Context neuron_context = get_node_with_name_and_index(layer_context, "neuron", neuron_index);
-                                    BrainNeuron neuron = get_layer_neuron(layer, neuron_index);
-
-                                    if (neuron_context != NULL && neuron != NULL)
-                                    {
-                                        initialize_neuron_from_context(neuron, neuron_context);
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                BRAIN_CRITICAL("Unable to initialize the network");
-
-                                return;
-                            }
-                        }
-
-                        ++layer_index;
-                    } while (layer != NULL && layer_index < number_of_layer);
+                        deserialize_layer(layer, layer_context);
+                    }
                 }
             }
 
@@ -497,71 +467,15 @@ serialize_network(const BrainNetwork network, BrainString filepath)
                 if (start_element(writer, "network"))
                 {
                     // serialize all layers
-                    BrainUint layer_index = 0;
-                    BrainLayer layer = NULL;
+                    const BrainUint number_of_layer = network->_number_of_layers;
+                    BrainUint i = 0;
 
-                    do
+                    for (i = 0; i < number_of_layer;++i)
                     {
-                        layer = get_network_layer(network, layer_index);
+                        BrainLayer layer = network->_layers[i];
 
-                        if (layer != NULL)
-                        {
-                            // serialize all neurons
-                            const BrainUint number_of_neurons = get_layer_number_of_neuron(layer);
-
-                            if (start_element(writer, "layer"))
-                            {
-                                BrainUint index_neuron = 0;
-
-                                for (index_neuron = 0;
-                                     index_neuron < number_of_neurons;
-                                     ++index_neuron)
-                                {
-                                    const BrainNeuron neuron = get_layer_neuron(layer, index_neuron);
-
-                                    if (neuron != NULL)
-                                    {
-                                        const BrainUint number_of_inputs = get_neuron_number_of_input(neuron);
-
-                                        if (start_element(writer, "neuron"))
-                                        {
-                                            const BrainWeight bias = get_neuron_bias(neuron);
-                                            BrainUint index_input = 0;
-                                            BrainChar buffer[50];
-
-                                            if (bias != NULL)
-                                            {
-                                                sprintf(buffer, "%lf", get_weight_value(bias));
-
-                                                add_attribute(writer, "bias", buffer);
-                                            }
-
-                                            for (index_input = 0;
-                                                 index_input < number_of_inputs;
-                                                 ++index_input)
-                                            {
-                                                const BrainWeight weight = get_neuron_weight(neuron, index_input);
-
-                                                if (weight != NULL)
-                                                {
-                                                    sprintf(buffer, "%lf", get_weight_value(weight));
-
-                                                    write_element(writer, "weight", buffer);
-                                                }
-                                            }
-
-                                            stop_element(writer);
-                                        }
-                                    }
-                                }
-
-                                stop_element(writer);
-                            }
-
-                            ++layer_index;
-                        }
-
-                    } while (layer != NULL);
+                        serialize_layer(layer, writer);
+                    }
 
                     stop_element(writer);
                 }

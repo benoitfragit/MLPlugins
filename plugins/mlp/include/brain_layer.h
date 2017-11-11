@@ -97,11 +97,27 @@ BrainSignal get_layer_errors(const BrainLayer layer);
  */
 void activate_layer(const BrainLayer layer, const BrainBool hidden_layer);
 /**
- * \fn void configure_layer_with_context( BrainLayer layer, Context context);
+ * \fn void configure_layer_with_context( BrainLayer layer, Context context)
  * \brief customize neural network parameters
  *
  * \param layer     The BrainLayer to train
  * \param context   The XML context
  */
 void configure_layer_with_context(BrainLayer, Context context);
+/**
+ * \fn void serialize_layer(BrainLayer layer, Writer writer)
+ * \brief serialize a layer
+ *
+ * \param layer the layer to be serialized
+ * \param writer the xml writer
+ */
+void serialize_layer(BrainLayer layer, Writer writer);
+/**
+ * \fn void deserialize_layer(BrainLayer layer, Context context)
+ * \brief deserialize a layer
+ *
+ * \param layer the layer to be deserialized
+ * \param context the context
+ */
+void deserialize_layer(BrainLayer layer, Context context);
 #endif /* BRAIN_LAYER_H */
