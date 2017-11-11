@@ -28,29 +28,43 @@ BrainWeight new_weight(const BrainDouble limit, BrainSignal error);
  */
 void delete_weight(BrainWeight w);
 /**
- * \fn void set_weight_delta(BrainWeight w, const BrainDouble delta)
- * \brief set the delta value
- *
- * \param w a BrainWeight
- * \param delta new delta value
- */
-void set_weight_delta(BrainWeight w, const BrainDouble delta);
-/**
- * \fn void set_weight_gradient(BrainWeight w, const BrainDouble grad)
- * \brief set the gradient value
- *
- * \param w a BrainWeight
- * \param grad new gradient value
- */
-void set_weight_gradient(BrainWeight w, const BrainDouble grad);
-/**
- * \fn void set_weight_correction(BrainWeight w, const BrainDouble corr)
+ * \fn void set_backprop_weight(BrainWeight w, const BrainDouble in, const BrainDouble gradient, const BrainDouble learning_rate)
  * \brief set the correction value
  *
  * \param w a BrainWeight
- * \param corr new correction value
+ * \param in the input associated to this weight
+ * \param gradient the gradient value
+ * \param learning_rate the learning rate value
  */
-void set_weight_correction(BrainWeight w, const BrainDouble corr);
+void set_backprop_weight(BrainWeight w,
+                         const BrainDouble in,
+                         const BrainDouble gradient,
+                         const BrainDouble learning_rate);
+/**
+ * \fn void set_rprop_weight(BrainWeight w,
+ *                           const BrainDouble in,
+ *                           const BrainDouble gradient,
+ *                           const BrainDouble rprop_eta_positive,
+ *                           const BrainDouble rprop_eta_negative,
+ *                           const BrainDouble rprop_delta_max,
+ *                           const BrainDouble rprop_delta_min)
+ * \brief set the correction value
+ *
+ * \param w a BrainWeight
+ * \param in the input associated to this weight
+ * \param gradient the gradient value
+ * \param rprop_eta_positive the learning rate when gradient sign si positive
+ * \param rprop_eta_negative the learning rate when gradient sign si negative
+ * \param rprop_delta_max the delta max value
+ * \param rprop_delta_min the delta min value
+ */
+void set_rprop_weight(BrainWeight w,
+                     const BrainDouble in,
+                     const BrainDouble gradient,
+                     const BrainDouble rprop_eta_positive,
+                     const BrainDouble rprop_eta_negative,
+                     const BrainDouble rprop_delta_max,
+                     const BrainDouble rprop_delta_min);
 /**
  * \fn void set_weight_value(BrainWeight w, const BrainDouble val)
  * \brief set the weight value
@@ -60,30 +74,6 @@ void set_weight_correction(BrainWeight w, const BrainDouble corr);
  */
 void set_weight_value(BrainWeight w, const BrainDouble val);
 /**
- * \fn BrainDouble get_weight_delta(const BrainWeight w)
- * \brief get the delta value
- *
- * \param w a BrainWeight
- * \return delta value
- */
-BrainDouble get_weight_delta(const BrainWeight w);
-/**
- * \fn BrainDouble get_weight_last_correction(const BrainWeight w)
- * \brief get the last correction value
- *
- * \param w a BrainWeight
- * \return correction value
- */
-BrainDouble get_weight_last_correction(const BrainWeight w);
-/**
- * \fn BrainDouble get_weight_gradient(const BrainWeight w)
- * \brief get the gradient value
- *
- * \param w a BrainWeight
- * \return gradient value
- */
-BrainDouble get_weight_gradient(const BrainWeight w);
-/**
  * \fn BrainDouble get_weight_value(const BrainWeight w)
  * \brief get the weight value
  *
@@ -91,12 +81,4 @@ BrainDouble get_weight_gradient(const BrainWeight w);
  * \return weight value
  */
 BrainDouble get_weight_value(const BrainWeight w);
-/**
- * \fn void update_error(BrainWeight w, const BrainDouble error)
- * \brief append a new error
- *
- * \param w A BrainWeight
- * \param error An error value
- */
-void update_error(BrainWeight w, const BrainDouble error);
 #endif /* BRAIN_WEIGHT_H */

@@ -17,6 +17,8 @@
 #define NETWORKS    plugin->_networks
 #define HANDLE      plugin->_handle
 #define NAME        plugin->_name
+#define AUTHOR      plugin->_author
+#define DESCRIPTION plugin->_description
 
 static BrainString _plugin_api_keywords[] = {
     "load",
@@ -51,7 +53,6 @@ struct Plugin
     BrainChar*              _name;
     BrainChar*              _author;
     BrainChar*              _description;
-    BrainChar*              _icon;
     /******************************************************************/
     /**                     INTERNAL PARAMETERS                      **/
     /******************************************************************/
@@ -176,15 +177,13 @@ new_brain_plugin(BrainString plugin_definition_file)
 
                         plugin = (BrainPlugin)calloc(1, sizeof(Plugin));
 
-                        plugin->_icon = NULL;
-                        plugin->_name = NULL;
-                        plugin->_author = NULL;
-                        plugin->_description = NULL;
-
                         sprintf(buf, "lib%s.so", buffer);
                         HANDLE = dlopen(buf, RTLD_LAZY);
                         LENGTH = 0;
                         NETWORKS = NULL;
+                        NAME     = NULL;
+                        DESCRIPTION = NULL;
+                        AUTHOR = NULL;
 
                         if (HANDLE)
                         {
@@ -194,6 +193,21 @@ new_brain_plugin(BrainString plugin_definition_file)
                             NAME = (BrainChar*)calloc(s, sizeof(BrainChar));
                             strcpy(NAME, buffer);
                             free(buffer);
+
+                            buffer = (BrainChar *)node_get_prop(plugin_context, "author");
+                            if (buffer)
+                            {
+                                AUTHOR = (BrainChar *)calloc(strlen(buffer), sizeof(BrainChar));
+                                strcpy(AUTHOR, buffer);
+                                free(buffer);
+                            }
+                            buffer = (BrainChar *)node_get_prop(plugin_context, "description");
+                            if (buffer)
+                            {
+                                DESCRIPTION = (BrainChar *)calloc(strlen(buffer), sizeof(BrainChar));
+                                strcpy(DESCRIPTION, buffer);
+                                free(buffer);
+                            }
 
                             for (i = 0; i < number_of_function; ++i)
                             {
