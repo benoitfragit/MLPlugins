@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<plugin name="BrainMLP" author="F. Benoit" description="An implementation of a multi-layered perceptron using BACKPROP, RPROP and dropout">
+<plugin name="BrainMLP" author="F. Benoit" date="2017-11-13" description="An implementation of a multi-layered perceptron using BACKPROP, RPROP and dropout">
     <function name="load"        symbol="new_network_from_context"/>
     <function name="configure"   symbol="configure_network_with_context"/>
     <function name="serialize"   symbol="serialize_network"/>

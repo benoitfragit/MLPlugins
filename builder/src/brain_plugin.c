@@ -6,6 +6,7 @@
 #include <dlfcn.h>
 
 #define GET_PLUGIN_SYMBOL(handle, function) dlsym(handle, function)
+
 #define LOAD        plugin->_load
 #define CONFIGURE   plugin->_configure
 #define SERIALIZE   plugin->_serialize
@@ -19,6 +20,7 @@
 #define NAME        plugin->_name
 #define AUTHOR      plugin->_author
 #define DESCRIPTION plugin->_description
+#define DATE        plugin->_date
 
 static BrainString _plugin_api_keywords[] = {
     "load",
@@ -53,6 +55,7 @@ struct Plugin
     BrainChar*              _name;
     BrainChar*              _author;
     BrainChar*              _description;
+    BrainChar*              _date;
     /******************************************************************/
     /**                     INTERNAL PARAMETERS                      **/
     /******************************************************************/
@@ -208,6 +211,13 @@ new_brain_plugin(BrainString plugin_definition_file)
                                 strcpy(DESCRIPTION, buffer);
                                 free(buffer);
                             }
+                            buffer = (BrainChar *)node_get_prop(plugin_context, "date");
+                            if (buffer)
+                            {
+                                DATE = (BrainChar *)calloc(strlen(buffer), sizeof(BrainChar));
+                                strcpy(DATE, buffer);
+                                free(buffer);
+                            }
 
                             for (i = 0; i < number_of_function; ++i)
                             {
@@ -260,11 +270,7 @@ delete_brain_plugin(BrainPlugin plugin)
 {
     if (plugin)
     {
-        if (NAME)
-        {
-            free(NAME);
-        }
-
+        // Removing all attached networks
         if (NETWORKS)
         {
             BrainUint i = 0;
@@ -277,18 +283,40 @@ delete_brain_plugin(BrainPlugin plugin)
             free(NETWORKS);
         }
 
+        // Closing the handle
         if (HANDLE)
         {
             dlclose(HANDLE);
         }
 
+        // Cleaning all metadata
+        if (NAME)
+        {
+            free(NAME);
+        }
+
+        if (DATE)
+        {
+            free(DATE);
+        }
+
+        if (DESCRIPTION)
+        {
+            free(DESCRIPTION);
+        }
+
+        if (AUTHOR)
+        {
+            free(AUTHOR);
+        }
+
+        // finally free the plugin itself
         free(plugin);
     }
 }
 
 void
-new_plugin_network(BrainPlugin plugin,
-                    BrainString filename)
+new_plugin_network(const BrainPlugin plugin, BrainString filename)
 {
     if (plugin)
     {
@@ -301,8 +329,7 @@ new_plugin_network(BrainPlugin plugin,
 }
 
 void
-delete_network_at_index(BrainPlugin plugin,
-                        const BrainUint index)
+delete_network_at_index(const BrainPlugin plugin, const BrainUint index)
 {
     if (plugin
     &&  (index < LENGTH))
@@ -313,9 +340,7 @@ delete_network_at_index(BrainPlugin plugin,
 }
 
 void
-configure_network_at_index(BrainPlugin plugin,
-                            BrainString filename,
-                            const BrainUint index)
+configure_network_at_index(const BrainPlugin plugin, BrainString filename, const BrainUint index)
 {
     if (plugin
     && (index < LENGTH)
@@ -326,10 +351,7 @@ configure_network_at_index(BrainPlugin plugin,
 }
 
 void
-get_network_prediction_at_index(BrainPlugin plugin,
-                                const BrainUint length,
-                                const BrainSignal signal,
-                                const BrainUint index)
+get_network_prediction_at_index(const BrainPlugin plugin, const BrainUint length, const BrainSignal signal, const BrainUint index)
 {
     if (plugin
     &&  (index < LENGTH)
@@ -340,10 +362,7 @@ get_network_prediction_at_index(BrainPlugin plugin,
 }
 
 void
-train_network_at_index(BrainPlugin plugin,
-                       BrainString repository,
-                       BrainString tokenizer,
-                       const BrainUint index)
+train_network_at_index(const BrainPlugin plugin, BrainString repository, BrainString tokenizer, const BrainUint index)
 {
     if (plugin
     &&  (index < LENGTH))
@@ -353,9 +372,7 @@ train_network_at_index(BrainPlugin plugin,
 }
 
 void
-serialize_network_at_index(BrainPlugin plugin,
-                           BrainString filename,
-                           BrainUint index)
+serialize_network_at_index(const BrainPlugin plugin, BrainString filename, const BrainUint index)
 {
     if (plugin
     &&  (index < LENGTH))
@@ -365,9 +382,7 @@ serialize_network_at_index(BrainPlugin plugin,
 }
 
 void
-deserialize_network_at_index(BrainPlugin plugin,
-                             BrainString filename,
-                             BrainUint index)
+deserialize_network_at_index(const BrainPlugin plugin, BrainString filename, const BrainUint index)
 {
     if (plugin
     &&  (index < LENGTH))
@@ -377,7 +392,7 @@ deserialize_network_at_index(BrainPlugin plugin,
 }
 
 BrainUint
-get_plugin_number_of_networks(BrainPlugin plugin)
+get_plugin_number_of_networks(const BrainPlugin plugin)
 {
     BrainUint ret = 0;
 
@@ -387,4 +402,48 @@ get_plugin_number_of_networks(BrainPlugin plugin)
     }
 
     return ret;
+}
+
+BrainString
+get_plugin_author(const BrainPlugin plugin)
+{
+    if (plugin)
+    {
+        return AUTHOR;
+    }
+
+    return NULL;
+}
+
+BrainString
+get_plugin_name(const BrainPlugin plugin)
+{
+    if (plugin)
+    {
+        return NAME;
+    }
+
+    return NULL;
+}
+
+BrainString
+get_plugin_description(const BrainPlugin plugin)
+{
+    if (plugin)
+    {
+        return DESCRIPTION;
+    }
+
+    return NULL;
+}
+
+BrainString
+get_plugin_date(const BrainPlugin plugin)
+{
+    if (plugin)
+    {
+        return DATE;
+    }
+
+    return NULL;
 }
