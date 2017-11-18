@@ -155,7 +155,7 @@ isPluginValid(const BrainPlugin plugin)
 }
 
 BrainPlugin
-new_brain_plugin(BrainString plugin_definition_file)
+new_plugin(BrainString plugin_definition_file)
 {
     BrainPlugin plugin = NULL;
 
@@ -238,11 +238,15 @@ new_brain_plugin(BrainString plugin_definition_file)
 
                     if (isPluginValid(plugin))
                     {
-                        BRAIN_INFO("A new plugin has been created for plugin:%s\n", plugin->_name);
+                        BRAIN_INFO("Plugin:\n");
+                        BRAIN_INFO("Name:\t%s\n", get_plugin_name(plugin));
+                        BRAIN_INFO("Date:\t%s\n", get_plugin_date(plugin));
+                        BRAIN_INFO("Author:\t%s\n", get_plugin_author(plugin));
+                        BRAIN_INFO("Description:\t%s\n", get_plugin_description(plugin));
                     }
                     else
                     {
-                        delete_brain_plugin(plugin);
+                        delete_plugin(plugin);
 
                         BRAIN_CRITICAL("Unable to create a plugin\n");
                     }
@@ -266,7 +270,7 @@ new_brain_plugin(BrainString plugin_definition_file)
 }
 
 void
-delete_brain_plugin(BrainPlugin plugin)
+delete_plugin(BrainPlugin plugin)
 {
     if (plugin)
     {

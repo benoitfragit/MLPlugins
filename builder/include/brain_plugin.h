@@ -10,8 +10,8 @@
 
 #include "brain_plugin_types.h"
 
-BrainPlugin  new_brain_plugin               (BrainString plugin_definition_file);
-void         delete_brain_plugin            (BrainPlugin plugin);
+BrainPlugin  new_plugin               (BrainString plugin_definition_file);
+void         delete_plugin            (BrainPlugin plugin);
 BrainString  get_plugin_name                (const BrainPlugin plugin);
 BrainString  get_plugin_date                (const BrainPlugin plugin);
 BrainString  get_plugin_author              (const BrainPlugin plugin);

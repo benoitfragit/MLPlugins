@@ -23,6 +23,7 @@ typedef void         (*BrainPredictPtrFunc)    (BrainNetwork,       const BrainU
 typedef void         (*BrainDeletePtrFunc)     (BrainNetwork);
 
 typedef struct Plugin* BrainPlugin;
+typedef struct PluginManager* BrainPluginManager;
 typedef void* BrainHandle;
 
 #endif /* BRAIN_PLUGIN_TYPES_H */
