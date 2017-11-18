@@ -18,51 +18,58 @@ autodetect_plugins(BrainPluginManager manager)
 {
     if (manager)
     {
-        BrainString path = getenv("BRAIN_PLUGIN_PATH");
+        BrainChar* path = getenv("BRAIN_PLUGIN_PATH");
 
         if (path)
         {
-            DIR* dir = opendir(path);
+            BrainChar* subpath = strtok(path, ":");
 
-            if (dir)
+            do
             {
-                struct dirent* content = NULL;
+                DIR* dir = opendir(subpath);
 
-                while ((content = readdir(dir)) != NULL)
+                if (dir)
                 {
-                    if ((content->d_type != DT_DIR) &&
-                        (content->d_type == DT_REG))
+                    struct dirent* content = NULL;
+
+                    while ((content = readdir(dir)) != NULL)
                     {
-                        BrainString extension = strrchr(content->d_name, '.');
-
-                        if (extension && !strcmp(extension, ".xml"))
+                        if ((content->d_type != DT_DIR) &&
+                            (content->d_type == DT_REG))
                         {
-                            BrainChar plugin_definition_file[PATH_MAX + 1];
+                            BrainString extension = strrchr(content->d_name, '.');
 
-                            sprintf(plugin_definition_file, "%s/%s", path, content->d_name);
-                            printf("%s\n", plugin_definition_file);
-                            BrainPlugin plugin = new_plugin(plugin_definition_file);
-
-                            if (plugin)
+                            if (extension && !strcmp(extension, ".xml"))
                             {
-                                ++(manager->_number_of_plugins);
+                                BrainChar plugin_definition_file[PATH_MAX + 1];
+                                BrainPlugin plugin = NULL;
 
-                                manager->_plugins = (BrainPlugin*)realloc(manager->_plugins, manager->_number_of_plugins*sizeof(BrainPlugin));
-                                manager->_activations = (BrainBool*)realloc(manager->_activations, manager->_number_of_plugins*sizeof(BrainBool));
+                                sprintf(plugin_definition_file, "%s/%s", path, content->d_name);
 
-                                manager->_plugins[manager->_number_of_plugins - 1] = plugin;
-                                manager->_activations[manager->_number_of_plugins - 1] = BRAIN_FALSE;
+                                plugin = new_plugin(plugin_definition_file);
+
+                                if (plugin)
+                                {
+                                    ++(manager->_number_of_plugins);
+
+                                    manager->_plugins = (BrainPlugin*)realloc(manager->_plugins, manager->_number_of_plugins*sizeof(BrainPlugin));
+                                    manager->_activations = (BrainBool*)realloc(manager->_activations, manager->_number_of_plugins*sizeof(BrainBool));
+
+                                    manager->_plugins[manager->_number_of_plugins - 1] = plugin;
+                                    manager->_activations[manager->_number_of_plugins - 1] = BRAIN_FALSE;
+                                }
                             }
                         }
                     }
                 }
-            }
-            else
-            {
-                BRAIN_CRITICAL("Unable to open the directory: %s\n", path);
-            }
+                else
+                {
+                    BRAIN_CRITICAL("Unable to open the directory: %s\n", path);
+                }
 
-            closedir(dir);
+                closedir(dir);
+
+            } while ((subpath = strtok(NULL, ":")) != NULL);
         }
         else
         {
