@@ -159,11 +159,20 @@ is_plugin_activated(const BrainPluginManager manager, const BrainUint index)
 }
 
 void
-set_plugin_activated(const BrainPluginManager manager, const BrainUint index, const BrainBool activation)
+set_plugin_activated(const BrainPluginManager manager, const BrainPlugin plugin, const BrainBool activation)
 {
-    if (manager &&
-       (index < manager->_number_of_plugins))
+    if (manager && plugin)
     {
-        manager->_activations[index] = activation;
+        const BrainUint number_of_plugins = manager->_number_of_plugins;
+        BrainUint i = 0;
+
+        for (i = 0; i < number_of_plugins; ++i)
+        {
+            if (manager->_plugins[i] == plugin)
+            {
+                manager->_activations[i] = activation;
+                break;
+            }
+        }
     }
 }
