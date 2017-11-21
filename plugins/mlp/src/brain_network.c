@@ -130,7 +130,7 @@ get_network_layer(const BrainNetwork network, const BrainUint index)
     return ret;
 }
 
-static void
+void
 backpropagate(BrainNetwork network,
               const BrainUint number_of_output,
               const BrainSignal desired)

@@ -295,7 +295,11 @@ activate_neuron(BrainNeuron neuron,
 
             for (j = 0; j < neuron->_number_of_input; ++j)
             {
-                neuron->_sum += neuron->_in[j] * get_weight_value(neuron->_w[j]);
+                if (neuron->_in &&
+                    neuron->_w)
+                {
+                    neuron->_sum += neuron->_in[j] * get_weight_value(neuron->_w[j]);
+                }
             }
 
             neuron->_sum += get_weight_value(neuron->_bias);
@@ -334,7 +338,8 @@ delete_neuron(BrainNeuron neuron)
 }
 
 BrainNeuron
-new_neuron(const BrainUint number_of_inputs,
+new_neuron(BrainSignal     in,
+           const BrainUint number_of_inputs,
            BrainSignal     out,
            BrainSignal     errors)
 {
@@ -348,6 +353,7 @@ new_neuron(const BrainUint number_of_inputs,
 
         _neuron->_out                    = out;
         _neuron->_number_of_input        = number_of_inputs;
+        _neuron->_in                     = in;
         _neuron->_w                      = (BrainWeight *)calloc(_neuron->_number_of_input, sizeof(BrainWeight));
         _neuron->_bias                   = new_weight(random_value_limit, NULL);
         _neuron->_sum                    = 0.0;

@@ -12,17 +12,20 @@
 #include "brain_types.h"
 
 /**
- * \fn BrainNeuron new_neuron(const BrainUint number_of_inputs,
+ * \fn BrainNeuron new_neuron(BrainSignal in,
+ *                            const BrainUint number_of_inputs,
  *                            BrainSignal out,
  *                            BrainSignal errors)
  * \brief method to build a neuron
  *
+ * \param in               a input BrainSignal
  * \param number_of_inputs input_signal_size
  * \param out            a pointer to a BrainDouble owned by the BrainLayer
  * \param errors an array owned by the BrainLayer to update weights
  * \return a BrainNeuron or NULL if it failed
  */
-BrainNeuron new_neuron(const BrainUint     number_of_inputs,
+BrainNeuron new_neuron(BrainSignal in,
+                       const BrainUint     number_of_inputs,
                        BrainSignal         out,
                        BrainSignal         errors);
 /**

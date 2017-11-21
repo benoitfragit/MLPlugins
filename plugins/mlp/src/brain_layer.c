@@ -114,7 +114,6 @@ new_layer(const BrainUint     number_of_neurons,
     {
         _layer                    = (BrainLayer)calloc(1, sizeof(Layer));
         _layer->_number_of_neuron = number_of_neurons;
-        _layer->_in               = in;
         /**************************************************************/
         /** ERROR VECTOR SENT TO THE NEXT LAYER                      **/
         /**************************************************************/
@@ -151,7 +150,8 @@ new_layer(const BrainUint     number_of_neurons,
                 /**                <--------      <-------           **/
                 /**                out_error      in_error           **/
                 /******************************************************/
-                _layer->_neurons[index] = new_neuron(number_of_inputs,
+                _layer->_neurons[index] = new_neuron(in,
+                                                     number_of_inputs,
                                                      &(_layer->_out[index]),
                                                      out_errors);
             }

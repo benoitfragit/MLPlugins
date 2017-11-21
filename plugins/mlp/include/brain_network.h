@@ -65,6 +65,15 @@ BrainSignal get_network_output(const BrainNetwork network);
  */
 BrainLayer get_network_layer(const BrainNetwork network, const BrainUint index);
 /**
+ * \fn void backpropagate(BrainNetwork network, const BrainUint number_of_output, const BrainSignal desired)
+ * \brief compute one backpropagation
+ *
+ * \param network a Network
+ * \param number_of_output the number of output
+ * \param desired the desired output
+ */
+void backpropagate(BrainNetwork network, const BrainUint number_of_output, const BrainSignal desired);
+/**
  * \fn void train_network(BrainNetwork network, BrainString repository_path, BrainString tokenizer)
  * \brief launch the training process for the neural network
  *
