@@ -16,7 +16,6 @@ struct Layer
     /******************************************************************/
     BrainUint    _number_of_neuron; /*!< The number of BrainNeuron    */
     BrainNeuron* _neurons;          /*!< An array of BrainNeuron      */
-    BrainSignal  _in;               /*!< Input vector of the layer    */
     BrainSignal  _in_errors;        /*!< Input vector errors          */
     BrainSignal  _out;              /*!< Output vector of the Layer   */
     BrainSignal  _out_errors;       /*!< Output vector errors         */
