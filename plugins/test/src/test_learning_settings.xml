@@ -3,7 +3,7 @@
     <training error="0.00001" iterations="1000" learning="BackPropagation">
         <dropout activate="false" factor="1.0"/>
         <method>
-            <backprop learning-rate="1.0"/>
+            <backprop learning-rate="0.5"/>
         </method>
     </training>
 </settings>
