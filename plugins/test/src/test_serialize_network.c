@@ -3,7 +3,6 @@
 #include "brain_network.h"
 #include "brain_layer.h"
 #include "brain_neuron.h"
-#include "brain_weight.h"
 #include "brain_logging_utils.h"
 
 static const BrainDouble _epsilon_double_comparaison = 0.000001;
@@ -68,11 +67,8 @@ main(int argc, char** argv)
                 const BrainUint original_neuron_input = get_neuron_number_of_input(original_neuron);
                 const BrainUint loaded_neuron_input   = get_neuron_number_of_input(loaded_neuron);
 
-                const BrainWeight original_neuron_bias = get_neuron_bias(original_neuron);
-                const BrainWeight loaded_neuron_bias   = get_neuron_bias(loaded_neuron);
-
-                const BrainDouble original_bias_value = get_weight_value(original_neuron_bias);
-                const BrainDouble loaded_bias_value   = get_weight_value(loaded_neuron_bias);
+                const BrainDouble original_bias_value = get_neuron_bias(original_neuron);
+                const BrainDouble loaded_bias_value   = get_neuron_bias(loaded_neuron);
 
                 BrainUint input_index = 0;
 
@@ -93,11 +89,8 @@ main(int argc, char** argv)
 
                 for (input_index = 0; input_index < original_neuron_input; ++input_index)
                 {
-                    const BrainWeight original_weight = get_neuron_weight(original_neuron, input_index);
-                    const BrainWeight loaded_weight   = get_neuron_weight(loaded_neuron, input_index);
-
-                    const BrainDouble original_value = get_weight_value(original_weight);
-                    const BrainDouble loaded_value   = get_weight_value(loaded_weight);
+                    const BrainDouble original_value = get_neuron_weight(original_neuron, input_index);
+                    const BrainDouble loaded_value   = get_neuron_weight(loaded_neuron, input_index);
 
                     if (_epsilon_double_comparaison < fabs(original_value - loaded_value))
                     {

@@ -3,7 +3,12 @@ project(BrainMLP)
 
 set(CMAKE_C_FLAGS
     ${CMAKE_C_FLAGS}
-    "-o2 -g3 -Wall -Wextra -Wshadow -Wunused -Wunused-parameter")
+    "-O2 -g3 -Wall -Wextra -Wshadow -Wunused -Wunused-parameter")
+
+if (NOT CMAKE_ENABLE_TESTING)
+    set(CMAKE_C_VISIBILITY_PRESET hidden)
+    set(CMAKE_CXX_VISIBILITY_PRESET hidden)
+endif(NOT CMAKE_ENABLE_TESTING)
 
 find_package(LIBXML2 REQUIRED)
 

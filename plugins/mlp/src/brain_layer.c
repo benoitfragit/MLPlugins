@@ -2,6 +2,7 @@
 #include "brain_neuron.h"
 #include "brain_cost.h"
 #include "brain_xml_utils.h"
+#include "brain_logging_utils.h"
 
 /**
  * \struct Layer
@@ -28,6 +29,8 @@ struct Layer
 void
 configure_layer_with_context(BrainLayer layer, Context context)
 {
+    BRAIN_INPUT(configure_layer_with_context)
+
     if (layer && context)
     {
         const BrainUint number_of_neurons = layer->_number_of_neuron;
@@ -50,6 +53,8 @@ configure_layer_with_context(BrainLayer layer, Context context)
             configure_neuron_with_context(neuron, context);
         }
     }
+
+    BRAIN_OUTPUT(configure_layer_with_context)
 }
 
 BrainNeuron
@@ -68,6 +73,8 @@ get_layer_neuron(const BrainLayer layer,
 void
 delete_layer(BrainLayer layer)
 {
+    BRAIN_INPUT(delete_layer)
+
     if (layer != NULL)
     {
         if (layer->_neurons)
@@ -94,6 +101,8 @@ delete_layer(BrainLayer layer)
 
         free(layer);
     }
+
+    BRAIN_OUTPUT(delete_layer)
 }
 
 BrainLayer
@@ -102,6 +111,7 @@ new_layer(const BrainUint     number_of_neurons,
           const BrainSignal   in,
           BrainSignal         out_errors)
 {
+    BRAIN_INPUT(new_layer)
     /******************************************************************/
     /**                       CREATE A NEW LAYER                     **/
     /******************************************************************/
@@ -157,6 +167,8 @@ new_layer(const BrainUint     number_of_neurons,
         }
     }
 
+    BRAIN_OUTPUT(new_layer)
+
     return _layer;
 }
 
@@ -200,6 +212,7 @@ backpropagate_output_layer(BrainLayer output_layer,
                            const BrainUint number_of_output,
                            const BrainSignal desired)
 {
+    BRAIN_INPUT(backpropagate_output_layer)
     /******************************************************************/
     /**         BACKPROPAGATE THE ERROR ON THE OUTPUT LAYER          **/
     /**                                                              **/
@@ -268,11 +281,14 @@ backpropagate_output_layer(BrainLayer output_layer,
             }
         }
     }
+
+    BRAIN_OUTPUT(backpropagate_output_layer)
 }
 
 void
 backpropagate_hidden_layer(BrainLayer hidden_layer)
 {
+    BRAIN_INPUT(backpropagate_hidden_layer)
     /******************************************************************/
     /**     BACKPROPAGATE THE ERROR ON THE HIDDEN LAYER              **/
     /**                                                              **/
@@ -320,11 +336,13 @@ backpropagate_hidden_layer(BrainLayer hidden_layer)
             }
         }
     }
+    BRAIN_OUTPUT(backpropagate_hidden_layer)
 }
 
 void
 activate_layer(BrainLayer layer, const BrainBool hidden_layer)
 {
+    BRAIN_INPUT(activate_layer)
     if (layer != NULL)
     {
         BrainUint i = 0;
@@ -340,11 +358,13 @@ activate_layer(BrainLayer layer, const BrainBool hidden_layer)
             activate_neuron(neuron, hidden_layer);
         }
     }
+    BRAIN_OUTPUT(activate_layer)
 }
 
 void
 serialize_layer(BrainLayer layer, Writer writer)
 {
+    BRAIN_INPUT(serialize_layer)
     if (writer && layer)
     {
         if (start_element(writer, "layer"))
@@ -362,11 +382,13 @@ serialize_layer(BrainLayer layer, Writer writer)
             stop_element(writer);
         }
     }
+    BRAIN_OUTPUT(serialize_layer)
 }
 
 void
 deserialize_layer(BrainLayer layer, Context context)
 {
+    BRAIN_INPUT(deserialize_layer)
     if (layer && context)
     {
         const BrainUint number_of_serialized_neurons = get_number_of_node_with_name(context, "neuron");
@@ -385,4 +407,5 @@ deserialize_layer(BrainLayer layer, Context context)
             }
         }
     }
+    BRAIN_OUTPUT(deserialize_layer)
 }

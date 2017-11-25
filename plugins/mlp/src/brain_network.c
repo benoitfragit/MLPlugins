@@ -3,12 +3,13 @@
 #include "brain_activation.h"
 #include "brain_layer.h"
 #include "brain_neuron.h"
-#include "brain_weight.h"
 #include "brain_random.h"
 #include "brain_data.h"
 #include "brain_xml_utils.h"
 #include "brain_logging_utils.h"
 #include "brain_config.h"
+
+#define __BRAIN_VISIBLE__ __attribute__((visibility("default")))
 
 /**
  * \struct Network
@@ -43,6 +44,8 @@ feedforward(BrainNetwork      network,
             const BrainSignal in,
             const BrainBool   use_dropout)
 {
+    BRAIN_INPUT(feedforward)
+
     if ((in != NULL) &&
         (network != NULL) &&
         (number_of_input == network->_number_of_inputs))
@@ -64,11 +67,15 @@ feedforward(BrainNetwork      network,
             activate_layer(layer, use_dropout && (i != network->_number_of_layers - 1));
         }
     }
+
+    BRAIN_OUTPUT(feedforward)
 }
 
-void
+void __BRAIN_VISIBLE__
 configure_network_with_context(BrainNetwork network, BrainString filepath)
 {
+    BRAIN_INPUT(configure_network_with_context)
+
     if ((network != NULL) &&
         (filepath != NULL) &&
         validate_with_xsd(filepath, SETTINGS_XSD_FILE))
@@ -113,6 +120,8 @@ configure_network_with_context(BrainNetwork network, BrainString filepath)
             close_document(settings_document);
         }
     }
+
+    BRAIN_OUTPUT(configure_network_with_context)
 }
 
 BrainLayer
@@ -135,6 +144,7 @@ backpropagate(BrainNetwork network,
               const BrainUint number_of_output,
               const BrainSignal desired)
 {
+    BRAIN_INPUT(backpropagate)
     /******************************************************************/
     /**                      BACKPROP ALGORITHM                      **/
     /**                                                              **/
@@ -175,6 +185,8 @@ backpropagate(BrainNetwork network,
             backpropagate_hidden_layer(hidden_layer);
         }
     }
+
+    BRAIN_OUTPUT(backpropagate)
 }
 
 BrainSignal
@@ -188,9 +200,11 @@ get_network_output(const BrainNetwork network)
     return NULL;
 }
 
-void
+void __BRAIN_VISIBLE__
 delete_network(BrainNetwork network)
 {
+    BRAIN_INPUT(delete_network)
+
     if (network != NULL)
     {
         if ((network->_layers) &&
@@ -212,13 +226,17 @@ delete_network(BrainNetwork network)
 
         free(network);
     }
+
+    BRAIN_OUTPUT(delete_network)
 }
 
-BrainNetwork
+static BrainNetwork
 new_network(const BrainUint signal_input_length,
             const BrainUint number_of_layers,
             const BrainUint *neuron_per_layers)
 {
+    BRAIN_INPUT(new_network)
+
     BrainNetwork _network = NULL;
 
     if (neuron_per_layers != NULL)
@@ -287,15 +305,21 @@ new_network(const BrainUint signal_input_length,
         }
     }
 
+    BRAIN_OUTPUT(new_network)
+
     return _network;
 }
 
-void
+void __BRAIN_VISIBLE__
 predict(BrainNetwork      network,
         const BrainUint   number_of_input,
         const BrainSignal in)
 {
+    BRAIN_INPUT(predict)
+
     feedforward(network, number_of_input, in, BRAIN_FALSE);
+
+    BRAIN_INPUT(predict)
 }
 
 static BrainBool
@@ -355,9 +379,10 @@ isNetworkTrainingRequired(BrainNetwork network, const BrainData data)
     return ret;
 }
 
-void
+void __BRAIN_VISIBLE__
 train_network(BrainNetwork network, BrainString repository_path, BrainString tokenizer)
 {
+    BRAIN_INPUT(train_network)
     /********************************************************/
     /**   Train the neural network using the training set  **/
     /********************************************************/
@@ -409,11 +434,15 @@ train_network(BrainNetwork network, BrainString repository_path, BrainString tok
             }
         }
     }
+
+    BRAIN_OUTPUT(train_network)
 }
 
-void
+void __BRAIN_VISIBLE__
 deserialize_network(BrainNetwork network, BrainString filepath)
 {
+    BRAIN_INPUT(deserialize_network)
+
     if ((network != NULL)
     &&  (filepath != NULL)
     &&  validate_with_xsd(filepath, INIT_XSD_FILE))
@@ -450,11 +479,15 @@ deserialize_network(BrainNetwork network, BrainString filepath)
     {
         BRAIN_CRITICAL("Unable to deserialize file\n");
     }
+
+    BRAIN_OUTPUT(deserialize_network)
 }
 
-void
+void __BRAIN_VISIBLE__
 serialize_network(const BrainNetwork network, BrainString filepath)
 {
+    BRAIN_INPUT(serialize_network)
+
     if (filepath != NULL)
     {
         if (network != NULL)
@@ -496,11 +529,15 @@ serialize_network(const BrainNetwork network, BrainString filepath)
     {
         BRAIN_CRITICAL("XML serializing file is not valid\n");
     }
+
+    BRAIN_OUTPUT(serialize_network)
 }
 
-BrainNetwork
+BrainNetwork __BRAIN_VISIBLE__
 new_network_from_context(BrainString filepath)
 {
+    BRAIN_INPUT(new_network_from_context)
+
     BrainNetwork  network  = NULL;
 
     if (filepath != NULL && validate_with_xsd(filepath, NETWORK_XSD_FILE))
@@ -546,6 +583,8 @@ new_network_from_context(BrainString filepath)
             close_document(network_document);
         }
     }
+
+    BRAIN_OUTPUT(new_network_from_context)
 
     return network;
 }

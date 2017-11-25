@@ -13,22 +13,6 @@
 #include "brain_types.h"
 
 /**
- * \fn BrainNetwork new_network(const BrainUint signal_input_length,
- *                              const BrainUint number_of_layers,
- *                              const BrainUint *neuron_per_layers)
- *
- * \brief Fonction to create a BrainNetwork
- *
- * \param signal_input_length Size of the input signal
- * \param number_of_layers    Number of layer in this network
- * \param neuron_per_layers   Array containing neumber of neurons per layer
- *
- * \return a new allocated BrainNetwork or NULL if it failed
- */
-BrainNetwork new_network(const BrainUint             signal_input_length,
-                         const BrainUint             number_of_layers,
-                         const BrainUint             *neuron_per_layers);
-/**
  * \fn void delete_network(BrainNetwork network)
  * \brief deallocate a BrainNetwork
  *

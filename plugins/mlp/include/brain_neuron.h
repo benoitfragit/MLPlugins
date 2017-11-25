@@ -52,22 +52,22 @@ void activate_neuron(BrainNeuron neuron, const BrainBool is_an_hidden_unit);
  */
 BrainUint get_neuron_number_of_input(const BrainNeuron neuron);
 /**
- * \fn BrainWeight get_neuron_bias(const BrainNeuron neuron)
+ * \fn BrainDouble get_neuron_bias(const BrainNeuron neuron)
  * \brief retrieve neuron bias
  *
  * \param neuron the Neuron
  * \return the neuron bias
  */
-BrainWeight get_neuron_bias(const BrainNeuron neuron);
+BrainDouble get_neuron_bias(const BrainNeuron neuron);
 /**
- * \fn BrainWeight get_neuron_weight(const BrainNeuron neuron, const BrainUint index)
+ * \fn BrainDouble get_neuron_weight(const BrainNeuron neuron, const BrainUint index)
  * \brief retrieve a neuron weight
  *
  * \param neuron the Neuron
  * \param index the weight inde
  * \return the neuron weight
  */
-BrainWeight get_neuron_weight(const BrainNeuron neuron, const BrainUint index);
+BrainDouble get_neuron_weight(const BrainNeuron neuron, const BrainUint index);
 /**
  * \fn void configure_neuron_with_context( BrainNeuron neuron, Context context);
  * \brief customize neural network parameters

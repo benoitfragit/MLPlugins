@@ -11,16 +11,16 @@
 
 typedef enum BrainLogLevel
 {
-    LOG_INFO     = 0,
-    LOG_DEBUG    = 1,
+    LOG_DEBUG    = 0,
+    LOG_INFO     = 1,
     LOG_WARNING  = 2,
     LOG_CRITICAL = 3,
     LOG_NONE     = 4
 } BrainLogLevel;
 
 static BrainString _log_levels[] = {
-    "info",
     "debug",
+    "info",
     "warning",
     "critical"
 };
@@ -39,6 +39,7 @@ getBrainLogLevel(BrainString log_level)
             if (!strcmp(_log_levels[i], log_level))
             {
                 level = (BrainLogLevel)(i);
+                break;
             }
         }
     }
