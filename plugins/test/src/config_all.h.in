@@ -8,5 +8,6 @@
 #define TEST_LEARNING_NETWORK_PATH  "${CMAKE_CURRENT_SOURCE_DIR}/src/test_learning_network.xml"
 #define TEST_LEARNING_INIT_PATH     "${CMAKE_CURRENT_SOURCE_DIR}/src/test_learning_init.xml"
 #define TEST_LEARNING_SETTINGS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/src/test_learning_settings.xml"
+#define TEST_LEARNING_DESIRED_PATH  "${CMAKE_CURRENT_SOURCE_DIR}/src/test_learning_desired.xml"
 
 #endif /* CONFIG_ALL_H */

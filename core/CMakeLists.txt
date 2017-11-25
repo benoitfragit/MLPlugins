@@ -20,6 +20,10 @@ include_directories(${LIBBRAINCORE_INCLUDE_DIRS})
 file(GLOB_RECURSE SOURCES ${LIBBRAINCORE_SOURCE_DIR}/*.c)
 file(GLOB_RECURSE HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h)
 
+if (${CMAKE_ENABLE_LOGGING})
+    add_definitions(-DBRAIN_ENABLE_LOGGING=1)
+endif(${CMAKE_ENABLE_LOGGING})
+
 #Generate the shared library from the sources
 add_library(BrainCore SHARED ${SOURCES} ${HEADERS})
 

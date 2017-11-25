@@ -50,43 +50,51 @@ getBrainLogLevel(BrainString log_level)
 void
 BRAIN_DEBUG(BrainString format, ...)
 {
+#if BRAIN_ENABLE_LOGGING
     const BrainLogLevel level = getBrainLogLevel(getenv("BRAIN_LOG_LEVEL"));
 
     if (level <= LOG_DEBUG)
     {
         MESSAGE()
     }
+#endif /* BRAIN_ENABLE_LOGGING */
 }
 
 void
 BRAIN_INFO(BrainString format, ...)
 {
+#if BRAIN_ENABLE_LOGGING
     const BrainLogLevel level = getBrainLogLevel(getenv("BRAIN_LOG_LEVEL"));
 
     if (level <= LOG_INFO)
     {
         MESSAGE()
     }
+#endif /* BRAIN_ENABLE_LOGGING */
 }
 
 void
 BRAIN_WARNING(BrainString format, ...)
 {
+#if BRAIN_ENABLE_LOGGING
     const BrainLogLevel level = getBrainLogLevel(getenv("BRAIN_LOG_LEVEL"));
 
     if (level <= LOG_WARNING)
     {
         MESSAGE()
     }
+#endif /* BRAIN_ENABLE_LOGGING */
 }
 
 void
 BRAIN_CRITICAL(BrainString format, ...)
 {
+#if BRAIN_ENABLE_LOGGING
     const BrainLogLevel level = getBrainLogLevel(getenv("BRAIN_LOG_LEVEL"));
 
     if (level <= LOG_CRITICAL)
     {
         MESSAGE()
     }
+#endif /* BRAIN_ENABLE_LOGGING */
 }

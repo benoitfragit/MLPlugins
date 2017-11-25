@@ -20,35 +20,35 @@
 struct Neuron
 {
     /******************************************************************/
+    /**                      FUNCTIONAL PARAMETERS                   **/
+    /******************************************************************/
+    ActivationPtrFunc _activation_function;   /*!< Activation function                                  */
+    ActivationPtrFunc _derivative_function;   /*!< Derivative function                                  */
+    LearningPtrFunc   _learning_function;     /*!< Learning function                                    */
+    /******************************************************************/
     /**                      STRUCTURAL PARAMETERS                   **/
     /******************************************************************/
-    BrainSignal       _in;                    /*!< Input signal of an BrainNeuron                     */
-    BrainUint         _number_of_input;       /*!< Number of inputs of the neuron                     */
-    BrainDouble       _bias;                  /*!< Bias of the neuron                                 */
-    BrainDouble       _bias_delta;            /*!< Bias delta                                         */
-    BrainDouble       _bias_gradient;         /*!< Bias gradient                                      */
-    BrainSignal       _w;                     /*!< An array of weight without the bias                */
-    BrainSignal       _gradients;             /*!< weights gradient values        */
-    BrainSignal       _deltas;                /*!< weights delta values           */
-    BrainSignal       _errors;                /*!< error to correct in the layer */
-    BrainSignal       _out;                   /*!< An output value pointer owned by the BrainLayer    */
-    BrainDouble       _sum;                   /*!< Summation of all input time weight                 */
+    BrainSignal       _in;                    /*!< Input signal of an BrainNeuron                       */
+    BrainSignal       _w;                     /*!< An array of weight without the bias                  */
+    BrainSignal       _gradients;             /*!< weights gradient values                              */
+    BrainSignal       _deltas;                /*!< weights delta values                                 */
+    BrainSignal       _errors;                /*!< error to correct in the layer                        */
+    BrainSignal       _out;                   /*!< An output value pointer owned by the BrainLayer      */
+    BrainDouble       _bias;                  /*!< Bias of the neuron                                   */
+    BrainDouble       _bias_delta;            /*!< Bias delta                                           */
+    BrainDouble       _bias_gradient;         /*!< Bias gradient                                        */
+    BrainDouble       _sum;                   /*!< Summation of all input time weight                   */
     /******************************************************************/
     /**                        TRAINING PARAMETERS                   **/
     /******************************************************************/
-    BrainDouble       _rprop_eta_plus;        /*!< Rprop eta for positive gradient transition */
-    BrainDouble       _rprop_eta_minus;       /*!< Rprop eta for negative gradient transition */
-    BrainDouble       _rprop_delta_min;       /*!< Rprop delta min */
-    BrainDouble       _rprop_delta_max;       /*!< Rprop delta max */
-    BrainDouble       _backprop_learning_rate;/*!< BackProp learning rate */
-    BrainDouble       _dropout_ratio;         /*!< Dropout filtering raion */
-    BrainBool         _use_dropout;           /*!< Dropout activation */
-    /******************************************************************/
-    /**                      FUNCTIONAL PARAMETERS                   **/
-    /******************************************************************/
-    ActivationPtrFunc _activation_function;   /*!< Activation function */
-    ActivationPtrFunc _derivative_function;   /*!< Derivative function */
-    LearningPtrFunc   _learning_function;     /*!< Learning function */
+    BrainDouble       _rprop_eta_plus;        /*!< Rprop eta for positive gradient transition           */
+    BrainDouble       _rprop_eta_minus;       /*!< Rprop eta for negative gradient transition           */
+    BrainDouble       _rprop_delta_min;       /*!< Rprop delta min                                      */
+    BrainDouble       _rprop_delta_max;       /*!< Rprop delta max                                      */
+    BrainDouble       _backprop_learning_rate;/*!< BackProp learning rate                               */
+    BrainDouble       _dropout_ratio;         /*!< Dropout filtering raion                              */
+    BrainUint         _number_of_input;       /*!< Number of inputs of the neuron                       */
+    BrainBool         _use_dropout;           /*!< Dropout activation                                   */
 } Neuron;
 
 static BrainString _learning_names[] =
@@ -78,6 +78,7 @@ static void
 update_neuron_using_backpropagation(BrainNeuron neuron, const BrainDouble loss)
 {
     BRAIN_INPUT(update_neuron_using_backpropagation)
+
     if (neuron != NULL)
     {
         const BrainUint   number_of_inputs      = neuron->_number_of_input;
@@ -104,8 +105,6 @@ update_neuron_using_backpropagation(BrainNeuron neuron, const BrainDouble loss)
                 }
 
                 neuron->_w[i]           -= learning_rate * neuron->_deltas[i];
-
-                BRAIN_INFO("WEIGHT: %lf\n", neuron->_w[i]);
             }
         }
     }
