@@ -19,7 +19,6 @@ struct Layer
     BrainNeuron* _neurons;          /*!< An array of BrainNeuron      */
     BrainSignal  _in_errors;        /*!< Input vector errors          */
     BrainSignal  _out;              /*!< Output vector of the Layer   */
-    BrainSignal  _out_errors;       /*!< Output vector errors         */
     /******************************************************************/
     /**                      FUNCTIONAL PARAMETERS                   **/
     /******************************************************************/
@@ -123,10 +122,6 @@ new_layer(const BrainUint     number_of_neurons,
     {
         _layer                    = (BrainLayer)calloc(1, sizeof(Layer));
         _layer->_number_of_neuron = number_of_neurons;
-        /**************************************************************/
-        /** ERROR VECTOR SENT TO THE NEXT LAYER                      **/
-        /**************************************************************/
-        _layer->_out_errors       = out_errors;
         /**************************************************************/
         /** THIS THE COST FUNCTION DERIVATIVE USED TO COMPUTE THE    **/
         /** BACKPROPAGATION ALGORITHM                                **/

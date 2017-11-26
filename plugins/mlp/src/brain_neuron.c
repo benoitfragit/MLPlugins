@@ -365,7 +365,7 @@ activate_neuron(BrainNeuron neuron,
 
             neuron->_sum = 0.0;
 
-            if (neuron->_in)
+            if (neuron->_in && neuron->_w)
             {
                 for (j = 0; j < neuron->_number_of_input; ++j)
                 {

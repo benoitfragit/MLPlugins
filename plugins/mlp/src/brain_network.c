@@ -8,6 +8,7 @@
 #include "brain_xml_utils.h"
 #include "brain_logging_utils.h"
 #include "brain_config.h"
+#include "brain_probe.h"
 
 #define __BRAIN_VISIBLE__ __attribute__((visibility("default")))
 

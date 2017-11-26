@@ -3,7 +3,6 @@
 #include "brain_network.h"
 #include "common_test.h"
 
-
 static const BrainDouble _epsilon_double_comparaison = 0.000001;
 
 int
@@ -11,16 +10,12 @@ main(int argc, char** argv)
 {
     BrainInt result = EXIT_SUCCESS;
 
-    const BrainNetwork original_network = new_network_from_context(TEST_CREATE_NETWORK);
+    BrainNetwork original_network = new_network_from_context(TEST_CREATE_NETWORK);
+    BrainNetwork loaded_network = new_network_from_context(TEST_CREATE_NETWORK);
 
-    if (original_network != NULL)
+    if ((original_network != NULL)
+    &&  (loaded_network != NULL))
     {
-        BrainNetwork loaded_network = new_network_from_context(TEST_CREATE_NETWORK);
-        BrainLayer   original_layer = NULL;
-        BrainLayer   loaded_layer   = NULL;
-
-        BrainUint    index          = 0;
-
         // first serialize this network
         serialize_network(original_network, TEST_SERIALIZE_NETWORK_PATH);
 
