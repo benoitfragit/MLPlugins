@@ -1,13 +1,13 @@
 #ifndef CONFIG_ALL_H
 #define CONFIG_ALL_H
 
-#define TEST_CREATE_NETWORK         "${CMAKE_CURRENT_SOURCE_DIR}/src/test_create_network.xml"
-#define TEST_SERIALIZE_NETWORK      "${CMAKE_CURRENT_SOURCE_DIR}/src/test_serialize_network.xml"
+#define TEST_CREATE_NETWORK         "${CMAKE_CURRENT_SOURCE_DIR}/resources/test_create_network.xml"
+#define TEST_SERIALIZE_NETWORK      "${CMAKE_CURRENT_SOURCE_DIR}/resources/test_serialize_network.xml"
 #define TEST_SERIALIZE_NETWORK_PATH "serialized_network.xml"
-#define TEST_DATA_LOADING_PATH      "${CMAKE_CURRENT_SOURCE_DIR}/src/test_load_data.csv"
-#define TEST_LEARNING_NETWORK_PATH  "${CMAKE_CURRENT_SOURCE_DIR}/src/test_learning_network.xml"
-#define TEST_LEARNING_INIT_PATH     "${CMAKE_CURRENT_SOURCE_DIR}/src/test_learning_init.xml"
-#define TEST_LEARNING_SETTINGS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/src/test_learning_settings.xml"
-#define TEST_LEARNING_DESIRED_PATH  "${CMAKE_CURRENT_SOURCE_DIR}/src/test_learning_desired.xml"
+#define TEST_DATA_LOADING_PATH      "${CMAKE_CURRENT_SOURCE_DIR}/resources/test_load_data.csv"
+#define TEST_LEARNING_NETWORK_PATH  "${CMAKE_CURRENT_SOURCE_DIR}/resources/test_learning_network.xml"
+#define TEST_LEARNING_INIT_PATH     "${CMAKE_CURRENT_SOURCE_DIR}/resources/test_learning_init.xml"
+#define TEST_LEARNING_SETTINGS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/resources/test_learning_settings.xml"
+#define TEST_LEARNING_DESIRED_PATH  "${CMAKE_CURRENT_SOURCE_DIR}/resources/test_learning_desired.xml"
 
 #endif /* CONFIG_ALL_H */
