@@ -46,9 +46,7 @@ struct Neuron
     BrainDouble       _rprop_delta_min;       /*!< Rprop delta min                                      */
     BrainDouble       _rprop_delta_max;       /*!< Rprop delta max                                      */
     BrainDouble       _backprop_learning_rate;/*!< BackProp learning rate                               */
-    BrainDouble       _dropout_ratio;         /*!< Dropout filtering raion                              */
-    BrainUint         _number_of_input;       /*!< Number of inputs of the neuron                       */
-    BrainBool         _use_dropout;           /*!< Dropout activation                                   */
+    BrainUint         _number_of_input;       /*!< Number of inputs                                     */
 } Neuron;
 
 static BrainString _learning_names[] =
@@ -246,14 +244,7 @@ configure_neuron_with_context(BrainNeuron neuron, Context context)
 
         if (training_context != NULL)
         {
-            Context dropout_context = get_node_with_name_and_index(training_context, "dropout", 0);
             Context method_context  = get_node_with_name_and_index(training_context, "method", 0);
-
-            if (dropout_context != NULL)
-            {
-                neuron->_use_dropout   = node_get_bool(dropout_context, "activate", BRAIN_FALSE);
-                neuron->_dropout_ratio = node_get_double(dropout_context, "factor", 1.0);
-            }
 
             buffer = (BrainChar *)node_get_prop(training_context, "learning");
             learning_type = get_learning_type(buffer);
@@ -323,59 +314,34 @@ configure_neuron_with_context(BrainNeuron neuron, Context context)
 
 void
 activate_neuron(BrainNeuron neuron,
-                const BrainBool is_an_hidden_unit)
+                const BrainBool is_activated)
 {
     BRAIN_INPUT(activate_neuron)
 
     if (neuron != NULL)
     {
         ActivationPtrFunc activation_function = neuron->_activation_function;
-        const BrainDouble dropout_percent     = neuron->_dropout_ratio;
-        const BrainBool   use_dropout         = neuron->_use_dropout;
-        BrainDouble       dropout_factor      = 1.0;
 
         *(neuron->_out) = 0.0;
         neuron->_sum    = 0.0;
 
         /**************************************************************/
-        /**               APPLY DROPOUT REJECTION                    **/
-        /**************************************************************/
-        if (use_dropout
-        &&  is_an_hidden_unit
-        && (0 <= dropout_percent)
-        && (dropout_percent < 1.0))
-        {
-            if (get_random_double_value() < dropout_percent)
-            {
-                dropout_factor = 0.0;
-            }
-            else
-            {
-                dropout_factor *= 1.0 / (1.0 - dropout_percent);
-            }
-        }
-
-        /**************************************************************/
         /**                 COMPUTE A(<in, W>)                       **/
         /**************************************************************/
         if ((activation_function != NULL)
-        &&  (dropout_factor != 0.0))
+        &&  is_activated
+        &&  neuron->_in
+        &&  neuron->_w)
         {
             BrainUint j = 0;
 
-            neuron->_sum = 0.0;
-
-            if (neuron->_in && neuron->_w)
+            for (j = 0; j < neuron->_number_of_input; ++j)
             {
-                for (j = 0; j < neuron->_number_of_input; ++j)
-                {
-                    neuron->_sum += neuron->_in[j] * neuron->_w[j];
-                }
+                neuron->_sum += neuron->_in[j] * neuron->_w[j];
             }
 
             neuron->_sum += neuron->_bias;
-
-            *(neuron->_out) = activation_function(neuron->_sum) * dropout_factor;
+            *(neuron->_out) = activation_function(neuron->_sum);
         }
     }
 

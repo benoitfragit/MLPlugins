@@ -38,5 +38,14 @@ BrainDouble get_random_double_value_in_range(const BrainDouble min, const BrainD
  * \return a random value between min and max
  */
 BrainInt    get_random_int_value_in_range(const BrainInt min, const BrainInt max);
+/**
+ * \fn BrainUint get_random_uint_value_in_range(const BrainUint min, const BrainUint max)
+ * \brief get a random uint value between min and max
+ * \param min min value
+ * \param max max value
+ * \return a random value between min and max
+ */
+BrainUint    get_random_uint_value_in_range(const BrainUint min, const BrainUint max);
+
 
 #endif /* BRAIN_RANDOM_H */

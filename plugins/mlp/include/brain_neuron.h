@@ -36,13 +36,13 @@ BrainNeuron new_neuron(BrainSignal in,
  */
 void        delete_neuron              (BrainNeuron       neuron);
 /**
- * \fn void activate_neuron(BrainNeuron neuron, const BrainBool   is_an_hidden_unit)
+ * \fn void activate_neuron(BrainNeuron neuron, const BrainBool   is_activated)
  * \brief activate the input neuron
  *
  * \param neuron            a BrainNeuron
- * \param is_an_hidden_unit is this neuron in an hidden layer
+ * \param is_activated is this neuron activated
  */
-void activate_neuron(BrainNeuron neuron, const BrainBool is_an_hidden_unit);
+void activate_neuron(BrainNeuron neuron, const BrainBool is_activated);
 /**
  * \fn BrainUint get_neuron_number_of_input(const BrainNeuron neuron)
  * \brief retrieve the number of input

@@ -8,6 +8,7 @@
 typedef struct View
 {
     GtkWidget*          _window;
+    GtkWidget*          _iconview;
     BrainPluginManager  _manager;
     GHashTable*         _fromSwitch;
 } View;
@@ -172,6 +173,29 @@ brain_create_header(BrainView view)
 }
 
 static void
+brain_create_iconview(BrainView view)
+{
+    GtkTreeIter iter;
+    GError* err = NULL;
+
+    GdkPixbuf* pixbuf = gdk_pixbuf_new_from_file("/home/benoit/Documents/projets/C/libBrain/view/src/package.png", &err);
+    GtkWidget* scrolled_window = gtk_scrolled_window_new(NULL,NULL);
+    GtkWidget* iconview = gtk_icon_view_new();
+    GtkListStore* store = gtk_list_store_new(2, G_TYPE_STRING, GDK_TYPE_PIXBUF);
+
+    gtk_list_store_append(store, &iter);
+    gtk_list_store_set(store, &iter, 0, "package", 1, pixbuf, -1);
+    gtk_icon_view_set_model(GTK_ICON_VIEW(iconview), GTK_TREE_MODEL(store));
+    gtk_icon_view_set_text_column(GTK_ICON_VIEW(iconview), 0);
+    gtk_icon_view_set_pixbuf_column(GTK_ICON_VIEW(iconview), 1);
+
+    gtk_container_add(GTK_CONTAINER(scrolled_window), iconview);
+    gtk_container_add(GTK_CONTAINER(view->_window), scrolled_window);
+
+    gtk_widget_show_all(scrolled_window);
+}
+
+static void
 brain_create_window(BrainView view)
 {
     if (view)
@@ -195,6 +219,10 @@ brain_create_window(BrainView view)
         /**                  CREATE THE HEADER BAR                   **/
         /**************************************************************/
         brain_create_header(view);
+        /**************************************************************/
+        /**                  CREATE THE MAIN VIEW                    **/
+        /**************************************************************/
+        brain_create_iconview(view);
     }
 }
 

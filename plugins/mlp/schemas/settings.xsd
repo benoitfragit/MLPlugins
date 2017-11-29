@@ -26,11 +26,6 @@
         </xs:restriction>
     </xs:simpleType>
 
-    <xs:complexType name="DropoutType">
-        <xs:attribute name="activate" type="xs:boolean" use="required"/>
-        <xs:attribute name="factor"   type="xs:decimal" use="required"/>
-    </xs:complexType>
-
     <xs:complexType name="EtaType">
         <xs:attribute name="positive" type="xs:decimal" use="required"/>
         <xs:attribute name="negative" type="xs:decimal" use="required"/>
@@ -61,7 +56,6 @@
 
     <xs:complexType name="TrainingType">
         <xs:all>
-            <xs:element name="dropout"  type="DropoutType"/>
             <xs:element name="method"   type="TrainingMethodType"/>
         </xs:all>
         <xs:attribute name="learning"   type="LearningType" use="required"/>
