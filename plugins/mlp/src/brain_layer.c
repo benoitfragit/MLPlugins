@@ -19,11 +19,13 @@ struct Layer
     /**                      STRUCTURAL PARAMETERS                   **/
     /******************************************************************/
     BrainUint    _number_of_neuron; /*!< The number of BrainNeuron    */
-    BrainUint    _mask_size;        /*!< The mask size                */
+    BrainUint    _mask_size; /*!< The dropout mask size   */
     BrainNeuron* _neurons;          /*!< An array of BrainNeuron      */
     BrainSignal  _in_errors;        /*!< Input vector errors          */
     BrainSignal  _out;              /*!< Output vector of the Layer   */
     BrainUint*   _mask;             /*!< Dropout activation mask      */
+    BrainUint*   _mask_node;             /*!< Dropout activation mask      */
+    BrainUint*   _mask_slot;             /*!< Dropout activation mask      */
     /******************************************************************/
     /**                      FUNCTIONAL PARAMETERS                   **/
     /******************************************************************/
@@ -103,6 +105,21 @@ delete_layer(BrainLayer layer)
             free(layer->_in_errors);
         }
 
+        if (_layer->_mask_node)
+        {
+            free(_layer->_mask_node);
+        }
+
+        if (_layer->_mask_slot)
+        {
+            free(_layer->_mask_slot);
+        }
+
+        if (_layer->_mask)
+        {
+            free(_layer->_mask);
+        }
+
         free(layer);
     }
 
@@ -137,7 +154,7 @@ new_layer(const BrainUint     number_of_neurons,
         {
             BrainUint index = 0;
 
-            _layer->_mask_size  = (BrainUint)(_layer->_number_of_neuron / BRAIN_MASK_SIZE);
+           _layer->_mask_size  = (BrainUint)(_layer->_number_of_neuron / BRAIN_MASK_SIZE);
             if (_layer->_mask_size == 0)
             {
                 _layer->_mask_size = 1;
@@ -154,6 +171,8 @@ new_layer(const BrainUint     number_of_neurons,
             _layer->_out        = (BrainSignal  )calloc(_layer->_number_of_neuron, sizeof(BrainDouble));
             _layer->_in_errors  = (BrainSignal)calloc(_layer->_number_of_neuron, sizeof(BrainDouble));
             _layer->_mask       = (BrainUint *)calloc(_layer->_mask_size, sizeof(BrainUint));
+            _layer->_mask_node = (BrainUint *)calloc(_layer->_mask_size, sizeof(BrainUint));            
+            _layer->_mask_slot = (BrainUint *)calloc(_layer->_mask_size, sizeof(BrainUint));  
 
             for (index = 0;
                  (index < _layer->_number_of_neuron);
@@ -177,6 +196,9 @@ new_layer(const BrainUint     number_of_neurons,
                                                      number_of_inputs,
                                                      &(_layer->_out[index]),
                                                      out_errors);
+
+                _layer->_mask_node =  index /  BRAIN_MASK_SIZE;  
+                _layer->_mask_slot = index % BRAIN_MASK_SIZE;
             }
         }
     }
@@ -335,7 +357,8 @@ backpropagate_hidden_layer(BrainLayer hidden_layer)
     if (hidden_layer != NULL)
     {
         const BrainUint current_number_of_neuron = hidden_layer->_number_of_neuron;
-
+        const BrainUint* mask_node = hidden_layer->_mask_node;
+        const BrainUint* mask_slot = hidden_layer->_mask_slot;    
         BrainUint i = 0;
 
         for (i = 0; i < current_number_of_neuron; ++i)
@@ -345,8 +368,14 @@ backpropagate_hidden_layer(BrainLayer hidden_layer)
             if (current_neuron != NULL)
             {
                 const BrainDouble loss = hidden_layer->_in_errors[i];
+                const BrainUint j = mask_node[i];
+                const BrainUint k = mask_slot[i];
+                const BrainBool activated = (hidden_layer->_mask[j] >> k) & 0x00000001;
 
-                neuron_learning(current_neuron, loss);
+                if (activated)
+                {    
+                    neuron_learning(current_neuron, loss);
+                }
             }
         }
     }
@@ -359,6 +388,8 @@ activate_layer(BrainLayer layer, const BrainBool hidden_layer)
     BRAIN_INPUT(activate_layer)
     if (layer != NULL)
     {
+        const BrainUint* mask_node = layer->_mask_node;
+        const BrainUint* mask_slot = layer->_mask_slot;    
         BrainUint i = 0;
 
         memset(layer->_in_errors, 0, layer->_number_of_neuron * sizeof(BrainDouble));
@@ -378,13 +409,14 @@ activate_layer(BrainLayer layer, const BrainBool hidden_layer)
 
         for (i = 0; i < layer->_number_of_neuron; ++i)
         {
-            BrainUint j = i / BRAIN_MASK_SIZE;
-            BrainUint k = i % BRAIN_MASK_SIZE;
+            const BrainUint j = mask_node[i];
+            const BrainUint k = mask_slot[i];
+            const BrainBool activation = (layer->_mask[j] >> k) & 0x00000001;
             /**********************************************************/
             /**                    ACTIVATE ALL NEURONS              **/
             /**********************************************************/
             BrainNeuron neuron = layer->_neurons[i];
-            activate_neuron(neuron, (layer->_mask[j] >> k) & 0x00000001);
+            activate_neuron(neuron, activation);
         }
     }
     BRAIN_OUTPUT(activate_layer)
