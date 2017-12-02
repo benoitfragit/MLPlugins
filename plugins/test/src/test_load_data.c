@@ -3,16 +3,16 @@
 #include "brain_data.h"
 #include "brain_logging_utils.h"
 
-static BrainDouble TEST_INPUT_SIGNALS[4][3] = {{1.0, 3.0, 2.0},
-                                                 {2.0, 9.0, 3.0},
-                                                 {3.0, 2.0, 7.0},
-                                                 {55.0, 2.0, 11.0}};
-static BrainDouble TEST_OUTPUT_SIGNALS[4][1] = {{11.0},
-                                                  {21.0},
-                                                  {52.0},
-                                                  {33.0}};
+static BrainReal TEST_INPUT_SIGNALS[4][3] = {{1.0, 3.0, 2.0},
+                                             {2.0, 9.0, 3.0},
+                                             {3.0, 2.0, 7.0},
+                                             {55.0, 2.0, 11.0}};
+static BrainReal TEST_OUTPUT_SIGNALS[4][1] = {{11.0},
+                                              {21.0},
+                                              {52.0},
+                                              {33.0}};
 
-static const BrainDouble ERROR_TEST_THRESHOLD = 0.000001;
+static const BrainReal ERROR_TEST_THRESHOLD = 1e-4;
 
 static const BrainUint NUMBER_OF_TEST_SIGNAL = 4;
 
@@ -29,12 +29,12 @@ areEqualSignal(const BrainSignal left,
     &&  (right  != NULL)
     &&  (0      != size))
     {
-        BrainDouble error = 0.0;
+        BrainReal error = 0.0;
         BrainUint i = 0;
 
         for (i = 0; i < size; ++i)
         {
-            BrainDouble var = left[i];
+            BrainReal var = left[i];
 
             if ((means  != NULL)
             &&  (sigmas != NULL))

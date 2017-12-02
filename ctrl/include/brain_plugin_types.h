@@ -14,6 +14,7 @@
 #ifndef BRAIN_PLUGIN_TYPES_H
 #define BRAIN_PLUGIN_TYPES_H
 
+typedef void*        BrainSignal;
 typedef BrainNetwork (*BrainLoaderPtrFunc)     (BrainString);
 typedef void         (*BrainConfigurePtrFunc)  (BrainNetwork,       BrainString);
 typedef void         (*BrainSerializePtrFunc)  (const BrainNetwork, BrainString);

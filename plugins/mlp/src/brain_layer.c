@@ -65,8 +65,7 @@ configure_layer_with_context(BrainLayer layer, Context context)
 }
 
 BrainNeuron
-get_layer_neuron(const BrainLayer layer,
-                 const BrainUint index)
+get_layer_neuron(const BrainLayer layer, const BrainUint index)
 {
     if ((layer != NULL)
     &&  (index < layer->_number_of_neuron))
@@ -168,13 +167,12 @@ new_layer(const BrainUint     number_of_neurons,
                 }
             }
 
-            _layer->_neurons    = (BrainNeuron *)calloc(_layer->_number_of_neuron, sizeof(BrainNeuron));
-            _layer->_out        = (BrainSignal  )calloc(_layer->_number_of_neuron, sizeof(BrainDouble));
-            _layer->_in_errors  = (BrainSignal)calloc(_layer->_number_of_neuron, sizeof(BrainDouble));
-
-            _layer->_mask       = (BrainUint *)calloc(_layer->_mask_size, sizeof(BrainUint));
-            _layer->_mask_node  = (BrainUint *)calloc(_layer->_number_of_neuron, sizeof(BrainUint));
-            _layer->_mask_slot  = (BrainUint *)calloc(_layer->_number_of_neuron, sizeof(BrainUint));
+            _layer->_neurons    = (BrainNeuron*)calloc(_layer->_number_of_neuron,   sizeof(BrainNeuron));
+            _layer->_out        = (BrainSignal) calloc(_layer->_number_of_neuron,   sizeof(BrainReal));
+            _layer->_in_errors  = (BrainSignal) calloc(_layer->_number_of_neuron,   sizeof(BrainReal));
+            _layer->_mask       = (BrainUint *) calloc(_layer->_mask_size,          sizeof(BrainUint));
+            _layer->_mask_node  = (BrainUint *) calloc(_layer->_number_of_neuron,   sizeof(BrainUint));
+            _layer->_mask_slot  = (BrainUint *) calloc(_layer->_number_of_neuron,   sizeof(BrainUint));
 
             for (index = 0;
                  (index < _layer->_number_of_neuron);
@@ -306,17 +304,11 @@ backpropagate_output_layer(BrainLayer output_layer,
                 /******************************************************/
                 /**            COMPUTE THE COST DERIVATIVE           **/
                 /******************************************************/
-                const BrainDouble loss = cost_function_derivative(output[output_index], desired[output_index]);
-
-                BrainNeuron output_neuron = get_layer_neuron(output_layer, output_index);
-
-                if (output_neuron != NULL)
-                {
-                    /**************************************************/
-                    /**           CALL LEARNING FUNCTION             **/
-                    /**************************************************/
-                    neuron_learning(output_neuron, loss);
-                }
+                const BrainReal loss = cost_function_derivative(output[output_index], desired[output_index]);
+                /**************************************************/
+                /**           CALL LEARNING FUNCTION             **/
+                /**************************************************/
+                neuron_learning(output_layer->_neurons[output_index], loss);
             }
         }
     }
@@ -371,7 +363,7 @@ backpropagate_hidden_layer(BrainLayer hidden_layer)
 
             if (current_neuron != NULL)
             {
-                const BrainDouble loss = hidden_layer->_in_errors[i];
+                const BrainReal loss = hidden_layer->_in_errors[i];
                 const BrainUint j = mask_node[i];
                 const BrainUint k = mask_slot[i];
                 const BrainBool activated = BRAIN_ACTIVATION(hidden_layer->_mask, j, k);
@@ -396,7 +388,7 @@ activate_layer(BrainLayer layer, const BrainBool hidden_layer)
         const BrainUint* mask_slot = layer->_mask_slot;
         BrainUint i = 0;
 
-        memset(layer->_in_errors, 0, layer->_number_of_neuron * sizeof(BrainDouble));
+        memset(layer->_in_errors, 0, layer->_number_of_neuron * sizeof(BrainReal));
 
         if (hidden_layer)
         {

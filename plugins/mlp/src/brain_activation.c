@@ -11,79 +11,79 @@ static BrainString activation_name[] = {
     "Sinus"
 };
 
-static BrainDouble
-identity(const BrainDouble value)
+static BrainReal
+identity(const BrainReal value)
 {
     return value;
 }
 
-static BrainDouble
-identity_derivative(const BrainDouble value)
+static BrainReal
+identity_derivative(const BrainReal value)
 {
-    return 1.0 + value - value;
+    return (BrainReal)(1.0 + value - value);
 }
 
-static BrainDouble
-sigmoid(const BrainDouble value)
+static BrainReal
+sigmoid(const BrainReal value)
 {
-    return 1.0 / (1.0 + exp(-value));
+    return (BrainReal)(1.0 / (1.0 + exp(-value)));
 }
 
-static BrainDouble
-sigmoid_derivative(const BrainDouble value)
+static BrainReal
+sigmoid_derivative(const BrainReal value)
 {
-    const BrainDouble v = sigmoid(value);
+    const BrainReal v = sigmoid(value);
     return v * (1.0 - v);
 }
 
-static BrainDouble
-tangeant_hyperbolic(const BrainDouble value)
+static BrainReal
+tangeant_hyperbolic(const BrainReal value)
 {
-    return tanh(value);
+    return (BrainReal)tanh(value);
 }
 
-static BrainDouble
-tangeant_hyperbolic_derivative(const BrainDouble value)
+static BrainReal
+tangeant_hyperbolic_derivative(const BrainReal value)
 {
-    const BrainDouble v = tanh(value);
+    const BrainReal v = (BrainReal)tanh(value);
     return 1.0 - v*v;
 }
 
-static BrainDouble
-co_tangeant(const BrainDouble value)
+static BrainReal
+co_tangeant(const BrainReal value)
 {
-    return atan(value);
+    return (BrainReal)atan(value);
 }
 
-static BrainDouble
-co_tangeant_derivative(const BrainDouble value)
+static BrainReal
+co_tangeant_derivative(const BrainReal value)
 {
-    return 1.0 / (1.0 + value*value);
+    return (BrainReal)(1.0 / (1.0 + value*value));
 }
 
-static BrainDouble
-softplus(const BrainDouble value)
+static BrainReal
+softplus(const BrainReal value)
 {
-    return log(1.0 + exp(value));
+    return (BrainReal)log(1.0 + exp(value));
 }
 
-static BrainDouble
-softplus_derivative(const BrainDouble value)
+static BrainReal
+softplus_derivative(const BrainReal value)
 {
-    const BrainDouble v = exp(value);
+    const BrainReal v = exp(value);
     return v / (1.0 + v);
 }
 
-static BrainDouble
-sinusoid(const BrainDouble value)
+static BrainReal
+sinusoid(const BrainReal value)
 {
-    return sin(value);
+    return (BrainReal)sin(value);
 }
 
-static BrainDouble
-sinusoid_derivative(const BrainDouble value)
+static BrainReal
+sinusoid_derivative(const BrainReal value)
 {
-    return cos(value);
+    return (BrainReal)cos(value);
 }
 
 ActivationPtrFunc

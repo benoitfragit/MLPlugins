@@ -5,20 +5,17 @@
 
 #include "brain_network.h"
 
-static double in[] = {0.05, 0.1};
-static double desired[] = {0.01, 0.99};
-
 int
 main(int argc, char** argv)
 {
     BRAIN_INPUT(main)
 
+    BrainReal in[]       = {0.05, 0.1};
+    BrainReal desired[]  = {0.01, 0.99};
     BrainInt ret = EXIT_SUCCESS;
     BrainUint i = 0;
     BrainSignal out = NULL;
     const BrainUint number_of_input = 2;
-    const BrainSignal input = in;
-    const BrainSignal des = desired;
 
     // Create a neural network using an XML file
     BrainNetwork network = new_network_from_context(TEST_LEARNING_NETWORK_PATH);
@@ -31,10 +28,10 @@ main(int argc, char** argv)
     // Initialize with desired weights value
     deserialize_network(desired_network, TEST_LEARNING_DESIRED_PATH);
     // Test the forward propagation
-    predict(network, number_of_input, input);
+    predict(network, number_of_input, in);
     out = get_network_output(network);
     // Test the backpropagation
-    backpropagate(network, 2, des);
+    backpropagate(network, 2, desired);
     // Check if the backpropagation is a success
     ret = compare_networks(network, desired_network);
 

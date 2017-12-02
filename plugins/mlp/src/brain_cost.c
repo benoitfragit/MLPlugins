@@ -8,30 +8,28 @@ static BrainString costfunction_names[] =
     "CrossEntropy"
 };
 
-static BrainDouble
-quadratic_cost(const BrainDouble output,
-               const BrainDouble desired)
+static BrainReal
+quadratic_cost(const BrainReal output,
+               const BrainReal desired)
 {
     return 0.5 * (output - desired) * (output - desired);
 }
 
-static BrainDouble
-quadratic_cost_derivative(const BrainDouble output,
-                     const BrainDouble desired)
+static BrainReal
+quadratic_cost_derivative(const BrainReal output, const BrainReal desired)
 {
     return output - desired;
 }
 
-static BrainDouble
-crossentropy_cost(const BrainDouble output,
-                  const BrainDouble desired)
+static BrainReal
+crossentropy_cost(const BrainReal output, const BrainReal desired)
 {
-    return - (desired * log(output) + (1.0 - desired) * log(1.0 - output));
+    return -(desired * log(output) + (1.0 - desired) * log(1.0 - output));
 }
 
-static BrainDouble
-crossentropy_cost_derivative(const BrainDouble output,
-                             const BrainDouble desired)
+static BrainReal
+crossentropy_cost_derivative(const BrainReal output,
+                             const BrainReal desired)
 {
     return (output - desired) * (1.0 / (output * (1.0 - output)));
 }

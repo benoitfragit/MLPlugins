@@ -34,18 +34,18 @@ struct Neuron
     BrainSignal       _deltas;                /*!< weights delta values                                 */
     BrainSignal       _errors;                /*!< error to correct in the layer                        */
     BrainSignal       _out;                   /*!< An output value pointer owned by the BrainLayer      */
-    BrainDouble       _bias;                  /*!< Bias of the neuron                                   */
-    BrainDouble       _bias_delta;            /*!< Bias delta                                           */
-    BrainDouble       _bias_gradient;         /*!< Bias gradient                                        */
-    BrainDouble       _sum;                   /*!< Summation of all input time weight                   */
+    BrainReal         _bias;                  /*!< Bias of the neuron                                   */
+    BrainReal         _bias_delta;            /*!< Bias delta                                           */
+    BrainReal         _bias_gradient;         /*!< Bias gradient                                        */
+    BrainReal         _sum;                   /*!< Summation of all input time weight                   */
     /******************************************************************/
     /**                        TRAINING PARAMETERS                   **/
     /******************************************************************/
-    BrainDouble       _rprop_eta_plus;        /*!< Rprop eta for positive gradient transition           */
-    BrainDouble       _rprop_eta_minus;       /*!< Rprop eta for negative gradient transition           */
-    BrainDouble       _rprop_delta_min;       /*!< Rprop delta min                                      */
-    BrainDouble       _rprop_delta_max;       /*!< Rprop delta max                                      */
-    BrainDouble       _backprop_learning_rate;/*!< BackProp learning rate                               */
+    BrainReal         _rprop_eta_plus;        /*!< Rprop eta for positive gradient transition           */
+    BrainReal         _rprop_eta_minus;       /*!< Rprop eta for negative gradient transition           */
+    BrainReal         _rprop_delta_min;       /*!< Rprop delta min                                      */
+    BrainReal         _rprop_delta_max;       /*!< Rprop delta max                                      */
+    BrainReal         _backprop_learning_rate;/*!< BackProp learning rate                               */
     BrainUint         _number_of_input;       /*!< Number of inputs                                     */
 } Neuron;
 
@@ -73,19 +73,19 @@ get_learning_type(BrainString learning_name)
 }
 
 static void
-update_neuron_using_backpropagation(BrainNeuron neuron, const BrainDouble loss)
+update_neuron_using_backpropagation(BrainNeuron neuron, const BrainReal loss)
 {
     BRAIN_INPUT(update_neuron_using_backpropagation)
 
     if (neuron != NULL)
     {
         const BrainUint   number_of_inputs      = neuron->_number_of_input;
-        const BrainDouble learning_rate         = neuron->_backprop_learning_rate;
+        const BrainReal learning_rate           = neuron->_backprop_learning_rate;
         ActivationPtrFunc derivative_function   = neuron->_derivative_function;
 
         if (derivative_function != NULL)
         {
-            const BrainDouble neuron_gradient   = loss * derivative_function(neuron->_sum);
+            const BrainReal neuron_gradient   = loss * derivative_function(neuron->_sum);
             BrainUint i = 0;
             /******************************************************/
             /**               BACKPROPAGATE $_i                  **/
@@ -111,28 +111,27 @@ update_neuron_using_backpropagation(BrainNeuron neuron, const BrainDouble loss)
 }
 
 static void
-update_neuron_using_resilient(BrainNeuron neuron,
-                              const BrainDouble loss)
+update_neuron_using_resilient(BrainNeuron neuron, const BrainReal loss)
 {
     BRAIN_INPUT(update_neuron_using_resilient)
 
     if (neuron != NULL)
     {
-        const BrainDouble rprop_eta_positive  = neuron->_rprop_eta_plus;
-        const BrainDouble rprop_eta_negative  = neuron->_rprop_eta_minus;
-        const BrainDouble rprop_delta_min     = neuron->_rprop_delta_min;
-        const BrainDouble rprop_delta_max     = neuron->_rprop_delta_max;
+        const BrainReal rprop_eta_positive  = neuron->_rprop_eta_plus;
+        const BrainReal rprop_eta_negative  = neuron->_rprop_eta_minus;
+        const BrainReal rprop_delta_min     = neuron->_rprop_delta_min;
+        const BrainReal rprop_delta_max     = neuron->_rprop_delta_max;
         ActivationPtrFunc derivative_function = neuron->_derivative_function;
 
         if (derivative_function != NULL)
         {
-            const BrainDouble neuron_gradient   = loss * derivative_function(neuron->_sum);
-            const BrainUint   number_of_inputs  = neuron->_number_of_input;
-            BrainUint i                         = 0;
-            BrainDouble new_delta               = 0.0;
-            BrainDouble new_correction          = 0.0;
-            BrainDouble new_gradient            = 0.0;
-            BrainDouble g                       = neuron_gradient;
+            const BrainReal neuron_gradient    = loss * derivative_function(neuron->_sum);
+            const BrainUint   number_of_inputs = neuron->_number_of_input;
+            BrainUint i                        = 0;
+            BrainReal new_delta                = 0.;
+            BrainReal new_correction           = 0.;
+            BrainReal new_gradient             = 0.;
+            BrainReal g                        = neuron_gradient;
 
             //first update the bias using RProp algorithm
             if (0.0 < neuron->_bias_gradient * g)
@@ -143,7 +142,7 @@ update_neuron_using_resilient(BrainNeuron neuron,
 
                 if (0.0 < g)
                 {
-                    new_correction *= -1.0;
+                    new_correction *= -1.;
                 }
             }
             else if (neuron->_bias_gradient * g < 0.0)
@@ -155,9 +154,9 @@ update_neuron_using_resilient(BrainNeuron neuron,
                 new_correction  = neuron->_bias_delta;
                 new_gradient    = g;
 
-                if (0.0 < g)
+                if (0. < g)
                 {
-                    new_correction *= -1.0;
+                    new_correction *= -1.;
                 }
             }
 
@@ -169,9 +168,9 @@ update_neuron_using_resilient(BrainNeuron neuron,
             for (i = 0; i < number_of_inputs; ++i)
             {
                 g               = neuron_gradient * neuron->_in[i];
-                new_delta       = 0.0;
-                new_correction  = 0.0;
-                new_gradient    = 0.0;
+                new_delta       = 0.;
+                new_correction  = 0.;
+                new_gradient    = 0.;
 
                 // Update error in the previous error
                 if (neuron->_errors != NULL)
@@ -187,7 +186,7 @@ update_neuron_using_resilient(BrainNeuron neuron,
 
                     if (0.0 < g)
                     {
-                        new_correction *= -1.0;
+                        new_correction *= -1.;
                     }
                 }
                 else if (neuron->_gradients[i] * g < 0.0)
@@ -201,7 +200,7 @@ update_neuron_using_resilient(BrainNeuron neuron,
 
                     if (0.0 < g)
                     {
-                        new_correction *= -1.0;
+                        new_correction *= -1.;
                     }
                 }
 
@@ -265,7 +264,7 @@ configure_neuron_with_context(BrainNeuron neuron, Context context)
 
                         if (backprop_context != NULL)
                         {
-                            neuron->_backprop_learning_rate  = node_get_double(backprop_context, "learning-rate", 1.2);
+                            neuron->_backprop_learning_rate  = (BrainReal)node_get_double(backprop_context, "learning-rate", 1.2);
                         }
                     }
                         break;
@@ -280,14 +279,14 @@ configure_neuron_with_context(BrainNeuron neuron, Context context)
 
                             if (eta_context != NULL)
                             {
-                                neuron->_rprop_eta_plus  = node_get_double(eta_context, "positive", 1.25);
-                                neuron->_rprop_eta_minus = node_get_double(eta_context, "negative", 0.95);
+                                neuron->_rprop_eta_plus  = (BrainReal)node_get_double(eta_context, "positive", 1.25);
+                                neuron->_rprop_eta_minus = (BrainReal)node_get_double(eta_context, "negative", 0.95);
                             }
 
                             if (delta_context != NULL)
                             {
-                                neuron->_rprop_delta_max = node_get_double(delta_context, "max", 50.0);
-                                neuron->_rprop_delta_min = node_get_double(delta_context, "min", 0.000001);
+                                neuron->_rprop_delta_max = (BrainReal)node_get_double(delta_context, "max", 50.0);
+                                neuron->_rprop_delta_min = (BrainReal)node_get_double(delta_context, "min", 0.000001);
                             }
                         }
                     }
@@ -313,8 +312,7 @@ configure_neuron_with_context(BrainNeuron neuron, Context context)
 }
 
 void
-activate_neuron(BrainNeuron neuron,
-                const BrainBool is_activated)
+activate_neuron(BrainNeuron neuron, const BrainBool is_activated)
 {
     BRAIN_INPUT(activate_neuron)
 
@@ -322,8 +320,8 @@ activate_neuron(BrainNeuron neuron,
     {
         ActivationPtrFunc activation_function = neuron->_activation_function;
 
-        *(neuron->_out) = 0.0;
-        neuron->_sum    = 0.0;
+        *(neuron->_out) = 0.;
+        neuron->_sum    = 0.;
 
         /**************************************************************/
         /**                 COMPUTE A(<in, W>)                       **/
@@ -389,33 +387,33 @@ new_neuron(BrainSignal     in,
     &&  (number_of_inputs != 0))
     {
         BrainUint                index   = 0;
-        BrainDouble random_value_limit   = (BrainDouble)number_of_inputs;
+        BrainReal random_value_limit     = (BrainReal)number_of_inputs;
 
         _neuron                          = (BrainNeuron)calloc(1, sizeof(Neuron));
 
         _neuron->_out                    = out;
         _neuron->_number_of_input        = number_of_inputs;
         _neuron->_in                     = in;
-        _neuron->_bias                   = BRAIN_RAND_RANGE(-random_value_limit, random_value_limit);
-        _neuron->_bias_gradient          = 0.0;
-        _neuron->_bias_delta             = 0.0;
-        _neuron->_sum                    = 0.0;
+        _neuron->_bias                   = (BrainReal)BRAIN_RAND_RANGE(-random_value_limit, random_value_limit);
+        _neuron->_bias_gradient          = 0.;
+        _neuron->_bias_delta             = 0.;
+        _neuron->_sum                    = 0.;
         _neuron->_backprop_learning_rate = 1.12;
         _neuron->_rprop_eta_plus         = 1.2;
         _neuron->_rprop_eta_minus        = 0.95;
         _neuron->_rprop_delta_min        = 0.000001;
-        _neuron->_rprop_delta_max        = 50;
+        _neuron->_rprop_delta_max        = 50.;
         _neuron->_activation_function    = activation(Sigmoid);
         _neuron->_derivative_function    = derivative(Sigmoid);
         _neuron->_learning_function      = get_learning_function(BackPropagation);
         _neuron->_errors                 = errors;
-        _neuron->_w                      = (BrainSignal)calloc(_neuron->_number_of_input, sizeof(BrainDouble));
-        _neuron->_deltas                 = (BrainSignal)calloc(_neuron->_number_of_input, sizeof(BrainDouble));
-        _neuron->_gradients              = (BrainSignal)calloc(_neuron->_number_of_input, sizeof(BrainDouble));
+        _neuron->_w                      = (BrainSignal)calloc(_neuron->_number_of_input, sizeof(BrainReal));
+        _neuron->_deltas                 = (BrainSignal)calloc(_neuron->_number_of_input, sizeof(BrainReal));
+        _neuron->_gradients              = (BrainSignal)calloc(_neuron->_number_of_input, sizeof(BrainReal));
 
         for (index = 0; index < _neuron->_number_of_input; ++index)
         {
-            _neuron->_w[index] = BRAIN_RAND_RANGE(-random_value_limit, random_value_limit);
+            _neuron->_w[index] = (BrainReal)BRAIN_RAND_RANGE(-random_value_limit, random_value_limit);
         }
     }
 
@@ -435,10 +433,10 @@ get_neuron_number_of_input(const BrainNeuron neuron)
     return 0;
 }
 
-BrainDouble
+BrainReal
 get_neuron_bias(const BrainNeuron neuron)
 {
-    BrainDouble ret = 0.0;
+    BrainReal ret = 0.;
 
     if (neuron != NULL)
     {
@@ -448,10 +446,10 @@ get_neuron_bias(const BrainNeuron neuron)
     return ret;
 }
 
-BrainDouble
+BrainReal
 get_neuron_weight(const BrainNeuron neuron, const BrainUint index)
 {
-    BrainDouble ret = 0.0;
+    BrainReal ret = 0.0;
 
     if ((neuron != NULL) &&
         (index < neuron->_number_of_input))
@@ -463,7 +461,7 @@ get_neuron_weight(const BrainNeuron neuron, const BrainUint index)
 }
 
 void
-neuron_learning(BrainNeuron neuron, const BrainDouble loss)
+neuron_learning(BrainNeuron neuron, const BrainReal loss)
 {
     if (neuron)
     {
@@ -483,8 +481,8 @@ deserialize_neuron(BrainNeuron neuron, Context context)
 
     if (neuron && context)
     {
-        const BrainDouble neuron_bias       = node_get_double(context, "bias", 0.0);
-        const BrainUint   number_of_weights = get_number_of_node_with_name(context, "weight");
+        const BrainReal neuron_bias       = (BrainReal)node_get_double(context, "bias", 0.0);
+        const BrainUint number_of_weights = get_number_of_node_with_name(context, "weight");
         BrainUint index = 0;
 
         neuron->_bias = neuron_bias;
@@ -493,9 +491,7 @@ deserialize_neuron(BrainNeuron neuron, Context context)
         {
             Context subcontext = get_node_with_name_and_index(context, "weight", index);
 
-            const BrainDouble weight    = node_get_content_as_double(subcontext);
-
-            neuron->_w[index] = weight;
+            neuron->_w[index] = (BrainReal)node_get_content_as_double(subcontext);
         }
     }
 

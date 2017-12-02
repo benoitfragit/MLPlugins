@@ -34,7 +34,6 @@ typedef float         BrainFloat;
 typedef double        BrainDouble;
 typedef const char*   BrainString;
 typedef char          BrainChar;
-typedef BrainDouble*  BrainSignal;
 
 /**
  * \brief define a XML Context

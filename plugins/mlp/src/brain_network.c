@@ -31,7 +31,7 @@ struct Network
     /*********************************************************************/
     /**                      TRAINING PARAMETERS                        **/
     /*********************************************************************/
-    BrainDouble   _max_error;        /*!< Maximum error threshold        */
+    BrainReal     _max_error;        /*!< Maximum error threshold        */
     BrainUint     _max_iter;         /*!< Maximum iteration              */
     /*********************************************************************/
     /**                      FUNCTIONAL PARAMETERS                      **/
@@ -52,20 +52,16 @@ feedforward(BrainNetwork      network,
         (number_of_input == network->_number_of_inputs))
     {
         BrainUint i = 0;
-
         /**************************************************************/
         /**           FEED THE NETWORK WITH INPUT VECTOR             **/
         /**************************************************************/
-        memcpy(network->_input, in, number_of_input * sizeof(BrainDouble));
-
+        memcpy(network->_input, in, number_of_input * sizeof(BrainReal));
         for (i = 0; i < network->_number_of_layers; ++i)
         {
-            BrainLayer layer = network->_layers[i];
-
             /**********************************************************/
             /**                    ACTIVATE ALL LAYERS               **/
             /**********************************************************/
-            activate_layer(layer, use_dropout && (i != network->_number_of_layers - 1));
+            activate_layer(network->_layers[i], use_dropout && (i != network->_number_of_layers - 1));
         }
     }
 
@@ -107,14 +103,12 @@ configure_network_with_context(BrainNetwork network, BrainString filepath)
                 if (training_context != NULL)
                 {
                     network->_max_iter  = node_get_int(training_context, "iterations", 1000);
-                    network->_max_error = node_get_double(training_context, "error", 0.001);
+                    network->_max_error = (BrainReal)node_get_double(training_context, "error", 0.001);
                 }
 
                 for (i = 0; i < number_of_layer; ++i)
                 {
-                    BrainLayer layer = network->_layers[i];
-
-                    configure_layer_with_context(layer, settings_context);
+                    configure_layer_with_context(network->_layers[i], settings_context);
                 }
             }
 
@@ -145,7 +139,6 @@ backpropagate(BrainNetwork network,
               const BrainUint number_of_output,
               const BrainSignal desired)
 {
-    BRAIN_INPUT(backpropagate)
     /******************************************************************/
     /**                      BACKPROP ALGORITHM                      **/
     /**                                                              **/
@@ -169,21 +162,20 @@ backpropagate(BrainNetwork network,
     /**                                                              **/
     /** where n is the learning rate                                 **/
     /******************************************************************/
+    BRAIN_INPUT(backpropagate)
+
     if ((network                   != NULL) &&
         (network->_layers          != NULL) &&
         (network->_number_of_layers!= 0)    &&
         (desired                   != NULL))
     {
         BrainInt i = 0;
-        BrainLayer output_layer = network->_layers[network->_number_of_layers - 1];
 
-        backpropagate_output_layer(output_layer, number_of_output, desired);
+        backpropagate_output_layer(network->_layers[network->_number_of_layers - 1], number_of_output, desired);
 
         for (i = network->_number_of_layers - 2; i >= 0; --i)
         {
-            BrainLayer hidden_layer = network->_layers[i];
-
-            backpropagate_hidden_layer(hidden_layer);
+            backpropagate_hidden_layer(network->_layers[i]);
         }
     }
 
@@ -247,7 +239,7 @@ new_network(const BrainUint signal_input_length,
         _network = (BrainNetwork)calloc(1, sizeof(Network));
 
         _network->_number_of_inputs = signal_input_length;
-        _network->_input            = (BrainSignal)calloc(signal_input_length, sizeof(BrainDouble));
+        _network->_input            = (BrainSignal)calloc(signal_input_length, sizeof(BrainReal));
         _network->_layers           = (BrainLayer *)calloc(number_of_layers, sizeof(BrainLayer));
         _network->_number_of_layers = number_of_layers;
         _network->_max_iter         = 1000;
@@ -316,9 +308,7 @@ predict(BrainNetwork      network,
         const BrainSignal in)
 {
     BRAIN_INPUT(predict)
-
     feedforward(network, number_of_input, in, BRAIN_FALSE);
-
     BRAIN_INPUT(predict)
 }
 
@@ -333,7 +323,7 @@ isNetworkTrainingRequired(BrainNetwork network, const BrainData data)
     if ((network != NULL) &&
         (data    != NULL))
     {
-        const BrainDouble target_error  = network->_max_error;
+        const BrainReal target_error  = network->_max_error;
 
         const BrainUint input_length  = get_input_signal_length(data);
         const BrainUint output_length = get_output_signal_length(data);
@@ -344,7 +334,7 @@ isNetworkTrainingRequired(BrainNetwork network, const BrainData data)
         BrainSignal target = NULL;
         BrainSignal output = NULL;
 
-        BrainDouble error = 0.0;
+        BrainReal error = 0.0;
         BrainUint   i = 0;
         BrainUint   j = 0;
 
@@ -368,7 +358,7 @@ isNetworkTrainingRequired(BrainNetwork network, const BrainData data)
             }
         }
 
-        error /= number_of_evaluating_sample;
+        error /= (BrainReal)number_of_evaluating_sample;
 
         if (target_error < error)
         {
@@ -464,10 +454,9 @@ deserialize_network(BrainNetwork network, BrainString filepath)
 
                     for (i = 0; i < number_of_layer; ++i)
                     {
-                        BrainLayer layer = network->_layers[i];
                         Context layer_context = get_node_with_name_and_index(context, "layer", i);
 
-                        deserialize_layer(layer, layer_context);
+                        deserialize_layer(network->_layers[i], layer_context);
                     }
                 }
             }
@@ -505,9 +494,7 @@ serialize_network(const BrainNetwork network, BrainString filepath)
 
                     for (i = 0; i < number_of_layer;++i)
                     {
-                        BrainLayer layer = network->_layers[i];
-
-                        serialize_layer(layer, writer);
+                        serialize_layer(network->_layers[i], writer);
                     }
 
                     stop_element(writer);

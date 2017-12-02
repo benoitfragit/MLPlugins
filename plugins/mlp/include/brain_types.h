@@ -63,9 +63,15 @@ typedef enum BrainLearningType
 } BrainLearningType;
 
 /**
- * \brief opaque pointer on Settings struct
+ * \brief Define a BrainSignal using single or double precision
  */
-typedef struct Settings* BrainSettings;
+#if BRAIN_ENABLE_DOUBLE_PRECISION
+typedef BrainDouble BrainReal;
+#else
+typedef BrainFloat BrainReal;
+#endif
+typedef BrainReal* BrainSignal;
+
 /**
  * \brief opaque pointer on Data struct
  */
@@ -83,10 +89,6 @@ typedef struct Layer*   BrainLayer;
  */
 typedef struct Network* BrainNetwork;
 /**
- * \brief opaque pointer on Weight struct
- */
-typedef struct Weight*  BrainWeight;
-/**
  * \brief function pointer on an activation function
  *
  * It let neurons use several activation function and
@@ -95,7 +97,7 @@ typedef struct Weight*  BrainWeight;
  * \param value dot product of input vector and weight vector of a neuron
  * \return the value of the activation
  */
-typedef BrainDouble (*ActivationPtrFunc)(const BrainDouble value);
+typedef BrainReal (*ActivationPtrFunc)(const BrainReal value);
 /**
  * \brief function pointer on an cost function
  *
@@ -106,14 +108,12 @@ typedef BrainDouble (*ActivationPtrFunc)(const BrainDouble value);
  * \param desired the desired output of a neuron
  * \return the value of the cost function
  */
-typedef BrainDouble (*CostPtrFunc)(const BrainDouble output,
-                                   const BrainDouble desired);
+typedef BrainReal (*CostPtrFunc)(const BrainReal output, const BrainReal desired);
 /**
  * \brief function pointer to update neuron weights
  *
  * \param neuron a BrainNeuron
  * \param loss   the total output error
  */
-typedef void (*LearningPtrFunc)(BrainNeuron neuron,
-                                const BrainDouble loss);
+typedef void (*LearningPtrFunc)(BrainNeuron neuron, const BrainReal loss);
 #endif /* BRAIN_TYPES_H */

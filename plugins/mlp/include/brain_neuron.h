@@ -20,7 +20,7 @@
  *
  * \param in               a input BrainSignal
  * \param number_of_inputs input_signal_size
- * \param out            a pointer to a BrainDouble owned by the BrainLayer
+ * \param out            a pointer to a BrainReal owned by the BrainLayer
  * \param errors an array owned by the BrainLayer to update weights
  * \return a BrainNeuron or NULL if it failed
  */
@@ -52,22 +52,22 @@ void activate_neuron(BrainNeuron neuron, const BrainBool is_activated);
  */
 BrainUint get_neuron_number_of_input(const BrainNeuron neuron);
 /**
- * \fn BrainDouble get_neuron_bias(const BrainNeuron neuron)
+ * \fn BrainReal get_neuron_bias(const BrainNeuron neuron)
  * \brief retrieve neuron bias
  *
  * \param neuron the Neuron
  * \return the neuron bias
  */
-BrainDouble get_neuron_bias(const BrainNeuron neuron);
+BrainReal get_neuron_bias(const BrainNeuron neuron);
 /**
- * \fn BrainDouble get_neuron_weight(const BrainNeuron neuron, const BrainUint index)
+ * \fn BrainReal get_neuron_weight(const BrainNeuron neuron, const BrainUint index)
  * \brief retrieve a neuron weight
  *
  * \param neuron the Neuron
  * \param index the weight inde
  * \return the neuron weight
  */
-BrainDouble get_neuron_weight(const BrainNeuron neuron, const BrainUint index);
+BrainReal get_neuron_weight(const BrainNeuron neuron, const BrainUint index);
 /**
  * \fn void configure_neuron_with_context( BrainNeuron neuron, Context context);
  * \brief customize neural network parameters
@@ -77,13 +77,13 @@ BrainDouble get_neuron_weight(const BrainNeuron neuron, const BrainUint index);
  */
 void configure_neuron_with_context(BrainNeuron neuron, Context context);
 /**
- * \fn void neuron_learning(BrainNeuron reuron, const BrainDouble loss)
+ * \fn void neuron_learning(BrainNeuron reuron, const BrainReal loss)
  * \brief apply correction to a neuron to reduce the total error
  *
  * \param neuron a BrainNeuron
  * \param error The error procuded by this neuron
  */
-void neuron_learning(BrainNeuron neuron, const BrainDouble loss);
+void neuron_learning(BrainNeuron neuron, const BrainReal loss);
 /**
  * \fn void deserialize_neuron(BrainNeuron neuron, Context context)
  * \brief deserialize a neuron from a context

@@ -82,12 +82,12 @@ parse_csv_repository(BrainData       data,
 
             if (is_data_splitted)
             {
-                data->_training._input        = (BrainSignal*)calloc(counter, sizeof(BrainSignal));
-                data->_training._output      = (BrainSignal*)calloc(counter, sizeof(BrainSignal));
+                data->_training._input  = (BrainSignal*)calloc(counter, sizeof(BrainSignal));
+                data->_training._output = (BrainSignal*)calloc(counter, sizeof(BrainSignal));
             }
 
-            data->_evaluating._input      = (BrainSignal*)calloc(counter, sizeof(BrainSignal));
-            data->_evaluating._output    = (BrainSignal*)calloc(counter, sizeof(BrainSignal));
+            data->_evaluating._input    = (BrainSignal*)calloc(counter, sizeof(BrainSignal));
+            data->_evaluating._output   = (BrainSignal*)calloc(counter, sizeof(BrainSignal));
             data->_evaluating._children = 0;
 
             /****************************************************************/
@@ -110,8 +110,8 @@ parse_csv_repository(BrainData       data,
                         dataset = &(data->_training);
                     }
 
-                    dataset->_input[dataset->_children]  = (BrainSignal)calloc(input_length, sizeof(BrainDouble));
-                    dataset->_output[dataset->_children] = (BrainSignal)calloc(output_length, sizeof(BrainDouble));
+                    dataset->_input[dataset->_children]  = (BrainSignal)calloc(input_length, sizeof(BrainReal));
+                    dataset->_output[dataset->_children] = (BrainSignal)calloc(output_length, sizeof(BrainReal));
 
                     /****************************************************************/
                     /**                        Parsing signals                     **/
@@ -120,7 +120,7 @@ parse_csv_repository(BrainData       data,
 
                     while(k < input_length + output_length)
                     {
-                        BrainDouble* value = NULL;
+                        BrainSignal value = NULL;
                         BrainUint kp = k;
 
                         if (k < input_length)
@@ -139,8 +139,11 @@ parse_csv_repository(BrainData       data,
 
                         if (buffer != NULL && value != NULL)
                         {
+#if BRAIN_ENABLE_DOUBLE_PRECISION
                             sscanf(buffer, "%lf", value);
-
+#else
+                            sscanf(buffer, "%f", value);
+#endif
                             buffer = strtok(NULL, tokenizer);
 
                             /****************************************************************/
@@ -175,8 +178,8 @@ parse_csv_repository(BrainData       data,
 
             for (k = 0; k < input_length; ++k)
             {
-                data->_means[k] /= counter;
-                data->_sigmas[k] = (data->_sigmas[k] / counter) - data->_means[k] * data->_means[k];
+                data->_means[k] /= (BrainReal)counter;
+                data->_sigmas[k] = (data->_sigmas[k] / (BrainReal)counter) - data->_means[k] * data->_means[k];
 
                 for (j = 0; j < m; ++j)
                 {
@@ -219,8 +222,8 @@ new_data(BrainString repository_path,
 
         _data->_input_length     = input_length;
         _data->_output_length    = output_length;
-        _data->_means            = (BrainSignal)calloc(input_length, sizeof(BrainDouble));
-        _data->_sigmas           = (BrainSignal)calloc(input_length, sizeof(BrainDouble));
+        _data->_means            = (BrainSignal)calloc(input_length, sizeof(BrainReal));
+        _data->_sigmas           = (BrainSignal)calloc(input_length, sizeof(BrainReal));
 
         parse_csv_repository(_data, repository_path, tokenizer, is_data_splitted);
     }

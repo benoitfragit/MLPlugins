@@ -7,6 +7,10 @@ configure_file ("${CMAKE_CURRENT_SOURCE_DIR}/src/config_all.h.in"
 
 file(GLOB TEST_SRCS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} src/test_*.c)
 
+if (LIBBRAIN_DOUBLE_PRECISION)
+    add_definitions(-DBRAIN_ENABLE_DOUBLE_PRECISION=1)
+endif(LIBBRAIN_DOUBLE_PRECISION)
+
 foreach(testSrc ${TEST_SRCS})
         get_filename_component(testName ${testSrc} NAME_WE)
 

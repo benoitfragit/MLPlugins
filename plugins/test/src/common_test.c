@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-static const BrainDouble _epsilon_double_comparaison = 1e-4;
+static const BrainReal _epsilon_double_comparaison = 1e-4;
 
 BrainInt
 compare_networks(const BrainNetwork left, const BrainNetwork right)
@@ -57,8 +57,8 @@ compare_networks(const BrainNetwork left, const BrainNetwork right)
             const BrainUint left_neuron_input   = get_neuron_number_of_input(left_neuron);
             const BrainUint right_neuron_input  = get_neuron_number_of_input(right_neuron);
 
-            const BrainDouble left_bias_value   = get_neuron_bias(left_neuron);
-            const BrainDouble right_bias_value  = get_neuron_bias(right_neuron);
+            const BrainReal left_bias_value   = get_neuron_bias(left_neuron);
+            const BrainReal right_bias_value  = get_neuron_bias(right_neuron);
 
             BrainUint input_index = 0;
 
@@ -71,15 +71,19 @@ compare_networks(const BrainNetwork left, const BrainNetwork right)
 
             if (_epsilon_double_comparaison < fabs(left_bias_value - right_bias_value))
             {
-                BRAIN_CRITICAL("Bias are not equals (left = %.5lf, right = %.5lf)", left_bias_value, right_bias_value);
+#if BRAIN_ENABLE_DOUBLE_PRECISION
+                BRAIN_CRITICAL("Bias are not equals: (left=%lf, right=%lf)\n", left_bias_value, right_bias_value);
+#else
+                BRAIN_CRITICAL("Bias are not equals: (left=%f, right=%f)\n", left_bias_value, right_bias_value);
+#endif
                 ret = EXIT_FAILURE;
                 break;
             }
 
             for (input_index = 0; input_index < left_neuron_input; ++input_index)
             {
-                const BrainDouble left_value  = get_neuron_weight(left_neuron, input_index);
-                const BrainDouble right_value = get_neuron_weight(right_neuron, input_index);
+                const BrainReal left_value  = get_neuron_weight(left_neuron, input_index);
+                const BrainReal right_value = get_neuron_weight(right_neuron, input_index);
 
                 if (_epsilon_double_comparaison < fabs(left_value - right_value))
                 {

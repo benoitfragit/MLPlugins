@@ -5,6 +5,10 @@ set(CMAKE_C_FLAGS
     ${CMAKE_C_FLAGS}
     "-O2 -g3 -Wall -Wextra -Wshadow -Wunused -Wunused-parameter")
 
+if (LIBBRAIN_DOUBLE_PRECISION)
+    add_definitions(-DBRAIN_ENABLE_DOUBLE_PRECISION=1)
+endif(LIBBRAIN_DOUBLE_PRECISION)
+
 if (NOT CMAKE_ENABLE_TESTING)
     set(CMAKE_C_VISIBILITY_PRESET hidden)
     set(CMAKE_CXX_VISIBILITY_PRESET hidden)
