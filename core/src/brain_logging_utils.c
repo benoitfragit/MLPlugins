@@ -26,9 +26,10 @@ static BrainString _log_levels[] = {
 };
 
 static BrainLogLevel
-getBrainLogLevel(BrainString log_level)
+getBrainLogLevel()
 {
     BrainLogLevel level = LOG_NONE;
+    BrainString log_level = getenv("BRAIN_LOG_LEVEL");
 
     if (log_level)
     {
@@ -51,7 +52,7 @@ void
 BRAIN_DEBUG(BrainString format, ...)
 {
 #if BRAIN_ENABLE_LOGGING
-    const BrainLogLevel level = getBrainLogLevel(getenv("BRAIN_LOG_LEVEL"));
+    const BrainLogLevel level = getBrainLogLevel();
 
     if (level <= LOG_DEBUG)
     {
@@ -64,7 +65,7 @@ void
 BRAIN_INFO(BrainString format, ...)
 {
 #if BRAIN_ENABLE_LOGGING
-    const BrainLogLevel level = getBrainLogLevel(getenv("BRAIN_LOG_LEVEL"));
+    const BrainLogLevel level = getBrainLogLevel();
 
     if (level <= LOG_INFO)
     {
@@ -77,7 +78,7 @@ void
 BRAIN_WARNING(BrainString format, ...)
 {
 #if BRAIN_ENABLE_LOGGING
-    const BrainLogLevel level = getBrainLogLevel(getenv("BRAIN_LOG_LEVEL"));
+    const BrainLogLevel level = getBrainLogLevel();
 
     if (level <= LOG_WARNING)
     {
@@ -90,7 +91,7 @@ void
 BRAIN_CRITICAL(BrainString format, ...)
 {
 #if BRAIN_ENABLE_LOGGING
-    const BrainLogLevel level = getBrainLogLevel(getenv("BRAIN_LOG_LEVEL"));
+    const BrainLogLevel level = getBrainLogLevel();
 
     if (level <= LOG_CRITICAL)
     {

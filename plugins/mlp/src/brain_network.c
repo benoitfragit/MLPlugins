@@ -214,9 +214,7 @@ delete_network(BrainNetwork network)
             BrainUint i = 0;
             for (i = 0; i < network->_number_of_layers; ++i)
             {
-                BrainLayer layer = network->_layers[i];
-
-                delete_layer(layer);
+                delete_layer(network->_layers[i]);
             }
         }
 
@@ -238,6 +236,9 @@ new_network(const BrainUint signal_input_length,
 {
     BRAIN_INPUT(new_network)
 
+    // initialize the random number generator
+    BRAIN_RANDOM_INITIALIZATION
+
     BrainNetwork _network = NULL;
 
     if (neuron_per_layers != NULL)
@@ -256,8 +257,6 @@ new_network(const BrainUint signal_input_length,
         /**************************************************************/
         /**                INITIALE THE RANDOM GENERATOR             **/
         /**************************************************************/
-        initialize_random_generator();
-
         if (0 < number_of_layers)
         {
             BrainUint index = 0;

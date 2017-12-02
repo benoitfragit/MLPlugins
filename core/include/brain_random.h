@@ -10,42 +10,9 @@
 #define BRAIN_RANDOM_H
 
 #include "brain_core_types.h"
-/**
- * \fn void initialize_random_generator()
- * \brief initialize the random number generator
- */
-void initialize_random_generator();
-/**
- * \fn BrainDouble get_random_double_value()
- * \brief get a random double value between 0 and 1
- *
- * \return a random value between 0 and 1
- */
-BrainDouble get_random_double_value();
-/**
- * \fn BrainDouble get_random_double_value_in_range(const BrainDouble min, const BrainDouble max)
- * \brief get a random double value between min and max
- * \param min min value
- * \param max max value
- * \return a random value between min and max
- */
-BrainDouble get_random_double_value_in_range(const BrainDouble min, const BrainDouble max);
-/**
- * \fn BrainInt get_random_int_value_in_range(const BrainInt min, const BrainInt max)
- * \brief get a random int value between min and max
- * \param min min value
- * \param max max value
- * \return a random value between min and max
- */
-BrainInt    get_random_int_value_in_range(const BrainInt min, const BrainInt max);
-/**
- * \fn BrainUint get_random_uint_value_in_range(const BrainUint min, const BrainUint max)
- * \brief get a random uint value between min and max
- * \param min min value
- * \param max max value
- * \return a random value between min and max
- */
-BrainUint    get_random_uint_value_in_range(const BrainUint min, const BrainUint max);
 
+#define BRAIN_RANDOM_INITIALIZATION srand(time(NULL));
+#define BRAIN_RAND_UNIT (BrainDouble)rand()/(1.0 + (BrainDouble)RAND_MAX)
+#define BRAIN_RAND_RANGE(min, max) BRAIN_RAND_UNIT * (BrainDouble)(max - min) + (BrainDouble)min
 
 #endif /* BRAIN_RANDOM_H */

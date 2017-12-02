@@ -19,6 +19,7 @@ main(int argc, char** argv)
     BrainInt result = EXIT_FAILURE;
 
     const BrainNetwork network = new_network_from_context(TEST_CREATE_NETWORK);
+    printf(">>>>>>>>>>>>> Creating new network\n");
 
     if (network != NULL)
     {

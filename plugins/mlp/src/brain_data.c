@@ -105,7 +105,7 @@ parse_csv_repository(BrainData       data,
                     /****************************************************************/
                     Dataset* dataset = &(data->_evaluating);
                     if (is_data_splitted ||
-                        (get_random_double_value()) <  TRAINING_DATASET_RATIO)
+                        (BRAIN_RAND_UNIT <  TRAINING_DATASET_RATIO))
                     {
                         dataset = &(data->_training);
                     }

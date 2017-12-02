@@ -3,8 +3,8 @@
 
 #include "brain_core_types.h"
 
-#define BRAIN_INPUT(func)  BRAIN_DEBUG(">>>> Brain ENTERING:\t%s", #func);
-#define BRAIN_OUTPUT(func) BRAIN_DEBUG("<<<< Brain LEAVING:\t%s", #func);
+#define BRAIN_INPUT(func)   BRAIN_DEBUG(">>>> Brain ENTERING:\t%s", #func);
+#define BRAIN_OUTPUT(func)  BRAIN_DEBUG("<<<< Brain LEAVING:\t%s", #func);
 
 void BRAIN_CRITICAL(BrainString format, ...);
 void BRAIN_DEBUG   (BrainString format, ...);

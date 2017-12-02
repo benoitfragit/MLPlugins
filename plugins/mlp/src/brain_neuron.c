@@ -353,7 +353,7 @@ delete_neuron(BrainNeuron neuron)
 {
     BRAIN_INPUT(delete_neuron)
 
-    if (neuron)
+    if (neuron != NULL)
     {
         if (neuron->_w != NULL)
         {
@@ -396,7 +396,7 @@ new_neuron(BrainSignal     in,
         _neuron->_out                    = out;
         _neuron->_number_of_input        = number_of_inputs;
         _neuron->_in                     = in;
-        _neuron->_bias                   = get_random_double_value_in_range(-random_value_limit, random_value_limit);
+        _neuron->_bias                   = BRAIN_RAND_RANGE(-random_value_limit, random_value_limit);
         _neuron->_bias_gradient          = 0.0;
         _neuron->_bias_delta             = 0.0;
         _neuron->_sum                    = 0.0;
@@ -415,7 +415,7 @@ new_neuron(BrainSignal     in,
 
         for (index = 0; index < _neuron->_number_of_input; ++index)
         {
-            _neuron->_w[index] = get_random_double_value_in_range(-random_value_limit, random_value_limit);
+            _neuron->_w[index] = BRAIN_RAND_RANGE(-random_value_limit, random_value_limit);
         }
     }
 
