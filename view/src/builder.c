@@ -1,9 +1,13 @@
+#include "brain_view_config.h"
 #include "brain_plugin_manager.h"
 #include "brain_plugin.h"
 #include "brain_logging_utils.h"
 
 #include <gtk/gtk.h>
 #include <glib.h>
+
+#define BRAIN_ICON_EXTENSION ".png"
+#define BRAIN_ICON_PATH(name) BRAIN_VIEW_RESOURCES_PATH #name BRAIN_ICON_EXTENSION
 
 typedef struct View
 {
@@ -14,7 +18,9 @@ typedef struct View
 } View;
 
 typedef View* BrainView;
-
+/**********************************************************************/
+/**                         DEFINING CALLBACK                        **/
+/**********************************************************************/
 static void
 brain_quit(BrainView view, gpointer data)
 {
@@ -54,7 +60,9 @@ on_plugin_activation_change(BrainView view, GParamSpec* pspec, gpointer data)
         }
     }
 }
-
+/**********************************************************************/
+/**                        DEFINING STRUCTURE                        **/
+/**********************************************************************/
 static void
 brain_attach_setup_popup(BrainView view, GtkWidget* button)
 {
@@ -178,13 +186,15 @@ brain_create_iconview(BrainView view)
     GtkTreeIter iter;
     GError* err = NULL;
 
-    GdkPixbuf* pixbuf = gdk_pixbuf_new_from_file("/home/benoit/Documents/projets/C/libBrain/view/src/package.png", &err);
+    GdkPixbuf* pixbuf = gdk_pixbuf_new_from_file(BRAIN_ICON_PATH(network), &err);
     GtkWidget* scrolled_window = gtk_scrolled_window_new(NULL,NULL);
     GtkWidget* iconview = gtk_icon_view_new();
     GtkListStore* store = gtk_list_store_new(2, G_TYPE_STRING, GDK_TYPE_PIXBUF);
 
     gtk_list_store_append(store, &iter);
     gtk_list_store_set(store, &iter, 0, "package", 1, pixbuf, -1);
+    gtk_list_store_append(store, &iter);
+    gtk_list_store_set(store, &iter, 0, "other", 1, pixbuf, -1);
     gtk_icon_view_set_model(GTK_ICON_VIEW(iconview), GTK_TREE_MODEL(store));
     gtk_icon_view_set_text_column(GTK_ICON_VIEW(iconview), 0);
     gtk_icon_view_set_pixbuf_column(GTK_ICON_VIEW(iconview), 1);
@@ -225,7 +235,37 @@ brain_create_window(BrainView view)
         brain_create_iconview(view);
     }
 }
+/**********************************************************************/
+/**                 DEFINING UTILITIES FUNCTIONS                     **/
+/**********************************************************************/
+static void
+brain_view_initialize()
+{
+    BrainString filepath = getenv("BRAIN_CONFIG_PATH");
 
+    if (filepath != NULL)
+    {
+        /**************************************************************/
+        /**              OPENING THE CONFIGURATION FILE               */
+        /**************************************************************/
+        GKeyFile* keyfile = NULL;
+        GError* error = NULL;
+
+        keyfile = g_key_file_new();
+
+        if(g_key_file_load_from_file(keyfile, filepath, G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS, &error))
+        {
+
+        }
+        else
+        {
+            BRAIN_CRITICAL("Unable to load config file:%s\n", filepath);
+        }
+    }
+}
+/**********************************************************************/
+/**                    DEFINING MAIN FUNCTION                        **/
+/**********************************************************************/
 BrainInt
 main(BrainInt argc, BrainChar** argv)
 {
@@ -242,6 +282,10 @@ main(BrainInt argc, BrainChar** argv)
     /**                    CREATE A PLUGIN MANAGER                   **/
     /******************************************************************/
     view._manager = new_plugin_manager();
+    /******************************************************************/
+    /**                     LOAD THE CONFIGURATION                   **/
+    /******************************************************************/
+    brain_view_initialize();
     /******************************************************************/
     /**                    CREATE A PLUGIN HASHTABLE                 **/
     /******************************************************************/
