@@ -385,10 +385,11 @@ train_network(BrainNetwork network, BrainString repository_path, BrainString tok
         BrainSignal input = NULL;
         BrainSignal target = NULL;
 
-        BrainUint   iteration = 0;
-        BrainUint   i = 0;
-
-        BrainData   data = NULL;
+        BrainUint iteration = 0;
+        BrainUint i = 0;
+        BrainUint j = 0;
+        BrainUint k = 0;
+        BrainData data = NULL;
 
         if (repository_path
         &&  tokenizer)
@@ -399,6 +400,35 @@ train_network(BrainNetwork network, BrainString repository_path, BrainString tok
         if (data)
         {
             const BrainUint number_of_training_sample = get_number_of_training_sample(data);
+            /**************************************************************/
+            /**           GENERATE MASK FOR THE RANDOM BACTH             **/
+            /**************************************************************/
+            const BrainUint max_mask_size = 8 * sizeof(BrainUint);
+            BrainUint mask_size = number_of_training_sample / max_mask_size;
+            BrainUint* mask = NULL;
+            BrainUint* mask_node = NULL;
+            BrainUint* mask_slot = NULL;
+            if (mask_size < 1)
+            {
+                mask_size = 1;
+            }
+            else
+            {
+                if (number_of_training_sample - mask_size * max_mask_size)
+                {
+                    ++mask_size;
+                }
+            }
+
+            mask = (BrainUint *)calloc(mask_size, sizeof(BrainUint));
+            mask_node = (BrainUint *)calloc(number_of_training_sample, sizeof(BrainUint));
+            mask_slot = (BrainUint *)calloc(number_of_training_sample, sizeof(BrainUint));
+
+            for (i = 0; i < number_of_training_sample; ++i)
+            {
+                mask_node[i] = i / max_mask_size;
+                mask_slot[i] = i % max_mask_size;
+            }
 
             /**************************************************************/
             /**              TRAIN OVER ALL TRAINING EXAMPLES            **/
@@ -406,22 +436,41 @@ train_network(BrainNetwork network, BrainString repository_path, BrainString tok
             while ((iteration < max_iteration)
             &&     isNetworkTrainingRequired(network, data))
             {
+                /******************************************************/
+                /**      GENERATE THE RANDOM MINI-BATCH MASK         **/
+                /******************************************************/
+                for (i = 0; i < mask_size; ++i)
+                {
+                    mask[i] = (BrainUint)BRAIN_RAND_RANGE(0, UINT_MAX);
+                }
+                /******************************************************/
+                /**                   RANDOM MINI-BATCH              **/
+                /******************************************************/
                 for (i = 0; i < number_of_training_sample; ++i)
                 {
-                    input = get_training_input_signal(data, i);
-                    target = get_training_output_signal(data, i);
-                    /******************************************************/
-                    /**         FORWARD PROPAGATION OF THE SIGNAL        **/
-                    /******************************************************/
-                    feedforward(network, input_length, input, BRAIN_TRUE);
-                    /******************************************************/
-                    /**     BACKPROPAGATION USING THE TARGET SIGNAL      **/
-                    /******************************************************/
-                    backpropagate(network, output_length, target);
+                    j = mask_node[i];
+                    k = mask_slot[i];
+                    if ((mask[j] >> k) & 0x00000001)
+                    {
+                        input = get_training_input_signal(data, i);
+                        target = get_training_output_signal(data, i);
+                        /******************************************************/
+                        /**         FORWARD PROPAGATION OF THE SIGNAL        **/
+                        /******************************************************/
+                        feedforward(network, input_length, input, BRAIN_TRUE);
+                        /******************************************************/
+                        /**     BACKPROPAGATION USING THE TARGET SIGNAL      **/
+                        /******************************************************/
+                        backpropagate(network, output_length, target);
+                    }
                 }
 
                 ++iteration;
             }
+
+            free(mask);
+            free(mask_node);
+            free(mask_slot);
         }
     }
 
