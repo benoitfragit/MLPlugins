@@ -239,27 +239,72 @@ brain_create_window(BrainView view)
 /**                 DEFINING UTILITIES FUNCTIONS                     **/
 /**********************************************************************/
 static void
-brain_view_initialize()
+brain_view_initialize(BrainView view)
 {
-    BrainString filepath = getenv("BRAIN_CONFIG_PATH");
-
-    if (filepath != NULL)
+    if (view != NULL)
     {
-        /**************************************************************/
-        /**              OPENING THE CONFIGURATION FILE               */
-        /**************************************************************/
-        GKeyFile* keyfile = NULL;
-        GError* error = NULL;
+        BrainString filepath = getenv("BRAIN_CONFIG_PATH");
 
-        keyfile = g_key_file_new();
-
-        if(g_key_file_load_from_file(keyfile, filepath, G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS, &error))
+        if (filepath != NULL)
         {
+            /**************************************************************/
+            /**              OPENING THE CONFIGURATION FILE               */
+            /**************************************************************/
+            GKeyFile* keyfile = NULL;
+            GError* error = NULL;
 
-        }
-        else
-        {
-            BRAIN_CRITICAL("Unable to load config file:%s\n", filepath);
+            keyfile = g_key_file_new();
+
+            if(g_key_file_load_from_file(keyfile,
+                                         filepath,
+                                         G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS,
+                                         &error))
+            {
+                const BrainPluginManager manager = view->_manager;
+                BrainBool network_is_loadable = BRAIN_FALSE;
+                BrainUint i = 0;
+                BrainUint j = 0;
+                BrainUint number_of_plugins = get_number_of_plugins(manager);
+                BrainUint nbgroups = 0;
+                BrainChar** groups = g_key_file_get_groups(keyfile, &nbgroups);
+                /**********************************************************/
+                /**              LOADING ALL NETWORKS PARAMETERS         **/
+                /**********************************************************/
+                for (i = 0; i < nbgroups; ++i)
+                {
+                    BrainString network_path = g_key_file_get_string(keyfile,
+                                                                     groups[i],
+                                                                     "network",
+                                                                     &error);
+                    network_is_loadable      = BRAIN_FALSE;
+
+                    for (j = 0; j < number_of_plugins; ++j)
+                    {
+                        BrainPlugin plugin = get_plugin_with_index(manager, j);
+
+                        if (new_plugin_network(plugin, network_path))
+                        {
+                            // if we found a plugin able to load this network
+                            // we stop the search
+                            BrainString network_settings    = g_key_file_get_string(keyfile,
+                                                                                    groups[i],
+                                                                                    "settings",
+                                                                                    &error);
+                            BrainString network_init        = g_key_file_get_string(keyfile,
+                                                                                    groups[i],
+                                                                                    "initialization",
+                                                                                    &error);
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                BRAIN_CRITICAL("Unable to load config file:%s\n", filepath);
+            }
+
+            g_key_file_free(keyfile);
         }
     }
 }
@@ -285,7 +330,7 @@ main(BrainInt argc, BrainChar** argv)
     /******************************************************************/
     /**                     LOAD THE CONFIGURATION                   **/
     /******************************************************************/
-    brain_view_initialize();
+    brain_view_initialize(&view);
     /******************************************************************/
     /**                    CREATE A PLUGIN HASHTABLE                 **/
     /******************************************************************/
@@ -293,7 +338,7 @@ main(BrainInt argc, BrainChar** argv)
     /******************************************************************/
     /**                   CREATE THE MAIN WINDOW                     **/
     /******************************************************************/
-    brain_create_window(&(view));
+    brain_create_window(&view);
     /******************************************************************/
     /**                      SHOW THE MAIN WINDOW                    **/
     /******************************************************************/

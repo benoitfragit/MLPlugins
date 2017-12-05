@@ -44,21 +44,15 @@
     </xs:complexType>
 
     <xs:complexType name="BackPropType">
-        <xs:attribute name="learning-rate" type="xs:decimal" use="optional"/>
+        <xs:attribute name="learning-rate"  type="xs:decimal" use="required"/>
+        <xs:attribute name="momentum"       type="xs:decimal" use="optional"/>
     </xs:complexType>
 
-    <xs:complexType name="TrainingMethodType">
+    <xs:complexType name="TrainingType">
         <xs:choice>
             <xs:element name="backprop" type="BackPropType"/>
             <xs:element name="rprop"    type="RPropType"/>
         </xs:choice>
-    </xs:complexType>
-
-    <xs:complexType name="TrainingType">
-        <xs:all>
-            <xs:element name="method"   type="TrainingMethodType"/>
-        </xs:all>
-        <xs:attribute name="learning"   type="LearningType" use="required"/>
         <xs:attribute name="iterations" type="xs:integer"   use="required"/>
         <xs:attribute name="error"      type="xs:decimal"   use="required"/>
     </xs:complexType>

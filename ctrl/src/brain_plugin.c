@@ -319,17 +319,28 @@ delete_plugin(BrainPlugin plugin)
     }
 }
 
-void
+BrainBool
 new_plugin_network(const BrainPlugin plugin, BrainString filename)
 {
+    BrainBool ret = BRAIN_FALSE;
+
     if (plugin)
     {
-        ++LENGTH;
+        BrainNetwork network = LOAD(filename);
 
-        NETWORKS = (BrainNetwork*)realloc(NETWORKS, LENGTH*sizeof(BrainNetwork));
+        if (network != NULL)
+        {
+            ++LENGTH;
 
-        NETWORKS[LENGTH - 1] = LOAD(filename);
+            NETWORKS = (BrainNetwork*)realloc(NETWORKS, LENGTH*sizeof(BrainNetwork));
+
+            NETWORKS[LENGTH - 1] = network;
+
+            ret = BRAIN_TRUE;
+        }
     }
+
+    return ret;
 }
 
 void

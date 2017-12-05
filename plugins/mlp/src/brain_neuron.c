@@ -46,31 +46,9 @@ struct Neuron
     BrainReal         _rprop_delta_min;       /*!< Rprop delta min                                      */
     BrainReal         _rprop_delta_max;       /*!< Rprop delta max                                      */
     BrainReal         _backprop_learning_rate;/*!< BackProp learning rate                               */
+    BrainReal         _backprop_momemtum;     /*!< BackProp momentum value                              */
     BrainUint         _number_of_input;       /*!< Number of inputs                                     */
 } Neuron;
-
-static BrainString _learning_names[] =
-{
-    "BackPropagation",
-    "Resilient"
-};
-
-static BrainLearningType
-get_learning_type(BrainString learning_name)
-{
-    BrainUint i = 0;
-
-    for (i = First_Learning; i <= Last_Learning; ++i)
-    {
-        if (i != First_Learning
-        && !strcmp(_learning_names[i - First_Learning - 1], learning_name))
-        {
-            return i;
-        }
-    }
-
-    return Invalid_Learning;
-}
 
 static void
 update_neuron_using_backpropagation(BrainNeuron neuron, const BrainReal loss)
@@ -79,9 +57,10 @@ update_neuron_using_backpropagation(BrainNeuron neuron, const BrainReal loss)
 
     if (neuron != NULL)
     {
-        const BrainUint   number_of_inputs      = neuron->_number_of_input;
-        const BrainReal learning_rate           = neuron->_backprop_learning_rate;
-        ActivationPtrFunc derivative_function   = neuron->_derivative_function;
+        const BrainUint number_of_inputs      = neuron->_number_of_input;
+        const BrainReal learning_rate         = neuron->_backprop_learning_rate;
+        const BrainReal momentum              = neuron->_backprop_momemtum;
+        ActivationPtrFunc derivative_function = neuron->_derivative_function;
 
         if (derivative_function != NULL)
         {
@@ -90,19 +69,16 @@ update_neuron_using_backpropagation(BrainNeuron neuron, const BrainReal loss)
             /******************************************************/
             /**               BACKPROPAGATE $_i                  **/
             /******************************************************/
-            neuron->_bias -= learning_rate * neuron_gradient;
+            neuron->_bias -= learning_rate * neuron_gradient - momentum * neuron->_bias;
 
             for (i = 0; i < number_of_inputs; ++i)
             {
-                neuron->_gradients[i]    =  neuron_gradient;
-                neuron->_deltas[i]       =  neuron_gradient * neuron->_in[i];
-
                 if (neuron->_errors)
                 {
-                    neuron->_errors[i]   += neuron_gradient * neuron->_w[i];
+                    neuron->_errors[i] += neuron_gradient * neuron->_w[i];
                 }
 
-                neuron->_w[i]           -= learning_rate * neuron->_deltas[i];
+                neuron->_w[i] -= (learning_rate * neuron_gradient * neuron->_in[i] - momentum * neuron->_w[i]);
             }
         }
     }
@@ -233,8 +209,7 @@ configure_neuron_with_context(BrainNeuron neuron, Context context)
 {
     BRAIN_INPUT(configure_neuron_with_context)
 
-    BrainLearningType     learning_type      = BackPropagation;
-    BrainActivationType   activation_type    = Sigmoid;
+    BrainActivationType activation_type = Sigmoid;
 
     if (neuron && context)
     {
@@ -243,56 +218,36 @@ configure_neuron_with_context(BrainNeuron neuron, Context context)
 
         if (training_context != NULL)
         {
-            Context method_context  = get_node_with_name_and_index(training_context, "method", 0);
+            Context backprop_context = get_node_with_name_and_index(training_context, "backprop", 0);
 
-            buffer = (BrainChar *)node_get_prop(training_context, "learning");
-            learning_type = get_learning_type(buffer);
-            neuron->_learning_function = get_learning_function(learning_type);
-
-            if (buffer != NULL)
+            if (backprop_context)
             {
-                free(buffer);
+                neuron->_learning_function      = get_learning_function(BackPropagation);
+                neuron->_backprop_learning_rate = (BrainReal)node_get_double(backprop_context, "learning-rate", 1.2);
+                neuron->_backprop_momemtum      = (BrainReal)node_get_double(backprop_context, "momentum", 0.0);
             }
-
-            if (method_context != NULL)
+            else
             {
-                switch (learning_type)
+                Context rprop_context = get_node_with_name_and_index(training_context, "rprop", 0);
+
+                if (rprop_context != NULL)
                 {
-                    case BackPropagation:
+                    Context eta_context   = get_node_with_name_and_index(rprop_context, "resilient-eta", 0);
+                    Context delta_context = get_node_with_name_and_index(rprop_context, "resilient-delta", 0);
+
+                    neuron->_learning_function = get_learning_function(Resilient);
+
+                    if (eta_context != NULL)
                     {
-                        Context backprop_context = get_node_with_name_and_index(method_context, "backprop", 0);
-
-                        if (backprop_context != NULL)
-                        {
-                            neuron->_backprop_learning_rate  = (BrainReal)node_get_double(backprop_context, "learning-rate", 1.2);
-                        }
+                        neuron->_rprop_eta_plus  = (BrainReal)node_get_double(eta_context, "positive", 1.25);
+                        neuron->_rprop_eta_minus = (BrainReal)node_get_double(eta_context, "negative", 0.95);
                     }
-                        break;
-                    case Resilient:
+
+                    if (delta_context != NULL)
                     {
-                        Context rprop_context = get_node_with_name_and_index(method_context, "rprop", 0);
-
-                        if (rprop_context != NULL)
-                        {
-                            Context eta_context   = get_node_with_name_and_index(rprop_context, "resilient-eta", 0);
-                            Context delta_context = get_node_with_name_and_index(rprop_context, "resilient-delta", 0);
-
-                            if (eta_context != NULL)
-                            {
-                                neuron->_rprop_eta_plus  = (BrainReal)node_get_double(eta_context, "positive", 1.25);
-                                neuron->_rprop_eta_minus = (BrainReal)node_get_double(eta_context, "negative", 0.95);
-                            }
-
-                            if (delta_context != NULL)
-                            {
-                                neuron->_rprop_delta_max = (BrainReal)node_get_double(delta_context, "max", 50.0);
-                                neuron->_rprop_delta_min = (BrainReal)node_get_double(delta_context, "min", 0.000001);
-                            }
-                        }
+                        neuron->_rprop_delta_max = (BrainReal)node_get_double(delta_context, "max", 50.0);
+                        neuron->_rprop_delta_min = (BrainReal)node_get_double(delta_context, "min", 0.000001);
                     }
-                        break;
-                    default:
-                        break;
                 }
             }
         }
@@ -399,6 +354,7 @@ new_neuron(BrainSignal     in,
         _neuron->_bias_delta             = 0.;
         _neuron->_sum                    = 0.;
         _neuron->_backprop_learning_rate = 1.12;
+        _neuron->_backprop_momemtum      = 0.0;
         _neuron->_rprop_eta_plus         = 1.2;
         _neuron->_rprop_eta_minus        = 0.95;
         _neuron->_rprop_delta_min        = 0.000001;
