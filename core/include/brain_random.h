@@ -15,4 +15,10 @@
 #define BRAIN_RAND_UNIT (BrainDouble)rand()/(1.0 + (BrainDouble)RAND_MAX)
 #define BRAIN_RAND_RANGE(min, max) BRAIN_RAND_UNIT * (BrainDouble)(max - min) + (BrainDouble)min
 
+BrainRandomMask new_random_mask     (const BrainUint number_of_elements);
+void            delete_random_mask  (BrainRandomMask random_mask);
+void            generate_random_mask(BrainRandomMask random_mask);
+void            generate_unit_mask  (BrainRandomMask random_mask);
+BrainBool       get_random_state    (const BrainRandomMask random_mask, const BrainUint index);
+
 #endif /* BRAIN_RANDOM_H */

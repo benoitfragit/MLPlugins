@@ -52,6 +52,10 @@ typedef xmlChar*  Buffer;
  */
 typedef xmlTextWriterPtr Writer;
 /**
+ * \brief Define a BrainRandomMask
+ */
+typedef struct RandomMask* BrainRandomMask;
+/**
  * \brief Define a BrainNetwork
  */
 typedef struct Network* BrainNetwork;

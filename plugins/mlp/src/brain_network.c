@@ -387,8 +387,6 @@ train_network(BrainNetwork network, BrainString repository_path, BrainString tok
 
         BrainUint iteration = 0;
         BrainUint i = 0;
-        BrainUint j = 0;
-        BrainUint k = 0;
         BrainData data = NULL;
 
         if (repository_path
@@ -403,33 +401,7 @@ train_network(BrainNetwork network, BrainString repository_path, BrainString tok
             /**************************************************************/
             /**           GENERATE MASK FOR THE RANDOM BACTH             **/
             /**************************************************************/
-            const BrainUint max_mask_size = 8 * sizeof(BrainUint);
-            BrainUint mask_size = number_of_training_sample / max_mask_size;
-            BrainUint* mask = NULL;
-            BrainUint* mask_node = NULL;
-            BrainUint* mask_slot = NULL;
-            if (mask_size < 1)
-            {
-                mask_size = 1;
-            }
-            else
-            {
-                if (number_of_training_sample - mask_size * max_mask_size)
-                {
-                    ++mask_size;
-                }
-            }
-
-            mask = (BrainUint *)calloc(mask_size, sizeof(BrainUint));
-            mask_node = (BrainUint *)calloc(number_of_training_sample, sizeof(BrainUint));
-            mask_slot = (BrainUint *)calloc(number_of_training_sample, sizeof(BrainUint));
-
-            for (i = 0; i < number_of_training_sample; ++i)
-            {
-                mask_node[i] = i / max_mask_size;
-                mask_slot[i] = i % max_mask_size;
-            }
-
+            BrainRandomMask mask = new_random_mask(number_of_training_sample);
             /**************************************************************/
             /**              TRAIN OVER ALL TRAINING EXAMPLES            **/
             /**************************************************************/
@@ -439,18 +411,15 @@ train_network(BrainNetwork network, BrainString repository_path, BrainString tok
                 /******************************************************/
                 /**      GENERATE THE RANDOM MINI-BATCH MASK         **/
                 /******************************************************/
-                for (i = 0; i < mask_size; ++i)
-                {
-                    mask[i] = (BrainUint)BRAIN_RAND_RANGE(0, UINT_MAX);
-                }
+                generate_random_mask(mask);
                 /******************************************************/
-                /**                   RANDOM MINI-BATCH              **/
+                /**         ACCUMULATE WITH RANDOM MINI-BATCH        **/
                 /******************************************************/
                 for (i = 0; i < number_of_training_sample; ++i)
                 {
-                    j = mask_node[i];
-                    k = mask_slot[i];
-                    if ((mask[j] >> k) & 0x00000001)
+                    const BrainBool is_in_batch = get_random_state(mask, i);
+
+                    if (is_in_batch)
                     {
                         input = get_training_input_signal(data, i);
                         target = get_training_output_signal(data, i);
@@ -468,9 +437,7 @@ train_network(BrainNetwork network, BrainString repository_path, BrainString tok
                 ++iteration;
             }
 
-            free(mask);
-            free(mask_node);
-            free(mask_slot);
+            delete_random_mask(mask);
         }
     }
 
