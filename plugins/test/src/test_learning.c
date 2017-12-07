@@ -30,8 +30,10 @@ main(int argc, char** argv)
     // Test the forward propagation
     predict(network, number_of_input, in);
     out = get_network_output(network);
-    // Test the backpropagation
+    // Test the error backpropagation
     backpropagate(network, 2, desired);
+    // Update all weights after backpropagation
+    update_network(network, 1.);
     // Check if the backpropagation is a success
     ret = compare_networks(network, desired_network);
 

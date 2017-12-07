@@ -77,13 +77,13 @@ BrainReal get_neuron_weight(const BrainNeuron neuron, const BrainUint index);
  */
 void configure_neuron_with_context(BrainNeuron neuron, Context context);
 /**
- * \fn void neuron_learning(BrainNeuron reuron, const BrainReal loss)
+ * \fn void update_neuron(BrainNeuron reuron, const BrainReal minibatch_size)
  * \brief apply correction to a neuron to reduce the total error
  *
  * \param neuron a BrainNeuron
- * \param error The error procuded by this neuron
+ * \param minibatch_size size of the mini batch
  */
-void neuron_learning(BrainNeuron neuron, const BrainReal loss);
+void update_neuron(BrainNeuron neuron, const BrainReal minibatch_size);
 /**
  * \fn void deserialize_neuron(BrainNeuron neuron, Context context)
  * \brief deserialize a neuron from a context
@@ -100,4 +100,12 @@ void deserialize_neuron(BrainNeuron neuron, Context context);
  * \param writer the xml writer
  */
 void serialize_neuron(BrainNeuron neuron, Writer writer);
+/**
+ * \fn void backpropagate_neuron_gradient(BrainNeuron neuron, const BranReal loss);
+ * \brief accummulate gradient over minibatch loss input and backpropagate gradient based error
+ *
+ * \param neuron the neuron
+ * \param loss the error
+ */
+void backpropagate_neuron_gradient(BrainNeuron neuron, const BrainReal loss);
 #endif /* BRAIN_NEURON_H */

@@ -68,6 +68,26 @@ feedforward(BrainNetwork      network,
     BRAIN_OUTPUT(feedforward)
 }
 
+void
+update_network(BrainNetwork network, const BrainReal minibatch_size)
+{
+    BRAIN_INPUT(update_network)
+
+    if (network != NULL)
+    {
+        BrainUint i = 0;
+        for (i = 0; i < network->_number_of_layers; ++i)
+        {
+            /**********************************************************/
+            /**                    UPDATE ALL LAYERS               **/
+            /**********************************************************/
+            update_layer(network->_layers[i], minibatch_size);
+        }
+    }
+
+    BRAIN_OUTPUT(update_network)
+}
+
 void __BRAIN_VISIBLE__
 configure_network_with_context(BrainNetwork network, BrainString filepath)
 {
@@ -408,6 +428,7 @@ train_network(BrainNetwork network, BrainString repository_path, BrainString tok
             while ((iteration < max_iteration)
             &&     isNetworkTrainingRequired(network, data))
             {
+                BrainUint minibatch_size = 0;
                 /******************************************************/
                 /**      GENERATE THE RANDOM MINI-BATCH MASK         **/
                 /******************************************************/
@@ -421,6 +442,8 @@ train_network(BrainNetwork network, BrainString repository_path, BrainString tok
 
                     if (is_in_batch)
                     {
+                        ++minibatch_size;
+
                         input = get_training_input_signal(data, i);
                         target = get_training_output_signal(data, i);
                         /******************************************************/
@@ -434,7 +457,15 @@ train_network(BrainNetwork network, BrainString repository_path, BrainString tok
                     }
                 }
 
-                ++iteration;
+                if (minibatch_size > 0)
+                {
+                    /**************************************************/
+                    /**               UPDATE NETWORK WEIGHTS         **/
+                    /**************************************************/
+                    update_network(network, (BrainReal)minibatch_size);
+
+                    ++iteration;
+                }
             }
 
             delete_random_mask(mask);

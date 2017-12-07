@@ -120,4 +120,12 @@ void serialize_layer(BrainLayer layer, Writer writer);
  * \param context the context
  */
 void deserialize_layer(BrainLayer layer, Context context);
+/**
+ * \fn void update_layer(BrainLayer layer, const BrainReal minibatch_size)
+ * \brief apply correction to a neuron to reduce the total error
+ *
+ * \param layer a BrainLayer
+ * \param minibatch_size size of the mini batch
+ */
+void update_layer(BrainLayer layer, const BrainReal minibatch_size);
 #endif /* BRAIN_LAYER_H */

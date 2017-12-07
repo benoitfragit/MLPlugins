@@ -58,6 +58,14 @@ BrainLayer get_network_layer(const BrainNetwork network, const BrainUint index);
  */
 void backpropagate(BrainNetwork network, const BrainUint number_of_output, const BrainSignal desired);
 /**
+ * \fn void update_network(BrainNetwork network, const BrainReal minibatch_size)
+ * \brief apply correction to a neuron to reduce the total error
+ *
+ * \param network a BrainNetwork
+ * \param minibatch_size size of the mini batch
+ */
+void update_network(BrainNetwork network, const BrainReal minibatch_size);
+/**
  * \fn void train_network(BrainNetwork network, BrainString repository_path, BrainString tokenizer)
  * \brief launch the training process for the neural network
  *

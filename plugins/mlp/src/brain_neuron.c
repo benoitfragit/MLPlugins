@@ -11,6 +11,9 @@
 
 #define EPSILON 1e-6
 
+#define BRAIN_POSITIVE_SGN 1
+#define BRAIN_NEGATIVE_SGN -1
+#define BRAIN_SGN(val) ((val>0)?1:((val<0)?-1:0))
 /**
  * \struct Neuron
  * \brief  Internal model for a BrainNeuron
@@ -31,12 +34,14 @@ struct Neuron
     BrainSignal       _in;                    /*!< Input signal of an BrainNeuron                       */
     BrainSignal       _w;                     /*!< An array of weight without the bias                  */
     BrainSignal       _gradients;             /*!< weights gradient values                              */
+    BrainChar*        _gradients_sgn;         /*!< Gradient sgn                                         */
     BrainSignal       _deltas;                /*!< weights delta values                                 */
     BrainSignal       _errors;                /*!< error to correct in the layer                        */
     BrainSignal       _out;                   /*!< An output value pointer owned by the BrainLayer      */
     BrainReal         _bias;                  /*!< Bias of the neuron                                   */
     BrainReal         _bias_delta;            /*!< Bias delta                                           */
     BrainReal         _bias_gradient;         /*!< Bias gradient                                        */
+    BrainChar         _bias_gradient_sgn;     /*!< Bias gradient sgn                                    */
     BrainReal         _sum;                   /*!< Summation of all input time weight                   */
     /******************************************************************/
     /**                        TRAINING PARAMETERS                   **/
@@ -51,7 +56,7 @@ struct Neuron
 } Neuron;
 
 static void
-update_neuron_using_backpropagation(BrainNeuron neuron, const BrainReal loss)
+update_neuron_using_backpropagation(BrainNeuron neuron, const BrainReal minibatch_size)
 {
     BRAIN_INPUT(update_neuron_using_backpropagation)
 
@@ -60,26 +65,15 @@ update_neuron_using_backpropagation(BrainNeuron neuron, const BrainReal loss)
         const BrainUint number_of_inputs      = neuron->_number_of_input;
         const BrainReal learning_rate         = neuron->_backprop_learning_rate;
         const BrainReal momentum              = neuron->_backprop_momemtum;
-        ActivationPtrFunc derivative_function = neuron->_derivative_function;
 
-        if (derivative_function != NULL)
+        BrainUint i = 0;
+        /******************************************************/
+        /**      UPDATE ALL WEIGHT USING GRADIENTS MEANS     **/
+        /******************************************************/
+        neuron->_bias -= learning_rate * (neuron->_bias_gradient / minibatch_size) - momentum * neuron->_bias;
+        for (i = 0; i < number_of_inputs; ++i)
         {
-            const BrainReal neuron_gradient   = loss * derivative_function(neuron->_sum);
-            BrainUint i = 0;
-            /******************************************************/
-            /**               BACKPROPAGATE $_i                  **/
-            /******************************************************/
-            neuron->_bias -= learning_rate * neuron_gradient - momentum * neuron->_bias;
-
-            for (i = 0; i < number_of_inputs; ++i)
-            {
-                if (neuron->_errors)
-                {
-                    neuron->_errors[i] += neuron_gradient * neuron->_w[i];
-                }
-
-                neuron->_w[i] -= (learning_rate * neuron_gradient * neuron->_in[i] - momentum * neuron->_w[i]);
-            }
+             neuron->_w[i] -= (learning_rate * (neuron->_gradients[i] / minibatch_size) - momentum * neuron->_w[i]);
         }
     }
 
@@ -87,7 +81,47 @@ update_neuron_using_backpropagation(BrainNeuron neuron, const BrainReal loss)
 }
 
 static void
-update_neuron_using_resilient(BrainNeuron neuron, const BrainReal loss)
+apply_neuron_resilient(const BrainReal eta_positive,
+                       const BrainReal eta_negative,
+                       const BrainReal delta_min,
+                       const BrainReal delta_max,
+                       BrainChar* prevGradSgn,
+                       BrainChar* gradSgn,
+                       BrainReal* delta,
+                       BrainReal* weight)
+{
+    if ((delta != NULL) &&
+        (gradSgn != NULL) &&
+        (weight != NULL) &&
+        (prevGradSgn != NULL))
+    {
+        switch (*prevGradSgn * (*gradSgn))
+        {
+            case BRAIN_POSITIVE_SGN:
+            {
+                *delta = MIN(*delta * eta_positive, delta_max);
+                *weight -= *delta * (BrainReal)(*gradSgn);
+            }
+                break;
+            case BRAIN_NEGATIVE_SGN:
+            {
+                *delta   = MAX(*delta * eta_negative, delta_min);
+                *gradSgn = 0;
+            }
+                break;
+            default:
+            {
+                *weight -= *delta  * (BrainReal)(*gradSgn);
+            }
+                break;
+        }
+    }
+
+    *prevGradSgn = *gradSgn;
+}
+
+static void
+update_neuron_using_resilient(BrainNeuron neuron, const BrainReal minibatch_size)
 {
     BRAIN_INPUT(update_neuron_using_resilient)
 
@@ -97,93 +131,40 @@ update_neuron_using_resilient(BrainNeuron neuron, const BrainReal loss)
         const BrainReal rprop_eta_negative  = neuron->_rprop_eta_minus;
         const BrainReal rprop_delta_min     = neuron->_rprop_delta_min;
         const BrainReal rprop_delta_max     = neuron->_rprop_delta_max;
-        ActivationPtrFunc derivative_function = neuron->_derivative_function;
+        const BrainUint number_of_inputs    = neuron->_number_of_input;
+        BrainUint i                         = 0;
 
-        if (derivative_function != NULL)
+        BrainReal grad = neuron->_bias_gradient;
+        BrainChar grad_sgn = BRAIN_SGN(grad);
+
+        apply_neuron_resilient(rprop_eta_positive,
+                               rprop_eta_negative,
+                               rprop_delta_min,
+                               rprop_delta_max,
+                               &(neuron->_bias_gradient_sgn),
+                               &grad_sgn,
+                               &(neuron->_bias_delta),
+                               &(neuron->_bias));
+
+        // Do not forget to reset the gradient before leaving
+        neuron->_bias_gradient = 0.;
+
+        //then update all other weights using same technique
+        for (i = 0; i < number_of_inputs; ++i)
         {
-            const BrainReal neuron_gradient    = loss * derivative_function(neuron->_sum);
-            const BrainUint   number_of_inputs = neuron->_number_of_input;
-            BrainUint i                        = 0;
-            BrainReal new_delta                = 0.;
-            BrainReal new_correction           = 0.;
-            BrainReal new_gradient             = 0.;
-            BrainReal g                        = neuron_gradient;
+            grad     = neuron->_gradients[i];
+            grad_sgn = BRAIN_SGN(grad);
 
-            //first update the bias using RProp algorithm
-            if (0.0 < neuron->_bias_gradient * g)
-            {
-                new_delta      = MIN(neuron->_bias_delta * rprop_eta_positive, rprop_delta_max);
-                new_correction = new_delta;
-                new_gradient   = g;
+            apply_neuron_resilient(rprop_eta_positive,
+                                   rprop_eta_negative,
+                                   rprop_delta_min,
+                                   rprop_delta_max,
+                                   &(neuron->_gradients_sgn[i]),
+                                   &grad_sgn,
+                                   &(neuron->_deltas[i]),
+                                   &(neuron->_gradients[i]));
 
-                if (0.0 < g)
-                {
-                    new_correction *= -1.;
-                }
-            }
-            else if (neuron->_bias_gradient * g < 0.0)
-            {
-                new_delta       = MAX(neuron->_bias_delta * rprop_eta_negative, rprop_delta_min);
-            }
-            else if (fabs(neuron->_bias_gradient * g) <= EPSILON)
-            {
-                new_correction  = neuron->_bias_delta;
-                new_gradient    = g;
-
-                if (0. < g)
-                {
-                    new_correction *= -1.;
-                }
-            }
-
-            neuron->_bias         += new_correction;
-            neuron->_bias_delta    = new_delta;
-            neuron->_bias_gradient = new_gradient;
-
-            //then update all other weights using same technique
-            for (i = 0; i < number_of_inputs; ++i)
-            {
-                g               = neuron_gradient * neuron->_in[i];
-                new_delta       = 0.;
-                new_correction  = 0.;
-                new_gradient    = 0.;
-
-                // Update error in the previous error
-                if (neuron->_errors != NULL)
-                {
-                    neuron->_errors[i] += neuron_gradient * neuron->_w[i];
-                }
-
-                if (0.0 < neuron->_gradients[i] * g)
-                {
-                    new_delta      = MIN(neuron->_deltas[i] * rprop_eta_positive, rprop_delta_max);
-                    new_correction = new_delta;
-                    new_gradient   = g;
-
-                    if (0.0 < g)
-                    {
-                        new_correction *= -1.;
-                    }
-                }
-                else if (neuron->_gradients[i] * g < 0.0)
-                {
-                    new_delta       = MAX(neuron->_deltas[i] * rprop_eta_negative, rprop_delta_min);
-                }
-                else if (fabs(neuron->_gradients[i] * g) <= EPSILON)
-                {
-                    new_correction  = neuron->_deltas[i];
-                    new_gradient    = g;
-
-                    if (0.0 < g)
-                    {
-                        new_correction *= -1.;
-                    }
-                }
-
-                neuron->_w[i]        += new_correction;
-                neuron->_deltas[i]    = new_delta;
-                neuron->_gradients[i] = new_gradient;
-            }
+            neuron->_gradients[i] = 0.;
         }
     }
 
@@ -318,6 +299,11 @@ delete_neuron(BrainNeuron neuron)
             free(neuron->_gradients);
         }
 
+        if (neuron->_gradients_sgn != NULL)
+        {
+            free(neuron->_gradients_sgn);
+        }
+
         if (neuron->_deltas != NULL)
         {
             free(neuron->_deltas);
@@ -351,6 +337,7 @@ new_neuron(BrainSignal     in,
         _neuron->_in                     = in;
         _neuron->_bias                   = (BrainReal)BRAIN_RAND_RANGE(-random_value_limit, random_value_limit);
         _neuron->_bias_gradient          = 0.;
+        _neuron->_bias_gradient_sgn      = 0;
         _neuron->_bias_delta             = 0.;
         _neuron->_sum                    = 0.;
         _neuron->_backprop_learning_rate = 1.12;
@@ -366,6 +353,7 @@ new_neuron(BrainSignal     in,
         _neuron->_w                      = (BrainSignal)calloc(_neuron->_number_of_input, sizeof(BrainReal));
         _neuron->_deltas                 = (BrainSignal)calloc(_neuron->_number_of_input, sizeof(BrainReal));
         _neuron->_gradients              = (BrainSignal)calloc(_neuron->_number_of_input, sizeof(BrainReal));
+        _neuron->_gradients_sgn          = (BrainChar*)calloc(_neuron->_number_of_input,  sizeof(BrainChar));
 
         for (index = 0; index < _neuron->_number_of_input; ++index)
         {
@@ -417,7 +405,7 @@ get_neuron_weight(const BrainNeuron neuron, const BrainUint index)
 }
 
 void
-neuron_learning(BrainNeuron neuron, const BrainReal loss)
+update_neuron(BrainNeuron neuron, const BrainReal minibatch_size)
 {
     if (neuron)
     {
@@ -425,7 +413,7 @@ neuron_learning(BrainNeuron neuron, const BrainReal loss)
 
         if (learning_function)
         {
-            learning_function(neuron, loss);
+            learning_function(neuron, minibatch_size);
         }
     }
 }
@@ -487,4 +475,38 @@ serialize_neuron(BrainNeuron neuron, Writer writer)
     }
 
     BRAIN_OUTPUT(serialize_neuron)
+}
+
+void
+backpropagate_neuron_gradient(BrainNeuron neuron, const BrainReal loss)
+{
+    BRAIN_INPUT(backpropagate_neuron_gradient)
+
+    if (neuron != NULL)
+    {
+        const BrainUint number_of_inputs      = neuron->_number_of_input;
+        ActivationPtrFunc derivative_function = neuron->_derivative_function;
+
+        if (derivative_function != NULL)
+        {
+            const BrainReal neuron_gradient   = loss * derivative_function(neuron->_sum);
+            BrainUint i = 0;
+            /******************************************************/
+            /**               BACKPROPAGATE $_i                  **/
+            /******************************************************/
+            neuron->_bias_gradient += neuron_gradient;
+
+            for (i = 0; i < number_of_inputs; ++i)
+            {
+                if (neuron->_errors)
+                {
+                    neuron->_errors[i] += neuron_gradient * neuron->_w[i];
+                }
+
+                neuron->_gradients[i] += neuron_gradient * neuron->_in[i];
+            }
+        }
+    }
+
+    BRAIN_OUTPUT(backpropagate_neuron_gradient)
 }

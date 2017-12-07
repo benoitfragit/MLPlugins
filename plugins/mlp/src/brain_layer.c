@@ -269,9 +269,9 @@ backpropagate_output_layer(BrainLayer output_layer,
                 /******************************************************/
                 const BrainReal loss = cost_function_derivative(output[output_index], desired[output_index]);
                 /**************************************************/
-                /**           CALL LEARNING FUNCTION             **/
+                /**           BACKPROPAGATE THE LOSS             **/
                 /**************************************************/
-                neuron_learning(output_layer->_neurons[output_index], loss);
+                backpropagate_neuron_gradient(output_layer->_neurons[output_index], loss);
             }
         }
     }
@@ -320,17 +320,12 @@ backpropagate_hidden_layer(BrainLayer hidden_layer)
 
         for (i = 0; i < current_number_of_neuron; ++i)
         {
-            BrainNeuron current_neuron = hidden_layer->_neurons[i];
+            const BrainReal loss = hidden_layer->_in_errors[i];
+            const BrainBool activated = get_random_state(hidden_layer->_mask, i);
 
-            if (current_neuron != NULL)
+            if (activated)
             {
-                const BrainReal loss = hidden_layer->_in_errors[i];
-                const BrainBool activated = get_random_state(hidden_layer->_mask, i);
-
-                if (activated)
-                {
-                    neuron_learning(current_neuron, loss);
-                }
+                backpropagate_neuron_gradient(hidden_layer->_neurons[i], loss);
             }
         }
     }
@@ -418,4 +413,24 @@ deserialize_layer(BrainLayer layer, Context context)
         }
     }
     BRAIN_OUTPUT(deserialize_layer)
+}
+
+void
+update_layer(BrainLayer layer, const BrainReal minibatch_size)
+{
+    BRAIN_INPUT(update_layer)
+
+    if (layer != NULL)
+    {
+        BrainUint i = 0;
+        for (i = 0; i < layer->_number_of_neuron; ++i)
+        {
+            /**********************************************************/
+            /**                    UPDATE ALL NEURONS                **/
+            /**********************************************************/
+            update_neuron(layer->_neurons[i], minibatch_size);
+        }
+    }
+
+    BRAIN_OUTPUT(update_layer)
 }

@@ -87,7 +87,11 @@ compare_networks(const BrainNetwork left, const BrainNetwork right)
 
                 if (_epsilon_double_comparaison < fabs(left_value - right_value))
                 {
-                    BRAIN_CRITICAL("Weight are not equals\n");
+#if BRAIN_ENABLE_DOUBLE_PRECISION
+                    BRAIN_CRITICAL("Weight are not equals (left:%lf, right:%lf)\n", left_value, right_value);
+#else
+                    BRAIN_CRITICAL("Weight are not equals (left:%lf, right:%f)\n", left_value, right_value);
+#endif
                     ret = EXIT_FAILURE;
                     break;
                 }
