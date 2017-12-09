@@ -13,7 +13,7 @@
 
 #define BRAIN_POSITIVE_SGN 1
 #define BRAIN_NEGATIVE_SGN -1
-#define BRAIN_SGN(val) ((val>0)?1:((val<0)?-1:0))
+#define BRAIN_SGN(val) ((val>0)?BRAIN_POSITIVE_SGN:((val<0)?BRAIN_NEGATIVE_SGN:0))
 /**
  * \struct Neuron
  * \brief  Internal model for a BrainNeuron
@@ -162,7 +162,7 @@ update_neuron_using_resilient(BrainNeuron neuron, const BrainReal minibatch_size
                                    &(neuron->_gradients_sgn[i]),
                                    &grad_sgn,
                                    &(neuron->_deltas[i]),
-                                   &(neuron->_gradients[i]));
+                                   &(neuron->_w[i]));
 
             neuron->_gradients[i] = 0.;
         }

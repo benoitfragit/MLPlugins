@@ -17,7 +17,7 @@ BrainString  get_plugin_date                (const BrainPlugin plugin);
 BrainString  get_plugin_author              (const BrainPlugin plugin);
 BrainString  get_plugin_description         (const BrainPlugin plugin);
 BrainUint    get_plugin_number_of_networks  (const BrainPlugin plugin);
-BrainBool    new_plugin_network             (const BrainPlugin plugin,
+BrainNetwork new_plugin_network             (const BrainPlugin plugin,
                                              BrainString filename);
 void         delete_network_at_index        (const BrainPlugin plugin,
                                              const BrainUint index);

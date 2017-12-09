@@ -164,7 +164,6 @@ parse_csv_repository(BrainData       data,
                 }
             }
 
-
             fclose(repository);
 
             /****************************************************************/

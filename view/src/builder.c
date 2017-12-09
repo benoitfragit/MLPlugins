@@ -276,16 +276,22 @@ brain_view_initialize(BrainView view)
                                                                      groups[i],
                                                                      "network",
                                                                      &error);
-                    network_is_loadable      = BRAIN_FALSE;
+                    network_is_loadable  = BRAIN_FALSE;
+                    BrainNetwork network = NULL;
 
                     for (j = 0; j < number_of_plugins; ++j)
                     {
                         BrainPlugin plugin = get_plugin_with_index(manager, j);
+                        /**********************************************/
+                        /**            TRY TO LOAD A NETWORK         **/
+                        /**********************************************/
+                        network = new_plugin_network(plugin, network_path);
 
-                        if (new_plugin_network(plugin, network_path))
+                        if (network != NULL)
                         {
-                            // if we found a plugin able to load this network
-                            // we stop the search
+                            /******************************************/
+                            /**        CONFIGURE THE NETWORK         **/
+                            /******************************************/
                             BrainString network_settings    = g_key_file_get_string(keyfile,
                                                                                     groups[i],
                                                                                     "settings",
@@ -294,6 +300,7 @@ brain_view_initialize(BrainView view)
                                                                                     groups[i],
                                                                                     "initialization",
                                                                                     &error);
+
                             break;
                         }
                     }

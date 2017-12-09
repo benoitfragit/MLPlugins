@@ -319,14 +319,14 @@ delete_plugin(BrainPlugin plugin)
     }
 }
 
-BrainBool
+BrainNetwork
 new_plugin_network(const BrainPlugin plugin, BrainString filename)
 {
-    BrainBool ret = BRAIN_FALSE;
+    BrainNetwork network = NULL;
 
     if (plugin)
     {
-        BrainNetwork network = LOAD(filename);
+        network = LOAD(filename);
 
         if (network != NULL)
         {
@@ -335,12 +335,10 @@ new_plugin_network(const BrainPlugin plugin, BrainString filename)
             NETWORKS = (BrainNetwork*)realloc(NETWORKS, LENGTH*sizeof(BrainNetwork));
 
             NETWORKS[LENGTH - 1] = network;
-
-            ret = BRAIN_TRUE;
         }
     }
 
-    return ret;
+    return network;
 }
 
 void
