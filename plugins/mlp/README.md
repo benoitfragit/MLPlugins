@@ -1,4 +1,4 @@
-# A MULTI-LAYER PERCEPTRON NETWORK
+A MULTI-LAYER PERCEPTRON NETWORK
 ------------------------------------
 
 ## Presentation
