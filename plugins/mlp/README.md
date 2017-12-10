@@ -26,3 +26,26 @@ It is an basic algorithm to avoid overfitting.
 ### Mini-batch
 It is a algorithm to train the network. It is a common algorithm use to increase training speed and to avoid oscillations.
 [More](http://ruder.io/optimizing-gradient-descent/)
+
+## How to use it ?
+
+### Defining the network architecture
+
+The architecture of the network is defined via XMl. 
+```
+<?xml version="1.0"?>
+<network inputs="5">
+    <layers>
+        <layer neurons="3"/>
+        <layer neurons="6"/>
+        <layer neurons="2"/>
+    </layers>
+</network>
+```
+
+You only need to specify the number of inputs. Then to select the number of neurons per layer.
+Then you should use the following method to create a dully connected network:
+
+```
+BrainNetwork new_network_from_context(BrainString filepath)
+```
