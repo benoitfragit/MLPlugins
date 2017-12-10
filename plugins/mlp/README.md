@@ -49,3 +49,29 @@ Then you should use the following method to create a dully connected network:
 ```
 BrainNetwork new_network_from_context(BrainString filepath)
 ```
+
+The BrainNetwork is an opaque structure. You need to use the api to train and feed your network.
+
+### Tuning your network
+
+You can tune ypur network a'd choose several parameters. For example to define all settings for a backpropagated neural network.
+You should write :
+
+```
+<?xml version="1.0"?>
+<settings cost-function="Quadratic" activation-function="Sigmoid">
+    <training error="0.00001" iterations="1000">
+        <backprop learning-rate="0.5" momentum="0.0"/>
+    </training>
+</settings>
+```
+Now some explanation. 
+
+* cost-function 
+it is the method used to measure the dfference between the network'output and the desired output.
+it is usefull during the training phase. There are two choice :
+- Quadratic  That compute E =  (x -  y)^2
+- CrossEntropy: that compute E = y *log(x) + (1- y)* log(x)
+
+* Activation function
+it is the method used to compute the output of the neuron.
