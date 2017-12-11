@@ -72,7 +72,6 @@ it is the method used to measure the dfference between the network'output and th
 it is usefull during the training phase. There are two choice :
 
 | Function | Calculation |
-|
 | -----------|--------------|
 | Quadrati | E =  (x -  y)^2 |
 | CrossEntropy | E = y *log(x) + (1- y)* log(x) |
@@ -81,9 +80,7 @@ it is usefull during the training phase. There are two choice :
 it is the method used to compute the output of the neuron.
 
 | Function | Calculation |
-|
 |-----------|--------------|
-|
 | Identity | y = x |
 | Sigmoid |  y = 1/(1 + exp(-x)) |
 | TanH | y =tanh(x) |
