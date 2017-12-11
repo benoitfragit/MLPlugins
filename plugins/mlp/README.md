@@ -65,13 +65,28 @@ You should write :
     </training>
 </settings>
 ```
-Now some explanation. 
+Now some explanations. 
 
-* cost-function 
+#### cost-function 
 it is the method used to measure the dfference between the network'output and the desired output.
 it is usefull during the training phase. There are two choice :
-- Quadratic  That compute E =  (x -  y)^2
-- CrossEntropy: that compute E = y *log(x) + (1- y)* log(x)
 
-* Activation function
+| Function | Calculation |
+|
+| -----------|--------------|
+| Quadrati | E =  (x -  y)^2 |
+| CrossEntropy | E = y *log(x) + (1- y)* log(x) |
+
+#### Activation function
 it is the method used to compute the output of the neuron.
+
+| Function | Calculation |
+|
+|-----------|--------------|
+|
+| Identity | y = x |
+| Sigmoid |  y = 1/(1 + exp(-x)) |
+| TanH | y =tanh(x) |
+| ArcTan | y = atan(x) |
+| Sinus | y=sin(x) | 
+| SoftPkus | y =log(1 + exp(x)) |
