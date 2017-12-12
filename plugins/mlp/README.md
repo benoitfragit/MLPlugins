@@ -67,7 +67,7 @@ You should write :
 ```
 Now some explanations. 
 
-#### cost-function 
+#### Cost-function (Optional)
 it is the method used to measure the dfference between the network'output and the desired output.
 it is usefull during the training phase. There are two choice :
 
@@ -76,14 +76,25 @@ it is usefull during the training phase. There are two choice :
 | Quadrati | E =  (x -  y)^2 |
 | CrossEntropy | E = y *log(x) + (1- y)* log(x) |
 
-#### Activation function
+#### Activation function (Required)
 it is the method used to compute the output of the neuron.
 
 | Function | Calculation |
 |-----------|--------------|
 | Identity | y = x |
 | Sigmoid |  y = 1/(1 + exp(-x)) |
-| TanH | y =tanh(x) |
+| TanH | y = tanh(x) |
 | ArcTan | y = atan(x) |
-| Sinus | y=sin(x) | 
-| SoftPkus | y =log(1 + exp(x)) |
+| Sinus | y = sin(x) | 
+| SoftPkus | y = log(1 + exp(x)) |
+
+#### Training context (Optional)
+
+this block defines how your network will learn.   
+You should specify the error rate between real and desired output. The maximum number. 
+of epochs. Then select a training method between BackProp and RProp. Each method gets its own parameters.
+
+| Parameters | Method | Description |
+|---------------|----------|---------------|
+| learning-rate | BackProp | Set the speed training ratio |
+| momentum | BackProp | Inertial parameters to avoid big change |
