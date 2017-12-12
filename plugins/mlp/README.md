@@ -98,3 +98,7 @@ of epochs. Then select a training method between BackProp and RProp. Each method
 |---------------|----------|---------------|
 | learning-rate | BackProp | Set the speed training ratio |
 | momentum | BackProp | Inertial parameters to avoid big change |
+| eta-plus | RProp | Learning rate  for a positive gradient sign transition |
+| eta-minus | RProp | Learning rate for a negative gradient sign transition |
+| delta-min | RProp | Min delta value |
+| delta-max | RProp | Max delta value |
