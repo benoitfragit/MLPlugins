@@ -213,22 +213,11 @@ configure_neuron_with_context(BrainNeuron neuron, Context context)
 
                 if (rprop_context != NULL)
                 {
-                    Context eta_context   = get_node_with_name_and_index(rprop_context, "resilient-eta", 0);
-                    Context delta_context = get_node_with_name_and_index(rprop_context, "resilient-delta", 0);
-
                     neuron->_learning_function = get_learning_function(Resilient);
-
-                    if (eta_context != NULL)
-                    {
-                        neuron->_rprop_eta_plus  = (BrainReal)node_get_double(eta_context, "positive", 1.25);
-                        neuron->_rprop_eta_minus = (BrainReal)node_get_double(eta_context, "negative", 0.95);
-                    }
-
-                    if (delta_context != NULL)
-                    {
-                        neuron->_rprop_delta_max = (BrainReal)node_get_double(delta_context, "max", 50.0);
-                        neuron->_rprop_delta_min = (BrainReal)node_get_double(delta_context, "min", 0.000001);
-                    }
+                    neuron->_rprop_eta_plus  = (BrainReal)node_get_double(rprop_context, "eta-plus", 1.25);
+                    neuron->_rprop_eta_minus = (BrainReal)node_get_double(rprop_context, "eta-minus", 0.95);
+                    neuron->_rprop_delta_max = (BrainReal)node_get_double(rprop_context, "delta-max", 50.0);
+                    neuron->_rprop_delta_min = (BrainReal)node_get_double(rpeop_context, "delta-min", 0.000001);
                 }
             }
         }

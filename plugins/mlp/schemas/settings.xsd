@@ -26,21 +26,11 @@
         </xs:restriction>
     </xs:simpleType>
 
-    <xs:complexType name="EtaType">
-        <xs:attribute name="positive" type="xs:decimal" use="required"/>
-        <xs:attribute name="negative" type="xs:decimal" use="required"/>
-    </xs:complexType>
-
-    <xs:complexType name="DeltaType">
-        <xs:attribute name="min"      type="xs:decimal" use="required"/>
-        <xs:attribute name="max"      type="xs:decimal" use="required"/>
-    </xs:complexType>
-
     <xs:complexType name="RPropType">
-        <xs:all>
-            <xs:element name="eta"   type="EtaType"/>
-            <xs:element name="delta" type="DeltaType"/>
-        </xs:all>
+        <xs:attribute name="eta-plus"          type="xs:decimal" use="required"/>
+        <xs:attribute name="eta-minus"     type="xs:decimal" use="required"/>
+        <xs:attribute name="delta-min"       type="xs:decimal" use="required"/>
+        <xs:attribute name="delta-max"      type="xs:decimal" use="required"/>
     </xs:complexType>
 
     <xs:complexType name="BackPropType">
