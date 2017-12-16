@@ -1,4 +1,4 @@
-A MULTI-LAYER PERCEPTRON NETWORK
+A MULTI-LAYERS PERCEPTRON NETWORK
 ------------------------------------
 
 ## Presentation
@@ -31,7 +31,7 @@ It is a algorithm to train the network. It is a common algorithm use to increase
 
 ### Defining the network architecture
 
-The architecture of the network is defined via XMl. 
+The architecture of the network is defined via XMl.
 ```
 <?xml version="1.0"?>
 <network inputs="5">
@@ -65,40 +65,38 @@ You should write :
     </training>
 </settings>
 ```
-Now some explanations. 
 
 #### Cost-function (Optional)
 it is the method used to measure the dfference between the network'output and the desired output.
 it is usefull during the training phase. There are two choice :
 
-| Function | Calculation |
-| -----------|--------------|
-| Quadrati | E =  (x -  y)^2 |
-| CrossEntropy | E = y *log(x) + (1- y)* log(x) |
+| Function     | Calculation                     |
+| -------------|---------------------------------|
+| Quadrati     | E =  (x -  y)^2                 |
+| CrossEntropy | E = y * log(x) + (1- y)* log(x) |
 
 #### Activation function (Required)
 it is the method used to compute the output of the neuron.
 
-| Function | Calculation |
-|-----------|--------------|
-| Identity | y = x |
-| Sigmoid |  y = 1/(1 + exp(-x)) |
-| TanH | y = tanh(x) |
-| ArcTan | y = atan(x) |
-| Sinus | y = sin(x) | 
-| SoftPkus | y = log(1 + exp(x)) |
+| Function | Calculation         |
+|----------|---------------------|
+| Identity | y = x               |
+| Sigmoid  | y = 1/(1 + exp(-x)) |
+| TanH     | y = tanh(x)         |
+| ArcTan   | y = atan(x)         |
+| Sinus    | y = sin(x)          |
+| SoftPLus | y = log(1 + exp(x)) |
 
 #### Training context (Optional)
 
-this block defines how your network will learn.   
-You should specify the error rate between real and desired output. The maximum number. 
+This block defines how your network will learn. You should specify the error rate between real and desired output. The maximum number.
 of epochs. Then select a training method between BackProp and RProp. Each method gets its own parameters.
 
-| Parameters | Method | Description |
-|---------------|----------|---------------|
-| learning-rate | BackProp | Set the speed training ratio |
-| momentum | BackProp | Inertial parameters to avoid big change |
-| eta-plus | RProp | Learning rate  for a positive gradient sign transition |
-| eta-minus | RProp | Learning rate for a negative gradient sign transition |
-| delta-min | RProp | Min delta value |
-| delta-max | RProp | Max delta value |
+| Parameters    | Method   | Description                                            |
+|---------------|----------|--------------------------------------------------------|
+| learning-rate | BackProp | Set the speed training ratio                           |
+| momentum      | BackProp | Inertial parameters to avoid big change                |
+| eta-plus      | RProp    | Learning rate  for a positive gradient sign transition |
+| eta-minus     | RProp    | Learning rate for a negative gradient sign transition  |
+| delta-min     | RProp    | Min delta value                                        |
+| delta-max     | RProp    | Max delta value                                        |
