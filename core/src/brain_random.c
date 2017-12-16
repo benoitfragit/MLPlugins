@@ -9,6 +9,7 @@ struct RandomMask
     BrainUint  _mask_size;
     BrainUint* _mask_node;
     BrainUint* _mask_slot;
+    BrainUint* _mask_max;
     BrainUint* _mask;
 } RandomMask;
 
@@ -33,9 +34,23 @@ new_random_mask(const BrainUint number_of_elements)
     }
 
     _random_mask->_mask       = (BrainUint *) calloc(_random_mask->_mask_size, sizeof(BrainUint));
+    _random_mask->_mask_max = (BrainUint *)calloc(_random_mask->_mask_size, sizeof(BrainUint));
     _random_mask->_mask_node  = (BrainUint *) calloc(number_of_elements, sizeof(BrainUint));
     _random_mask->_mask_slot  = (BrainUint *) calloc(number_of_elements, sizeof(BrainUint));
 
+    memset(_random_mask->_mask_max, UINT_MAX, _random_mask->_mask_size * sizeof(BrainUint));
+    if (_random_mask->_mask_size == 1)
+    {
+        _random_mask->_mask_max[0] = pow(2, number_of_elements) - 1;
+    }
+    else
+    {
+        if (_random_mask->_mask_size > 1)
+        {      
+            _random_mask->_mask_max[_random_mask->_mask_size - 1] = pow(2, number_of_elements - _random_mask->_mask_size * BRAIN_MASK_SIZE) - 1;
+        }
+    }
+    
     for (i = 0; i < number_of_elements; ++i)
     {
         _random_mask->_mask_node[i] = i / BRAIN_MASK_SIZE;
@@ -64,6 +79,11 @@ delete_random_mask(BrainRandomMask random_mask)
         {
             free(random_mask->_mask_node);
         }
+        
+        if (random_mask->_mask_max != NULL)
+        {
+            free(random_mask->_mask_max);
+        }
 
         free(random_mask);
         random_mask = NULL;
@@ -79,7 +99,7 @@ generate_random_mask(BrainRandomMask random_mask)
 
         for (i = 0; i < random_mask->_mask_size; ++i)
         {
-            random_mask->_mask[i] = (BrainUint)BRAIN_RAND_RANGE(0, UINT_MAX);
+            random_mask->_mask[i] = (BrainUint)BRAIN_RAND_RANGE(0, random_mask->_mask_max[i]);
         }
     }
 }
