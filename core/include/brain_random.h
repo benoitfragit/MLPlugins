@@ -17,7 +17,7 @@
 
 BrainRandomMask new_random_mask     (const BrainUint number_of_elements);
 void            delete_random_mask  (BrainRandomMask random_mask);
-void            generate_random_mask(BrainRandomMask random_mask);
+BrainUint       generate_random_mask(BrainRandomMask random_mask);
 void            generate_unit_mask  (BrainRandomMask random_mask);
 BrainBool       get_random_state    (const BrainRandomMask random_mask, const BrainUint index);
 

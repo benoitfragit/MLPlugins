@@ -1,4 +1,5 @@
 #include "brain_random.h"
+#include <math.h>
 
 #define BRAIN_MASK_SIZE (8 * sizeof(BrainUint))
 #define BRAIN_ACTIVATION(mask,j,k) ((mask[j] >> k) & 0x00000001)
@@ -46,11 +47,11 @@ new_random_mask(const BrainUint number_of_elements)
     else
     {
         if (_random_mask->_mask_size > 1)
-        {      
+        {
             _random_mask->_mask_max[_random_mask->_mask_size - 1] = pow(2, number_of_elements - _random_mask->_mask_size * BRAIN_MASK_SIZE) - 1;
         }
     }
-    
+
     for (i = 0; i < number_of_elements; ++i)
     {
         _random_mask->_mask_node[i] = i / BRAIN_MASK_SIZE;
@@ -79,7 +80,7 @@ delete_random_mask(BrainRandomMask random_mask)
         {
             free(random_mask->_mask_node);
         }
-        
+
         if (random_mask->_mask_max != NULL)
         {
             free(random_mask->_mask_max);
@@ -90,18 +91,28 @@ delete_random_mask(BrainRandomMask random_mask)
     }
 }
 
-void
+BrainUint
 generate_random_mask(BrainRandomMask random_mask)
 {
+    BrainUint ret = 0;
+
     if (random_mask != NULL)
     {
         BrainUint i = 0;
+        BrainUint j = 0;
 
         for (i = 0; i < random_mask->_mask_size; ++i)
         {
             random_mask->_mask[i] = (BrainUint)BRAIN_RAND_RANGE(0, random_mask->_mask_max[i]);
+
+            for (j = 0; j < BRAIN_MASK_SIZE; ++j)
+            {
+                ret += (random_mask->_mask[i] >> j) & 0x00000001;
+            }
         }
     }
+
+    return ret;
 }
 
 void

@@ -428,42 +428,38 @@ train_network(BrainNetwork network, BrainString repository_path, BrainString tok
             while ((iteration < max_iteration)
             &&     isNetworkTrainingRequired(network, data))
             {
-                BrainUint minibatch_size = 0;
                 /******************************************************/
                 /**      GENERATE THE RANDOM MINI-BATCH MASK         **/
                 /******************************************************/
-                generate_random_mask(mask);
+                BrainUint minibatch_size = generate_random_mask(mask);
                 /******************************************************/
                 /**         ACCUMULATE WITH RANDOM MINI-BATCH        **/
                 /******************************************************/
-                for (i = 0; i < number_of_training_sample; ++i)
+                if (0 < minibatch_size)
                 {
-                    const BrainBool is_in_batch = get_random_state(mask, i);
-
-                    if (is_in_batch)
+                    for (i = 0; i < number_of_training_sample; ++i)
                     {
-                        ++minibatch_size;
+                        const BrainBool is_in_batch = get_random_state(mask, i);
 
-                        input = get_training_input_signal(data, i);
-                        target = get_training_output_signal(data, i);
-                        /******************************************************/
-                        /**         FORWARD PROPAGATION OF THE SIGNAL        **/
-                        /******************************************************/
-                        feedforward(network, input_length, input, BRAIN_TRUE);
-                        /******************************************************/
-                        /**     BACKPROPAGATION USING THE TARGET SIGNAL      **/
-                        /******************************************************/
-                        backpropagate(network, output_length, target);
+                        if (is_in_batch)
+                        {
+                            input = get_training_input_signal(data, i);
+                            target = get_training_output_signal(data, i);
+                            /******************************************************/
+                            /**         FORWARD PROPAGATION OF THE SIGNAL        **/
+                            /******************************************************/
+                            feedforward(network, input_length, input, BRAIN_TRUE);
+                            /******************************************************/
+                            /**     BACKPROPAGATION USING THE TARGET SIGNAL      **/
+                            /******************************************************/
+                            backpropagate(network, output_length, target);
+                        }
                     }
-                }
 
-                if (minibatch_size > 0)
-                {
                     /**************************************************/
                     /**               UPDATE NETWORK WEIGHTS         **/
                     /**************************************************/
                     update_network(network, (BrainReal)minibatch_size);
-
                     ++iteration;
                 }
             }

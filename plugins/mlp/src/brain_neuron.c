@@ -217,7 +217,7 @@ configure_neuron_with_context(BrainNeuron neuron, Context context)
                     neuron->_rprop_eta_plus  = (BrainReal)node_get_double(rprop_context, "eta-plus", 1.25);
                     neuron->_rprop_eta_minus = (BrainReal)node_get_double(rprop_context, "eta-minus", 0.95);
                     neuron->_rprop_delta_max = (BrainReal)node_get_double(rprop_context, "delta-max", 50.0);
-                    neuron->_rprop_delta_min = (BrainReal)node_get_double(rpeop_context, "delta-min", 0.000001);
+                    neuron->_rprop_delta_min = (BrainReal)node_get_double(rprop_context, "delta-min", 0.000001);
                 }
             }
         }
