@@ -68,11 +68,11 @@ void        delete_layer              (BrainLayer layer);
  *
  * \param output_layer the BrainLayer
  * \param number_of_output the size of the output vector
- * \param desired the desired output
+ * \param loss the error vector
  */
 void backpropagate_output_layer(BrainLayer output_layer,
                                 const BrainUint number_of_output,
-                                const BrainSignal desired);
+                                const BrainSignal loss);
 /**
  * \fn void backpropagate_hidden_layer(BrainLayer hidden_layer)
  * \brief apply backpropagation algorithm on an hidden layer

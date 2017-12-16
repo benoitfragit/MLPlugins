@@ -34,6 +34,11 @@ typedef float         BrainFloat;
 typedef double        BrainDouble;
 typedef const char*   BrainString;
 typedef char          BrainChar;
+#if BRAIN_ENABLE_DOUBLE_PRECISION
+typedef BrainDouble BrainReal;
+#else
+typedef BrainFloat BrainReal;
+#endif
 
 /**
  * \brief define a XML Context

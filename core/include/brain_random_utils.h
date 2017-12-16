@@ -6,8 +6,8 @@
  *
  * All public methods to build a Layer
  */
-#ifndef BRAIN_RANDOM_H
-#define BRAIN_RANDOM_H
+#ifndef BRAIN_RANDOM_UTILS_H
+#define BRAIN_RANDOM_UTILS_H
 
 #include "brain_core_types.h"
 
@@ -21,4 +21,4 @@ BrainUint       generate_random_mask(BrainRandomMask random_mask);
 void            generate_unit_mask  (BrainRandomMask random_mask);
 BrainBool       get_random_state    (const BrainRandomMask random_mask, const BrainUint index);
 
-#endif /* BRAIN_RANDOM_H */
+#endif /* BRAIN_RANDOM_UTILS_H */

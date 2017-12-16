@@ -1,19 +1,8 @@
 #include "brain_neuron.h"
-#include "brain_activation.h"
-#include "brain_random.h"
+#include "brain_math_utils.h"
+#include "brain_random_utils.h"
 #include "brain_xml_utils.h"
 #include "brain_logging_utils.h"
-
-#include <math.h>
-
-#define MIN(a, b) ((a) < (b) ? (a) : (b))
-#define MAX(a, b) ((a) < (b) ? (b) : (a))
-
-#define EPSILON 1e-6
-
-#define BRAIN_POSITIVE_SGN 1
-#define BRAIN_NEGATIVE_SGN -1
-#define BRAIN_SGN(val) ((val>0)?BRAIN_POSITIVE_SGN:((val<0)?BRAIN_NEGATIVE_SGN:0))
 /**
  * \struct Neuron
  * \brief  Internal model for a BrainNeuron
@@ -54,6 +43,71 @@ struct Neuron
     BrainReal         _backprop_momemtum;     /*!< BackProp momentum value                              */
     BrainUint         _number_of_input;       /*!< Number of inputs                                     */
 } Neuron;
+
+static BrainString activation_name[] = {
+    "Identity",
+    "Sigmoid",
+    "TanH",
+    "ArcTan",
+    "SoftPlus",
+    "Sinus"
+};
+
+static ActivationPtrFunc
+activation(const BrainActivationType type)
+{
+    switch (type)
+    {
+        case Identity: return &identity;
+        case TanH:     return &tangeant_hyperbolic;
+        case ArcTan:   return &co_tangeant;
+        case SoftPlus: return &softplus;
+        case Sinusoid: return &sinusoid;
+        case Sigmoid:
+        default:
+            break;
+    }
+
+    return &sigmoid;
+}
+
+static ActivationPtrFunc
+derivative(const BrainActivationType type)
+{
+    switch (type)
+    {
+        case Identity: return &identity_derivative;
+        case TanH:     return &tangeant_hyperbolic_derivative;
+        case ArcTan:   return &co_tangeant_derivative;
+        case SoftPlus: return &softplus_derivative;
+        case Sinusoid: return &sinusoid_derivative;
+        case Sigmoid:
+        default:
+            break;
+    }
+
+    return &sigmoid_derivative;
+}
+
+static BrainActivationType
+get_activation_type(BrainString activation_type_name)
+{
+    if (activation_type_name)
+    {
+        BrainInt i = 0;
+
+        for (i = First_Activation; i <= Last_Activation; ++i)
+        {
+            if ((i != Invalid_Activation)
+            &&  !strcmp(activation_name[i - First_Activation - 1], activation_type_name))
+            {
+                return i;
+            }
+        }
+    }
+
+    return Invalid_Activation;
+}
 
 static void
 update_neuron_using_backpropagation(BrainNeuron neuron, const BrainReal minibatch_size)
@@ -252,18 +306,9 @@ activate_neuron(BrainNeuron neuron, const BrainBool is_activated)
         /**                 COMPUTE A(<in, W>)                       **/
         /**************************************************************/
         if ((activation_function != NULL)
-        &&  is_activated
-        &&  neuron->_in
-        &&  neuron->_w)
+        &&  is_activated)
         {
-            BrainUint j = 0;
-
-            for (j = 0; j < neuron->_number_of_input; ++j)
-            {
-                neuron->_sum += neuron->_in[j] * neuron->_w[j];
-            }
-
-            neuron->_sum += neuron->_bias;
+            neuron->_sum = dot(neuron->_in, neuron->_w, neuron->_number_of_input) + neuron->_bias;
             *(neuron->_out) = activation_function(neuron->_sum);
         }
     }

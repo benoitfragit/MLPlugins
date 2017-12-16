@@ -1,4 +1,4 @@
-#include "brain_random.h"
+#include "brain_random_utils.h"
 #include <math.h>
 
 #define BRAIN_MASK_SIZE (8 * sizeof(BrainUint))

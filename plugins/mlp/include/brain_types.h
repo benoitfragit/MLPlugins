@@ -65,11 +65,6 @@ typedef enum BrainLearningType
 /**
  * \brief Define a BrainSignal using single or double precision
  */
-#if BRAIN_ENABLE_DOUBLE_PRECISION
-typedef BrainDouble BrainReal;
-#else
-typedef BrainFloat BrainReal;
-#endif
 typedef BrainReal* BrainSignal;
 
 /**

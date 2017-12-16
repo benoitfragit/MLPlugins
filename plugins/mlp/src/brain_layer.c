@@ -1,9 +1,8 @@
 #include "brain_layer.h"
 #include "brain_neuron.h"
-#include "brain_cost.h"
 #include "brain_xml_utils.h"
 #include "brain_logging_utils.h"
-#include "brain_random.h"
+#include "brain_random_utils.h"
 
 /**
  * \struct Layer
@@ -20,11 +19,7 @@ struct Layer
     BrainNeuron*    _neurons;          /*!< An array of BrainNeuron      */
     BrainSignal     _in_errors;        /*!< Input vector errors          */
     BrainSignal     _out;              /*!< Output vector of the Layer   */
-    BrainRandomMask _mask;              /*!< Dropout activation mask      */
-    /******************************************************************/
-    /**                      FUNCTIONAL PARAMETERS                   **/
-    /******************************************************************/
-    CostPtrFunc _cost_function_derivative; /*!< Cost function derivative function */
+    BrainRandomMask _mask;             /*!< Dropout activation mask      */
 } Layer;
 
 void
@@ -36,16 +31,6 @@ configure_layer_with_context(BrainLayer layer, Context context)
     {
         const BrainUint number_of_neurons = layer->_number_of_neuron;
         BrainUint i = 0;
-
-        BrainChar* buffer = (BrainChar *)node_get_prop(context, "cost-function");
-        BrainCostFunctionType cost_function_type = get_cost_function_type(buffer);
-
-        if (buffer != NULL)
-        {
-            free(buffer);
-        }
-
-        layer->_cost_function_derivative = get_cost_function_derivative(cost_function_type);
 
         for (i = 0; i < number_of_neurons; ++i)
         {
@@ -125,11 +110,6 @@ new_layer(const BrainUint     number_of_neurons,
     {
         _layer                    = (BrainLayer)calloc(1, sizeof(Layer));
         _layer->_number_of_neuron = number_of_neurons;
-        /**************************************************************/
-        /** THIS THE COST FUNCTION DERIVATIVE USED TO COMPUTE THE    **/
-        /** BACKPROPAGATION ALGORITHM                                **/
-        /**************************************************************/
-        _layer->_cost_function_derivative = get_cost_function_derivative(Quadratic);
 
         if (0 != _layer->_number_of_neuron)
         {
@@ -209,7 +189,7 @@ get_layer_errors(const BrainLayer layer)
 void
 backpropagate_output_layer(BrainLayer output_layer,
                            const BrainUint number_of_output,
-                           const BrainSignal desired)
+                           const BrainSignal loss)
 {
     /******************************************************************/
     /**         BACKPROPAGATE THE ERROR ON THE OUTPUT LAYER          **/
@@ -249,29 +229,22 @@ backpropagate_output_layer(BrainLayer output_layer,
     BRAIN_INPUT(backpropagate_output_layer)
 
     if ((output_layer != NULL)
-    &&  (desired != NULL))
+    &&  (loss != NULL))
     {
-        const BrainSignal output           = get_layer_output(output_layer);
         const BrainUint   number_of_neuron = output_layer->_number_of_neuron;
 
         if (number_of_neuron == number_of_output)
         {
-            CostPtrFunc cost_function_derivative = output_layer->_cost_function_derivative;
-
             BrainUint output_index = 0;
 
             for (output_index = 0;
                  output_index < number_of_output;
                ++output_index)
             {
-                /******************************************************/
-                /**            COMPUTE THE COST DERIVATIVE           **/
-                /******************************************************/
-                const BrainReal loss = cost_function_derivative(output[output_index], desired[output_index]);
                 /**************************************************/
                 /**           BACKPROPAGATE THE LOSS             **/
                 /**************************************************/
-                backpropagate_neuron_gradient(output_layer->_neurons[output_index], loss);
+                backpropagate_neuron_gradient(output_layer->_neurons[output_index], loss[output_index]);
             }
         }
     }

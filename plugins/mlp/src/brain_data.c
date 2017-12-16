@@ -1,6 +1,6 @@
 #include "brain_data.h"
 #include "brain_logging_utils.h"
-#include "brain_random.h"
+#include "brain_random_utils.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
