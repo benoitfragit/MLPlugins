@@ -98,20 +98,36 @@ BrainUint get_input_signal_length(const BrainData data);
  */
 BrainUint get_output_signal_length(const BrainData data);
 /**
- * \fn BrainSignal get_input_sigmas(const BrainData data)
+ * \fn BrainSignal get_training_sigmas(const BrainData data)
  * \brief get input variances signal
  *
  * \param data a BrainData
  * \return variance vector
  */
-BrainSignal get_input_sigmas(const BrainData data);
+BrainSignal get_training_sigmas(const BrainData data);
 /**
- * \fn BrainSignal get_input_means(const BrainData data)
+ * \fn BrainSignal get_training_means(const BrainData data)
  * \brief get input means signal
  *
  * \param data a BrainData
  * \return means vector
  */
-BrainSignal get_input_means(const BrainData data);
+BrainSignal get_training_means(const BrainData data);
+/**
+ * \fn BrainSignal get_evaluating_sigmas(const BrainData data)
+ * \brief get input variances signal
+ *
+ * \param data a BrainData
+ * \return variance vector
+ */
+BrainSignal get_evaluating_sigmas(const BrainData data);
+/**
+ * \fn BrainSignal get_evaluating_means(const BrainData data)
+ * \brief get input means signal
+ *
+ * \param data a BrainData
+ * \return means vector
+ */
+BrainSignal get_evaluating_means(const BrainData data);
 
 #endif /* BRAIN_DATA_H */

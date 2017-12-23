@@ -75,8 +75,10 @@ main(int argc, char** argv)
 
             if (number_of_training_sample + number_of_evaluating_sample == NUMBER_OF_TEST_SIGNAL)
             {
-                const BrainSignal means = get_input_means(data);
-                const BrainSignal sigmas = get_input_sigmas(data);
+                const BrainSignal training_means    = get_training_means(data);
+                const BrainSignal training_sigmas   = get_training_sigmas(data);
+                const BrainSignal evaluating_means  = get_evaluating_means(data);
+                const BrainSignal evaluating_sigmas = get_evaluating_sigmas(data);
 
                 BrainUint i = 0;
                 BrainUint j = 0;
@@ -87,7 +89,7 @@ main(int argc, char** argv)
                     n = number_of_evaluating_sample;
                 }
 
-                for (i =0; i < 4; ++i)
+                for (i = 0; i < 4; ++i)
                 {
                     BrainBool found = BRAIN_FALSE;
 
@@ -105,8 +107,8 @@ main(int argc, char** argv)
                                                 output_length)
                             &&  areEqualSignal(input_signal,
                                                 TEST_INPUT_SIGNALS[i],
-                                                means,
-                                                sigmas,
+                                                training_means,
+                                                training_sigmas,
                                                 input_length))
                             {
                                 found = BRAIN_TRUE;
@@ -127,8 +129,8 @@ main(int argc, char** argv)
                                                 output_length)
                             &&  areEqualSignal(input_signal,
                                                 TEST_INPUT_SIGNALS[i],
-                                                means,
-                                                sigmas,
+                                                evaluating_means,
+                                                evaluating_sigmas,
                                                 input_length))
                             {
                                 found = BRAIN_TRUE;

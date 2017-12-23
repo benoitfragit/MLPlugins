@@ -3,6 +3,7 @@
 #include "brain_xml_utils.h"
 #include "brain_logging_utils.h"
 #include "brain_random_utils.h"
+#include "brain_memory_utils.h"
 
 /**
  * \struct Layer
@@ -27,7 +28,8 @@ configure_layer_with_context(BrainLayer layer, Context context)
 {
     BRAIN_INPUT(configure_layer_with_context)
 
-    if (layer && context)
+    if (BRAIN_ALLOCATED(layer)
+    &&  BRAIN_ALLOCATED(context))
     {
         const BrainUint number_of_neurons = layer->_number_of_neuron;
         BrainUint i = 0;
@@ -46,7 +48,7 @@ configure_layer_with_context(BrainLayer layer, Context context)
 BrainNeuron
 get_layer_neuron(const BrainLayer layer, const BrainUint index)
 {
-    if ((layer != NULL)
+    if (BRAIN_ALLOCATED(layer)
     &&  (index < layer->_number_of_neuron))
     {
         return layer->_neurons[index];
@@ -60,9 +62,9 @@ delete_layer(BrainLayer layer)
 {
     BRAIN_INPUT(delete_layer)
 
-    if (layer != NULL)
+    if (BRAIN_ALLOCATED(layer))
     {
-        if (layer->_neurons)
+        if (BRAIN_ALLOCATED(layer->_neurons))
         {
             BrainUint i;
 
@@ -71,22 +73,14 @@ delete_layer(BrainLayer layer)
                 delete_neuron(layer->_neurons[i]);
             }
 
-            free(layer->_neurons);
-        }
-
-        if (layer->_out)
-        {
-            free(layer->_out);
-        }
-
-        if (layer->_in_errors)
-        {
-            free(layer->_in_errors);
+            BRAIN_DELETE(layer->_neurons);
         }
 
         delete_random_mask(layer->_mask);
 
-        free(layer);
+        BRAIN_DELETE(layer->_out);
+        BRAIN_DELETE(layer->_in_errors);
+        BRAIN_DELETE(layer);
     }
 
     BRAIN_OUTPUT(delete_layer)
@@ -106,7 +100,7 @@ new_layer(const BrainUint     number_of_neurons,
 
     if ((number_of_inputs  != 0)
     &&  (number_of_neurons != 0)
-    &&  (in                != NULL))
+    &&  BRAIN_ALLOCATED(in))
     {
         _layer                    = (BrainLayer)calloc(1, sizeof(Layer));
         _layer->_number_of_neuron = number_of_neurons;
@@ -115,14 +109,13 @@ new_layer(const BrainUint     number_of_neurons,
         {
             BrainUint index = 0;
 
-            _layer->_neurons    = (BrainNeuron*)calloc(_layer->_number_of_neuron,   sizeof(BrainNeuron));
-            _layer->_out        = (BrainSignal) calloc(_layer->_number_of_neuron,   sizeof(BrainReal));
-            _layer->_in_errors  = (BrainSignal) calloc(_layer->_number_of_neuron,   sizeof(BrainReal));
+            BRAIN_NEW(_layer->_neurons, BrainNeuron,_layer->_number_of_neuron);
+            BRAIN_NEW(_layer->_out, BrainReal, _layer->_number_of_neuron);
+            BRAIN_NEW(_layer->_in_errors, BrainReal, _layer->_number_of_neuron);
+
             _layer->_mask       = new_random_mask(_layer->_number_of_neuron);
 
-            for (index = 0;
-                 (index < _layer->_number_of_neuron);
-                 ++index)
+            for (index = 0; (index < _layer->_number_of_neuron); ++index)
             {
                 /******************************************************/
                 /**              CREATE A NEW NEURON                 **/
@@ -154,23 +147,27 @@ new_layer(const BrainUint     number_of_neurons,
 BrainSignal
 get_layer_output(const BrainLayer layer)
 {
-    if (layer != NULL)
+    BrainSignal ret = NULL;
+
+    if (BRAIN_ALLOCATED(layer))
     {
-        return layer->_out;
+        ret = layer->_out;
     }
 
-    return NULL;
+    return ret;
 }
 
 BrainUint
 get_layer_number_of_neuron(const BrainLayer layer)
 {
-    if (layer)
+    BrainUint ret = 0;
+
+    if (BRAIN_ALLOCATED(layer))
     {
-        return layer->_number_of_neuron;
+        ret = layer->_number_of_neuron;
     }
 
-    return 0;
+    return ret;
 }
 
 BrainSignal
@@ -178,7 +175,7 @@ get_layer_errors(const BrainLayer layer)
 {
     BrainSignal ret = NULL;
 
-    if (layer != NULL)
+    if (BRAIN_ALLOCATED(layer))
     {
         ret = layer->_in_errors;
     }
@@ -228,8 +225,8 @@ backpropagate_output_layer(BrainLayer output_layer,
     /******************************************************************/
     BRAIN_INPUT(backpropagate_output_layer)
 
-    if ((output_layer != NULL)
-    &&  (loss != NULL))
+    if (BRAIN_ALLOCATED(output_layer)
+    &&  BRAIN_ALLOCATED(loss))
     {
         const BrainUint   number_of_neuron = output_layer->_number_of_neuron;
 
@@ -309,11 +306,11 @@ void
 activate_layer(BrainLayer layer, const BrainBool hidden_layer)
 {
     BRAIN_INPUT(activate_layer)
-    if (layer != NULL)
+    if (BRAIN_ALLOCATED(layer))
     {
         BrainUint i = 0;
 
-        memset(layer->_in_errors, 0, layer->_number_of_neuron * sizeof(BrainReal));
+        BRAIN_SET(layer->_in_errors, 0, BrainReal, layer->_number_of_neuron);
 
         if (hidden_layer)
         {
@@ -343,7 +340,8 @@ void
 serialize_layer(BrainLayer layer, Writer writer)
 {
     BRAIN_INPUT(serialize_layer)
-    if (writer && layer)
+    if (BRAIN_ALLOCATED(writer)
+    &&  BRAIN_ALLOCATED(layer))
     {
         if (start_element(writer, "layer"))
         {
@@ -367,7 +365,8 @@ void
 deserialize_layer(BrainLayer layer, Context context)
 {
     BRAIN_INPUT(deserialize_layer)
-    if (layer && context)
+    if (BRAIN_ALLOCATED(layer) &&
+        BRAIN_ALLOCATED(context))
     {
         const BrainUint number_of_serialized_neurons = get_number_of_node_with_name(context, "neuron");
         const BrainUint number_of_neurons = layer->_number_of_neuron;
@@ -393,7 +392,7 @@ update_layer(BrainLayer layer, const BrainReal minibatch_size)
 {
     BRAIN_INPUT(update_layer)
 
-    if (layer != NULL)
+    if (BRAIN_ALLOCATED(layer))
     {
         BrainUint i = 0;
         for (i = 0; i < layer->_number_of_neuron; ++i)

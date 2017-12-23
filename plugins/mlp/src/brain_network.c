@@ -4,6 +4,7 @@
 #include "brain_xml_utils.h"
 #include "brain_logging_utils.h"
 #include "brain_math_utils.h"
+#include "brain_memory_utils.h"
 
 #include "brain_layer.h"
 #include "brain_neuron.h"
@@ -19,7 +20,7 @@
  *
  * All protected fields for a BrainNetwork
  */
-struct Network
+typedef struct Network
 {
     /*********************************************************************/
     /**                      STRUCTURAL PARAMETERS                      **/
@@ -100,15 +101,15 @@ feedforward(BrainNetwork      network,
 {
     BRAIN_INPUT(feedforward)
 
-    if ((in != NULL) &&
-        (network != NULL) &&
+    if (BRAIN_ALLOCATED(in) &&
+        BRAIN_ALLOCATED(network) &&
         (number_of_input == network->_number_of_inputs))
     {
         BrainUint i = 0;
         /**************************************************************/
         /**           FEED THE NETWORK WITH INPUT VECTOR             **/
         /**************************************************************/
-        memcpy(network->_input, in, number_of_input * sizeof(BrainReal));
+        memcpy(network->_input, in, number_of_input*sizeof(BrainReal));
         for (i = 0; i < network->_number_of_layers; ++i)
         {
             /**********************************************************/
@@ -126,7 +127,7 @@ update_network(BrainNetwork network, const BrainReal minibatch_size)
 {
     BRAIN_INPUT(update_network)
 
-    if (network != NULL)
+    if (BRAIN_ALLOCATED(network))
     {
         BrainUint i = 0;
         for (i = 0; i < network->_number_of_layers; ++i)
@@ -146,17 +147,18 @@ configure_network_with_context(BrainNetwork network, BrainString filepath)
 {
     BRAIN_INPUT(configure_network_with_context)
 
-    if ((network != NULL) &&
-        (filepath != NULL) &&
+    if (BRAIN_ALLOCATED(network) &&
+        BRAIN_ALLOCATED(filepath) &&
         validate_with_xsd(filepath, SETTINGS_XSD_FILE))
     {
         Document settings_document = open_document(filepath);
 
-        if (settings_document != NULL)
+        if (BRAIN_ALLOCATED(settings_document))
         {
             Context settings_context = get_root_node(settings_document);
 
-            if (settings_context && is_node_with_name(settings_context, "settings"))
+            if (BRAIN_ALLOCATED(settings_context) &&
+                is_node_with_name(settings_context, "settings"))
             {
                 const BrainUint number_of_layer = network->_number_of_layers;
                 BrainUint i = 0;
@@ -166,7 +168,7 @@ configure_network_with_context(BrainNetwork network, BrainString filepath)
                 network->_cost_function = get_cost_function(cost_function_type);
                 network->_cost_function_derivative = get_cost_function_derivative(cost_function_type);
 
-                if (buffer != NULL)
+                if (BRAIN_ALLOCATED(buffer))
                 {
                     free(buffer);
                 }
@@ -174,7 +176,7 @@ configure_network_with_context(BrainNetwork network, BrainString filepath)
                 Context training_context = get_node_with_name_and_index(settings_context,
                                                                         "training",
                                                                         0);
-                if (training_context != NULL)
+                if (BRAIN_ALLOCATED(training_context))
                 {
                     network->_max_iter  = node_get_int(training_context, "iterations", 1000);
                     network->_max_error = (BrainReal)node_get_double(training_context, "error", 0.001);
@@ -198,8 +200,8 @@ get_network_layer(const BrainNetwork network, const BrainUint index)
 {
     BrainLayer ret = NULL;
 
-    if ((network != NULL)
-    &&  (network->_layers != NULL)
+    if (BRAIN_ALLOCATED(network)
+    &&  BRAIN_ALLOCATED(network->_layers)
     &&  (index < network->_number_of_layers))
     {
         ret = network->_layers[index];
@@ -238,14 +240,15 @@ backpropagate(BrainNetwork network,
     /******************************************************************/
     BRAIN_INPUT(backpropagate)
 
-    if ((network                   != NULL) &&
-        (network->_layers          != NULL) &&
-        (network->_number_of_layers!= 0)    &&
-        (desired                   != NULL))
+    if (BRAIN_ALLOCATED(network) &&
+        BRAIN_ALLOCATED(network->_layers) &&
+        (0 < network->_number_of_layers)    &&
+        BRAIN_ALLOCATED(desired))
     {
         const BrainSignal output = get_network_output(network);
         const CostPtrFunc cost_function_derivative = network->_cost_function_derivative;
-        BrainSignal loss = (BrainSignal)calloc(number_of_output, sizeof(BrainReal));
+        BrainSignal loss = NULL;
+        BRAIN_NEW(loss, BrainReal, number_of_output);
         BrainUint i = 0;
         /**************************************************************/
         /**               COMPUTE OUTPUT ERROR DERIVATIVE            **/
@@ -264,7 +267,7 @@ backpropagate(BrainNetwork network,
             backpropagate_hidden_layer(network->_layers[network->_number_of_layers - i - 1]);
         }
 
-        free(loss);
+        BRAIN_DELETE(loss);
     }
 
     BRAIN_OUTPUT(backpropagate)
@@ -273,7 +276,7 @@ backpropagate(BrainNetwork network,
 BrainSignal
 get_network_output(const BrainNetwork network)
 {
-    if (network != NULL)
+    if (BRAIN_ALLOCATED(network))
     {
         return network->_output;
     }
@@ -286,9 +289,9 @@ delete_network(BrainNetwork network)
 {
     BRAIN_INPUT(delete_network)
 
-    if (network != NULL)
+    if (BRAIN_ALLOCATED(network))
     {
-        if ((network->_layers) &&
+        if (BRAIN_ALLOCATED(network->_layers) &&
             (network->_number_of_layers != 0))
         {
             BrainUint i = 0;
@@ -298,12 +301,8 @@ delete_network(BrainNetwork network)
             }
         }
 
-        if (network->_input)
-        {
-           free(network->_input);
-        }
-
-        free(network);
+        BRAIN_DELETE(network->_input);
+        BRAIN_DELETE(network);
     }
 
     BRAIN_OUTPUT(delete_network)
@@ -321,14 +320,13 @@ new_network(const BrainUint signal_input_length,
 
     BrainNetwork _network = NULL;
 
-    if (neuron_per_layers != NULL)
+    if (BRAIN_ALLOCATED(neuron_per_layers))
     {
         BrainUint number_of_inputs = signal_input_length;
-        _network = (BrainNetwork)calloc(1, sizeof(Network));
-
+        BRAIN_NEW(_network, Network, 1);
         _network->_number_of_inputs = signal_input_length;
-        _network->_input            = (BrainSignal)calloc(signal_input_length, sizeof(BrainReal));
-        _network->_layers           = (BrainLayer *)calloc(number_of_layers, sizeof(BrainLayer));
+        BRAIN_NEW(_network->_input, BrainReal, signal_input_length);
+        BRAIN_NEW(_network->_layers, BrainLayer, number_of_layers);
         _network->_number_of_layers = number_of_layers;
         _network->_max_iter         = 1000;
         _network->_max_error        = 0.0001;
@@ -341,9 +339,7 @@ new_network(const BrainUint signal_input_length,
         {
             BrainUint index = 0;
 
-            for (index = 0;
-                 index < number_of_layers;
-               ++index)
+            for (index = 0; index < number_of_layers; ++index)
             {
                 const BrainUint number_of_neurons = neuron_per_layers[index];
 
@@ -408,8 +404,8 @@ isNetworkTrainingRequired(BrainNetwork network, const BrainData data)
     /********************************************************/
     BrainBool ret = BRAIN_FALSE;
 
-    if ((network != NULL) &&
-        (data    != NULL))
+    if (BRAIN_ALLOCATED(network) &&
+        BRAIN_ALLOCATED(data))
     {
         const BrainReal target_error  = network->_max_error;
 
@@ -464,7 +460,7 @@ train_network(BrainNetwork network, BrainString repository_path, BrainString tok
     /********************************************************/
     /**   Train the neural network using the training set  **/
     /********************************************************/
-    if (network != NULL)
+    if (BRAIN_ALLOCATED(network))
     {
         const BrainUint max_iteration = network->_max_iter;
         const BrainUint input_length  = network->_number_of_inputs;
@@ -475,15 +471,9 @@ train_network(BrainNetwork network, BrainString repository_path, BrainString tok
 
         BrainUint iteration = 0;
         BrainUint i = 0;
-        BrainData data = NULL;
+        BrainData data = new_data(repository_path, tokenizer, input_length, output_length, BRAIN_TRUE);
 
-        if (repository_path
-        &&  tokenizer)
-        {
-            data = new_data(repository_path, tokenizer, input_length, output_length, BRAIN_TRUE);
-        }
-
-        if (data)
+        if (BRAIN_ALLOCATED(data))
         {
             const BrainUint number_of_training_sample = get_number_of_training_sample(data);
             /**************************************************************/
@@ -544,17 +534,17 @@ deserialize_network(BrainNetwork network, BrainString filepath)
 {
     BRAIN_INPUT(deserialize_network)
 
-    if ((network != NULL)
-    &&  (filepath != NULL)
+    if (BRAIN_ALLOCATED(network)
+    &&  BRAIN_ALLOCATED(filepath)
     &&  validate_with_xsd(filepath, INIT_XSD_FILE))
     {
         Document init_document = open_document(filepath);
 
-        if (init_document != NULL)
+        if (BRAIN_ALLOCATED(init_document))
         {
             Context context = get_root_node(init_document);
 
-            if (context != NULL)
+            if (BRAIN_ALLOCATED(context))
             {
                 const BrainUint number_of_serialized_layer = get_number_of_node_with_name(context, "layer");
                 const BrainUint number_of_layer = network->_number_of_layers;
@@ -588,13 +578,13 @@ serialize_network(const BrainNetwork network, BrainString filepath)
 {
     BRAIN_INPUT(serialize_network)
 
-    if (filepath != NULL)
+    if (BRAIN_ALLOCATED(filepath))
     {
-        if (network != NULL)
+        if (BRAIN_ALLOCATED(network))
         {
             Writer writer = create_document(filepath, BRAIN_ENCODING);
 
-            if (writer != NULL)
+            if (BRAIN_ALLOCATED(writer))
             {
                 // serialize the network
                 if (start_element(writer, "network"))
@@ -638,43 +628,38 @@ new_network_from_context(BrainString filepath)
 
     BrainNetwork  network  = NULL;
 
-    if (filepath != NULL && validate_with_xsd(filepath, NETWORK_XSD_FILE))
+    if (BRAIN_ALLOCATED(filepath) &&
+        validate_with_xsd(filepath, NETWORK_XSD_FILE))
     {
         Document network_document = open_document(filepath);
 
-        if (network_document != NULL)
+        if (BRAIN_ALLOCATED(network_document))
         {
             Context context = get_root_node(network_document);
 
-            if (context && is_node_with_name(context, "network"))
+            if (BRAIN_ALLOCATED(context) &&
+                is_node_with_name(context, "network"))
             {
                 const BrainUint  number_of_inputs = node_get_int(context, "inputs", 1);
 
                 Context layers_context = get_node_with_name_and_index(context, "layers", 0);
 
-                if (layers_context != NULL)
+                if (BRAIN_ALLOCATED(layers_context))
                 {
                     const BrainUint  number_of_layers = get_number_of_node_with_name(layers_context, "layer");
-                    BrainUint* neuron_per_layers = (BrainUint *)calloc(number_of_layers, sizeof(BrainUint));
+                    BrainUint* neuron_per_layers =  NULL;
+
+                    BRAIN_NEW(neuron_per_layers, BrainUint, number_of_layers);
                     BrainUint  index = 0;
 
                     for (index = 0; index < number_of_layers; ++index)
                     {
-                        Context subcontext = get_node_with_name_and_index(layers_context,
-                                                                          "layer",
-                                                                          index);
-
+                        Context subcontext = get_node_with_name_and_index(layers_context, "layer", index);
                         neuron_per_layers[index] = node_get_int(subcontext, "neurons", 1);
                     }
 
-                    network = new_network(number_of_inputs,
-                                          number_of_layers,
-                                          neuron_per_layers);
-
-                    if (neuron_per_layers != NULL)
-                    {
-                        free(neuron_per_layers);
-                    }
+                    network = new_network(number_of_inputs, number_of_layers, neuron_per_layers);
+                    BRAIN_DELETE(neuron_per_layers);
                 }
             }
 

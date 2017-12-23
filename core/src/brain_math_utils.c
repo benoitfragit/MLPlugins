@@ -164,3 +164,55 @@ norm2(const BrainReal* a, const BrainUint size)
 
     return ret;
 }
+
+void
+ReLU(BrainReal** signals,
+     BrainReal* means,
+     BrainReal* sigmas,
+     const BrainUint number_of_signals,
+     const BrainUint size)
+{
+    if ((signals != NULL)
+    &&  (0 < size)
+    &&  (means != NULL)
+    &&  (sigmas != NULL))
+    {
+        BrainUint i = 0;
+        BrainUint j = 0;
+
+        /**************************************************************/
+        /**                       GET Sum(x_i) AND Sum(x_i * x_i)            **/
+        /**************************************************************/
+        for (i = 0; i < number_of_signals; ++i)
+        {
+            if (signals[i] != NULL)
+            {
+                for (j = 0; j < size; ++j)
+                {
+                    means[j]  += signals[i][j];
+                    sigmas[j] += signals[i][j] * signals[i][j];
+                }
+            }
+        }
+
+        for (j = 0; j < size; ++j)
+        {
+            /**********************************************************/
+            /**              COMPUTE E(X) and E(X^2)                 **/
+            /**********************************************************/
+            means[j] /= (BrainReal)size;
+            sigmas[j] = (sigmas[j]/(BrainReal)size) - means[j] * means[j];
+            /**********************************************************/
+            /**                  CENTERING AND SCALING               **/
+            /**********************************************************/
+            for (i = 0;i < number_of_signals; ++i)
+            {
+                if (signals[i] != NULL)
+                {
+                    signals[i][j] -= means[j];
+                    signals[i][j] /= sigmas[j];
+                }
+            }
+        }
+    }
+}
