@@ -10,6 +10,7 @@ Actually it works using 2 mains steps. The first one is an offline step in which
 
 ## Algorithm
 Several algorithms have been integrated to improve the training process:
+a good sum up can be found here: [Y LeCun paper](http://yann.lecun.com/exdb/publis/pdf/lecun-98b.pdf)
 
 ### Back propagation
 It is an algorithm that compute the gradient of the error according to each weight in order to correct each weight value. The error flows from the output layer to the input layer.
