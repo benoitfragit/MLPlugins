@@ -472,19 +472,19 @@ train_network(BrainNetwork network, BrainString repository_path, BrainString tok
         if (BRAIN_ALLOCATED(data))
         {
             const BrainUint number_of_training_sample = get_number_of_training_sample(data);
-            BrainReal error = target_error + 1.;
+            BrainReal error = getNetworkTotalError(network, data);
             /**************************************************************/
             /**              TRAIN OVER ALL TRAINING EXAMPLES            **/
             /**************************************************************/
+            BRAIN_INFO("iteration,error");
             while (iteration < max_iteration)
             {
-                if ((0 < iteration) &&
-                    (iteration % (max_iteration / 10) == 0))
+                if (iteration % (max_iteration / 10) == 0)
                 {
 #if BRAIN_ENABLE_DOUBLE_PRECISION
-                    BRAIN_INFO("[%d] error = %lf", iteration, error);
+                    BRAIN_INFO("%d,%lf", iteration, error);
 #else
-                    BRAIN_INFO("[%d] error = %f", iteration, error);
+                    BRAIN_INFO("%d,%f", iteration, error);
 #endif
                 }
 

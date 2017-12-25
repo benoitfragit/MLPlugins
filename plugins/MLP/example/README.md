@@ -46,3 +46,6 @@ following piece of code to train your neural network:
 ```
 You can see that you can build, tweak, train and save your neural network
 with only 5 lines of C codes.
+## Result
+By tweaking the network you can reduce the error rate:
+![TrainingResults](http://pix.toile-libre.org/?img=1514225785.png)
