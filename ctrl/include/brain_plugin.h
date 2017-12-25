@@ -31,6 +31,8 @@ void         get_network_prediction_at_index(const BrainPlugin plugin,
 void         train_network_at_index         (const BrainPlugin plugin,
                                              BrainString repository,
                                              BrainString tokenizer,
+                                             const BrainBool labelled,
+                                             const BrainBool normalized,
                                              const BrainUint index);
 void         serialize_network_at_index     (const BrainPlugin plugin,
                                              BrainString filename,

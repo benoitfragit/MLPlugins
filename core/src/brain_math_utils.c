@@ -1,4 +1,5 @@
 #include "brain_math_utils.h"
+#include "brain_memory_utils.h"
 /**********************************************************************/
 /**                       ACTIVATION FUNCTIONS                       **/
 /**********************************************************************/
@@ -110,8 +111,8 @@ dot(const BrainReal* a, const BrainReal* b, const BrainUint size)
 {
     BrainReal ret = 0.;
 
-    if ((a != NULL) &&
-        (b != NULL) &&
+    if (BRAIN_ALLOCATED(a) &&
+        BRAIN_ALLOCATED(b) &&
         (size > 0))
     {
         BrainUint i = 0;
@@ -129,8 +130,8 @@ distance(const BrainReal* a, const BrainReal* b, const BrainUint size)
 {
     BrainReal ret = 0.;
 
-    if ((a != NULL) &&
-        (b != NULL) &&
+    if (BRAIN_ALLOCATED(a) &&
+        BRAIN_ALLOCATED(b) &&
         (size > 0))
     {
         BrainUint i = 0;
@@ -140,6 +141,8 @@ distance(const BrainReal* a, const BrainReal* b, const BrainUint size)
             t = a[i] - b[i];
             ret += t*t;
         }
+
+        ret = sqrt(ret);
     }
 
     return ret;
@@ -150,7 +153,7 @@ norm2(const BrainReal* a, const BrainUint size)
 {
     BrainReal ret = 0.;
 
-    if ((a != NULL) &&
+    if (BRAIN_ALLOCATED(a) &&
         (size > 0))
     {
         BrainUint i = 0;
@@ -166,51 +169,59 @@ norm2(const BrainReal* a, const BrainUint size)
 }
 
 void
-ReLU(BrainReal** signals,
-     BrainReal* means,
-     BrainReal* sigmas,
-     const BrainUint number_of_signals,
-     const BrainUint size)
+normalization(BrainReal** signals,
+             BrainReal* means,
+             BrainReal* sigmas,
+             const BrainUint number_of_signals,
+             const BrainUint size)
 {
-    if ((signals != NULL)
-    &&  (0 < size)
-    &&  (means != NULL)
-    &&  (sigmas != NULL))
+    if (BRAIN_ALLOCATED(signals)
+    &&  BRAIN_ALLOCATED(means)
+    &&  BRAIN_ALLOCATED(sigmas)
+    &&  (0 < size))
     {
         BrainUint i = 0;
         BrainUint j = 0;
 
+        BRAIN_SET(means, 0, BrainReal, size);
+        BRAIN_SET(sigmas, 0, BrainReal, size);
         /**************************************************************/
-        /**                       GET Sum(x_i) AND Sum(x_i * x_i)            **/
+        /**                       GET THE MEAN                       **/
         /**************************************************************/
         for (i = 0; i < number_of_signals; ++i)
         {
-            if (signals[i] != NULL)
+            if (BRAIN_ALLOCATED(signals[i]))
             {
                 for (j = 0; j < size; ++j)
                 {
-                    means[j]  += signals[i][j];
-                    sigmas[j] += signals[i][j] * signals[i][j];
+                    means[j] += signals[i][j] / (BrainReal) size;
                 }
             }
         }
-
-        for (j = 0; j < size; ++j)
+        /**************************************************************/
+        /**                      GET THE VARIANCE                    **/
+        /**************************************************************/
+        for (i = 0; i < number_of_signals; ++i)
         {
-            /**********************************************************/
-            /**              COMPUTE E(X) and E(X^2)                 **/
-            /**********************************************************/
-            means[j] /= (BrainReal)size;
-            sigmas[j] = (sigmas[j]/(BrainReal)size) - means[j] * means[j];
-            /**********************************************************/
-            /**                  CENTERING AND SCALING               **/
-            /**********************************************************/
-            for (i = 0;i < number_of_signals; ++i)
+            if (BRAIN_ALLOCATED(signals[i]))
             {
-                if (signals[i] != NULL)
+                for (j = 0; j < size; ++j)
                 {
-                    signals[i][j] -= means[j];
-                    signals[i][j] /= sigmas[j];
+                    BrainReal diff = (signals[i][j] - means[j]);
+                    sigmas[j] += ((diff * diff)/ (BrainReal)size);
+                }
+            }
+        }
+        /**************************************************************/
+        /**                  CENTER AND SCALE EACH VECTOR            **/
+        /**************************************************************/
+        for (i = 0; i < number_of_signals; ++i)
+        {
+            if (BRAIN_ALLOCATED(signals[i]))
+            {
+                for (j = 0;j < size; ++j)
+                {
+                    signals[i][j] = (signals[i][j] - means[j]) / sqrt(sigmas[j]);
                 }
             }
         }

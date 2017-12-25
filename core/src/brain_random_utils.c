@@ -1,10 +1,11 @@
 #include "brain_random_utils.h"
+#include "brain_memory_utils.h"
 #include <math.h>
 
 #define BRAIN_MASK_SIZE (8 * sizeof(BrainUint))
 #define BRAIN_ACTIVATION(mask,j,k) ((mask[j] >> k) & 0x00000001)
 
-struct RandomMask
+typedef struct RandomMask
 {
     BrainUint  _number_of_elements;
     BrainUint  _mask_size;
@@ -17,8 +18,10 @@ struct RandomMask
 BrainRandomMask
 new_random_mask(const BrainUint number_of_elements)
 {
-    BrainRandomMask _random_mask = (BrainRandomMask)calloc(1, sizeof(RandomMask));
     BrainUint i = 0;
+    BrainRandomMask _random_mask = NULL;
+
+    BRAIN_NEW(_random_mask, RandomMask, 1);
 
     _random_mask->_number_of_elements = number_of_elements;
     _random_mask->_mask_size  = (BrainUint)(number_of_elements / BRAIN_MASK_SIZE);
@@ -34,12 +37,12 @@ new_random_mask(const BrainUint number_of_elements)
         }
     }
 
-    _random_mask->_mask       = (BrainUint *) calloc(_random_mask->_mask_size, sizeof(BrainUint));
-    _random_mask->_mask_max = (BrainUint *)calloc(_random_mask->_mask_size, sizeof(BrainUint));
-    _random_mask->_mask_node  = (BrainUint *) calloc(number_of_elements, sizeof(BrainUint));
-    _random_mask->_mask_slot  = (BrainUint *) calloc(number_of_elements, sizeof(BrainUint));
+    BRAIN_NEW(_random_mask->_mask,      BrainUint, _random_mask->_mask_size);
+    BRAIN_NEW(_random_mask->_mask_max,  BrainUint, _random_mask->_mask_size);
+    BRAIN_NEW(_random_mask->_mask_node, BrainUint, number_of_elements);
+    BRAIN_NEW(_random_mask->_mask_slot, BrainUint, number_of_elements);
 
-    memset(_random_mask->_mask_max, UINT_MAX, _random_mask->_mask_size * sizeof(BrainUint));
+    BRAIN_SET(_random_mask->_mask_max, UINT_MAX, BrainUint, _random_mask->_mask_size);
     if (_random_mask->_mask_size == 1)
     {
         _random_mask->_mask_max[0] = pow(2, number_of_elements) - 1;
@@ -64,30 +67,13 @@ new_random_mask(const BrainUint number_of_elements)
 void
 delete_random_mask(BrainRandomMask random_mask)
 {
-    if (random_mask != NULL)
+    if (BRAIN_ALLOCATED(random_mask))
     {
-        if (random_mask->_mask != NULL)
-        {
-            free(random_mask->_mask);
-        }
-
-        if (random_mask->_mask_slot != NULL)
-        {
-            free(random_mask->_mask_slot);
-        }
-
-        if (random_mask->_mask_node != NULL)
-        {
-            free(random_mask->_mask_node);
-        }
-
-        if (random_mask->_mask_max != NULL)
-        {
-            free(random_mask->_mask_max);
-        }
-
-        free(random_mask);
-        random_mask = NULL;
+        BRAIN_DELETE(random_mask->_mask);
+        BRAIN_DELETE(random_mask->_mask_slot);
+        BRAIN_DELETE(random_mask->_mask_node);
+        BRAIN_DELETE(random_mask->_mask_max);
+        BRAIN_DELETE(random_mask);
     }
 }
 
@@ -96,7 +82,7 @@ generate_random_mask(BrainRandomMask random_mask)
 {
     BrainUint ret = 0;
 
-    if (random_mask != NULL)
+    if (BRAIN_ALLOCATED(random_mask))
     {
         BrainUint i = 0;
         BrainUint j = 0;
@@ -107,7 +93,7 @@ generate_random_mask(BrainRandomMask random_mask)
 
             for (j = 0; j < BRAIN_MASK_SIZE; ++j)
             {
-                ret += (random_mask->_mask[i] >> j) & 0x00000001;
+                ret += BRAIN_ACTIVATION(random_mask->_mask, i, j);
             }
         }
     }
@@ -118,9 +104,9 @@ generate_random_mask(BrainRandomMask random_mask)
 void
 generate_unit_mask(BrainRandomMask random_mask)
 {
-    if (random_mask)
+    if (BRAIN_ALLOCATED(random_mask))
     {
-        memset(random_mask->_mask, UINT_MAX, random_mask->_mask_size*sizeof(BrainUint));
+        BRAIN_SET(random_mask->_mask, UINT_MAX, BrainUint, random_mask->_mask_size);
     }
 }
 
@@ -130,7 +116,7 @@ get_random_state(const BrainRandomMask random_mask, const BrainUint index)
 {
     BrainBool ret = BRAIN_TRUE;
 
-    if ((random_mask != NULL) &&
+    if (BRAIN_ALLOCATED(random_mask) &&
         (index < random_mask->_number_of_elements))
     {
         const BrainUint j = random_mask->_mask_node[index];

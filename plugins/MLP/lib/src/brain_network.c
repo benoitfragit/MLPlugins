@@ -13,6 +13,7 @@
 #include "brain_probe.h"
 
 #define __BRAIN_VISIBLE__ __attribute__((visibility("default")))
+#define MINIBATCH_MIN_SIZE 32
 
 /**
  * \struct Network
@@ -247,9 +248,10 @@ backpropagate(BrainNetwork network,
     {
         const BrainSignal output = get_network_output(network);
         const CostPtrFunc cost_function_derivative = network->_cost_function_derivative;
-        BrainSignal loss = NULL;
-        BRAIN_NEW(loss, BrainReal, number_of_output);
         BrainUint i = 0;
+        BrainSignal loss = NULL;
+
+        BRAIN_NEW(loss, BrainReal, number_of_output);
         /**************************************************************/
         /**               COMPUTE OUTPUT ERROR DERIVATIVE            **/
         /**************************************************************/
@@ -396,19 +398,17 @@ predict(BrainNetwork      network,
     BRAIN_INPUT(predict)
 }
 
-static BrainBool
-isNetworkTrainingRequired(BrainNetwork network, const BrainData data)
+static BrainReal
+getNetworkTotalError(BrainNetwork network, const BrainData data)
 {
     /********************************************************/
     /**       Check if we need to train this network       **/
     /********************************************************/
-    BrainBool ret = BRAIN_FALSE;
+    BrainReal error = 0.f;
 
     if (BRAIN_ALLOCATED(network) &&
         BRAIN_ALLOCATED(data))
     {
-        const BrainReal target_error  = network->_max_error;
-
         const BrainUint input_length  = get_input_signal_length(data);
         const BrainUint output_length = get_output_signal_length(data);
 
@@ -418,11 +418,12 @@ isNetworkTrainingRequired(BrainNetwork network, const BrainData data)
         BrainSignal target = NULL;
         BrainSignal output = NULL;
 
-        BrainReal error = 0.0;
         BrainUint   i = 0;
         BrainUint   j = 0;
 
         CostPtrFunc cost_function = network->_cost_function;
+
+        error = 0.;
 
         for (i = 0; i < number_of_evaluating_sample; ++i)
         {
@@ -436,25 +437,20 @@ isNetworkTrainingRequired(BrainNetwork network, const BrainData data)
             // between the target and the real output
             output = get_network_output(network);
 
-            for (j = 0; j< output_length; ++j)
+            for (j = 0; j < output_length; ++j)
             {
                 error += cost_function(target[j], output[j]);
             }
         }
 
-        error /= (BrainReal)number_of_evaluating_sample;
-
-        if (target_error < error)
-        {
-            ret = BRAIN_TRUE;
-        }
+        error /= (BrainReal)(number_of_evaluating_sample);
     }
 
-    return ret;
+    return error;
 }
 
 void __BRAIN_VISIBLE__
-train_network(BrainNetwork network, BrainString repository_path, BrainString tokenizer)
+train_network(BrainNetwork network, BrainString repository_path, BrainString tokenizer, BrainBool is_labelled, BrainBool is_normalized)
 {
     BRAIN_INPUT(train_network)
     /********************************************************/
@@ -465,64 +461,71 @@ train_network(BrainNetwork network, BrainString repository_path, BrainString tok
         const BrainUint max_iteration = network->_max_iter;
         const BrainUint input_length  = network->_number_of_inputs;
         const BrainUint output_length = get_layer_number_of_neuron(network->_layers[network->_number_of_layers - 1]);
+        const BrainReal target_error  = network->_max_error;
 
         BrainSignal input = NULL;
         BrainSignal target = NULL;
 
         BrainUint iteration = 0;
-        BrainUint i = 0;
-        BrainData data = new_data(repository_path, tokenizer, input_length, output_length, BRAIN_TRUE);
+        BrainData data = new_data(repository_path, tokenizer, input_length, output_length, BRAIN_TRUE, is_labelled, is_normalized);
 
         if (BRAIN_ALLOCATED(data))
         {
             const BrainUint number_of_training_sample = get_number_of_training_sample(data);
-            /**************************************************************/
-            /**           GENERATE MASK FOR THE RANDOM BACTH             **/
-            /**************************************************************/
-            BrainRandomMask mask = new_random_mask(number_of_training_sample);
+            BrainReal error = target_error + 1.;
             /**************************************************************/
             /**              TRAIN OVER ALL TRAINING EXAMPLES            **/
             /**************************************************************/
-            while ((iteration < max_iteration)
-            &&     isNetworkTrainingRequired(network, data))
+            while (iteration < max_iteration)
             {
-                /******************************************************/
-                /**      GENERATE THE RANDOM MINI-BATCH MASK         **/
-                /******************************************************/
-                BrainUint minibatch_size = generate_random_mask(mask);
-                /******************************************************/
-                /**         ACCUMULATE WITH RANDOM MINI-BATCH        **/
-                /******************************************************/
-                if (0 < minibatch_size)
+                if ((0 < iteration) &&
+                    (iteration % (max_iteration / 10) == 0))
                 {
-                    for (i = 0; i < number_of_training_sample; ++i)
+#if BRAIN_ENABLE_DOUBLE_PRECISION
+                    BRAIN_INFO("[%d] error = %lf", iteration, error);
+#else
+                    BRAIN_INFO("[%d] error = %f", iteration, error);
+#endif
+                }
+
+                if (target_error < error)
+                {
+                    BrainUint minibatch_size = 0;
+                    /******************************************************/
+                    /**         ACCUMULATE WITH RANDOM MINI-BATCH        **/
+                    /******************************************************/
+                    do
                     {
-                        const BrainBool is_in_batch = get_random_state(mask, i);
-
-                        if (is_in_batch)
-                        {
-                            input = get_training_input_signal(data, i);
-                            target = get_training_output_signal(data, i);
-                            /******************************************************/
-                            /**         FORWARD PROPAGATION OF THE SIGNAL        **/
-                            /******************************************************/
-                            feedforward(network, input_length, input, BRAIN_TRUE);
-                            /******************************************************/
-                            /**     BACKPROPAGATION USING THE TARGET SIGNAL      **/
-                            /******************************************************/
-                            backpropagate(network, output_length, target);
-                        }
-                    }
-
+                        const BrainUint index = (BrainUint)BRAIN_RAND_RANGE(0, number_of_training_sample);
+                        input  = get_training_input_signal(data, index);
+                        target = get_training_output_signal(data, index);
+                        /******************************************************/
+                        /**         FORWARD PROPAGATION OF THE SIGNAL        **/
+                        /******************************************************/
+                        feedforward(network, input_length, input, BRAIN_TRUE);
+                        /******************************************************/
+                        /**     BACKPROPAGATION USING THE TARGET SIGNAL      **/
+                        /******************************************************/
+                        backpropagate(network, output_length, target);
+                        ++minibatch_size;
+                    } while (minibatch_size < MINIBATCH_MIN_SIZE);
                     /**************************************************/
                     /**               UPDATE NETWORK WEIGHTS         **/
                     /**************************************************/
                     update_network(network, (BrainReal)minibatch_size);
+                    /**************************************************/
+                    /**               UPDATE NETWORK ERROR           **/
+                    /**************************************************/
+                    error = getNetworkTotalError(network, data);
                     ++iteration;
+                }
+                else
+                {
+                    break;
                 }
             }
 
-            delete_random_mask(mask);
+            delete_data(data);
         }
     }
 

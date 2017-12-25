@@ -122,13 +122,17 @@ update_neuron_using_backpropagation(BrainNeuron neuron, const BrainReal minibatc
         const BrainReal momentum              = neuron->_backprop_momemtum;
 
         BrainUint i = 0;
+        BrainReal learning = learning_rate / (BrainReal)minibatch_size;
         /******************************************************/
         /**      UPDATE ALL WEIGHT USING GRADIENTS MEANS     **/
         /******************************************************/
-        neuron->_bias -= learning_rate * (neuron->_bias_gradient / minibatch_size) - momentum * neuron->_bias;
+        neuron->_bias -= learning * neuron->_bias_gradient - momentum * neuron->_bias;
+        neuron->_bias_gradient = 0;
+
         for (i = 0; i < number_of_inputs; ++i)
         {
-            neuron->_w[i] -= (learning_rate * (neuron->_gradients[i] / minibatch_size) - momentum * neuron->_w[i]);
+            neuron->_w[i] -= learning * neuron->_gradients[i] - momentum * neuron->_w[i];
+            neuron->_gradients[i] = 0.;
         }
     }
 
@@ -260,8 +264,8 @@ configure_neuron_with_context(BrainNeuron neuron, Context context)
             if (BRAIN_ALLOCATED(backprop_context))
             {
                 neuron->_learning_function      = get_learning_function(BackPropagation);
-                neuron->_backprop_learning_rate = (BrainReal)node_get_double(backprop_context, "learning-rate", 1.2);
-                neuron->_backprop_momemtum      = (BrainReal)node_get_double(backprop_context, "momentum", 0.0);
+                neuron->_backprop_learning_rate = (BrainReal)node_get_double(backprop_context, "learning-rate", 0.005);
+                neuron->_backprop_momemtum      = (BrainReal)node_get_double(backprop_context, "momentum", 0.001);
             }
             else
             {
@@ -345,7 +349,7 @@ new_neuron(BrainSignal     in,
     &&  (0 < number_of_inputs))
     {
         BrainUint                index   = 0;
-        BrainReal random_value_limit     = (BrainReal)number_of_inputs;
+        BrainReal random_value_limit     = 1./sqrt(10.f * (BrainReal)number_of_inputs);
 
         BRAIN_NEW(_neuron,                  Neuron,    1);
         BRAIN_NEW(_neuron->_w,              BrainReal, number_of_inputs);
@@ -359,7 +363,7 @@ new_neuron(BrainSignal     in,
         _neuron->_bias                   = (BrainReal)BRAIN_RAND_RANGE(-random_value_limit, random_value_limit);
         _neuron->_bias_gradient          = 0.;
         _neuron->_bias_gradient_sgn      = 0;
-        _neuron->_bias_delta             = 0.;
+        _neuron->_bias_delta             = 1.;
         _neuron->_sum                    = 0.;
         _neuron->_backprop_learning_rate = 1.12;
         _neuron->_backprop_momemtum      = 0.0;
@@ -375,6 +379,7 @@ new_neuron(BrainSignal     in,
         for (index = 0; index < _neuron->_number_of_input; ++index)
         {
             _neuron->_w[index] = (BrainReal)BRAIN_RAND_RANGE(-random_value_limit, random_value_limit);
+            _neuron->_deltas[index] = 1.;
         }
     }
 

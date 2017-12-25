@@ -1,0 +1,9 @@
+#ifndef EXAMPLES_CONFIG_H
+#define EXAMPLES_CONFIG_H
+
+#define TEST_DATA_PATH              "${CMAKE_CURRENT_SOURCE_DIR}/resources/test_train_iris.csv"
+#define TEST_TRAIN_NETWORK_PATH     "${CMAKE_CURRENT_SOURCE_DIR}/resources/test_train_network.xml"
+#define TEST_TRAIN_SETTINGS_PATH    "${CMAKE_CURRENT_SOURCE_DIR}/resources/test_train_settings.xml"
+#define TEST_TRAIN_SERIALIZE_PATH   "/tmp/test_train_serialized.xml"
+
+#endif /* EXAMPLES_CONFIG_H */

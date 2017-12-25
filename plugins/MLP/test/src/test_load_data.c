@@ -2,6 +2,7 @@
 #include "brain_types.h"
 #include "brain_data.h"
 #include "brain_logging_utils.h"
+#include <math.h>
 
 static BrainReal TEST_INPUT_SIGNALS[4][3] = {{1.0, 3.0, 2.0},
                                              {2.0, 9.0, 3.0},
@@ -39,7 +40,7 @@ areEqualSignal(const BrainSignal left,
             if ((means  != NULL)
             &&  (sigmas != NULL))
             {
-                var *= sigmas[i];
+                var *= sqrt(sigmas[i]);
                 var += means[i];
             }
 
@@ -60,7 +61,7 @@ main(int argc, char** argv)
 {
     BrainInt result = EXIT_SUCCESS;
 
-    BrainData data = new_data(TEST_DATA_LOADING_PATH, ",", 3, 1, BRAIN_TRUE);
+    BrainData data = new_data(TEST_DATA_LOADING_PATH, ",", 3, 1, BRAIN_TRUE, BRAIN_FALSE, BRAIN_TRUE);
 
     if (data)
     {

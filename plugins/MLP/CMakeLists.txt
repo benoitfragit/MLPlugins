@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 2.8.9)
+add_subdirectory(lib)
+add_subdirectory(example)
+if(CMAKE_ENABLE_TESTING)
+    add_subdirectory(test)
+endif(CMAKE_ENABLE_TESTING)

@@ -72,8 +72,10 @@ void update_network(BrainNetwork network, const BrainReal minibatch_size);
  * \param network         the BrainNetwork to train
  * \param repository_path the repository path of the dataset
  * \param tokenizer       the tokenizer
+ * \param is_labelled     labelling training activation
+ * \param is_normalized   normalizing training data
  */
-void train_network(BrainNetwork network, BrainString repository_path, BrainString tokenizer);
+void train_network(BrainNetwork network, BrainString repository_path, BrainString tokenizer, BrainBool is_labelled, BrainBool is_normalized);
 /**
  * \fn void configure_network_with_context(BrainNetwork network, BrBrainString filepath)
  * \brief Load settings from an XML context

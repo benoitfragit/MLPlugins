@@ -12,16 +12,18 @@
 #include "brain_types.h"
 
 /**
- * \fn BrainData new_data(BrainString repository_path, BrainString tokenizer, const BrainUint input_length, const BrainUint output_length, const BrainBool is_data_splitted)
+ * \fn BrainData new_data(BrainString repository_path, BrainString tokenizer, const BrainUint input_length, const BrainUint output_length, const BrainBool is_splitted, const BrainBool is_labelled, const BrainBool is_normalized)
  * \brief create a data list
  * \param repository_path give the path of the repository
  * \param tokenizer list of separators
  * \param input_length size of all input signal
  * \param output_length size of all output signal
- * \param is_data_splitted automatically split data into 2 subsets
+ * \param is_splitted automatically split data into 2 subsets
+ * \param is_labelled data is labelled
+ * \param is_normalized data is normalized
  * \return a BrainData
  */
-BrainData   new_data(BrainString repository_path, BrainString tokenizer, const BrainUint input_length, const BrainUint output_length, const BrainBool is_data_splitted);
+BrainData new_data(BrainString repository_path, BrainString tokenizer, const BrainUint input_length, const BrainUint output_length, const BrainBool is_splitted, const BrainBool is_labedelled, const BrainBool is_normalized);
 /**
  * \fn BrainUint get_number_of_evaluating_sample(const BrainData data);
  * \brief get the number of trainng sample

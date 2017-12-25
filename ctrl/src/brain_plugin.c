@@ -375,12 +375,12 @@ get_network_prediction_at_index(const BrainPlugin plugin, const BrainUint length
 }
 
 void
-train_network_at_index(const BrainPlugin plugin, BrainString repository, BrainString tokenizer, const BrainUint index)
+train_network_at_index(const BrainPlugin plugin, BrainString repository, BrainString tokenizer, const BrainBool labelled, const BrainBool normalized, const BrainUint index)
 {
     if (plugin
     &&  (index < LENGTH))
     {
-        TRAIN(NETWORKS[index], repository, tokenizer);
+        TRAIN(NETWORKS[index], repository, tokenizer, labelled, normalized);
     }
 }
 

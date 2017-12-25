@@ -19,7 +19,7 @@ typedef BrainNetwork (*BrainLoaderPtrFunc)     (BrainString);
 typedef void         (*BrainConfigurePtrFunc)  (BrainNetwork,       BrainString);
 typedef void         (*BrainSerializePtrFunc)  (const BrainNetwork, BrainString);
 typedef void         (*BrainDeserializePtrFunc)(BrainNetwork,       BrainString);
-typedef void         (*BrainTrainPtrFunc)      (BrainNetwork,       BrainString,     BrainString);
+typedef void         (*BrainTrainPtrFunc)      (BrainNetwork,       BrainString,     BrainString, BrainBool, BrainBool);
 typedef void         (*BrainPredictPtrFunc)    (BrainNetwork,       const BrainUint, const BrainSignal);
 typedef void         (*BrainDeletePtrFunc)     (BrainNetwork);
 
