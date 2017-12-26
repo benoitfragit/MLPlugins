@@ -135,20 +135,18 @@ update_neuron_using_backpropagation(BrainNeuron neuron, const BrainReal minibatc
     if (BRAIN_ALLOCATED(neuron))
     {
         const BrainUint number_of_inputs      = neuron->_number_of_input;
-        const BrainReal learning_rate         = neuron->_backprop_learning_rate;
+        const BrainReal learning_rate         = neuron->_backprop_learning_rate / (BrainReal)minibatch_size;
         const BrainReal momentum              = neuron->_backprop_momemtum;
-
         BrainUint i = 0;
-        BrainReal learning = learning_rate / (BrainReal)minibatch_size;
         /******************************************************/
         /**      UPDATE ALL WEIGHT USING GRADIENTS MEANS     **/
         /******************************************************/
-        neuron->_bias -= learning * neuron->_bias_gradient - momentum * neuron->_bias;
+        neuron->_bias -= learning_rate * neuron->_bias_gradient - momentum * neuron->_bias;
         neuron->_bias_gradient = 0;
 
         for (i = 0; i < number_of_inputs; ++i)
         {
-            neuron->_w[i] -= learning * neuron->_gradients[i] - momentum * neuron->_w[i];
+            neuron->_w[i] -= learning_rate * neuron->_gradients[i] - momentum * neuron->_w[i];
             neuron->_gradients[i] = 0.;
         }
     }

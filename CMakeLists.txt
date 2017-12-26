@@ -1,8 +1,7 @@
 cmake_minimum_required(VERSION 2.8.9)
 
 add_subdirectory(core)
-add_subdirectory(ctrl)
-add_subdirectory(view)
+add_subdirectory(manager)
 add_subdirectory(plugins)
 
 if(CMAKE_ENABLE_DOC)

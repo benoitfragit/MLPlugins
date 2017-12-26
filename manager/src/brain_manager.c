@@ -1,7 +1,8 @@
-#include "brain_view_config.h"
+#include "brain_manager_config.h"
 #include "brain_plugin_manager.h"
 #include "brain_plugin.h"
 #include "brain_logging_utils.h"
+#include "brain_memory_utils.h"
 
 #include <gtk/gtk.h>
 #include <glib.h>
@@ -51,11 +52,11 @@ on_plugin_activation_change(BrainView view, GParamSpec* pspec, gpointer data)
         {
             if (gtk_switch_get_active(plugin_switch))
             {
-                set_plugin_activated(view->_manager, plugin, BRAIN_TRUE);
+                set_plugin_activated(plugin, BRAIN_TRUE);
             }
             else
             {
-                set_plugin_activated(view->_manager, plugin, BRAIN_FALSE);
+                set_plugin_activated(plugin, BRAIN_FALSE);
             }
         }
     }
@@ -83,7 +84,7 @@ brain_attach_setup_popup(BrainView view, GtkWidget* button)
             if (plugin)
             {
                 BrainString plugin_name = get_plugin_name(plugin);
-                BrainBool   activated   = is_plugin_activated(view->_manager, i);
+                BrainBool   activated   = is_plugin_activated(plugin);
 
                 GtkWidget* plugin_label  = gtk_label_new(plugin_name);
                 GtkWidget* plugin_switch = gtk_switch_new();

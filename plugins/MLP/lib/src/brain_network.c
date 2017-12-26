@@ -13,7 +13,6 @@
 #include "brain_probe.h"
 
 #define __BRAIN_VISIBLE__ __attribute__((visibility("default")))
-#define MINIBATCH_MIN_SIZE 32
 /**
  * \enum BrainCostFunctionType
  * \brief enumeration to choose network cost function
@@ -65,6 +64,7 @@ typedef struct Network
     /*********************************************************************/
     BrainReal     _max_error;        /*!< Maximum error threshold        */
     BrainUint     _max_iter;         /*!< Maximum iteration              */
+    BrainUint     _minibatch_size;   /*!< Minibatch size                 */
     /*********************************************************************/
     /**                      FUNCTIONAL PARAMETERS                      **/
     /*********************************************************************/
@@ -179,6 +179,7 @@ configure_network_with_context(BrainNetwork network, BrainString filepath)
                 {
                     network->_max_iter  = node_get_int(training_context, "iterations", 1000);
                     network->_max_error = (BrainReal)node_get_double(training_context, "error", 0.001);
+                    network->_minibatch_size = node_get_int(training_context, "mini-batch-size", 32);
                 }
 
                 for (i = 0; i < number_of_layer; ++i)
@@ -330,6 +331,7 @@ new_network(const BrainUint signal_input_length,
         _network->_number_of_layers = number_of_layers;
         _network->_max_iter         = 1000;
         _network->_max_error        = 0.0001;
+        _network->_minibatch_size  = 32;
         _network->_cost_function    = _cost_functions[Quadratic][Function];
         _network->_cost_function_derivative = _cost_functions[Quadratic][Derivative];
         /**************************************************************/
@@ -465,7 +467,13 @@ train_network(BrainNetwork network, BrainString repository_path, BrainString tok
         BrainSignal target = NULL;
 
         BrainUint iteration = 0;
-        BrainData data = new_data(repository_path, tokenizer, input_length, output_length, BRAIN_TRUE, is_labelled, is_normalized);
+        BrainData data = new_data(repository_path,
+                                  tokenizer,
+                                  input_length,
+                                  output_length,
+                                  BRAIN_TRUE,
+                                  is_labelled,
+                                  is_normalized);
 
         if (BRAIN_ALLOCATED(data))
         {
@@ -506,7 +514,7 @@ train_network(BrainNetwork network, BrainString repository_path, BrainString tok
                         /******************************************************/
                         backpropagate(network, output_length, target);
                         ++minibatch_size;
-                    } while (minibatch_size < MINIBATCH_MIN_SIZE);
+                    } while (minibatch_size < network->_minibatch_size);
                     /**************************************************/
                     /**               UPDATE NETWORK WEIGHTS         **/
                     /**************************************************/
