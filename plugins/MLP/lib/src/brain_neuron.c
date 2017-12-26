@@ -5,6 +5,53 @@
 #include "brain_logging_utils.h"
 #include "brain_memory_utils.h"
 /**
+ * \enum BrainActivationType
+ * \brief enumeration to choose neurons activation function
+ */
+typedef enum BrainActivationType
+{
+    Identity,           /*!< Identity activation */
+    Sigmoid,            /*!< sigmoid activation  */
+    TanH,               /*!< tanh activation     */
+    ArcTan,             /*!< arctan activation   */
+    SoftPlus,           /*!< softplus activation */
+    Sinusoid,           /*!< sinusoid activation */
+    Invalid_Activation, /*!< Invalid activation  */
+
+    First_Activation = Identity,
+    Last_Activation = Invalid_Activation
+} BrainActivationType;
+/**
+ * \enum BrainLearningType
+ * \brief enumeration to choose network learning process
+ */
+typedef enum BrainLearningType
+{
+    BackPropagation,  /*!< Backpropagation learning */
+    Resilient,        /*!< Resilient learning       */
+    Invalid_Learning, /*!< Invalid learning         */
+
+    First_Learning = BackPropagation,
+    Last_Learning  = Invalid_Learning
+} BrainLearningType;
+/**
+ * \brief function pointer to update neuron weights
+ *
+ * \param neuron a BrainNeuron
+ * \param loss   the total output error
+ */
+typedef void (*LearningPtrFunc)(BrainNeuron neuron, const BrainReal loss);
+/**
+ * \brief function pointer on an activation function
+ *
+ * It let neurons use several activation function and
+ * automatically compute the activation an it's derivation
+ *
+ * \param value dot product of input vector and weight vector of a neuron
+ * \return the value of the activation
+ */
+typedef BrainReal (*ActivationPtrFunc)(const BrainReal value);
+/**
  * \struct Neuron
  * \brief  Internal model for a BrainNeuron
  *
@@ -54,41 +101,12 @@ static BrainString activation_name[] = {
     "Sinus"
 };
 
-static ActivationPtrFunc
-activation(const BrainActivationType type)
-{
-    switch (type)
-    {
-        case Identity: return &identity;
-        case TanH:     return &tangeant_hyperbolic;
-        case ArcTan:   return &co_tangeant;
-        case SoftPlus: return &softplus;
-        case Sinusoid: return &sinusoid;
-        case Sigmoid:
-        default:
-            break;
-    }
-
-    return &sigmoid;
-}
-
-static ActivationPtrFunc
-derivative(const BrainActivationType type)
-{
-    switch (type)
-    {
-        case Identity: return &identity_derivative;
-        case TanH:     return &tangeant_hyperbolic_derivative;
-        case ArcTan:   return &co_tangeant_derivative;
-        case SoftPlus: return &softplus_derivative;
-        case Sinusoid: return &sinusoid_derivative;
-        case Sigmoid:
-        default:
-            break;
-    }
-
-    return &sigmoid_derivative;
-}
+static ActivationPtrFunc _activation_functions[][2] = {{identity,           identity_derivative},
+                                                       {sigmoid,            sigmoid_derivative},
+                                                       {tangeant_hyperbolic,tangeant_hyperbolic_derivative},
+                                                       {co_tangeant,        co_tangeant_derivative},
+                                                       {softplus,           softplus_derivative},
+                                                       {sinusoid,           sinusoid_derivative}};
 
 static BrainActivationType
 get_activation_type(BrainString activation_type_name)
@@ -97,10 +115,9 @@ get_activation_type(BrainString activation_type_name)
     {
         BrainInt i = 0;
 
-        for (i = First_Activation; i <= Last_Activation; ++i)
+        for (i = First_Activation; i < Last_Activation; ++i)
         {
-            if ((i != Invalid_Activation)
-            &&  !strcmp(activation_name[i - First_Activation - 1], activation_type_name))
+            if (!strcmp(activation_name[i - First_Activation], activation_type_name))
             {
                 return i;
             }
@@ -230,19 +247,8 @@ update_neuron_using_resilient(BrainNeuron neuron, const BrainReal minibatch_size
     BRAIN_OUTPUT(update_neuron_using_resilient)
 }
 
-static LearningPtrFunc
-get_learning_function(const BrainLearningType learning_type)
-{
-    switch (learning_type)
-    {
-        case BackPropagation: return &update_neuron_using_backpropagation;
-        case Resilient: return &update_neuron_using_resilient;
-        default:
-            break;
-    }
-
-    return &update_neuron_using_backpropagation;
-}
+static LearningPtrFunc _learning_functions[] = {update_neuron_using_backpropagation,
+                                                update_neuron_using_resilient};
 
 void
 configure_neuron_with_context(BrainNeuron neuron, Context context)
@@ -263,7 +269,7 @@ configure_neuron_with_context(BrainNeuron neuron, Context context)
 
             if (BRAIN_ALLOCATED(backprop_context))
             {
-                neuron->_learning_function      = get_learning_function(BackPropagation);
+                neuron->_learning_function      = _learning_functions[BackPropagation];
                 neuron->_backprop_learning_rate = (BrainReal)node_get_double(backprop_context, "learning-rate", 0.005);
                 neuron->_backprop_momemtum      = (BrainReal)node_get_double(backprop_context, "momentum", 0.001);
             }
@@ -273,7 +279,7 @@ configure_neuron_with_context(BrainNeuron neuron, Context context)
 
                 if (BRAIN_ALLOCATED(rprop_context))
                 {
-                    neuron->_learning_function = get_learning_function(Resilient);
+                    neuron->_learning_function = _learning_functions[Resilient];
                     neuron->_rprop_eta_plus  = (BrainReal)node_get_double(rprop_context, "eta-plus", 1.25);
                     neuron->_rprop_eta_minus = (BrainReal)node_get_double(rprop_context, "eta-minus", 0.95);
                     neuron->_rprop_delta_max = (BrainReal)node_get_double(rprop_context, "delta-max", 50.0);
@@ -284,8 +290,8 @@ configure_neuron_with_context(BrainNeuron neuron, Context context)
 
         buffer = (BrainChar *)node_get_prop(context, "activation-function");
         activation_type = get_activation_type(buffer);
-        neuron->_activation_function = activation(activation_type);
-        neuron->_derivative_function = derivative(activation_type);
+        neuron->_activation_function = _activation_functions[activation_type][Function];
+        neuron->_derivative_function = _activation_functions[activation_type][Derivative];
 
         BRAIN_DELETE(buffer);
     }
@@ -371,9 +377,9 @@ new_neuron(BrainSignal     in,
         _neuron->_rprop_eta_minus        = 0.95;
         _neuron->_rprop_delta_min        = 0.000001;
         _neuron->_rprop_delta_max        = 50.;
-        _neuron->_activation_function    = activation(Sigmoid);
-        _neuron->_derivative_function    = derivative(Sigmoid);
-        _neuron->_learning_function      = get_learning_function(BackPropagation);
+        _neuron->_activation_function    = _activation_functions[Sigmoid][Function];
+        _neuron->_derivative_function    = _activation_functions[Sigmoid][Derivative];
+        _neuron->_learning_function      = _learning_functions[BackPropagation];
         _neuron->_errors                 = errors;
 
         for (index = 0; index < _neuron->_number_of_input; ++index)

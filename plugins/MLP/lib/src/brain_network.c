@@ -14,7 +14,36 @@
 
 #define __BRAIN_VISIBLE__ __attribute__((visibility("default")))
 #define MINIBATCH_MIN_SIZE 32
+/**
+ * \enum BrainCostFunctionType
+ * \brief enumeration to choose network cost function
+ */
+typedef enum BrainCostFunctionType
+{
+    Quadratic,            /*!< Quadratic cost function    */
+    CrossEntropy,         /*!< CrossEntropy cost function */
+    Invalid_CostFunction, /*!< invalid cost function      */
 
+    First_CostFunction = Quadratic,
+    Last_CostFunction  = Invalid_CostFunction
+} BrainCostFunctionType;
+/**
+ * \brief function pointer on an cost function
+ *
+ * it let the network use several cost function and automatically compute
+ * the derivative
+ *
+ * \param output the output of a neuron
+ * \param desired the desired output of a neuron
+ * \return the value of the cost function
+ */
+typedef BrainReal (*CostPtrFunc)(const BrainReal output, const BrainReal desired);
+
+static BrainString costfunction_names[] =
+{
+    "Quadratic",
+    "CrossEntropy"
+};
 /**
  * \struct Network
  * \brief  Internal model for a BrainNetwork
@@ -43,21 +72,15 @@ typedef struct Network
     CostPtrFunc   _cost_function_derivative; /*!< Cost function derivative */
 } Network;
 
-static BrainString costfunction_names[] =
-{
-    "Quadratic",
-    "CrossEntropy"
-};
 
 static BrainCostFunctionType
 get_cost_function_type(BrainString name)
 {
     BrainUint i = 0;
 
-    for (i = First_CostFunction; i <= Last_CostFunction; ++i)
+    for (i = First_CostFunction; i < Last_CostFunction; ++i)
     {
-        if ((i != First_CostFunction)
-        &&  (!strcmp(name, costfunction_names[i - First_CostFunction - 1])))
+        if (!strcmp(name, costfunction_names[i - First_CostFunction]))
         {
             return i;
         }
@@ -66,33 +89,8 @@ get_cost_function_type(BrainString name)
     return Invalid_CostFunction;
 }
 
-static CostPtrFunc
-get_cost_function(const BrainCostFunctionType type)
-{
-    switch (type)
-    {
-        case Quadratic:    return quadratic_cost;
-        case CrossEntropy: return crossentropy_cost;
-        default:
-            break;
-    }
-
-    return quadratic_cost;
-}
-
-static CostPtrFunc
-get_cost_function_derivative(const BrainCostFunctionType type)
-{
-    switch (type)
-    {
-        case Quadratic:    return quadratic_cost_derivative;
-        case CrossEntropy: return crossentropy_cost_derivative;
-        default:
-            break;
-    }
-
-    return quadratic_cost_derivative;
-}
+static CostPtrFunc _cost_functions[][2] = {{quadratic_cost,     quadratic_cost_derivative},
+                                           {crossentropy_cost,  crossentropy_cost_derivative}};
 
 static void
 feedforward(BrainNetwork      network,
@@ -164,10 +162,10 @@ configure_network_with_context(BrainNetwork network, BrainString filepath)
                 const BrainUint number_of_layer = network->_number_of_layers;
                 BrainUint i = 0;
 
-                BrainChar* buffer = (BrainChar *)node_get_prop(settings_context, "cost-function");
+                BrainChar* buffer                        = (BrainChar *)node_get_prop(settings_context, "cost-function");
                 BrainCostFunctionType cost_function_type = get_cost_function_type(buffer);
-                network->_cost_function = get_cost_function(cost_function_type);
-                network->_cost_function_derivative = get_cost_function_derivative(cost_function_type);
+                network->_cost_function                  = _cost_functions[cost_function_type][Function];
+                network->_cost_function_derivative       = _cost_functions[cost_function_type][Derivative];
 
                 if (BRAIN_ALLOCATED(buffer))
                 {
@@ -332,8 +330,8 @@ new_network(const BrainUint signal_input_length,
         _network->_number_of_layers = number_of_layers;
         _network->_max_iter         = 1000;
         _network->_max_error        = 0.0001;
-        _network->_cost_function    = get_cost_function(Quadratic);
-        _network->_cost_function_derivative = get_cost_function_derivative(Quadratic);
+        _network->_cost_function    = _cost_functions[Quadratic][Function];
+        _network->_cost_function_derivative = _cost_functions[Quadratic][Derivative];
         /**************************************************************/
         /**                INITIALE THE RANDOM GENERATOR             **/
         /**************************************************************/

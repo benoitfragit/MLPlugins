@@ -89,7 +89,6 @@ parse_csv_repository(BrainData       data,
                 {
                     BrainChar* buffer = NULL;
                     k = 0;
-
                     /****************************************************************/
                     /**              Randomly choose signal storage                **/
                     /****************************************************************/
@@ -244,27 +243,6 @@ new_data(BrainString repository_path,
         _data->_is_normalized = is_normalized;
 
         parse_csv_repository(_data, repository_path, tokenizer);
-
-        BrainUint i;
-        BrainUint j;
-        BrainUint number = get_number_of_training_sample(_data);
-
-        for (i = 0; i < number; ++i)
-        {
-            const BrainSignal input = get_training_input_signal(_data, i);
-            const BrainSignal output = get_training_output_signal(_data, i);
-
-            for (j = 0; j < input_length; ++j)
-            {
-                printf("%lf ", input[j]);
-            }
-            printf("| ");
-            for (j = 0; j < output_length; ++j)
-            {
-                printf("%lf ", output[j]);
-            }
-            printf("\n");
-        }
     }
 
     return _data;
