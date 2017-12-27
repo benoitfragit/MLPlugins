@@ -5,6 +5,7 @@
 
 #include <glib.h>
 #include <glib/gstdio.h>
+
 #include <string.h>
 
 #define PLUGINS manager->_plugins
@@ -25,6 +26,8 @@ autodetect_plugins(BrainPluginManager manager)
         {
             BrainChar* subpath = strtok(path, ":");
 
+            BRAIN_INFO("Searching plugins in %s", subpath);
+
             do
             {
                 GError* error;
@@ -34,26 +37,34 @@ autodetect_plugins(BrainPluginManager manager)
                 {
                     BrainString filename = NULL;
 
+                    BRAIN_INFO("Browsing plugin folder: %s", subpath);
+
                     while ((filename = g_dir_read_name(dir)) != NULL)
                     {
-                        if (g_file_test(filename, G_FILE_TEST_EXISTS)
-                        &&  g_file_test(filename, G_FILE_TEST_IS_REGULAR)
-                        &&  !g_file_test(filename, G_FILE_TEST_IS_SYMLINK))
+                        BrainString extension = strrchr(filename, '.');
+
+                        if (extension && !strcmp(extension, ".xml"))
                         {
-                            BrainString extension = strrchr(filename, '.');
+                            BrainChar plugin_definition_file[PATH_MAX + 1];
+                            sprintf(plugin_definition_file, "%s/%s", path, filename);
 
-                            if (extension && !strcmp(extension, ".xml"))
+                            BRAIN_INFO("Analysing filename %s for plugin", plugin_definition_file);
+
+                            if (g_file_test(plugin_definition_file, G_FILE_TEST_EXISTS)
+                            &&  g_file_test(plugin_definition_file, G_FILE_TEST_IS_REGULAR)
+                            &&  !g_file_test(plugin_definition_file, G_FILE_TEST_IS_SYMLINK))
                             {
-                                BrainChar plugin_definition_file[PATH_MAX + 1];
                                 BrainPlugin plugin = NULL;
-
-                                sprintf(plugin_definition_file, "%s/%s", path, filename);
 
                                 plugin = new_plugin(plugin_definition_file);
 
                                 if (BRAIN_ALLOCATED(plugin))
                                 {
                                     PLUGINS = g_list_prepend(PLUGINS, plugin);
+                                }
+                                else
+                                {
+                                    BRAIN_CRITICAL("Unable to create a plugin for the definition file:%s", plugin_definition_file);
                                 }
                             }
                         }

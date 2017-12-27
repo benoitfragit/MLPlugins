@@ -117,25 +117,60 @@ load_plugin_function(BrainPlugin plugin, Context context)
                 switch(field)
                 {
                     case PLUGIN_API_LOAD:
-                        g_module_symbol(HANDLE, symbol, (gpointer)LOAD);
+                    {
+                        if (!g_module_symbol(HANDLE, symbol, (gpointer *)&LOAD))
+                        {
+                            BRAIN_CRITICAL("Unable to load the %s function", symbol);
+                        }
+                    }
                         break;
                     case PLUGIN_API_CONFIGURE:
-                        g_module_symbol(HANDLE, symbol, (gpointer)CONFIGURE);
+                    {
+                        if (!g_module_symbol(HANDLE, symbol, (gpointer *)&CONFIGURE))
+                        {
+                            BRAIN_CRITICAL("Unable to load the %s function", symbol);
+                        }
+                    }
                         break;
                     case PLUGIN_API_SERIALIZE:
-                        g_module_symbol(HANDLE, symbol, (gpointer)SERIALIZE);
+                    {
+                        if (!g_module_symbol(HANDLE, symbol, (gpointer *)&SERIALIZE))
+                        {
+                            BRAIN_CRITICAL("Unable to load the %s function", symbol);
+                        }
+                    }
                         break;
                     case PLUGIN_API_DESERIALIZE:
-                        g_module_symbol(HANDLE, symbol, (gpointer)DESERIALIZE);
+                    {
+                        if (!g_module_symbol(HANDLE, symbol, (gpointer *)&DESERIALIZE))
+                        {
+                            BRAIN_CRITICAL("Unable to load the %s function", symbol);
+                        }
+                    }
                         break;
                     case PLUGIN_API_PREDICT:
-                        g_module_symbol(HANDLE, symbol, (gpointer)PREDICT);
+                    {
+                        if (!g_module_symbol(HANDLE, symbol, (gpointer *)&PREDICT))
+                        {
+                            BRAIN_CRITICAL("Unable to load the %s function", symbol);
+                        }
+                    }
                         break;
                     case PLUGIN_API_TRAIN:
-                        g_module_symbol(HANDLE, symbol, (gpointer)TRAIN);
+                    {
+                        if (!g_module_symbol(HANDLE, symbol, (gpointer *)&TRAIN))
+                        {
+                            BRAIN_CRITICAL("Unable to load the %s function", symbol);
+                        }
+                    }
                         break;
                     case PLUGIN_API_DELETE:
-                        g_module_symbol(HANDLE, symbol, (gpointer)DELETE);
+                    {
+                        if (!g_module_symbol(HANDLE, symbol, (gpointer *)&DELETE))
+                        {
+                            BRAIN_CRITICAL("Unable to load the %s function", symbol);
+                        }
+                    }
                         break;
                     default:
                         break;
@@ -183,8 +218,10 @@ new_plugin(BrainString plugin_definition_file)
 
                     if (BRAIN_ALLOCATED(buffer))
                     {
-                        BrainString module_path = g_module_build_path(".",buffer);
+                        BrainString module_path = g_module_build_path("",buffer);
                         GModule* handle = g_module_open(module_path, G_MODULE_BIND_LAZY);
+
+                        BRAIN_INFO("Opening plugin %s", module_path);
 
                         if (BRAIN_ALLOCATED(handle))
                         {
@@ -231,7 +268,6 @@ new_plugin(BrainString plugin_definition_file)
                                 for (i = 0; i < number_of_function; ++i)
                                 {
                                     Context subcontext = get_node_with_name_and_index(plugin_context, "function", i);
-
                                     load_plugin_function(plugin, subcontext);
                                 }
                             }

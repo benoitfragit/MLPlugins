@@ -7,8 +7,10 @@
  * All public methods to create and use a plugin
  */
 #ifndef BRAIN_PLUGIN_H
-
 #include "brain_plugin_types.h"
+
+#include <glib.h>
+#include <glib-object.h>
 
 BrainPlugin  new_plugin            (BrainString plugin_definition_file);
 void         delete_plugin         (BrainPlugin plugin);
