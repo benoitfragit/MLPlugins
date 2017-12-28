@@ -141,12 +141,12 @@ update_neuron_using_backpropagation(BrainNeuron neuron, const BrainReal minibatc
         /******************************************************/
         /**      UPDATE ALL WEIGHT USING GRADIENTS MEANS     **/
         /******************************************************/
-        neuron->_bias -= learning_rate * neuron->_bias_gradient - momentum * neuron->_bias;
+        neuron->_bias -= learning_rate * (neuron->_bias_gradient + momentum * neuron->_bias);
         neuron->_bias_gradient = 0;
 
         for (i = 0; i < number_of_inputs; ++i)
         {
-            neuron->_w[i] -= learning_rate * neuron->_gradients[i] - momentum * neuron->_w[i];
+            neuron->_w[i] -= learning_rate * (neuron->_gradients[i] + momentum * neuron->_w[i]);
             neuron->_gradients[i] = 0.;
         }
     }

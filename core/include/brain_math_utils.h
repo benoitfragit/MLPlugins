@@ -43,4 +43,5 @@ BrainReal dot(const BrainReal* a, const BrainReal* b, const BrainUint size);
 BrainReal distance(const BrainReal* a, const BrainReal* b, const BrainUint size);
 BrainReal norm2(const BrainReal* a, const BrainUint size);
 void normalization(BrainReal** signals, BrainReal* means, BrainReal* sigmas, const BrainUint number_of_signals, const BrainUint size);
+void kmeans(BrainReal** signals, BrainReal** centers, const BrainUint number_of_class, const BrainUint number_of_signals, const BrainUint size);
 #endif /* BRAIN_MATH_UTILS_H */

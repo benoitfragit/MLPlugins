@@ -1,5 +1,6 @@
 #include "brain_math_utils.h"
 #include "brain_memory_utils.h"
+#include "brain_random_utils.h"
 /**********************************************************************/
 /**                       ACTIVATION FUNCTIONS                       **/
 /**********************************************************************/
@@ -225,5 +226,121 @@ normalization(BrainReal** signals,
                 }
             }
         }
+    }
+}
+
+void
+kmeans(BrainReal** signals,
+       BrainReal** centers,
+       const BrainUint number_of_class,
+       const BrainUint number_of_signals,
+       const BrainUint size)
+{
+    if (BRAIN_ALLOCATED(signals) &&
+        BRAIN_ALLOCATED(centers))
+    {
+        BrainUint i = 0;
+        BrainUint j = 0;
+        BrainUint k = 0;
+        BrainUint* tmp = NULL;
+        BrainUint new_index = 0;
+        BrainBool changed = BRAIN_TRUE;
+        /**************************************************************/
+        /**                    RANDOMLY SELECT K CENTROIDS           **/
+        /**************************************************************/
+        BRAIN_NEW(tmp, BrainUint, number_of_class);
+        for (i = 0; i < number_of_class; ++i)
+        {
+            BrainBool valid = BRAIN_TRUE;
+            do
+            {
+                new_index = BRAIN_RAND_RANGE(0,number_of_signals);
+
+                for (j = 0; j < number_of_class; ++j)
+                {
+                    if (tmp[j] == new_index)
+                    {
+                        valid = BRAIN_FALSE;
+                        break;
+                    }
+                }
+            } while (valid);
+
+            if (valid)
+            {
+                tmp[i] = new_index;
+                BRAIN_COPY(signals[new_index], centers[i], BrainReal, size);
+            }
+        }
+        /**************************************************************/
+        /**                INITIALIZE CLASS LABELLING                **/
+        /**************************************************************/
+        BRAIN_RESIZE(tmp, BrainUint, number_of_signals);
+        /**************************************************************/
+        /**              UPDATE ALL CENTROIDS AND LABELS             **/
+        /**************************************************************/
+        while (changed)
+        {
+            changed = BRAIN_FALSE;
+            /**********************************************************/
+            /**                  RECOMPUTE ALL LABELS                **/
+            /**********************************************************/
+            for (i = 0; i < number_of_signals; ++i)
+            {
+                BrainReal dist = distance(signals[i], centers[0], size);
+                BrainUint label = 0;
+                for (j = 1; j < number_of_class; ++j)
+                {
+                    const BrainReal new_dist = distance(signals[i], centers[j], size);
+                    if (new_dist < dist)
+                    {
+                        dist = new_dist;
+                        label = j;
+                    }
+                }
+
+                if (label != tmp[i])
+                {
+                    tmp[i] = label;
+                    changed = BRAIN_TRUE;
+                }
+            }
+            /**********************************************************/
+            /**                RECOMPUTE ALL CENTROIDS               **/
+            /**********************************************************/
+            if(changed)
+            {
+                for (i = 0; i < number_of_class; ++i)
+                {
+                    BrainUint num = 0;
+                    BRAIN_SET(centers[i], 0, BrainReal, number_of_class);
+                    /******************************************************/
+                    /**              CENTROIDS CALCULATION               **/
+                    /******************************************************/
+                    for (j = 0; j < number_of_signals; ++j)
+                    {
+                        if (tmp[j] == i)
+                        {
+                            ++num;
+                            for (k = 0; k < size; ++k)
+                            {
+                                centers[i][k] += signals[j][k];
+                            }
+                        }
+                    }
+                    /******************************************************/
+                    /**               CENTROIDS AVERAGING                **/
+                    /******************************************************/
+                    for (k = 0; k < size; ++k)
+                    {
+                        if (0 < num)
+                        {
+                            centers[i][k] /= (BrainReal)num;
+                        }
+                    }
+                }
+            }
+        }
+        BRAIN_DELETE(tmp);
     }
 }
