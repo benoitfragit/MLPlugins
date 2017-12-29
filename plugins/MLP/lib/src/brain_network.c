@@ -485,7 +485,7 @@ train_network(BrainNetwork network, BrainString repository_path, BrainString tok
             BRAIN_INFO("iteration,error");
             while (iteration < max_iteration)
             {
-                //if (iteration % (max_iteration / 10) == 0)
+                if (iteration % (max_iteration / 10) == 0)
                 {
 #if BRAIN_ENABLE_DOUBLE_PRECISION
                     BRAIN_INFO("%d,%lf", iteration, error);

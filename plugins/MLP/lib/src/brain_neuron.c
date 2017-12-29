@@ -353,7 +353,7 @@ new_neuron(BrainSignal     in,
     &&  (0 < number_of_inputs))
     {
         BrainUint                index   = 0;
-        BrainReal random_value_limit     = 1./sqrt(10.f * (BrainReal)number_of_inputs);
+        BrainReal random_value_limit     = 1./sqrt(10. * (BrainReal)number_of_inputs);
 
         BRAIN_NEW(_neuron,                  Neuron,    1);
         BRAIN_NEW(_neuron->_w,              BrainReal, number_of_inputs);

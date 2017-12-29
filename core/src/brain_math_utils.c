@@ -195,7 +195,7 @@ normalization(BrainReal** signals,
             {
                 for (j = 0; j < size; ++j)
                 {
-                    means[j] += signals[i][j] / (BrainReal) size;
+                    means[j] += signals[i][j] / (BrainReal)number_of_signals;
                 }
             }
         }
@@ -208,8 +208,8 @@ normalization(BrainReal** signals,
             {
                 for (j = 0; j < size; ++j)
                 {
-                    BrainReal diff = (signals[i][j] - means[j]);
-                    sigmas[j] += ((diff * diff)/ (BrainReal)size);
+                    const BrainReal diff = (signals[i][j] - means[j]);
+                    sigmas[j] += ((diff * diff)/ (BrainReal)number_of_signals);
                 }
             }
         }
