@@ -4,7 +4,7 @@
 #include "brain_xml_utils.h"
 #include "brain_memory_utils.h"
 #include "brain_core_types.h"
-#include <gmodule.h>
+#include <gmodulez.h>
 #include <glib.h>
 
 #define LOAD        plugin->_load

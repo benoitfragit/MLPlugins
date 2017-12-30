@@ -184,34 +184,40 @@ normalization(BrainReal** signals,
         BrainUint i = 0;
         BrainUint j = 0;
 
-        BRAIN_SET(means, 0, BrainReal, size);
-        BRAIN_SET(sigmas, 0, BrainReal, size);
         /**************************************************************/
         /**                       GET THE MEAN                       **/
         /**************************************************************/
-        for (i = 0; i < number_of_signals; ++i)
+        for (j = 0; j < size; ++j)
         {
-            if (BRAIN_ALLOCATED(signals[i]))
+            means[j] = 0.;
+
+            for (i = 0; i < number_of_signals; ++i)
             {
-                for (j = 0; j < size; ++j)
+                if (BRAIN_ALLOCATED(signals[i]))
                 {
-                    means[j] += signals[i][j] / (BrainReal)number_of_signals;
+                    means[j] += signals[i][j];
                 }
             }
+
+            means[j] /= (BrainReal)number_of_signals;
         }
         /**************************************************************/
         /**                      GET THE VARIANCE                    **/
         /**************************************************************/
-        for (i = 0; i < number_of_signals; ++i)
+        for (j = 0; j < size; ++j)
         {
-            if (BRAIN_ALLOCATED(signals[i]))
+            sigmas[j] = 0.;
+
+            for (i = 0; i < number_of_signals; ++i)
             {
-                for (j = 0; j < size; ++j)
+                if (BRAIN_ALLOCATED(signals[i]))
                 {
-                    const BrainReal diff = (signals[i][j] - means[j]);
-                    sigmas[j] += ((diff * diff)/ (BrainReal)number_of_signals);
+                    const BrainReal diff = signals[i][j] - means[j];
+                    sigmas[j] += diff * diff;
                 }
             }
+
+            sigmas[j] /= (BrainReal)number_of_signals;
         }
         /**************************************************************/
         /**                  CENTER AND SCALE EACH VECTOR            **/

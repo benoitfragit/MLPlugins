@@ -137,17 +137,22 @@ update_neuron_using_backpropagation(BrainNeuron neuron, const BrainReal minibatc
         const BrainUint number_of_inputs      = neuron->_number_of_input;
         const BrainReal learning_rate         = neuron->_backprop_learning_rate / (BrainReal)minibatch_size;
         const BrainReal momentum              = neuron->_backprop_momemtum;
+        BrainReal delta = 0.;
         BrainUint i = 0;
         /******************************************************/
         /**      UPDATE ALL WEIGHT USING GRADIENTS MEANS     **/
         /******************************************************/
-        neuron->_bias -= learning_rate * (neuron->_bias_gradient + momentum * neuron->_bias);
-        neuron->_bias_gradient = 0;
+        delta = learning_rate * neuron->_bias_gradient + momentum * neuron->_bias_delta;
+        neuron->_bias -= delta;
+        neuron->_bias_gradient = 0.;
+        neuron->_bias_delta = delta;
 
         for (i = 0; i < number_of_inputs; ++i)
         {
-            neuron->_w[i] -= learning_rate * (neuron->_gradients[i] + momentum * neuron->_w[i]);
+            delta = learning_rate * neuron->_gradients[i] + momentum * neuron->_deltas[i];
+            neuron->_w[i] -= delta;
             neuron->_gradients[i] = 0.;
+            neuron->_deltas[i] = delta;
         }
     }
 
@@ -367,7 +372,7 @@ new_neuron(BrainSignal     in,
         _neuron->_bias                   = (BrainReal)BRAIN_RAND_RANGE(-random_value_limit, random_value_limit);
         _neuron->_bias_gradient          = 0.;
         _neuron->_bias_gradient_sgn      = 0;
-        _neuron->_bias_delta             = 1.;
+        _neuron->_bias_delta             = 0.;
         _neuron->_sum                    = 0.;
         _neuron->_backprop_learning_rate = 1.12;
         _neuron->_backprop_momemtum      = 0.0;
@@ -383,7 +388,7 @@ new_neuron(BrainSignal     in,
         for (index = 0; index < _neuron->_number_of_input; ++index)
         {
             _neuron->_w[index] = (BrainReal)BRAIN_RAND_RANGE(-random_value_limit, random_value_limit);
-            _neuron->_deltas[index] = 1.;
+            _neuron->_deltas[index] = 0.;
         }
     }
 
