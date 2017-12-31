@@ -19,7 +19,7 @@ foreach(testSrc ${TEST_SRCS})
 
         link_directories(${CMAKE_INSTALL_PREFIX}/lib)
         add_executable(${testName} ${testSrc} ${CMAKE_CURRENT_SOURCE_DIR}/src/common_test.c)
-        target_link_libraries(${testName} BrainMLP BrainCore -lm)
+        target_link_libraries(${testName} MLP BrainCore -lm)
         target_include_directories(${testName} PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/src)
 
         add_test(NAME ${testName}
