@@ -193,21 +193,21 @@ parse_csv_repository(BrainData       data,
             {
                 if (data->_is_splitted)
                 {
-                    normalization(data->_training._input,
-                                  data->_training._means,
-                                  data->_training._sigmas,
-                                  data->_training._children,
-                                  data->_input_length);
+                    GaussianNormalization(data->_training._input,
+                                          data->_training._means,
+                                          data->_training._sigmas,
+                                          data->_training._children,
+                                          data->_input_length);
                     BRAIN_COPY(data->_training._means,  data->_evaluating._means, BrainReal, data->_input_length);
                     BRAIN_COPY(data->_training._sigmas, data->_evaluating._sigmas, BrainReal, data->_input_length);
                 }
                 else
                 {
-                    normalization(data->_evaluating._input,
-                                  data->_evaluating._means,
-                                  data->_evaluating._sigmas,
-                                  data->_evaluating._children,
-                                  data->_input_length);
+                    GaussianNormalization(data->_evaluating._input,
+                                          data->_evaluating._means,
+                                          data->_evaluating._sigmas,
+                                          data->_evaluating._children,
+                                          data->_input_length);
                 }
             }
         }

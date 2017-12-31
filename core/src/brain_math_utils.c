@@ -170,27 +170,26 @@ norm2(const BrainReal* a, const BrainUint size)
 }
 
 void
-normalization(BrainReal** signals,
-             BrainReal* means,
-             BrainReal* sigmas,
-             const BrainUint number_of_signals,
-             const BrainUint size)
+GaussianNormalization(BrainReal** signals,
+                      BrainReal* means,
+                      BrainReal* sigmas,
+                      const BrainUint number_of_signals,
+                      const BrainUint size)
 {
     if (BRAIN_ALLOCATED(signals)
     &&  BRAIN_ALLOCATED(means)
     &&  BRAIN_ALLOCATED(sigmas)
-    &&  (0 < size))
+    &&  (0 < size)
+    &&  (number_of_signals))
     {
         BrainUint i = 0;
         BrainUint j = 0;
-
         /**************************************************************/
         /**                       GET THE MEAN                       **/
         /**************************************************************/
         for (j = 0; j < size; ++j)
         {
             means[j] = 0.;
-
             for (i = 0; i < number_of_signals; ++i)
             {
                 if (BRAIN_ALLOCATED(signals[i]))
@@ -198,7 +197,6 @@ normalization(BrainReal** signals,
                     means[j] += signals[i][j];
                 }
             }
-
             means[j] /= (BrainReal)number_of_signals;
         }
         /**************************************************************/
@@ -207,7 +205,6 @@ normalization(BrainReal** signals,
         for (j = 0; j < size; ++j)
         {
             sigmas[j] = 0.;
-
             for (i = 0; i < number_of_signals; ++i)
             {
                 if (BRAIN_ALLOCATED(signals[i]))
@@ -216,7 +213,6 @@ normalization(BrainReal** signals,
                     sigmas[j] += diff * diff;
                 }
             }
-
             sigmas[j] /= (BrainReal)number_of_signals;
         }
         /**************************************************************/
@@ -236,14 +232,71 @@ normalization(BrainReal** signals,
 }
 
 void
+MinMaxNormalization(BrainReal** signals,
+                    const BrainUint number_of_signals,
+                    const BrainUint size)
+{
+    if (BRAIN_ALLOCATED(signals)
+    &&  (0 < number_of_signals) 
+    &&  (0 < size))
+    {
+        BrainUint i = 0;
+        BrainUint j = 0;
+        BrainReal* minValues = NULL;
+        BrainReal* maxValues = NULL;
+
+        BRAIN_NEW(minValues, BrainReal, size);
+        BRAIN_NEW(maxValues, BrainReal, size);
+
+        BRAIN_COPY(signals[0], minValues, BrainReal, size);
+        BRAIN_COPY(signals[0], maxValues, BrainReal, size);
+
+        for (i = 0; i < number_of_signals; ++i)
+        {
+            for (j = 0; j< size; ++j)
+            {
+                if (signals[i][j] < minValues[j])
+                {
+                    minValues[j] = signals[i][j];
+                }
+                else
+                {
+                    if (maxValues[j] < signals[i][j])
+                    {
+                        maxValues[j] = signals[i][j];
+                    }
+                }
+            }
+        }
+
+        for (i = 0; i < number_of_signals; ++i)
+        {
+            for (j = 0; j < size; ++j)
+            {
+                signals[i][j] = signals[i][j] - minValues[j];
+                if (minValues[j] < maxValues[j])
+                {
+                    signals[i][j] /= (maxValues[j] - minValues[j]);
+                }
+            }
+        }
+
+        BRAIN_DELETE(minValues);
+        BRAIN_DELETE(maxValues);
+    }
+}
+
+void
 kmeans(BrainReal** signals,
        BrainReal** centers,
+       BrainUint* labels,
        const BrainUint number_of_class,
        const BrainUint number_of_signals,
        const BrainUint size)
 {
     if (BRAIN_ALLOCATED(signals) &&
-        BRAIN_ALLOCATED(centers))
+        BRAIN_ALLOCATED(centers) &&
+        BRAIN_ALLOCATED(labels))
     {
         BrainUint i = 0;
         BrainUint j = 0;
@@ -270,18 +323,11 @@ kmeans(BrainReal** signals,
                         break;
                     }
                 }
-            } while (valid);
-
-            if (valid)
-            {
-                tmp[i] = new_index;
-                BRAIN_COPY(signals[new_index], centers[i], BrainReal, size);
-            }
+            } while (!valid);
+            tmp[i] = new_index;
+            BRAIN_COPY(signals[new_index], centers[i], BrainReal, size);
         }
-        /**************************************************************/
-        /**                INITIALIZE CLASS LABELLING                **/
-        /**************************************************************/
-        BRAIN_RESIZE(tmp, BrainUint, number_of_signals);
+        BRAIN_DELETE(tmp);
         /**************************************************************/
         /**              UPDATE ALL CENTROIDS AND LABELS             **/
         /**************************************************************/
@@ -305,9 +351,9 @@ kmeans(BrainReal** signals,
                     }
                 }
 
-                if (label != tmp[i])
+                if (label != labels[i])
                 {
-                    tmp[i] = label;
+                    labels[i] = label;
                     changed = BRAIN_TRUE;
                 }
             }
@@ -325,7 +371,7 @@ kmeans(BrainReal** signals,
                     /******************************************************/
                     for (j = 0; j < number_of_signals; ++j)
                     {
-                        if (tmp[j] == i)
+                        if (labels[j] == i)
                         {
                             ++num;
                             for (k = 0; k < size; ++k)
@@ -347,6 +393,5 @@ kmeans(BrainReal** signals,
                 }
             }
         }
-        BRAIN_DELETE(tmp);
     }
 }

@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<settings cost-function="Quadratic" activation-function="Sigmoid">
+    <training error="0.001" iterations="40000" mini-batch-size="32">
+        <!--backprop learning-rate="2.5" momentum="0.001"/-->
+        <rprop eta-plus="1.5" eta-minus="0.55" delta-min="0.000001" delta-max="50.0"/>
+    </training>
+</settings>

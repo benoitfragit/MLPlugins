@@ -16,6 +16,5 @@
 
 typedef void*  BrainSignal;
 typedef struct Plugin* BrainPlugin;
-typedef struct PluginManager* BrainPluginManager;
 
 #endif /* BRAIN_PLUGIN_TYPES_H */

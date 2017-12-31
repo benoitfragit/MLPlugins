@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.9)
-project(BrainMLP)
+project(MLP)
 
 set(CMAKE_C_FLAGS
     ${CMAKE_C_FLAGS}
@@ -33,12 +33,12 @@ file(GLOB_RECURSE SOURCES ${LIBBRAINMLP_SOURCE_DIR}/*.c)
 file(GLOB_RECURSE HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h)
 
 #Generate the shared library from the sources
-add_library(BrainMLP SHARED ${SOURCES} ${HEADERS})
+add_library(MLP SHARED ${SOURCES} ${HEADERS})
 
-target_link_libraries(BrainMLP ${LIBXML2_LIBRARIES} BrainCore "-lm")
-target_include_directories(BrainMLP PUBLIC ${LIBBRAINMLP_INCLUDE_DIRS})
+target_link_libraries(MLP ${LIBXML2_LIBRARIES} BrainCore "-lm")
+target_include_directories(MLP PUBLIC ${LIBBRAINMLP_INCLUDE_DIRS})
 
-install(TARGETS BrainMLP
+install(TARGETS MLP
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib
@@ -47,10 +47,6 @@ install(TARGETS BrainMLP
 install(FILES ${HEADERS}
         DESTINATION ${CMAKE_INSTALL_PREFIX}/include
         COMPONENT headers)
-
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/mlp.xml
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/api
-        COMPONENT api)
 
 install(DIRECTORY   ${CMAKE_CURRENT_SOURCE_DIR}/schemas/
         DESTINATION ${CMAKE_INSTALL_PREFIX}/schemas
