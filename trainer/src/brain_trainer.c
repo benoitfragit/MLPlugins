@@ -3,14 +3,23 @@
 #include "brain_memory_utils.h"
 #include "brain_core_types.h"
 
-static BrainChar* _trainer_args[][2] =
+typedef struct TrainerCmd
 {
-    {"-p","--plugin="},
-    {"-n","--network="},
-    {"-s","--settings="},
-    {"-d","--data="},
-    {"-r","--record="},
-    {"-h","--help"}
+    BrainString _short_name;
+    BrainString _full_name;
+    BrainString _description;
+    BrainBool   _valid;
+    BrainChar   _args[300];
+} TrainerCmd;
+
+static TrainerCmd _trainer_cmds[] =
+{
+    {"-p","--plugin=",  "Load a plugin",            BRAIN_FALSE, ""},
+    {"-n","--network=", "Load a network",           BRAIN_FALSE, ""},
+    {"-s","--settings=","Load settings",            BRAIN_FALSE, ""},
+    {"-d","--data=",    "Load data",                BRAIN_FALSE, ""},
+    {"-r","--record=",  "Set the recording path",   BRAIN_FALSE, ""},
+    {"-h","--help",     "Display help message",     BRAIN_TRUE,  ""}
 };
 
 typedef enum BrainTrainerArgs
@@ -29,14 +38,11 @@ typedef enum BrainTrainerArgs
 static void
 help()
 {
-    printf("This program is a Neural Network generic trainer. In order\n");
-    printf("to train your network you should specify some parameters:\n");
-    printf("[-p, --plugin] To load a Network plugin\n");
-    printf("[-n, --network] To load a Network\n");
-    printf("[-s, --settings] To load network's settings\n");
-    printf("[-d, --data] To load training data\n");
-    printf("[-r, --record] To set the recording path\n");
-    printf("[-h, --help] To display this help\n");
+    BrainUint i = 0;
+    for (i = First_Args; i <= Last_Args; ++i)
+    {
+        printf("[%s, %s] %s\n",_trainer_cmds[i]._short_name, _trainer_cmds[i]._full_name, _trainer_cmds[i]._description);
+    }
 }
 
 /**********************************************************************/
@@ -47,12 +53,9 @@ main(BrainInt argc, BrainChar** argv)
 {
     BrainInt i = 0;
     BrainUint j = 0;
-    BrainChar args[5][400];
-    BrainBool valid[5];
     if (2 <= argc)
     {
         BrainPlugin plugin = NULL;
-        BRAIN_SET(valid, BRAIN_FALSE, BrainBool, 5);
         /**************************************************************/
         /**                     PARSING CMD LINE ARGS                **/
         /**************************************************************/
@@ -60,12 +63,12 @@ main(BrainInt argc, BrainChar** argv)
         {
             for (j = First_Args; j <= Last_Args; ++j)
             {
-                if (!strcmp(argv[i], _trainer_args[j][0]))
+                if (!strcmp(argv[i], _trainer_cmds[j]._short_name))
                 {
                     if (j != Help)
                     {
-                        strcpy(args[j], argv[i + 1]);
-                        valid[j] = BRAIN_TRUE;
+                        strcpy(_trainer_cmds[j]._args, argv[i + 1]);
+                        _trainer_cmds[j]._valid = BRAIN_TRUE;
                     }
                     else
                     {
@@ -75,7 +78,7 @@ main(BrainInt argc, BrainChar** argv)
                 }
                 else
                 {
-                    if (strstr(argv[i], _trainer_args[j][1]) != NULL)
+                    if (strstr(argv[i], _trainer_cmds[j]._full_name) != NULL)
                     {
                         if (j != Help)
                         {
@@ -86,8 +89,8 @@ main(BrainInt argc, BrainChar** argv)
 
                             if (BRAIN_ALLOCATED(buffer))
                             {
-                                strcpy(args[j], buffer);
-                                valid[j] = BRAIN_TRUE;
+                                strcpy(_trainer_cmds[j]._args, buffer);
+                                _trainer_cmds[j]._valid = BRAIN_TRUE;
                             }
                         }
                         else
@@ -102,38 +105,38 @@ main(BrainInt argc, BrainChar** argv)
         /**************************************************************/
         /**                      LOADING THE PLUGIN                  **/
         /**************************************************************/
-        if (valid[PluginName])
+        if (_trainer_cmds[PluginName]._valid)
         {
-            plugin = new_plugin(args[PluginName]);
+            plugin = new_plugin(_trainer_cmds[PluginName]._args);
             if (BRAIN_ALLOCATED(plugin))
             {
                 /**********************************************************/
                 /**                      LOADING THE NETWORK             **/
                 /**********************************************************/
-                if (valid[NetworkPath])
+                if (_trainer_cmds[NetworkPath]._valid)
                 {
-                    BrainNetwork network = new_plugin_network(plugin, args[NetworkPath]);
+                    BrainNetwork network = new_plugin_network(plugin, _trainer_cmds[NetworkPath]._args);
                     if (BRAIN_ALLOCATED(network))
                     {
                         /******************************************************/
                         /**                   TWEAKING THE NETWORK           **/
                         /******************************************************/
-                        if (valid[SettingsPath])
+                        if (_trainer_cmds[SettingsPath]._valid)
                         {
-                            configure_network(plugin, network, args[SettingsPath]);
+                            configure_network(plugin, network, _trainer_cmds[SettingsPath]._args);
                         }
                         /******************************************************/
                         /**                   TRAINING THE NETWORK           **/
                         /******************************************************/
-                        if (valid[DataPath])
+                        if (_trainer_cmds[DataPath]._valid)
                         {
-                            train_network(plugin, network, args[DataPath]);
+                            train_network(plugin, network, _trainer_cmds[DataPath]._args);
                             /******************************************************/
                             /**                     SAVE THE NETWORK             **/
                             /******************************************************/
-                            if (valid[RecordPath])
+                            if (_trainer_cmds[RecordPath]._valid)
                             {
-                                serialize_network(plugin, network, args[RecordPath]);
+                                serialize_network(plugin, network, _trainer_cmds[RecordPath]._args);
                             }
                         }
                         /******************************************************/
