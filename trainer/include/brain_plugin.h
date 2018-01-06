@@ -24,10 +24,7 @@ void         get_network_prediction(const BrainPlugin plugin,
                                     const BrainSignal signal);
 void         train_network         (const BrainPlugin plugin,
                                     BrainNetwork network,
-                                    BrainString repository,
-                                    BrainString tokenizer,
-                                    const BrainBool labelled,
-                                    const BrainBool normalized);
+                                    BrainString datapath);
 void         serialize_network     (const BrainPlugin plugin,
                                     BrainNetwork network,
                                     BrainString filename);

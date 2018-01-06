@@ -127,7 +127,7 @@ main(BrainInt argc, BrainChar** argv)
                         /******************************************************/
                         if (valid[DataPath])
                         {
-                            train_network(plugin, network, args[DataPath], ",", BRAIN_TRUE, BRAIN_FALSE);
+                            train_network(plugin, network, args[DataPath]);
                             /******************************************************/
                             /**                     SAVE THE NETWORK             **/
                             /******************************************************/

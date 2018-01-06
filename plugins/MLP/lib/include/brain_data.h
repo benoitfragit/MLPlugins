@@ -12,18 +12,12 @@
 #include "brain_types.h"
 
 /**
- * \fn BrainData new_data(BrainString repository_path, BrainString tokenizer, const BrainUint input_length, const BrainUint output_length, const BrainBool is_splitted, const BrainBool is_labelled, const BrainBool is_normalized)
- * \brief create a data list
- * \param repository_path give the path of the repository
- * \param tokenizer list of separators
- * \param input_length size of all input signal
- * \param output_length size of all output signal
- * \param is_splitted automatically split data into 2 subsets
- * \param is_labelled data is labelled
- * \param is_normalized data is normalized
+ * \fn BrainData new_data_from_context(BrainString filepath)
+ * \brief create a data
+ * \param filepath give the path of the data xml description file
  * \return a BrainData
  */
-BrainData new_data(BrainString repository_path, BrainString tokenizer, const BrainUint input_length, const BrainUint output_length, const BrainBool is_splitted, const BrainBool is_labedelled, const BrainBool is_normalized);
+BrainData new_data_from_context(BrainString filepath);
 /**
  * \fn BrainUint get_number_of_evaluating_sample(const BrainData data);
  * \brief get the number of trainng sample
@@ -100,36 +94,20 @@ BrainUint get_input_signal_length(const BrainData data);
  */
 BrainUint get_output_signal_length(const BrainData data);
 /**
- * \fn BrainSignal get_training_sigmas(const BrainData data)
+ * \fn BrainSignal get_sigmas(const BrainData data)
  * \brief get input variances signal
  *
  * \param data a BrainData
  * \return variance vector
  */
-BrainSignal get_training_sigmas(const BrainData data);
+BrainSignal get_sigmas(const BrainData data);
 /**
- * \fn BrainSignal get_training_means(const BrainData data)
+ * \fn BrainSignal get_means(const BrainData data)
  * \brief get input means signal
  *
  * \param data a BrainData
  * \return means vector
  */
-BrainSignal get_training_means(const BrainData data);
-/**
- * \fn BrainSignal get_evaluating_sigmas(const BrainData data)
- * \brief get input variances signal
- *
- * \param data a BrainData
- * \return variance vector
- */
-BrainSignal get_evaluating_sigmas(const BrainData data);
-/**
- * \fn BrainSignal get_evaluating_means(const BrainData data)
- * \brief get input means signal
- *
- * \param data a BrainData
- * \return means vector
- */
-BrainSignal get_evaluating_means(const BrainData data);
+BrainSignal get_means(const BrainData data);
 
 #endif /* BRAIN_DATA_H */

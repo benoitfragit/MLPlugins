@@ -53,5 +53,5 @@ By tweaking the network you can reduce the error rate:
 ## Testing
 Copy and paste this line into a terminal:
 ```
-./install/debug/libbrain-1.0.0/bin/BrainTrainer -p MLP -n $HOME/Documents/projets/C/libBrain/plugins/MLP/example/test_train_network.xml -s $HOME/Documents/projets/C/libBrain/plugins/MLP/example/test_train_settings.xml -d $HOME/Documents/projets/C/libBrain/plugins/MLP/example/test_train_iris.csv -r /tmp/serialized_network.xml
+./install/debug/libbrain-1.0.0/bin/BrainTrainer -p MLP -n $HOME/Documents/projets/C/libBrain/plugins/MLP/example/test_train_network.xml -s $HOME/Documents/projets/C/libBrain/plugins/MLP/example/test_train_settings.xml -d /home/benoit/Documents/projets/C/libBrain/plugins/MLP/example/test_train_data.xml -r /tmp/serialized_network.xml
 ```

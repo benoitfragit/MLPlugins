@@ -395,7 +395,7 @@ predict(BrainNetwork      network,
 {
     BRAIN_INPUT(predict)
     feedforward(network, number_of_input, in, BRAIN_FALSE);
-    BRAIN_INPUT(predict)
+    BRAIN_OUTPUT(predict)
 }
 
 static BrainReal
@@ -450,7 +450,7 @@ getNetworkTotalError(BrainNetwork network, const BrainData data)
 }
 
 void __BRAIN_VISIBLE__
-train_network(BrainNetwork network, BrainString repository_path, BrainString tokenizer, BrainBool is_labelled, BrainBool is_normalized)
+train_network(BrainNetwork network, BrainString datapath)
 {
     BRAIN_INPUT(train_network)
     /********************************************************/
@@ -467,13 +467,7 @@ train_network(BrainNetwork network, BrainString repository_path, BrainString tok
         BrainSignal target = NULL;
 
         BrainUint iteration = 0;
-        BrainData data = new_data(repository_path,
-                                  tokenizer,
-                                  input_length,
-                                  output_length,
-                                  BRAIN_TRUE,
-                                  is_labelled,
-                                  is_normalized);
+        BrainData data = new_data_from_context(datapath);
 
         if (BRAIN_ALLOCATED(data))
         {

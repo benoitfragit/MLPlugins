@@ -4,6 +4,7 @@
 #define NETWORK_XSD_FILE  "${CMAKE_INSTALL_PREFIX}/schemas/network.xsd"
 #define INIT_XSD_FILE     "${CMAKE_INSTALL_PREFIX}/schemas/init.xsd"
 #define SETTINGS_XSD_FILE "${CMAKE_INSTALL_PREFIX}/schemas/settings.xsd"
+#define DATA_XSD_FILE     "${CMAKE_INSTALL_PREFIX}/schemas/data.xsd"
 #define BRAIN_ENCODING    "ISO-8859-1"
 
 #endif /* BRAIN_CONFIG_H */

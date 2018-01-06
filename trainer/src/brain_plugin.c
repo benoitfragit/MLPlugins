@@ -45,7 +45,7 @@ typedef BrainNetwork (*BrainLoaderPtrFunc)     (BrainString);
 typedef void         (*BrainConfigurePtrFunc)  (BrainNetwork,       BrainString);
 typedef void         (*BrainSerializePtrFunc)  (const BrainNetwork, BrainString);
 typedef void         (*BrainDeserializePtrFunc)(BrainNetwork,       BrainString);
-typedef void         (*BrainTrainPtrFunc)      (BrainNetwork,       BrainString,     BrainString, BrainBool, BrainBool);
+typedef void         (*BrainTrainPtrFunc)      (BrainNetwork,       BrainString);
 typedef void         (*BrainPredictPtrFunc)    (BrainNetwork,       const BrainUint, const BrainSignal);
 typedef void         (*BrainDeletePtrFunc)     (BrainNetwork);
 typedef void* BrainHandle;
@@ -256,12 +256,13 @@ get_network_prediction(const BrainPlugin plugin, BrainNetwork network, const Bra
 }
 
 void
-train_network(const BrainPlugin plugin, BrainNetwork network, BrainString repository, BrainString tokenizer, const BrainBool labelled, const BrainBool normalized)
+train_network(const BrainPlugin plugin, BrainNetwork network, BrainString datapath)
 {
     if (BRAIN_ALLOCATED(plugin)
-    &&  BRAIN_ALLOCATED(network))
+    &&  BRAIN_ALLOCATED(network)
+    &&  BRAIN_ALLOCATED(datapath))
     {
-        TRAIN(network, repository, tokenizer, labelled, normalized);
+        TRAIN(network, datapath);
     }
 }
 

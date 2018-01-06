@@ -170,7 +170,7 @@ norm2(const BrainReal* a, const BrainUint size)
 }
 
 void
-GaussianNormalization(BrainReal** signals,
+FindGaussianModel(BrainReal** signals,
                       BrainReal* means,
                       BrainReal* sigmas,
                       const BrainUint number_of_signals,
@@ -215,6 +215,22 @@ GaussianNormalization(BrainReal** signals,
             }
             sigmas[j] /= (BrainReal)number_of_signals;
         }
+    }
+}
+
+void
+ApplyGaussianModel(BrainReal** signals,
+                   BrainReal* means,
+                   BrainReal* sigmas,
+                   const BrainUint number_of_signals,
+                   const BrainUint size)
+{
+    if (BRAIN_ALLOCATED(signals)
+    &&  BRAIN_ALLOCATED(sigmas)
+    &&  BRAIN_ALLOCATED(means))
+    {
+        BrainUint i;
+        BrainUint j;
         /**************************************************************/
         /**                  CENTER AND SCALE EACH VECTOR            **/
         /**************************************************************/
@@ -237,7 +253,7 @@ MinMaxNormalization(BrainReal** signals,
                     const BrainUint size)
 {
     if (BRAIN_ALLOCATED(signals)
-    &&  (0 < number_of_signals) 
+    &&  (0 < number_of_signals)
     &&  (0 < size))
     {
         BrainUint i = 0;

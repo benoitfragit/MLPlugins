@@ -1,13 +1,51 @@
 #include "brain_data.h"
+#include "brain_config.h"
 #include "brain_logging_utils.h"
 #include "brain_random_utils.h"
 #include "brain_math_utils.h"
 #include "brain_memory_utils.h"
+#include "brain_xml_utils.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
 #define TRAINING_DATASET_RATIO 0.80
+
+typedef enum DataParser
+{
+    Parser_CSV,
+    Parser_Invalide,
+    Parser_First = Parser_CSV,
+    Parser_Last  = Parser_Invalide
+} DataParser;
+
+typedef enum DataFormat
+{
+    Format_InputFirst,
+    Format_OutputFirst,
+    Format_Invalide,
+    Format_First = Format_InputFirst,
+    Format_Last  = Format_Invalide
+} DataFormat;
+
+typedef enum DataPreprocessing
+{
+    Preprocessing_GaussianNormalization,
+    Preprocessing_Invalide,
+    Preprocessing_First = Preprocessing_GaussianNormalization,
+    Preprocessing_Last  = Preprocessing_Invalide
+} DataPreprocessing;
+
+static BrainString _parsers[] = {
+    "csv"
+};
+static BrainString _formats[] = {
+    "InputFirst",
+    "OutputFirst"
+};
+static BrainString _preprocessings[] = {
+    "GaussianNormalization"
+};
 
 /**
  * \struct Dataset
@@ -19,11 +57,8 @@ typedef struct Dataset
 {
     BrainSignal* _input;    /*!< The input signal       */
     BrainSignal* _output;   /*!< The output signal      */
-    BrainSignal  _means;    /*!< The means signal       */
-    BrainSignal  _sigmas;   /*!< Ths variance signal    */
     BrainUint    _children; /*!< The number of children */
 } Dataset;
-
 /**
  * \struct Data
  * \brief  Internal model for a BrainData
@@ -38,15 +73,40 @@ typedef struct Data
     BrainUint   _output_length;    /*!< output signal length          */
     BrainUint   _labels_length;    /*!< output label length           */
     BrainChar** _labels;           /*!< output label if needed        */
-    BrainBool   _is_labelled;      /*!< activate the labelling algo   */
-    BrainBool   _is_splitted;      /*!< data are splitted             */
-    BrainBool   _is_normalized;    /*!< data are normalized           */
+    BrainSignal _means;            /*!< The means signal              */
+    BrainSignal _sigmas;           /*!< Ths variance signal           */
 } Data;
 
+static BrainUint
+get_enum_values(const BrainString* labels,
+                const BrainUint first,
+                const BrainUint last,
+                BrainString val)
+{
+    BrainUint ret = last;
+    if (BRAIN_ALLOCATED(labels) &&
+        BRAIN_ALLOCATED(val))
+    {
+        BrainUint i = first;
+        for (i = first; i < last; ++i)
+        {
+            if (BRAIN_ALLOCATED(labels[i]) &&
+                !strcmp(labels[i], val))
+            {
+                ret = i;
+                break;
+            }
+        }
+    }
+    return ret;
+}
+
 static void
-parse_csv_repository(BrainData       data,
-                     BrainString     repository_path,
-                     BrainString     tokenizer)
+parse_csv_repository(BrainData   data,
+                     BrainString repository_path,
+                     BrainString tokenizer,
+                     const BrainBool  is_labelled,
+                     const DataFormat format)
 {
     BRAIN_INPUT(parse_csv_repository)
 
@@ -67,7 +127,7 @@ parse_csv_repository(BrainData       data,
             BrainUint  k    = 0;
             size_t     len  = 0;
 
-            if (data->_is_labelled)
+            if (is_labelled)
             {
                 // Assume that all Label names are in the last column
                 number_of_fields = input_length + 1;
@@ -76,10 +136,6 @@ parse_csv_repository(BrainData       data,
             // Dynamic allocation of both training and evaluaing dataset
             data->_training._children   = 0;
             data->_evaluating._children = 0;
-            BRAIN_NEW(data->_evaluating._means,   BrainReal, input_length);
-            BRAIN_NEW(data->_evaluating._sigmas,  BrainReal, input_length);
-            BRAIN_NEW(data->_training._means,     BrainReal, input_length);
-            BRAIN_NEW(data->_training._sigmas,    BrainReal, input_length);
             /****************************************************************/
             /**                 Browse the repository file                 **/
             /****************************************************************/
@@ -93,8 +149,7 @@ parse_csv_repository(BrainData       data,
                     /**              Randomly choose signal storage                **/
                     /****************************************************************/
                     Dataset* dataset = &(data->_evaluating);
-                    if (data->_is_splitted &&
-                        (BRAIN_RAND_UNIT < TRAINING_DATASET_RATIO))
+                    if (BRAIN_RAND_UNIT < TRAINING_DATASET_RATIO)
                     {
                         dataset = &(data->_training);
                     }
@@ -116,26 +171,48 @@ parse_csv_repository(BrainData       data,
                         BrainSignal value = NULL;
                         BrainUint kp = k;
 
-                        if (k < input_length)
+                        switch(format)
                         {
-                            value = &((dataset->_input[dataset->_children - 1])[k]);
-                        }
-                        else
-                        {
-                            if (!data->_is_labelled)
+                            case Format_InputFirst:
                             {
-                                kp -= input_length;
-
-                                if (kp < output_length)
+                                if (k < input_length)
                                 {
-                                    value = &((dataset->_output[dataset->_children - 1])[kp]);
+                                    value = &((dataset->_input[dataset->_children - 1])[k]);
+                                }
+                                else
+                                {
+                                    kp -= input_length;
+
+                                    if (!is_labelled && kp < output_length)
+                                    {
+                                        value = &((dataset->_output[dataset->_children - 1])[kp]);
+                                    }
                                 }
                             }
+                                break;
+                            case Format_OutputFirst:
+                            {
+                                if (k < (number_of_fields - input_length))
+                                {
+                                    if (!is_labelled)
+                                    {
+                                        value = &((dataset->_output[dataset->_children - 1])[k]);
+                                    }
+                                }
+                                else
+                                {
+                                    kp -= number_of_fields - input_length;
+                                    value = &((dataset->_input[dataset->_children - 1])[kp]);
+                                }
+                            }
+                                break;
+                            default:
+                                break;
                         }
 
                         if (BRAIN_ALLOCATED(buffer))
                         {
-                            if ((k < input_length) || !data->_is_labelled)
+                            if (BRAIN_ALLOCATED(value))
                             {
 #if BRAIN_ENABLE_DOUBLE_PRECISION
                                 sscanf(buffer, "%lf", value);
@@ -148,31 +225,35 @@ parse_csv_repository(BrainData       data,
                                 /**************************************/
                                 /**        AUTOMATIC LABELING        **/
                                 /**************************************/
-                                if (input_length <= k)
+                                if (is_labelled)
                                 {
-                                    BrainUint i = 0;
-                                    BrainBool found = BRAIN_FALSE;
-                                    BrainUint length = strlen(buffer);
-                                    buffer[length - 1] = '\0';
-
-                                    for (i = 0; i < data->_labels_length; ++i)
+                                    if (((format == Format_InputFirst) && (input_length <= k))
+                                    ||  ((format == Format_OutputFirst) && (k < number_of_fields - input_length)))
                                     {
-                                        if (BRAIN_ALLOCATED(data->_labels[i])
-                                        &&  !strcmp(data->_labels[i], buffer))
+                                        BrainUint i = 0;
+                                        BrainBool found = BRAIN_FALSE;
+                                        BrainUint length = strlen(buffer);
+                                        buffer[length - 1] = '\0';
+
+                                        for (i = 0; i < data->_labels_length; ++i)
                                         {
-                                            found = BRAIN_TRUE;
-                                            dataset->_output[dataset->_children - 1][i] = 1.;
-                                            break;
+                                            if (BRAIN_ALLOCATED(data->_labels[i])
+                                            &&  !strcmp(data->_labels[i], buffer))
+                                            {
+                                                found = BRAIN_TRUE;
+                                                dataset->_output[dataset->_children - 1][i] = 1.;
+                                                break;
+                                            }
                                         }
-                                    }
 
-                                    if (!found)
-                                    {
-                                        ++data->_labels_length;
-                                        BRAIN_RESIZE(data->_labels, BrainChar*, data->_labels_length);
-                                        BRAIN_NEW(data->_labels[data->_labels_length - 1], BrainChar, length);
-                                        data->_labels[data->_labels_length - 1] = strcpy(data->_labels[data->_labels_length - 1], buffer);
-                                        dataset->_output[dataset->_children - 1][data->_labels_length - 1] = 1.;
+                                        if (!found)
+                                        {
+                                            ++data->_labels_length;
+                                            BRAIN_RESIZE(data->_labels, BrainChar*, data->_labels_length);
+                                            BRAIN_NEW(data->_labels[data->_labels_length - 1], BrainChar, length);
+                                            data->_labels[data->_labels_length - 1] = strcpy(data->_labels[data->_labels_length - 1], buffer);
+                                            dataset->_output[dataset->_children - 1][data->_labels_length - 1] = 1.;
+                                        }
                                     }
                                 }
                             }
@@ -185,31 +266,6 @@ parse_csv_repository(BrainData       data,
             }
 
             fclose(repository);
-
-            /**********************************************************/
-            /**               Normalizing inputs data                **/
-            /**********************************************************/
-            if (data->_is_normalized)
-            {
-                if (data->_is_splitted)
-                {
-                    GaussianNormalization(data->_training._input,
-                                          data->_training._means,
-                                          data->_training._sigmas,
-                                          data->_training._children,
-                                          data->_input_length);
-                    BRAIN_COPY(data->_training._means,  data->_evaluating._means, BrainReal, data->_input_length);
-                    BRAIN_COPY(data->_training._sigmas, data->_evaluating._sigmas, BrainReal, data->_input_length);
-                }
-                else
-                {
-                    GaussianNormalization(data->_evaluating._input,
-                                          data->_evaluating._means,
-                                          data->_evaluating._sigmas,
-                                          data->_evaluating._children,
-                                          data->_input_length);
-                }
-            }
         }
         else
         {
@@ -224,32 +280,150 @@ parse_csv_repository(BrainData       data,
     BRAIN_OUTPUT(parse_csv_repository);
 }
 
-BrainData
+static BrainData
 new_data(BrainString repository_path,
          BrainString tokenizer,
          const BrainUint input_length,
          const BrainUint output_length,
-         const BrainBool is_splitted,
+         const DataParser parser,
          const BrainBool is_labedelled,
-         const BrainBool is_normalized)
+         const DataFormat format,
+         const BrainUint number_of_preprocessing,
+         const DataPreprocessing* preprocessings)
 {
     BrainData _data = NULL;
 
-    if (repository_path
-    &&  tokenizer)
+    if (repository_path)
     {
+        BrainUint i = 0;
+
         BRAIN_NEW(_data, Data, 1);
+
         _data->_input_length  = input_length;
         _data->_output_length = output_length;
         _data->_labels_length = 0;
-        _data->_is_labelled   = is_labedelled;
-        _data->_is_splitted   = is_splitted;
-        _data->_is_normalized = is_normalized;
 
-        parse_csv_repository(_data, repository_path, tokenizer);
+        switch (parser)
+        {
+            case Parser_CSV:
+            {
+                parse_csv_repository(_data,
+                                     repository_path,
+                                     tokenizer,
+                                     is_labedelled,
+                                     format);
+            }
+                break;
+            default:
+                break;
+        }
+
+        for (i = 0; i < number_of_preprocessing; ++i)
+        {
+            switch(preprocessings[i])
+            {
+                case Preprocessing_GaussianNormalization:
+                {
+                    BRAIN_NEW(_data->_means, BrainReal, _data->_input_length);
+                    BRAIN_NEW(_data->_sigmas, BrainReal, _data->_input_length);
+
+                    FindGaussianModel(_data->_training._input,
+                                      _data->_means,
+                                      _data->_sigmas,
+                                      _data->_training._children,
+                                      _data->_input_length);
+                    ApplyGaussianModel(_data->_training._input,
+                                       _data->_means,
+                                       _data->_sigmas,
+                                       _data->_training._children,
+                                       _data->_input_length);
+                    ApplyGaussianModel(_data->_evaluating._input,
+                                       _data->_means,
+                                       _data->_sigmas,
+                                       _data->_evaluating._children,
+                                       _data->_input_length);
+                }
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     return _data;
+}
+
+BrainData
+new_data_from_context(BrainString filepath)
+{
+    BrainData data = NULL;
+
+    if (BRAIN_ALLOCATED(filepath)
+    &&  validate_with_xsd(filepath, DATA_XSD_FILE))
+    {
+        Document data_document = open_document(filepath);
+
+        if (BRAIN_ALLOCATED(data_document))
+        {
+            Context context = get_root_node(data_document);
+
+            if (BRAIN_ALLOCATED(context) &&
+                is_node_with_name(context, "data"))
+            {
+                BrainChar* buffer = NULL;
+                BrainChar* repository = NULL;
+                BrainChar* tokenizer = NULL;
+                DataPreprocessing* preprocessings =  NULL;
+                BrainUint i = 0;
+
+                repository = (BrainChar*)node_get_prop(context, "repository");
+                const BrainUint input_length    = node_get_int(context, "input-length", 1);
+                const BrainUint output_length   = node_get_int(context, "output-length", 1);
+                buffer = (BrainChar *)node_get_prop(context, "format");
+                const DataFormat format = get_enum_values(_formats, Format_First, Format_Last, buffer);
+                BRAIN_DELETE(buffer);
+                buffer = (BrainChar *)node_get_prop(context, "parser");
+                const DataParser parser = get_enum_values(_parsers, Parser_First, Parser_Last, buffer);
+                BRAIN_DELETE(buffer);
+                if (parser == Parser_CSV)
+                {
+                    tokenizer = (BrainChar *)node_get_prop(context, "tokenizer");
+                }
+
+                const BrainBool labelled = node_get_bool(context, "labels", BRAIN_FALSE);
+                const BrainUint number_of_preprocessing = get_number_of_node_with_name(context, "preprocess");
+
+                BRAIN_NEW(preprocessings, DataPreprocessing, number_of_preprocessing);
+                for (i = 0; i < number_of_preprocessing; ++i)
+                {
+                    Context preprocessings_context = get_node_with_name_and_index(context, "preprocess", i);
+                    buffer = (BrainChar*)node_get_prop(preprocessings_context, "type");
+                    preprocessings[i] = get_enum_values(_preprocessings, Preprocessing_First, Preprocessing_Last, buffer);
+                    BRAIN_DELETE(buffer);
+                }
+
+                data = new_data(repository,
+                                tokenizer,
+                                input_length,
+                                output_length,
+                                parser,
+                                labelled,
+                                format,
+                                number_of_preprocessing,
+                                preprocessings);
+
+                BRAIN_DELETE(preprocessings);
+                BRAIN_DELETE(tokenizer);
+                BRAIN_DELETE(repository);
+            }
+        }
+    }
+    else
+    {
+        BRAIN_CRITICAL("Impossible de valider le fichier:%s\n", filepath);
+    }
+
+    return data;
 }
 
 void
@@ -288,14 +462,12 @@ delete_data(BrainData data)
         }
 
         BRAIN_DELETE(data->_labels);
-        BRAIN_DELETE(data->_evaluating._means);
-        BRAIN_DELETE(data->_evaluating._sigmas);
+        BRAIN_DELETE(data->_means);
+        BRAIN_DELETE(data->_sigmas);
         BRAIN_DELETE(data->_evaluating._input);
         BRAIN_DELETE(data->_evaluating._output);
         BRAIN_DELETE(data->_training._input);
         BRAIN_DELETE(data->_training._output);
-        BRAIN_DELETE(data->_training._means);
-        BRAIN_DELETE(data->_training._sigmas);
         BRAIN_DELETE(data);
     }
 }
@@ -405,48 +577,24 @@ get_output_signal_length(const BrainData data)
 }
 
 BrainSignal
-get_evaluating_sigmas(const BrainData data)
+get_sigmas(const BrainData data)
 {
     BrainSignal ret = NULL;
     if (BRAIN_ALLOCATED(data))
     {
-        ret = data->_evaluating._sigmas;
+        ret = data->_sigmas;
     }
 
     return ret;
 }
 
 BrainSignal
-get_evaluating_means(const BrainData data)
+get_means(const BrainData data)
 {
     BrainSignal ret = NULL;
     if (BRAIN_ALLOCATED(data))
     {
-        ret = data->_evaluating._means;
-    }
-
-    return ret;
-}
-
-BrainSignal
-get_training_sigmas(const BrainData data)
-{
-    BrainSignal ret = NULL;
-    if (BRAIN_ALLOCATED(data))
-    {
-        ret = data->_training._sigmas;
-    }
-
-    return ret;
-}
-
-BrainSignal
-get_training_means(const BrainData data)
-{
-    BrainSignal ret = NULL;
-    if (BRAIN_ALLOCATED(data))
-    {
-        ret = data->_training._means;
+        ret = data->_means;
     }
 
     return ret;
