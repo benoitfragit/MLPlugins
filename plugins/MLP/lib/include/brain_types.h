@@ -16,6 +16,8 @@
 
 #include "brain_core_types.h"
 
+#define __BRAIN_VISIBLE__ __attribute__((visibility("default")))
+
 /**
  * \enum BrainFunctionEnum
  * \brief Define if the function is a derivative or not

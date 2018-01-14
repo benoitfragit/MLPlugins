@@ -142,14 +142,14 @@ update_neuron_using_backpropagation(BrainNeuron neuron, const BrainReal minibatc
         /******************************************************/
         /**      UPDATE ALL WEIGHT USING GRADIENTS MEANS     **/
         /******************************************************/
-        delta = learning_rate * neuron->_bias_gradient + momentum * neuron->_bias_delta;
+        delta = learning_rate * neuron->_bias_gradient - momentum * neuron->_bias_delta;
         neuron->_bias -= delta;
         neuron->_bias_gradient = 0.;
         neuron->_bias_delta = delta;
 
         for (i = 0; i < number_of_inputs; ++i)
         {
-            delta = learning_rate * neuron->_gradients[i] + momentum * neuron->_deltas[i];
+            delta = learning_rate * neuron->_gradients[i] - momentum * neuron->_deltas[i];
             neuron->_w[i] -= delta;
             neuron->_gradients[i] = 0.;
             neuron->_deltas[i] = delta;
@@ -358,7 +358,7 @@ new_neuron(BrainSignal     in,
     &&  (0 < number_of_inputs))
     {
         BrainUint                index   = 0;
-        BrainReal random_value_limit     = 1./sqrt(10. * (BrainReal)number_of_inputs);
+        BrainReal random_value_limit     = 1./sqrt((BrainReal)number_of_inputs);
 
         BRAIN_NEW(_neuron,                  Neuron,    1);
         BRAIN_NEW(_neuron->_w,              BrainReal, number_of_inputs);

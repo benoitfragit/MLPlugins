@@ -353,9 +353,10 @@ new_data(BrainString repository_path,
     return _data;
 }
 
-BrainData
+BrainData __BRAIN_VISIBLE__
 new_data_from_context(BrainString filepath)
 {
+    BRAIN_INPUT(new_data_from_context);
     BrainData data = NULL;
 
     if (BRAIN_ALLOCATED(filepath)
@@ -423,10 +424,12 @@ new_data_from_context(BrainString filepath)
         BRAIN_CRITICAL("Impossible de valider le fichier:%s\n", filepath);
     }
 
+    BRAIN_OUTPUT(new_data_from_context);
+
     return data;
 }
 
-void
+void __BRAIN_VISIBLE__
 delete_data(BrainData data)
 {
     if (BRAIN_ALLOCATED(data))
@@ -472,7 +475,7 @@ delete_data(BrainData data)
     }
 }
 
-BrainUint
+BrainUint __BRAIN_VISIBLE__
 get_number_of_evaluating_sample(const BrainData data)
 {
     BrainUint ret = 0;

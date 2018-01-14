@@ -64,4 +64,8 @@ typedef struct RandomMask* BrainRandomMask;
  * \brief Define a BrainNetwork
  */
 typedef struct Network* BrainNetwork;
+/**
+ * \brief Define a BrainData
+ */
+typedef struct Data* BrainData;
 #endif /* BRAIN_CORE_TYPES_H */
