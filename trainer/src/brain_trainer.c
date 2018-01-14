@@ -17,6 +17,7 @@ typedef struct BrainTrainer
     GtkWidget*      _evaluation;
     GtkWidget*      _error;
     GtkWidget*      _progress;
+    GtkWidget*      _restart;
     Surface         _surface;
     BrainUint       _source_id;
 } BrainTrainer;
@@ -41,7 +42,7 @@ static CmdLineOption _cmd_line_options[] =
     {"-h","--help",     "Display help message",     BRAIN_TRUE,  ""}
 };
 
-static BrainTrainer _trainer = {NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0};
+static BrainTrainer _trainer = {NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0};
 
 typedef enum BrainTrainerArgs
 {
@@ -199,14 +200,13 @@ apply_network_training()
             }
             cr = cairo_create(_trainer._surface);
             cairo_set_source_rgb(cr, normalized_error, 1. - normalized_error, 0);
-            cairo_rectangle(cr, posX, err[i] * height, width, (1.- err[i])*height);
+            cairo_rectangle(cr, posX, (1. - normalized_error) * height, width, normalized_error*height);
             cairo_fill(cr);
             cairo_destroy(cr);
             posX += width;
         }
         gtk_widget_queue_draw(_trainer._evaluation);
 
-        //error /= (BrainReal)number_of_evaluating_signals;
         progress = get_training_progress(_trainer._plugin, _trainer._network);
         set_error(_trainer._plugin, _trainer._network, error);
         /**************************************************************/
@@ -225,6 +225,8 @@ apply_network_training()
 static void
 on_activation_changed(GObject *activation, GParamSpec *pspec, gpointer user_data)
 {
+    gtk_widget_set_sensitive(GTK_WIDGET(_trainer._restart), BRAIN_TRUE);
+
     if (gtk_switch_get_active(GTK_SWITCH(activation)))
     {
         _trainer._source_id = g_timeout_add(5, (GSourceFunc)apply_network_training, NULL);
@@ -280,10 +282,43 @@ on_destroy()
 }
 
 static void
+on_restart()
+{
+    const BrainBool previous_activation = gtk_switch_get_active(GTK_SWITCH(_trainer._activation));
+
+    if (BRAIN_ALLOCATED(_trainer._network))
+    {
+        delete_plugin_network(_trainer._plugin, _trainer._network);
+    }
+
+    if (previous_activation)
+    {
+        clear_surface();
+        g_source_remove(_trainer._source_id);
+    }
+
+    gtk_switch_set_active(GTK_SWITCH(_trainer._activation), BRAIN_FALSE);
+    gtk_widget_set_sensitive(GTK_WIDGET(_trainer._restart), BRAIN_FALSE);
+    gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(_trainer._error), 1);
+    gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(_trainer._progress), 0);
+
+    _trainer._network = new_plugin_network(_trainer._plugin, _cmd_line_options[NetworkPath]._args);
+    configure_network(_trainer._plugin, _trainer._network, _cmd_line_options[SettingsPath]._args);
+}
+
+static void
+on_menubutton_clicked(GtkWidget *popover, gpointer user_data)
+{
+    gtk_widget_show_all(popover);
+}
+
+static void
 visual_training()
 {
     GtkBuilder *builder = NULL;
-    /**********************************************************/
+    GtkWidget  *menuButton = NULL;
+    GtkWidget  *popover = NULL;
+    /***********************************************************/
     /**                  LOADING THE NETWORK                 **/
     /**********************************************************/
     _trainer._network = new_plugin_network(_trainer._plugin, _cmd_line_options[NetworkPath]._args);
@@ -311,32 +346,42 @@ visual_training()
         _trainer._progress   = GTK_WIDGET(gtk_builder_get_object(builder, "Iteration"));
         _trainer._activation = GTK_WIDGET(gtk_builder_get_object(builder, "activation"));
         _trainer._evaluation = GTK_WIDGET(gtk_builder_get_object(builder, "evaluation"));
+        _trainer._restart    = GTK_WIDGET(gtk_builder_get_object(builder, "restart"));
+
+        menuButton           = GTK_WIDGET(gtk_builder_get_object(builder, "menuButton"));
+        popover              = GTK_WIDGET(gtk_builder_get_object(builder, "popover"));
 
         g_signal_connect(_trainer._mainWindow,
                           "destroy",
                           G_CALLBACK(on_destroy),
                           NULL);
-
         g_signal_connect(GTK_SWITCH(_trainer._activation),
                          "notify::active",
                          G_CALLBACK(on_activation_changed),
                          NULL);
-
         g_signal_connect(_trainer._evaluation,
                          "draw",
                          G_CALLBACK(on_draw_surface),
                          NULL);
-
         g_signal_connect(_trainer._evaluation,
                          "configure-event",
                          G_CALLBACK(on_configure_surface),
                          NULL);
+        g_signal_connect(_trainer._restart,
+                         "clicked",
+                         G_CALLBACK(on_restart),
+                         NULL);
+        g_signal_connect_swapped(menuButton,
+                                 "clicked",
+                                 G_CALLBACK(on_menubutton_clicked),
+                                 popover);
 
         gtk_builder_connect_signals(builder, NULL);
         g_object_unref(builder);
 
         gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(_trainer._error), 1);
         gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(_trainer._progress), 0);
+        gtk_widget_set_sensitive(_trainer._restart, BRAIN_FALSE);
 
         gtk_widget_show_all(_trainer._mainWindow);
         gtk_main();
