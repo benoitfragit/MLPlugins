@@ -12,7 +12,6 @@ typedef struct BrainTrainer
     BrainPlugin     _plugin;
     BrainNetwork    _network;
     BrainData       _data;
-    GtkWidget*      _mainWindow;
     GtkWidget*      _activation;
     GtkWidget*      _evaluation;
     GtkWidget*      _error;
@@ -22,119 +21,41 @@ typedef struct BrainTrainer
     BrainUint       _source_id;
 } BrainTrainer;
 
-typedef struct CmdLineOption
-{
-    BrainString _short_name;
-    BrainString _full_name;
-    BrainString _description;
-    BrainBool   _valid;
-    BrainChar   _args[300];
-} CmdLineOption;
+static BrainChar* _plugin_name;
+static BrainChar* _network_path;
+static BrainChar* _settings_path;
+static BrainChar* _data_path;
+static BrainChar* _record_path;
 
-static CmdLineOption _cmd_line_options[] =
+static BrainTrainer _trainer = {NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0};
+
+static const GOptionEntry entries[] =
 {
-    {"-p","--plugin=",  "Load a plugin",            BRAIN_FALSE, ""},
-    {"-n","--network=", "Load a network",           BRAIN_FALSE, ""},
-    {"-s","--settings=","Load settings",            BRAIN_FALSE, ""},
-    {"-d","--data=",    "Load data",                BRAIN_FALSE, ""},
-    {"-r","--record=",  "Set the recording path",   BRAIN_FALSE, ""},
-    {"-v","--view=",    "Display the GUI",          BRAIN_FALSE, ""},
-    {"-h","--help",     "Display help message",     BRAIN_TRUE,  ""}
+    {"plugin",  'p', 0, G_OPTION_ARG_STRING,    &(_plugin_name),  "Plugin name use to load the Network",  NULL},
+    {"network", 'n', 0, G_OPTION_ARG_FILENAME,  &(_network_path), "Network definition File to be loaded", NULL},
+    {"settings",'s', 0, G_OPTION_ARG_FILENAME,  &(_settings_path),"File to load network settings",       NULL},
+    {"data",    'd', 0, G_OPTION_ARG_FILENAME,  &(_data_path),    "File to load training data",           NULL},
+    {"record",  'r', 0, G_OPTION_ARG_FILENAME,  &(_record_path),  "File to save the Network",             NULL},
+    {NULL}
 };
 
-static BrainTrainer _trainer = {NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0};
-
-typedef enum BrainTrainerArgs
-{
-    PluginName,
-    NetworkPath,
-    SettingsPath,
-    DataPath,
-    RecordPath,
-    Display,
-    Help,
-
-    First_Args = PluginName,
-    Last_Args  = Help
-} BrainTrainerArgs;
-
-static void
-help()
-{
-    BrainUint i = 0;
-    for (i = First_Args; i <= Last_Args; ++i)
-    {
-        printf("[%s, %s] %s\n",_cmd_line_options[i]._short_name, _cmd_line_options[i]._full_name, _cmd_line_options[i]._description);
-    }
-}
-
 static BrainBool
-parse_cmd_line_options(const BrainInt argc, BrainChar** argv)
+parse_cmd_line_options(BrainInt argc, BrainChar** argv)
 {
-    BrainInt i;
-    BrainUint j;
+    GError* error = NULL;
+    GOptionContext* context = NULL;
     BrainBool ret = BRAIN_TRUE;
-    /**************************************************************/
-    /**                     PARSING CMD LINE ARGS                **/
-    /**************************************************************/
-    for (i = 0; i < argc; ++i)
+
+    context = g_option_context_new("- Loading all parameters to train a network");
+
+    //g_option_context_set_ignore_unknown_options(context, TRUE);
+    g_option_context_add_main_entries(context, entries, NULL);
+    //g_option_context_add_group(context, gtk_get_action_group(TRUE));
+
+    if (!g_option_context_parse(context, &argc, &argv, &error))
     {
-        for (j = First_Args; j <= Last_Args; ++j)
-        {
-            if (!strcmp(argv[i], _cmd_line_options[j]._short_name))
-            {
-                _cmd_line_options[j]._valid = BRAIN_TRUE;
-
-                if ((j != Help) &&
-                    (j != Display))
-                {
-                    strcpy(_cmd_line_options[j]._args, argv[i + 1]);
-                }
-                else
-                {
-                    if (j == Help)
-                    {
-                        help();
-                        ret = BRAIN_FALSE;
-                    }
-                }
-                break;
-            }
-            else
-            {
-                if (strstr(argv[i], _cmd_line_options[j]._full_name) != NULL)
-                {
-                    _cmd_line_options[j]._valid = BRAIN_TRUE;
-
-                    if ((j != Help) && (j != Display))
-                    {
-                        BrainChar* buffer = NULL;
-
-                        buffer = strtok(argv[i], "=");
-                        buffer = strtok(NULL, "=");
-
-                        if (BRAIN_ALLOCATED(buffer))
-                        {
-                            strcpy(_cmd_line_options[j]._args, buffer);
-                        }
-                    }
-                    else
-                    {
-                        if (j == Help)
-                        {
-                            help();
-                            ret = BRAIN_FALSE;
-                        }
-                    }
-                    break;
-                }
-            }
-        }
-
-        if (ret == BRAIN_FALSE)
-        {
-            break;
-        }
+        BRAIN_CRITICAL("Unable to parse commande line options");
+        ret = BRAIN_FALSE;
     }
 
     return ret;
@@ -264,21 +185,13 @@ on_configure_surface(GtkWidget* widget, GdkEventConfigure* event, gpointer data)
 }
 
 static void
-on_destroy()
+on_destroy(GtkWindow* window, gpointer user_data)
 {
-    if (BRAIN_ALLOCATED(_trainer._surface))
+    Surface surface = (Surface)user_data;
+    if (BRAIN_ALLOCATED(surface))
     {
-        cairo_surface_destroy(_trainer._surface);
+        cairo_surface_destroy(surface);
     }
-
-    delete_plugin_data(_trainer._plugin, _trainer._data);
-    delete_plugin_network(_trainer._plugin, _trainer._network);
-
-    if (gtk_switch_get_active(GTK_SWITCH(_trainer._activation)))
-    {
-        g_source_remove(_trainer._source_id);
-    }
-    gtk_main_quit();
 }
 
 static void
@@ -302,8 +215,8 @@ on_restart()
     gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(_trainer._error), 1);
     gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(_trainer._progress), 0);
 
-    _trainer._network = new_plugin_network(_trainer._plugin, _cmd_line_options[NetworkPath]._args);
-    configure_network(_trainer._plugin, _trainer._network, _cmd_line_options[SettingsPath]._args);
+    _trainer._network = new_plugin_network(_trainer._plugin, _network_path);
+    configure_network(_trainer._plugin, _trainer._network, _settings_path);
 }
 
 static void
@@ -313,123 +226,115 @@ on_menubutton_clicked(GtkWidget *popover, gpointer user_data)
 }
 
 static void
-visual_training()
+on_activation(GtkApplication* app, gpointer user_data)
 {
-    GtkBuilder *builder = NULL;
-    GtkWidget  *menuButton = NULL;
-    GtkWidget  *popover = NULL;
-    /***********************************************************/
-    /**                  LOADING THE NETWORK                 **/
-    /**********************************************************/
-    _trainer._network = new_plugin_network(_trainer._plugin, _cmd_line_options[NetworkPath]._args);
-    /*********************************************************/
-    /**                      LOAD THE DATA                  **/
-    /*********************************************************/
-    _trainer._data    = new_plugin_data(_trainer._plugin, _cmd_line_options[DataPath]._args);
-
-    if (BRAIN_ALLOCATED(_trainer._network)
-    &&  BRAIN_ALLOCATED(_trainer._data))
+    if (BRAIN_ALLOCATED(app))
     {
-        /******************************************************/
-        /**                   TWEAKING THE NETWORK           **/
-        /******************************************************/
-        if (_cmd_line_options[SettingsPath]._valid)
+        GtkBuilder *builder = NULL;
+        GtkWidget  *menuButton = NULL;
+        GtkWidget  *popover = NULL;
+        GtkWidget  *window = NULL;
+        /**********************************************************/
+        /**                   CREATE A PLUGIN                    **/
+        /**********************************************************/
+        _trainer._plugin = new_plugin(_plugin_name);
+        /**********************************************************/
+        /**                  LOADING THE NETWORK                 **/
+        /**********************************************************/
+        _trainer._network = new_plugin_network(_trainer._plugin,  _network_path);
+        /*********************************************************/
+        /**                      LOAD THE DATA                  **/
+        /*********************************************************/
+        _trainer._data    = new_plugin_data(_trainer._plugin, _data_path);
+
+        if (BRAIN_ALLOCATED(_trainer._network)
+        &&  BRAIN_ALLOCATED(_trainer._data))
         {
-            configure_network(_trainer._plugin, _trainer._network, _cmd_line_options[SettingsPath]._args);
+            /******************************************************/
+            /**                   TWEAKING THE NETWORK           **/
+            /******************************************************/
+            configure_network(_trainer._plugin, _trainer._network, _settings_path);
+
+            builder = gtk_builder_new();
+            gtk_builder_add_from_file(builder, BRAIN_TRAINER_VIEW_FILE, NULL);
+
+            window               = GTK_WIDGET(gtk_builder_get_object(builder, "mainWindow"));
+            _trainer._error      = GTK_WIDGET(gtk_builder_get_object(builder, "Error"));
+            _trainer._progress   = GTK_WIDGET(gtk_builder_get_object(builder, "Iteration"));
+            _trainer._activation = GTK_WIDGET(gtk_builder_get_object(builder, "activation"));
+            _trainer._evaluation = GTK_WIDGET(gtk_builder_get_object(builder, "evaluation"));
+            _trainer._restart    = GTK_WIDGET(gtk_builder_get_object(builder, "restart"));
+
+            menuButton           = GTK_WIDGET(gtk_builder_get_object(builder, "menuButton"));
+            popover              = GTK_WIDGET(gtk_builder_get_object(builder, "popover"));
+
+            g_signal_connect(window,
+                              "destroy",
+                              G_CALLBACK(on_destroy),
+                              _trainer._surface);
+            g_signal_connect(GTK_SWITCH(_trainer._activation),
+                             "notify::active",
+                             G_CALLBACK(on_activation_changed),
+                             NULL);
+            g_signal_connect(_trainer._evaluation,
+                             "draw",
+                             G_CALLBACK(on_draw_surface),
+                             NULL);
+            g_signal_connect(_trainer._evaluation,
+                             "configure-event",
+                             G_CALLBACK(on_configure_surface),
+                             NULL);
+            g_signal_connect(_trainer._restart,
+                             "clicked",
+                             G_CALLBACK(on_restart),
+                             NULL);
+            g_signal_connect_swapped(menuButton,
+                                     "clicked",
+                                     G_CALLBACK(on_menubutton_clicked),
+                                     popover);
+
+            gtk_builder_connect_signals(builder, NULL);
+            g_object_unref(builder);
+
+            gtk_application_add_window(GTK_APPLICATION(app), GTK_WINDOW(window));
+            gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(_trainer._error), 1);
+            gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(_trainer._progress), 0);
+            gtk_widget_set_sensitive(_trainer._restart, BRAIN_FALSE);
+
+            gtk_widget_show_all(window);
         }
-
-        builder = gtk_builder_new();
-        gtk_builder_add_from_file(builder, BRAIN_TRAINER_VIEW_FILE, NULL);
-
-        _trainer._mainWindow = GTK_WIDGET(gtk_builder_get_object(builder, "mainWindow"));
-        _trainer._error      = GTK_WIDGET(gtk_builder_get_object(builder, "Error"));
-        _trainer._progress   = GTK_WIDGET(gtk_builder_get_object(builder, "Iteration"));
-        _trainer._activation = GTK_WIDGET(gtk_builder_get_object(builder, "activation"));
-        _trainer._evaluation = GTK_WIDGET(gtk_builder_get_object(builder, "evaluation"));
-        _trainer._restart    = GTK_WIDGET(gtk_builder_get_object(builder, "restart"));
-
-        menuButton           = GTK_WIDGET(gtk_builder_get_object(builder, "menuButton"));
-        popover              = GTK_WIDGET(gtk_builder_get_object(builder, "popover"));
-
-        g_signal_connect(_trainer._mainWindow,
-                          "destroy",
-                          G_CALLBACK(on_destroy),
-                          NULL);
-        g_signal_connect(GTK_SWITCH(_trainer._activation),
-                         "notify::active",
-                         G_CALLBACK(on_activation_changed),
-                         NULL);
-        g_signal_connect(_trainer._evaluation,
-                         "draw",
-                         G_CALLBACK(on_draw_surface),
-                         NULL);
-        g_signal_connect(_trainer._evaluation,
-                         "configure-event",
-                         G_CALLBACK(on_configure_surface),
-                         NULL);
-        g_signal_connect(_trainer._restart,
-                         "clicked",
-                         G_CALLBACK(on_restart),
-                         NULL);
-        g_signal_connect_swapped(menuButton,
-                                 "clicked",
-                                 G_CALLBACK(on_menubutton_clicked),
-                                 popover);
-
-        gtk_builder_connect_signals(builder, NULL);
-        g_object_unref(builder);
-
-        gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(_trainer._error), 1);
-        gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(_trainer._progress), 0);
-        gtk_widget_set_sensitive(_trainer._restart, BRAIN_FALSE);
-
-        gtk_widget_show_all(_trainer._mainWindow);
-        gtk_main();
     }
 }
 
 /**********************************************************************/
 /**                    COMMAND LINE TRAINING                         **/
 /**********************************************************************/
-void
+static void
 cmd_line_training()
 {
     /**********************************************************/
     /**                      LOADING THE NETWORK             **/
     /**********************************************************/
-    if (_cmd_line_options[NetworkPath]._valid)
+    _trainer._network = new_plugin_network(_trainer._plugin, _network_path);
+
+    if (BRAIN_ALLOCATED(_trainer._network))
     {
-        _trainer._network = new_plugin_network(_trainer._plugin, _cmd_line_options[NetworkPath]._args);
-
-        if (BRAIN_ALLOCATED(_trainer._network))
-        {
-            /******************************************************/
-            /**                   TWEAKING THE NETWORK           **/
-            /******************************************************/
-            if (_cmd_line_options[SettingsPath]._valid)
-            {
-                configure_network(_trainer._plugin, _trainer._network, _cmd_line_options[SettingsPath]._args);
-            }
-
-            if (_cmd_line_options[DataPath]._valid)
-            {
-                /**********************************/
-                /**       TRAIN THE NETWORK      **/
-                /**********************************/
-                train_network_from_file(_trainer._plugin, _trainer._network, _cmd_line_options[DataPath]._args);
-                /******************************************************/
-                /**                     SAVE THE NETWORK             **/
-                /******************************************************/
-                if (_cmd_line_options[RecordPath]._valid)
-                {
-                    serialize_network(_trainer._plugin, _trainer._network, _cmd_line_options[RecordPath]._args);
-                }
-            }
-            /******************************************************/
-            /**                   CLEANING THE NETWORK           **/
-            /******************************************************/
-            delete_plugin_network(_trainer._plugin, _trainer._network);
-        }
+        /******************************************************/
+        /**                   TWEAKING THE NETWORK           **/
+        /******************************************************/
+        configure_network(_trainer._plugin, _trainer._network, _settings_path);
+        /**********************************/
+        /**       TRAIN THE NETWORK      **/
+        /**********************************/
+        train_network_from_file(_trainer._plugin, _trainer._network, _data_path);
+        /******************************************************/
+        /**                     SAVE THE NETWORK             **/
+        /******************************************************/
+        serialize_network(_trainer._plugin, _trainer._network, _record_path);
+        /******************************************************/
+        /**                   CLEANING THE NETWORK           **/
+        /******************************************************/
+        delete_plugin_network(_trainer._plugin, _trainer._network);
     }
 }
 
@@ -439,36 +344,33 @@ cmd_line_training()
 BrainInt
 main(BrainInt argc, BrainChar** argv)
 {
-    if (2 <= argc)
-    {
-        if (parse_cmd_line_options(argc, argv))
-        {
-            /**************************************************************/
-            /**                      LOADING THE PLUGIN                  **/
-            /**************************************************************/
-            if (_cmd_line_options[PluginName]._valid)
-            {
-                _trainer._plugin = new_plugin(_cmd_line_options[PluginName]._args);
+    GtkApplication *app = NULL;
+    BrainInt status;
+    /******************************************************************/
+    /**                        PARSE OPTIONS                         **/
+    /******************************************************************/
+    parse_cmd_line_options(argc, argv);
+    /******************************************************************/
+    /**                        CREATING APP                          **/
+    /******************************************************************/
+    app = gtk_application_new("org.brain.trainer", G_APPLICATION_FLAGS_NONE);
+    g_signal_connect(app, "activate", G_CALLBACK(on_activation), NULL);
+    /******************************************************************/
+    /**                        RUNNING APP                           **/
+    /******************************************************************/
+    status = g_application_run(G_APPLICATION(app), argc, argv);
+    /******************************************************************/
+    /**                        CLEANING EVERYTHING                   **/
+    /******************************************************************/
+    g_object_unref(app);
+    delete_plugin_data(_trainer._plugin, _trainer._data);
+    delete_plugin_network(_trainer._plugin, _trainer._network);
+    delete_plugin(_trainer._plugin);
+    BRAIN_DELETE(_plugin_name);
+    BRAIN_DELETE(_network_path);
+    BRAIN_DELETE(_settings_path);
+    BRAIN_DELETE(_data_path);
+    BRAIN_DELETE(_record_path);
 
-                if (BRAIN_ALLOCATED(_trainer._plugin))
-                {
-                    if (_cmd_line_options[Display]._valid)
-                    {
-                        gtk_init(&argc, &argv);
-                        visual_training();
-                    }
-                    else
-                    {
-                        cmd_line_training();
-                    }
-
-                    /**********************************************************/
-                    /**                      CLEANING THE PLUGIN             **/
-                    /**********************************************************/
-                    delete_plugin(_trainer._plugin);
-                }
-            }
-        }
-    }
-    return EXIT_SUCCESS;
+    return status;
 }

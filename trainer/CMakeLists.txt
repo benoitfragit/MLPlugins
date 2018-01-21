@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.9)
 project(BrainTrainer)
 
-set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-o2 -g3 -Wall -Wextra -Wshadow")
+set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-o2 -g3 -Wextra -Wshadow")
 
 find_package(GTK3 REQUIRED)
 
