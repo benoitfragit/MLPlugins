@@ -17,6 +17,7 @@ BrainReal tangeant_hyperbolic(const BrainReal value);
 BrainReal co_tangeant(const BrainReal value);
 BrainReal softplus(const BrainReal value);
 BrainReal sinusoid(const BrainReal value);
+BrainReal relu(const BrainReal value);
 /**********************************************************************/
 /**                        DERIVATIVE FUNCTIONS                      **/
 /**********************************************************************/
@@ -26,6 +27,7 @@ BrainReal tangeant_hyperbolic_derivative(const BrainReal value);
 BrainReal co_tangeant_derivative(const BrainReal value);
 BrainReal softplus_derivative(const BrainReal value);
 BrainReal sinusoid_derivative(const BrainReal value);
+BrainReal relu_derivative(const BrainReal value);
 /**********************************************************************/
 /**                           COST FUNCTIONS                         **/
 /**********************************************************************/

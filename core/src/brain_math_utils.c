@@ -78,6 +78,19 @@ sinusoid_derivative(const BrainReal value)
 {
     return (BrainReal)cos(value);
 }
+
+BrainReal
+relu(const BrainReal value)
+{
+    return value > 0. ? value : 0.;
+}
+
+BrainReal
+relu_derivative(const BrainReal value)
+{
+    return value > 0. ? 1. : 0.;
+}
+
 /**********************************************************************/
 /**                        COST FUNCTION                             **/
 /**********************************************************************/

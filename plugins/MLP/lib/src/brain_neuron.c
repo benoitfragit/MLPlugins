@@ -16,6 +16,7 @@ typedef enum BrainActivationType
     ArcTan,             /*!< arctan activation   */
     SoftPlus,           /*!< softplus activation */
     Sinusoid,           /*!< sinusoid activation */
+    ReLu,               /*!< relu activation     */
     Invalid_Activation, /*!< Invalid activation  */
 
     First_Activation = Identity,
@@ -98,7 +99,8 @@ static BrainString activation_name[] = {
     "TanH",
     "ArcTan",
     "SoftPlus",
-    "Sinus"
+    "Sinus",
+    "ReLu"
 };
 
 static ActivationPtrFunc _activation_functions[][2] = {{identity,           identity_derivative},
@@ -106,7 +108,8 @@ static ActivationPtrFunc _activation_functions[][2] = {{identity,           iden
                                                        {tangeant_hyperbolic,tangeant_hyperbolic_derivative},
                                                        {co_tangeant,        co_tangeant_derivative},
                                                        {softplus,           softplus_derivative},
-                                                       {sinusoid,           sinusoid_derivative}};
+                                                       {sinusoid,           sinusoid_derivative},
+                                                       {relu,               relu_derivative}};
 
 static BrainActivationType
 get_activation_type(BrainString activation_type_name)

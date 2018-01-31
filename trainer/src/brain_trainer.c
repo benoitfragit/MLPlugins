@@ -39,6 +39,34 @@ static const GOptionEntry entries[] =
     {NULL}
 };
 
+static void
+on_open_network(GSimpleAction *action,
+                GVariant      *parameter,
+                gpointer       user_data)
+{
+}
+
+static void
+on_open_settings(GSimpleAction *action,
+                 GVariant      *parameter,
+                 gpointer       user_data)
+{
+}
+
+static void
+on_open_data(GSimpleAction *action,
+             GVariant      *parameter,
+             gpointer       user_data)
+{
+}
+
+static const GActionEntry actions[] =
+{
+    {"open_network",  on_open_network},
+    {"open_settings", on_open_settings},
+    {"open_data",     on_open_data}
+};
+
 static BrainBool
 parse_cmd_line_options(BrainInt argc, BrainChar** argv)
 {
@@ -220,20 +248,14 @@ on_restart()
 }
 
 static void
-on_menubutton_clicked(GtkWidget *popover, gpointer user_data)
-{
-    gtk_widget_show_all(popover);
-}
-
-static void
 on_activation(GtkApplication* app, gpointer user_data)
 {
     if (BRAIN_ALLOCATED(app))
     {
         GtkBuilder *builder = NULL;
-        GtkWidget  *menuButton = NULL;
-        GtkWidget  *popover = NULL;
         GtkWidget  *window = NULL;
+        GtkWidget  *headerbar = NULL;
+        GMenu* menu = NULL;
         /**********************************************************/
         /**                   CREATE A PLUGIN                    **/
         /**********************************************************/
@@ -259,14 +281,21 @@ on_activation(GtkApplication* app, gpointer user_data)
             gtk_builder_add_from_file(builder, BRAIN_TRAINER_VIEW_FILE, NULL);
 
             window               = GTK_WIDGET(gtk_builder_get_object(builder, "mainWindow"));
+            headerbar            = GTK_WIDGET(gtk_builder_get_object(builder, "headerbar"));
             _trainer._error      = GTK_WIDGET(gtk_builder_get_object(builder, "Error"));
             _trainer._progress   = GTK_WIDGET(gtk_builder_get_object(builder, "Iteration"));
             _trainer._activation = GTK_WIDGET(gtk_builder_get_object(builder, "activation"));
             _trainer._evaluation = GTK_WIDGET(gtk_builder_get_object(builder, "evaluation"));
             _trainer._restart    = GTK_WIDGET(gtk_builder_get_object(builder, "restart"));
 
-            menuButton           = GTK_WIDGET(gtk_builder_get_object(builder, "menuButton"));
-            popover              = GTK_WIDGET(gtk_builder_get_object(builder, "popover"));
+            menu = g_menu_new();
+            g_menu_append(menu, "Open network",  "app.open_network");
+            g_menu_append(menu, "Load settings", "app.open_settings");
+            g_menu_append(menu, "Open data",     "app.open_data");
+
+            g_action_map_add_action_entries (G_ACTION_MAP (app), actions, G_N_ELEMENTS (actions), app);
+            gtk_application_set_app_menu (GTK_APPLICATION (app), G_MENU_MODEL (menu));
+            g_object_unref (menu);
 
             g_signal_connect(window,
                               "destroy",
@@ -288,14 +317,15 @@ on_activation(GtkApplication* app, gpointer user_data)
                              "clicked",
                              G_CALLBACK(on_restart),
                              NULL);
-            g_signal_connect_swapped(menuButton,
-                                     "clicked",
-                                     G_CALLBACK(on_menubutton_clicked),
-                                     popover);
 
             gtk_builder_connect_signals(builder, NULL);
             g_object_unref(builder);
 
+            gtk_application_window_set_show_menubar(GTK_WINDOW(window), FALSE);
+            g_object_set (gtk_widget_get_settings(headerbar),
+                          "gtk-shell-shows-app-menu", FALSE,
+                          "gtk-decoration-layout", "menu:close",
+                          NULL);
             gtk_application_add_window(GTK_APPLICATION(app), GTK_WINDOW(window));
             gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(_trainer._error), 1);
             gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(_trainer._progress), 0);
