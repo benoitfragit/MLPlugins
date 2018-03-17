@@ -7,7 +7,7 @@
  * All public methods to create and use a plugin
  */
 #ifndef BRAIN_PLUGIN_H
-#include "brain_plugin_types.h"
+#include "brain_trainer_types.h"
 
 BrainPlugin  new_plugin            (BrainString plugin_definition_file);
 void         delete_plugin         (BrainPlugin plugin);
@@ -29,7 +29,7 @@ void         get_network_prediction(const BrainPlugin plugin,
 void         train_network_from_file(const BrainPlugin plugin,
                                     BrainNetwork network,
                                     BrainString datapath);
-void         train_network_step     (const BrainPlugin plugin,
+BrainReal    train_network_step     (const BrainPlugin plugin,
                                      BrainNetwork network,
                                      const BrainData data);
 BrainBool    is_training_required   (const BrainPlugin plugin,
@@ -40,15 +40,6 @@ void         serialize_network     (const BrainPlugin plugin,
 void         deserialize_network   (const BrainPlugin plugin,
                                     BrainNetwork network,
                                     BrainString filename);
-BrainUint    get_test_length       (const BrainPlugin plugin,
-                                    const BrainData data);
-BrainReal    compute_error         (const BrainPlugin plugin,
-                                    const BrainNetwork network,
-                                    const BrainData data,
-                                    const BrainUint i);
-void         set_error             (const BrainPlugin plugin,
-                                    BrainNetwork network,
-                                    const BrainReal error);
 BrainReal    get_training_progress(const BrainPlugin plugin,
                                    const BrainNetwork network);
 #endif /* BRAIN_PLUGIN_H */

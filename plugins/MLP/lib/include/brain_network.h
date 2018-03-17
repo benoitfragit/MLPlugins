@@ -66,13 +66,6 @@ void backpropagate(BrainNetwork network, const BrainUint number_of_output, const
  */
 void update_network(BrainNetwork network, const BrainReal minibatch_size);
 /**
- * \fn void set_network_error(BrainNetwork network, const BrainReal error)
- * \brief Set the current error level
- * \param network the network
- * \param error   Current error level
- */
-void set_network_error(BrainNetwork network, const BrainReal error);
-/**
  * \fn void get_network_training_progress(BrainNetwork network)
  * \brief Get training progress
  * \param network the network
@@ -87,22 +80,14 @@ BrainReal get_network_training_progress(const BrainNetwork network);
  */
 BrainBool is_network_training_required(const BrainNetwork network);
 /**
- * \fn BrainReal compute_network_error(const BrainNetwork network, const BrainData data, const BrainUint index)
- * \brief Compute the error for one signal from the evaluating dataset
- * \param network the network to accumulate the error
- * \param data    data to train the network
- * \param index   Evaluating signal index
- * \return error
- */
-BrainReal compute_network_error(const BrainNetwork network, const BrainData data, const BrainUint index);
-/**
- * \fn void train_network_iteration(BrainNetwork network, const BrainData data)
+ * \fn BrainReal train_network_iteration(BrainNetwork network, const BrainData data)
  * \brief launch a training step for the neural network using data
  *
  * \param network  the BrainNetwork to train
  * \param data data to train the network
+ * \return the error for this training step
  */
-void train_network_iteration(BrainNetwork network, const BrainData data);
+BrainReal train_network_iteration(BrainNetwork network, const BrainData data);
 /**
  * \fn void train_network_from_file(BrainNetwork network, BrainString datapath)
  * \brief launch the training process for the neural network

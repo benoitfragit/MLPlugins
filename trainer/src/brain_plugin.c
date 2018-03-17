@@ -14,11 +14,8 @@
 #define TRAIN_STEP          plugin->_train_step
 #define DELETE_NETWORK      plugin->_delete_network
 #define TRAINING_REQUIRED   plugin->_is_training_required
-#define COMPUTE_ERROR       plugin->_compute_error
 #define LOAD_DATA           plugin->_load_data
 #define DELETE_DATA         plugin->_delete_data
-#define GET_TEST_LENGTH     plugin->_get_test_length
-#define SET_ERROR           plugin->_set_error
 #define GET_PROGRESS        plugin->_get_progress
 #define HANDLE              plugin->_handle
 
@@ -33,11 +30,8 @@ static BrainChar* _plugin_functions[] =
     "predict",
     "delete_network",
     "is_network_training_required",
-    "compute_network_error",
     "new_data_from_context",
     "delete_data",
-    "get_number_of_evaluating_sample",
-    "set_network_error",
     "get_network_training_progress"
 };
 
@@ -52,11 +46,8 @@ typedef enum PluginApiEnum
     PLUGIN_API_PREDICT,
     PLUGIN_API_DELETE_NETWORK,
     PLUGIN_API_TRAINING_REQUIRED,
-    PLUGIN_API_COMPUTE_ERROR,
     PLUGIN_API_LOAD_DATA,
     PLUGIN_API_DELETE_DATA,
-    PLUGIN_API_GET_TEST_LENGTH,
-    PLUGIN_API_SET_ERROR,
     PLUGIN_API_GET_PROGRESS,
     PLUGIN_API_NONE,
 
@@ -69,15 +60,12 @@ typedef void         (*BrainConfigurePtrFunc)       (BrainNetwork,       BrainSt
 typedef void         (*BrainSerializePtrFunc)       (const BrainNetwork, BrainString);
 typedef void         (*BrainDeserializePtrFunc)     (BrainNetwork,       BrainString);
 typedef void         (*BrainTrainFromFilePtrFunc)   (BrainNetwork,       BrainString);
-typedef void         (*BrainTrainStepPtrFunc)       (BrainNetwork,       const BrainData);
+typedef BrainReal    (*BrainTrainStepPtrFunc)       (BrainNetwork,       const BrainData);
 typedef void         (*BrainPredictPtrFunc)         (BrainNetwork,       const BrainUint, const BrainSignal);
 typedef void         (*BrainDeleteNetworkPtrFunc)   (BrainNetwork);
 typedef BrainBool    (*BrainTrainingRequiredPtrFunc)(const BrainNetwork);
-typedef BrainReal    (*BrainComputeErrorPtrFunc)    (const BrainNetwork, const BrainData, const BrainUint);
 typedef BrainData    (*BrainLoadDataPtrFunc)        (BrainString);
 typedef void         (*BrainDeleteDataPtrFunc)      (BrainData);
-typedef BrainUint    (*BrainGetTestLengthPtrFunc)   (const BrainData);
-typedef void         (*BrainSetErrorPtrFunc)        (BrainNetwork, const BrainReal);
 typedef BrainReal    (*BrainGetProgressPtrFunc)     (const BrainNetwork);
 typedef void* BrainHandle;
 
@@ -99,11 +87,8 @@ typedef struct Plugin
     BrainPredictPtrFunc          _predict;
     BrainDeleteNetworkPtrFunc    _delete_network;
     BrainTrainingRequiredPtrFunc _is_training_required;
-    BrainComputeErrorPtrFunc     _compute_error;
     BrainLoadDataPtrFunc         _load_data;
     BrainDeleteDataPtrFunc       _delete_data;
-    BrainGetTestLengthPtrFunc    _get_test_length;
-    BrainSetErrorPtrFunc         _set_error;
     BrainGetProgressPtrFunc      _get_progress;
 } Plugin;
 
@@ -195,15 +180,6 @@ load_plugin_function(BrainPlugin plugin, const PluginApiEnum function)
                 }
             }
                 break;
-            case PLUGIN_API_COMPUTE_ERROR:
-            {
-                COMPUTE_ERROR = dlsym(HANDLE, _plugin_functions[function]);
-                if (!BRAIN_ALLOCATED(COMPUTE_ERROR))
-                {
-                    BRAIN_DEBUG("Function: %s has not been loaded", _plugin_functions[function]);
-                }
-            }
-                break;
             case PLUGIN_API_LOAD_DATA:
             {
                 LOAD_DATA = dlsym(HANDLE, _plugin_functions[function]);
@@ -217,24 +193,6 @@ load_plugin_function(BrainPlugin plugin, const PluginApiEnum function)
             {
                 DELETE_DATA = dlsym(HANDLE, _plugin_functions[function]);
                 if (!BRAIN_ALLOCATED(DELETE_DATA))
-                {
-                    BRAIN_DEBUG("Function: %s has not been loaded", _plugin_functions[function]);
-                }
-            }
-                break;
-            case PLUGIN_API_GET_TEST_LENGTH:
-            {
-                GET_TEST_LENGTH = dlsym(HANDLE, _plugin_functions[function]);
-                if (!BRAIN_ALLOCATED(GET_TEST_LENGTH))
-                {
-                    BRAIN_DEBUG("Function: %s has not been loaded", _plugin_functions[function]);
-                }
-            }
-                break;
-            case PLUGIN_API_SET_ERROR:
-            {
-                SET_ERROR = dlsym(HANDLE, _plugin_functions[function]);
-                if (!BRAIN_ALLOCATED(SET_ERROR))
                 {
                     BRAIN_DEBUG("Function: %s has not been loaded", _plugin_functions[function]);
                 }
@@ -268,11 +226,8 @@ isPluginValid(const BrainPlugin plugin)
         && PREDICT
         && DELETE_NETWORK
         && TRAINING_REQUIRED
-        && COMPUTE_ERROR
         && LOAD_DATA
         && DELETE_DATA
-        && GET_TEST_LENGTH
-        && SET_ERROR
         && GET_PROGRESS;
 }
 
@@ -407,15 +362,19 @@ train_network_from_file(const BrainPlugin plugin, BrainNetwork network, BrainStr
     }
 }
 
-void
+BrainReal
 train_network_step(const BrainPlugin plugin, BrainNetwork network, const BrainData data)
 {
+    BrainReal error = 0.;
+
     if (BRAIN_ALLOCATED(network)
     &&  BRAIN_ALLOCATED(data)
     &&  BRAIN_ALLOCATED(plugin))
     {
-        TRAIN_STEP(network, data);
+        error = TRAIN_STEP(network, data);
     }
+
+    return error;
 }
 
 BrainBool
@@ -451,50 +410,6 @@ deserialize_network(const BrainPlugin plugin, BrainNetwork network, BrainString 
     &&  BRAIN_ALLOCATED(filename))
     {
         DESERIALIZE(network, filename);
-    }
-}
-
-BrainUint
-get_test_length(const BrainPlugin plugin, const BrainData data)
-{
-    BrainUint ret = 0;
-
-    if (BRAIN_ALLOCATED(plugin)
-    &&  BRAIN_ALLOCATED(data))
-    {
-        ret = GET_TEST_LENGTH(data);
-    }
-
-    return ret;
-}
-
-BrainReal
-compute_error(const BrainPlugin plugin,
-              const BrainNetwork network,
-              const BrainData data,
-              const BrainUint i)
-{
-    BrainReal ret = 0.;
-
-    if (BRAIN_ALLOCATED(plugin)
-    &&  BRAIN_ALLOCATED(network)
-    &&  BRAIN_ALLOCATED(data))
-    {
-        ret = COMPUTE_ERROR(network, data, i);
-    }
-
-    return ret;
-}
-
-void
-set_error(const BrainPlugin plugin,
-          BrainNetwork network,
-          const BrainReal err)
-{
-    if (BRAIN_ALLOCATED(plugin)
-    &&  BRAIN_ALLOCATED(network))
-    {
-        SET_ERROR(network, err);
     }
 }
 

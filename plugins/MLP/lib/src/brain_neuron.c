@@ -1,9 +1,11 @@
+
 #include "brain_neuron.h"
 #include "brain_math_utils.h"
 #include "brain_random_utils.h"
 #include "brain_xml_utils.h"
 #include "brain_logging_utils.h"
 #include "brain_memory_utils.h"
+#include "brain_enum_utils.h"
 /**
  * \enum BrainActivationType
  * \brief enumeration to choose neurons activation function
@@ -110,25 +112,6 @@ static ActivationPtrFunc _activation_functions[][2] = {{identity,           iden
                                                        {softplus,           softplus_derivative},
                                                        {sinusoid,           sinusoid_derivative},
                                                        {relu,               relu_derivative}};
-
-static BrainActivationType
-get_activation_type(BrainString activation_type_name)
-{
-    if (activation_type_name)
-    {
-        BrainInt i = 0;
-
-        for (i = First_Activation; i < Last_Activation; ++i)
-        {
-            if (!strcmp(activation_name[i - First_Activation], activation_type_name))
-            {
-                return i;
-            }
-        }
-    }
-
-    return Invalid_Activation;
-}
 
 static void
 update_neuron_using_backpropagation(BrainNeuron neuron, const BrainReal minibatch_size)
@@ -295,7 +278,7 @@ configure_neuron_with_context(BrainNeuron neuron, Context context)
         }
 
         buffer = (BrainChar *)node_get_prop(context, "activation-function");
-        activation_type = get_activation_type(buffer);
+        activation_type = get_enum_values(activation_name, First_Activation, Last_Activation, buffer);
         neuron->_activation_function = _activation_functions[activation_type][Function];
         neuron->_derivative_function = _activation_functions[activation_type][Derivative];
 

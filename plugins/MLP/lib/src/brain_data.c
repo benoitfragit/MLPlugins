@@ -5,6 +5,7 @@
 #include "brain_math_utils.h"
 #include "brain_memory_utils.h"
 #include "brain_xml_utils.h"
+#include "brain_enum_utils.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -76,30 +77,6 @@ typedef struct Data
     BrainSignal _means;            /*!< The means signal              */
     BrainSignal _sigmas;           /*!< Ths variance signal           */
 } Data;
-
-static BrainUint
-get_enum_values(const BrainString* labels,
-                const BrainUint first,
-                const BrainUint last,
-                BrainString val)
-{
-    BrainUint ret = last;
-    if (BRAIN_ALLOCATED(labels) &&
-        BRAIN_ALLOCATED(val))
-    {
-        BrainUint i = first;
-        for (i = first; i < last; ++i)
-        {
-            if (BRAIN_ALLOCATED(labels[i]) &&
-                !strcmp(labels[i], val))
-            {
-                ret = i;
-                break;
-            }
-        }
-    }
-    return ret;
-}
 
 static void
 parse_csv_repository(BrainData   data,
@@ -475,7 +452,7 @@ delete_data(BrainData data)
     }
 }
 
-BrainUint __BRAIN_VISIBLE__
+BrainUint
 get_number_of_evaluating_sample(const BrainData data)
 {
     BrainUint ret = 0;

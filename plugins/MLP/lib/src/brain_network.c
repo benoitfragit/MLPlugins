@@ -5,6 +5,7 @@
 #include "brain_logging_utils.h"
 #include "brain_math_utils.h"
 #include "brain_memory_utils.h"
+#include "brain_enum_utils.h"
 
 #include "brain_layer.h"
 #include "brain_neuron.h"
@@ -75,23 +76,6 @@ typedef struct Network
     CostPtrFunc   _cost_function;    /*!< Cost function                  */
     CostPtrFunc   _cost_function_derivative; /*!< Cost function derivative */
 } Network;
-
-
-static BrainCostFunctionType
-get_cost_function_type(BrainString name)
-{
-    BrainUint i = 0;
-
-    for (i = First_CostFunction; i < Last_CostFunction; ++i)
-    {
-        if (!strcmp(name, costfunction_names[i - First_CostFunction]))
-        {
-            return i;
-        }
-    }
-
-    return Invalid_CostFunction;
-}
 
 static CostPtrFunc _cost_functions[][2] = {{quadratic_cost,     quadratic_cost_derivative},
                                            {crossentropy_cost,  crossentropy_cost_derivative}};
@@ -167,7 +151,7 @@ configure_network_with_context(BrainNetwork network, BrainString filepath)
                 BrainUint i = 0;
 
                 BrainChar* buffer                        = (BrainChar *)node_get_prop(settings_context, "cost-function");
-                BrainCostFunctionType cost_function_type = get_cost_function_type(buffer);
+                BrainCostFunctionType cost_function_type = get_enum_values(costfunction_names, First_CostFunction, Last_CostFunction, buffer);
                 network->_cost_function                  = _cost_functions[cost_function_type][Function];
                 network->_cost_function_derivative       = _cost_functions[cost_function_type][Derivative];
 
@@ -405,31 +389,7 @@ predict(BrainNetwork      network,
     BRAIN_OUTPUT(predict)
 }
 
-static void
-compute_network_total_error(BrainNetwork network, const BrainData data)
-{
-    BRAIN_INPUT(compute_network_total_error);
-    /********************************************************/
-    /**       Check if we need to train this network       **/
-    /********************************************************/
-    if (BRAIN_ALLOCATED(network) &&
-        BRAIN_ALLOCATED(data))
-    {
-        const BrainUint number_of_evaluating_sample = get_number_of_evaluating_sample(data);
-        BrainUint i = 0;
-
-        network->_error = 0.;
-        for (i = 0; i < number_of_evaluating_sample; ++i)
-        {
-            network->_error += compute_network_error(network, data, i);
-        }
-
-        network->_error /= (BrainReal)(number_of_evaluating_sample);
-    }
-    BRAIN_INPUT(compute_network_total_error);
-}
-
-BrainReal __BRAIN_VISIBLE__
+static BrainReal
 compute_network_error(const BrainNetwork network, const BrainData data, const BrainUint index)
 {
     BRAIN_INPUT(compute_network_error);
@@ -466,17 +426,28 @@ compute_network_error(const BrainNetwork network, const BrainData data, const Br
     return error;
 }
 
-void __BRAIN_VISIBLE__
-set_network_error(BrainNetwork network, const BrainReal err)
+static void
+compute_network_total_error(BrainNetwork network, const BrainData data)
 {
-    BRAIN_INPUT(set_network_error)
-
-    if (BRAIN_ALLOCATED(network))
+    BRAIN_INPUT(compute_network_total_error);
+    /********************************************************/
+    /**       Check if we need to train this network       **/
+    /********************************************************/
+    if (BRAIN_ALLOCATED(network) &&
+        BRAIN_ALLOCATED(data))
     {
-        network->_error = err;
-    }
+        const BrainUint number_of_evaluating_sample = get_number_of_evaluating_sample(data);
+        BrainUint i = 0;
 
-    BRAIN_OUTPUT(set_network_error)
+        network->_error = 0.;
+        for (i = 0; i < number_of_evaluating_sample; ++i)
+        {
+            network->_error += compute_network_error(network, data, i);
+        }
+
+        network->_error /= (BrainReal)(number_of_evaluating_sample);
+    }
+    BRAIN_INPUT(compute_network_total_error);
 }
 
 BrainBool __BRAIN_VISIBLE__
@@ -509,7 +480,7 @@ get_network_training_progress(const BrainNetwork network)
     return ret;
 }
 
-void __BRAIN_VISIBLE__
+BrainReal __BRAIN_VISIBLE__
 train_network_iteration(BrainNetwork network, const BrainData data)
 {
     BRAIN_INPUT(train_network_iteration);
@@ -548,12 +519,18 @@ train_network_iteration(BrainNetwork network, const BrainData data)
         /**************************************************/
         update_network(network, (BrainReal)minibatch_size);
         /**************************************************/
+        /**                 UPDATE ERROR LEVEL           **/
+        /**************************************************/
+        compute_network_total_error(network, data);
+        /**************************************************/
         /**            INCREASE NUMBER OF EPOCH          **/
         /**************************************************/
         ++network->_iterations;
     }
 
     BRAIN_OUTPUT(train_network_iteration);
+
+    return network->_error;
 }
 
 void __BRAIN_VISIBLE__
