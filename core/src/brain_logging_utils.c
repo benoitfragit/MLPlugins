@@ -1,13 +1,17 @@
 #include "brain_logging_utils.h"
 #include "brain_core_types.h"
+#include "brain_enum_utils.h"
 #include <string.h>
 
-#define MESSAGE() va_list args;                                        \
-                  va_start(args, format);                              \
-                  char buffer[1000];                                   \
-                  vsprintf(buffer, format, args);                      \
-                  printf("%s\n", buffer);                              \
-                  va_end(args);
+#define MESSAGE(level)  if (_current_log_level <= level)               \
+                        {                                              \
+                            va_list args;                              \
+                            va_start(args, format);                    \
+                            char buffer[1000];                         \
+                            vsprintf(buffer, format, args);            \
+                            printf("%s\n", buffer);                    \
+                            va_end(args);                              \
+                        }
 
 typedef enum BrainLogLevel
 {
@@ -18,6 +22,8 @@ typedef enum BrainLogLevel
     LOG_NONE     = 4
 } BrainLogLevel;
 
+static BrainLogLevel _current_log_level = LOG_NONE;
+
 static BrainString _log_levels[] = {
     "debug",
     "info",
@@ -25,39 +31,22 @@ static BrainString _log_levels[] = {
     "critical"
 };
 
-static BrainLogLevel
-getBrainLogLevel()
+void
+brain_logging_init()
 {
-    BrainLogLevel level = LOG_NONE;
     BrainString log_level = getenv("BRAIN_LOG_LEVEL");
 
-    if (log_level)
-    {
-        BrainUint i = 0;
-
-        for (i = 0; i <= 3; ++i)
-        {
-            if (!strcmp(_log_levels[i], log_level))
-            {
-                level = (BrainLogLevel)(i);
-                break;
-            }
-        }
-    }
-
-    return level;
+    _current_log_level =  get_enum_values(_log_levels,
+                                            LOG_DEBUG,
+                                            LOG_NONE,
+                                            log_level);
 }
 
 void
 BRAIN_DEBUG(BrainString format, ...)
 {
 #if BRAIN_ENABLE_LOGGING
-    const BrainLogLevel level = getBrainLogLevel();
-
-    if (level <= LOG_DEBUG)
-    {
-        MESSAGE()
-    }
+    MESSAGE(LOG_DEBUG)
 #endif /* BRAIN_ENABLE_LOGGING */
 }
 
@@ -65,12 +54,7 @@ void
 BRAIN_INFO(BrainString format, ...)
 {
 #if BRAIN_ENABLE_LOGGING
-    const BrainLogLevel level = getBrainLogLevel();
-
-    if (level <= LOG_INFO)
-    {
-        MESSAGE()
-    }
+    MESSAGE(LOG_INFO)
 #endif /* BRAIN_ENABLE_LOGGING */
 }
 
@@ -78,12 +62,7 @@ void
 BRAIN_WARNING(BrainString format, ...)
 {
 #if BRAIN_ENABLE_LOGGING
-    const BrainLogLevel level = getBrainLogLevel();
-
-    if (level <= LOG_WARNING)
-    {
-        MESSAGE()
-    }
+    MESSAGE(LOG_WARNING)
 #endif /* BRAIN_ENABLE_LOGGING */
 }
 
@@ -91,11 +70,6 @@ void
 BRAIN_CRITICAL(BrainString format, ...)
 {
 #if BRAIN_ENABLE_LOGGING
-    const BrainLogLevel level = getBrainLogLevel();
-
-    if (level <= LOG_CRITICAL)
-    {
-        MESSAGE()
-    }
+    MESSAGE(LOG_CRITICAL)
 #endif /* BRAIN_ENABLE_LOGGING */
 }
