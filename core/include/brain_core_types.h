@@ -41,6 +41,18 @@ typedef BrainFloat BrainReal;
 #endif
 
 /**
+ * \brief define a DataFormat
+ */
+typedef enum BrainDataFormat
+{
+    Format_InputFirst,
+    Format_OutputFirst,
+    Format_Invalide,
+    Format_First = Format_InputFirst,
+    Format_Last  = Format_Invalide
+} BrainDataFormat;
+
+/**
  * \brief define a XML Context
  */
 typedef xmlNodePtr Context;
@@ -60,6 +72,10 @@ typedef xmlTextWriterPtr Writer;
  * \brief Define a BrainRandomMask
  */
 typedef struct RandomMask* BrainRandomMask;
+/**
+ * \brief Define a CsvReader
+ */
+ typedef struct CsvReader* BrainCsvReader;
 /**
  * \brief Define a BrainNetwork
  */

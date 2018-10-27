@@ -6,6 +6,7 @@
 #include "brain_memory_utils.h"
 #include "brain_xml_utils.h"
 #include "brain_enum_utils.h"
+#include "brain_csv_utils.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -19,15 +20,6 @@ typedef enum DataParser
     Parser_First = Parser_CSV,
     Parser_Last  = Parser_Invalide
 } DataParser;
-
-typedef enum DataFormat
-{
-    Format_InputFirst,
-    Format_OutputFirst,
-    Format_Invalide,
-    Format_First = Format_InputFirst,
-    Format_Last  = Format_Invalide
-} DataFormat;
 
 typedef enum DataPreprocessing
 {
@@ -76,6 +68,8 @@ typedef struct Data
     BrainChar** _labels;           /*!< output label if needed        */
     BrainSignal _means;            /*!< The means signal              */
     BrainSignal _sigmas;           /*!< Ths variance signal           */
+    BrainBool   _is_labelled;      /*!< Data are labelled             */
+    BrainDataFormat _format;           /*!< Data format                   */
 } Data;
 
 static void
@@ -83,7 +77,7 @@ parse_csv_repository(BrainData   data,
                      BrainString repository_path,
                      BrainString tokenizer,
                      const BrainBool  is_labelled,
-                     const DataFormat format)
+                     const BrainDataFormat format)
 {
     BRAIN_INPUT(parse_csv_repository)
 
@@ -264,7 +258,7 @@ new_data(BrainString repository_path,
          const BrainUint output_length,
          const DataParser parser,
          const BrainBool is_labedelled,
-         const DataFormat format,
+         const BrainDataFormat format,
          const BrainUint number_of_preprocessing,
          const DataPreprocessing* preprocessings)
 {
@@ -358,7 +352,7 @@ new_data_from_context(BrainString filepath)
                 const BrainUint input_length    = node_get_int(context, "input-length", 1);
                 const BrainUint output_length   = node_get_int(context, "output-length", 1);
                 buffer = (BrainChar *)node_get_prop(context, "format");
-                const DataFormat format = get_enum_values(_formats, Format_First, Format_Last, buffer);
+                const BrainDataFormat format = get_enum_values(_formats, Format_First, Format_Last, buffer);
                 BRAIN_DELETE(buffer);
                 buffer = (BrainChar *)node_get_prop(context, "parser");
                 const DataParser parser = get_enum_values(_parsers, Parser_First, Parser_Last, buffer);

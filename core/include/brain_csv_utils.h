@@ -3,12 +3,15 @@
 
 #include "brain_core_types.h"
 
-typedef BrainBool (*CsvLineCbk)(BrainString line, void* data);
+typedef BrainBool (*CsvLineCbk)(void* data, BrainString label, const BrainReal* signal);
 
+BrainCsvReader new_csv_reader(  BrainString path,
+                                BrainString tokenizer,
+                                const BrainUint number_of_fields,
+                                const BrainDataFormat format,
+                                const BrainBool is_labelled);
 
-void load_csv_file( const BrainString csv,
-                    const BrainString tokenizer,
-                    CsvLineCbk cbk,
-                    void* data);
+void delete_csv_reader(BrainCsvReader reader);
 
+void csv_reader_load(BrainCsvReader reader, CsvLineCbk cbk, void* data);
 #endif /* BRAIN_CSV_UTILS_H */

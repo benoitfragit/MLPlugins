@@ -5,49 +5,143 @@
 #include <stdio.h>
 #include <string.h>
 
-void
-load_csv_file(const BrainString csv,
-              const BrainString tokenizer,
-              CsvLineCbk cbk,
-              void* data)
+typedef struct CsvReader
 {
-    BRAIN_INPUT(load_csv_file)
+    BrainString     _path;
+    BrainString     _tokenizer;
+    BrainUint       _number_of_fields;
+    BrainDataFormat _format;
+    BrainBool       _is_labelled;
+} CsvReader;
 
-    if (BRAIN_ALLOCATED(csv)        &&
-        BRAIN_ALLOCATED(tokenizer)  &&
-        BRAIN_ALLOCATED(cbk)        &&
-        BRAIN_ALLOCATED(data))
+BrainCsvReader
+new_csv_reader( BrainString path,
+                BrainString tokenizer,
+                const BrainUint number_of_fields,
+                const BrainDataFormat format,
+                const BrainBool is_labelled)
+{
+    BRAIN_INPUT(new_csv_reader)
+
+    BrainCsvReader reader = NULL;
+
+    if (BRAIN_ALLOCATED(path) &&
+        BRAIN_ALLOCATED(tokenizer))
     {
-        // opening the file for reading
-        FILE *repository = fopen(csv, "r");
+        BRAIN_NEW(reader, CsvReader, 1);
 
-        if (BRAIN_ALLOCATED(repository))
+        // This is pointer copy
+        reader->_path               = path;
+        reader->_tokenizer          = tokenizer;
+        reader->_number_of_fields   = number_of_fields;
+        reader->_is_labelled        = is_labelled;
+        reader->_format             = format;
+    }
+
+    BRAIN_OUTPUT(new_csv_reader)
+
+    return reader;
+}
+
+void
+delete_csv_reader(BrainCsvReader reader)
+{
+    BRAIN_INPUT(delete_csv_reader)
+
+    if (reader)
+    {
+        BRAIN_DELETE(reader);
+    }
+
+    BRAIN_OUTPUT(delete_csv_reader)
+}
+
+void
+csv_reader_load(BrainCsvReader reader,
+                CsvLineCbk cbk,
+                void* data)
+{
+    BRAIN_INPUT(csv_reader_load)
+
+    if (BRAIN_ALLOCATED(reader)     &&
+        BRAIN_ALLOCATED(reader->_tokenizer)  &&
+        BRAIN_ALLOCATED(cbk)        &&
+        BRAIN_ALLOCATED(data)       )
+    {
+        BrainChar* line = NULL;
+        size_t     len  = 0;
+
+        FILE* file = fopen(reader->_path, "r");
+
+        if (BRAIN_ALLOCATED(file))
         {
-            BrainChar* line = NULL;
-            size_t     len  = 0;
-
             /****************************************************************/
             /**                 Browse the repository file                 **/
             /****************************************************************/
-            while (getline(&line, &len, repository) != -1)
+            while (getline(&line, &len, file) != -1)
             {
-                if ((len > 0) && (line != NULL))
+                if ((len > 0) &&
+                    (line != NULL))
                 {
-                    cbk(line, data);
+                    BrainReal* signal = NULL;
+                    BrainChar* buffer = strtok(line, reader->_tokenizer);
+                    BrainUint k = 0;
+
+                    BRAIN_NEW(signal, BrainReal, reader->_number_of_fields);
+
+                    if (BRAIN_ALLOCATED(buffer))
+                    {
+                        BrainChar* label = NULL;
+                        const BrainUint length = strlen(buffer);
+
+                        if (reader->_is_labelled)
+                        {
+                            BRAIN_NEW(label, BrainChar, length);
+                        }
+
+                        while(k < reader->_number_of_fields)
+                        {
+                            if (k == 0 && reader->_format == Format_OutputFirst && reader->_is_labelled)
+                            {
+                                // copy the buffer into the label
+                                buffer[length - 1] = '\0';
+                                label = strcpy(label, buffer);
+                            }
+                            else
+                            {
+#if BRAIN_ENABLE_DOUBLE_PRECISION
+                                sscanf(buffer, "%lf", &(signal[k]));
+#else
+                                sscanf(buffer, "%f", &(signal[k]));
+#endif
+                            }
+                            buffer = strtok(NULL, reader->_tokenizer);
+
+                            ++k;
+                        }
+
+                        if (reader->_format == Format_InputFirst && reader->_is_labelled)
+                        {
+                            // copy the buffer into the label
+                            buffer[length - 1] = '\0';
+                            label = strcpy(label, buffer);
+                        }
+
+                        // Call the callback function
+                        cbk(data, label, signal);
+
+                        BRAIN_DELETE(signal);
+                    }
                 }
             }
 
-            fclose(repository);
-        }
-        else
-        {
-            BRAIN_CRITICAL("Unable to open %s for reading\n", csv);
+            fclose(file);
         }
     }
     else
     {
-        BRAIN_CRITICAL("Unable to parse csv repository because file is invalid");
+        BRAIN_CRITICAL("Unable to open %s for reading\n", reader->_path);
     }
 
-    BRAIN_OUTPUT(load_csv_file)
+    BRAIN_OUTPUT(csv_reader_load)
 }
