@@ -73,182 +73,113 @@ typedef struct Data
 } Data;
 
 static void
-parse_csv_repository(BrainData   data,
-                     BrainString repository_path,
-                     BrainString tokenizer,
-                     const BrainBool  is_labelled,
-                     const BrainDataFormat format)
+csv_line_callback(void* data, BrainString label, const BrainReal* signal)
 {
-    BRAIN_INPUT(parse_csv_repository)
-
     if (BRAIN_ALLOCATED(data) &&
-        BRAIN_ALLOCATED(repository_path) &&
-        BRAIN_ALLOCATED(tokenizer))
+        BRAIN_ALLOCATED(label) &&
+        BRAIN_ALLOCATED(signal))
     {
-        // opening the file for reading
-        FILE *repository = fopen(repository_path, "r");
-
-        if (BRAIN_ALLOCATED(repository))
+        BrainData pData = (BrainData)data;
+        const BrainUint input_length        = pData->_input_length;
+        const BrainUint output_length       = pData->_output_length;
+        /****************************************************************/
+        /**              Randomly choose signal storage                **/
+        /****************************************************************/
+        Dataset* dataset = &(pData->_evaluating);
+        if (BRAIN_RAND_UNIT < TRAINING_DATASET_RATIO)
         {
-            const BrainUint input_length    = data->_input_length;
-            const BrainUint output_length   = data->_output_length;
+            dataset = &(pData->_training);
+        }
+        /****************************************************************/
+        /**                        Append new signals                  **/
+        /****************************************************************/
+        ++(dataset->_children);
+        BRAIN_RESIZE(dataset->_input, BrainSignal, dataset->_children);
+        BRAIN_RESIZE(dataset->_output, BrainSignal, dataset->_children);
+        BRAIN_NEW(dataset->_input[dataset->_children - 1], BrainReal, input_length);
+        BRAIN_NEW(dataset->_output[dataset->_children - 1], BrainReal, output_length);
+        /****************************************************************/
+        /**                COPY THE LABEL AND SIGNAL                    */
+        /****************************************************************/
+        if (pData->_is_labelled)
+        {
+            BrainUint i = 0;
+            BrainBool found = BRAIN_FALSE;
 
-            BrainChar* line = NULL;
-            BrainUint  number_of_fields = input_length + output_length;
-            BrainUint  k    = 0;
-            size_t     len  = 0;
-
-            if (is_labelled)
+            for (i = 0; i < pData->_labels_length; ++i)
             {
-                // Assume that all Label names are in the last column
-                number_of_fields = input_length + 1;
-            }
-
-            // Dynamic allocation of both training and evaluaing dataset
-            data->_training._children   = 0;
-            data->_evaluating._children = 0;
-            /****************************************************************/
-            /**                 Browse the repository file                 **/
-            /****************************************************************/
-            while (getline(&line, &len, repository) != -1)
-            {
-                if ((len > 0) && (line != NULL))
+                if (BRAIN_ALLOCATED(pData->_labels[i])
+                &&  !strcmp(pData->_labels[i], label))
                 {
-                    BrainChar* buffer = NULL;
-                    k = 0;
-                    /****************************************************************/
-                    /**              Randomly choose signal storage                **/
-                    /****************************************************************/
-                    Dataset* dataset = &(data->_evaluating);
-                    if (BRAIN_RAND_UNIT < TRAINING_DATASET_RATIO)
-                    {
-                        dataset = &(data->_training);
-                    }
-                    /****************************************************************/
-                    /**                        Append new signals                  **/
-                    /****************************************************************/
-                    ++(dataset->_children);
-                    BRAIN_RESIZE(dataset->_input, BrainSignal, dataset->_children);
-                    BRAIN_RESIZE(dataset->_output, BrainSignal, dataset->_children);
-                    BRAIN_NEW(dataset->_input[dataset->_children - 1], BrainReal, input_length);
-                    BRAIN_NEW(dataset->_output[dataset->_children - 1], BrainReal, output_length);
-                    /****************************************************************/
-                    /**                        Parsing signals                     **/
-                    /****************************************************************/
-                    buffer = strtok(line, tokenizer);
-
-                    while(k < number_of_fields)
-                    {
-                        BrainSignal value = NULL;
-                        BrainUint kp = k;
-
-                        switch(format)
-                        {
-                            case Format_InputFirst:
-                            {
-                                if (k < input_length)
-                                {
-                                    value = &((dataset->_input[dataset->_children - 1])[k]);
-                                }
-                                else
-                                {
-                                    kp -= input_length;
-
-                                    if (!is_labelled && kp < output_length)
-                                    {
-                                        value = &((dataset->_output[dataset->_children - 1])[kp]);
-                                    }
-                                }
-                            }
-                                break;
-                            case Format_OutputFirst:
-                            {
-                                if (k < (number_of_fields - input_length))
-                                {
-                                    if (!is_labelled)
-                                    {
-                                        value = &((dataset->_output[dataset->_children - 1])[k]);
-                                    }
-                                }
-                                else
-                                {
-                                    kp -= number_of_fields - input_length;
-                                    value = &((dataset->_input[dataset->_children - 1])[kp]);
-                                }
-                            }
-                                break;
-                            default:
-                                break;
-                        }
-
-                        if (BRAIN_ALLOCATED(buffer))
-                        {
-                            if (BRAIN_ALLOCATED(value))
-                            {
-#if BRAIN_ENABLE_DOUBLE_PRECISION
-                                sscanf(buffer, "%lf", value);
-#else
-                                sscanf(buffer, "%f", value);
-#endif
-                            }
-                            else
-                            {
-                                /**************************************/
-                                /**        AUTOMATIC LABELING        **/
-                                /**************************************/
-                                if (is_labelled)
-                                {
-                                    if (((format == Format_InputFirst) && (input_length <= k))
-                                    ||  ((format == Format_OutputFirst) && (k < number_of_fields - input_length)))
-                                    {
-                                        BrainUint i = 0;
-                                        BrainBool found = BRAIN_FALSE;
-                                        BrainUint length = strlen(buffer);
-                                        buffer[length - 1] = '\0';
-
-                                        for (i = 0; i < data->_labels_length; ++i)
-                                        {
-                                            if (BRAIN_ALLOCATED(data->_labels[i])
-                                            &&  !strcmp(data->_labels[i], buffer))
-                                            {
-                                                found = BRAIN_TRUE;
-                                                dataset->_output[dataset->_children - 1][i] = 1.;
-                                                break;
-                                            }
-                                        }
-
-                                        if (!found)
-                                        {
-                                            ++data->_labels_length;
-                                            BRAIN_RESIZE(data->_labels, BrainChar*, data->_labels_length);
-                                            BRAIN_NEW(data->_labels[data->_labels_length - 1], BrainChar, length);
-                                            data->_labels[data->_labels_length - 1] = strcpy(data->_labels[data->_labels_length - 1], buffer);
-                                            dataset->_output[dataset->_children - 1][data->_labels_length - 1] = 1.;
-                                        }
-                                    }
-                                }
-                            }
-
-                            buffer = strtok(NULL, tokenizer);
-                            ++k;
-                        }
-                    }
+                    found = BRAIN_TRUE;
+                    dataset->_output[dataset->_children - 1][i] = 1.;
+                    break;
                 }
             }
 
-            fclose(repository);
+            if (!found)
+            {
+                const BrainUint length = strlen(label);
+                ++pData->_labels_length;
+                BRAIN_RESIZE(pData->_labels, BrainChar*, pData->_labels_length);
+                BRAIN_NEW(pData->_labels[pData->_labels_length - 1], BrainChar, length);
+                pData->_labels[pData->_labels_length - 1] = strcpy(pData->_labels[pData->_labels_length - 1], label);
+                dataset->_output[dataset->_children - 1][pData->_labels_length - 1] = 1.;
+            }
+
+            memcpy(dataset->_input[dataset->_children - 1], signal, input_length);
         }
         else
         {
-            BRAIN_CRITICAL("Unable to open %s for reading\n", repository_path);
+            const BrainUint number_of_fields    = input_length + output_length;
+            BrainUint k = 0;
+            /****************************************************************/
+            /**                    Use CSV data                            **/
+            /****************************************************************/
+            for (;k < number_of_fields; ++k)
+            {
+                BrainSignal value = NULL;
+                BrainUint kp = k;
+
+                switch(pData->_format)
+                {
+                    case Format_InputFirst:
+                    {
+                        if (k < input_length)
+                        {
+                            value = &((dataset->_input[dataset->_children - 1])[kp]);
+                        }
+                        else
+                        {
+                            kp -= input_length;
+                            value = &((dataset->_output[dataset->_children - 1])[kp]);
+                        }
+                    }
+                        break;
+                    case Format_OutputFirst:
+                    {
+                        if (k < output_length)
+                        {
+                            value = &((dataset->_output[dataset->_children - 1])[kp]);
+                        }
+                        else
+                        {
+                            kp -= output_length;
+                            value = &((dataset->_input[dataset->_children - 1])[kp]);
+                        }
+                    }
+                        break;
+                    default:
+                        break;
+                }
+
+                if (BRAIN_ALLOCATED(value))
+                {
+                    *value = signal[k];
+                }
+            }
         }
     }
-    else
-    {
-        BRAIN_CRITICAL("Unable to parse csv repository because file is invalid");
-    }
-
-    BRAIN_OUTPUT(parse_csv_repository);
 }
 
 static BrainData
@@ -270,19 +201,27 @@ new_data(BrainString repository_path,
 
         BRAIN_NEW(_data, Data, 1);
 
-        _data->_input_length  = input_length;
-        _data->_output_length = output_length;
-        _data->_labels_length = 0;
+        _data->_input_length    = input_length;
+        _data->_output_length   = output_length;
+        _data->_labels_length   = 0;
+        _data->_is_labelled     = is_labedelled;
+        _data->_format          = format;
 
         switch (parser)
         {
             case Parser_CSV:
             {
-                parse_csv_repository(_data,
-                                     repository_path,
-                                     tokenizer,
-                                     is_labedelled,
-                                     format);
+                const BrainUint number_of_fields = _data->_is_labelled ? _data->_input_length: _data->_input_length + _data->_output_length;
+                // Create a CSV reader
+                BrainCsvReader reader = new_csv_reader(repository_path,
+                                                       tokenizer,
+                                                       number_of_fields,
+                                                       _data->_format,
+                                                       _data->_is_labelled);
+                // Load the CSV file
+                csv_reader_load(reader, csv_line_callback, _data);
+                // Delete the CSV reader
+                delete_csv_reader(reader);
             }
                 break;
             default:

@@ -3,7 +3,7 @@
 
 #include "brain_core_types.h"
 
-typedef BrainBool (*CsvLineCbk)(void* data, BrainString label, const BrainReal* signal);
+typedef void (*CsvLineCbk)(void* data, BrainString label, const BrainReal* signal);
 
 BrainCsvReader new_csv_reader(  BrainString path,
                                 BrainString tokenizer,

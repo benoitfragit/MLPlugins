@@ -97,30 +97,30 @@ csv_reader_load(BrainCsvReader reader,
                         if (reader->_is_labelled)
                         {
                             BRAIN_NEW(label, BrainChar, length);
+
+                            if (reader->_format == Format_OutputFirst)
+                            {
+                                buffer[length - 1] = '\0';
+                                label = strcpy(label, buffer);
+
+                                // go to the next item
+                                buffer = strtok(NULL, reader->_tokenizer);
+                            }
                         }
 
                         while(k < reader->_number_of_fields)
                         {
-                            if (k == 0 && reader->_format == Format_OutputFirst && reader->_is_labelled)
-                            {
-                                // copy the buffer into the label
-                                buffer[length - 1] = '\0';
-                                label = strcpy(label, buffer);
-                            }
-                            else
-                            {
 #if BRAIN_ENABLE_DOUBLE_PRECISION
-                                sscanf(buffer, "%lf", &(signal[k]));
+                            sscanf(buffer, "%lf", &(signal[k]));
 #else
-                                sscanf(buffer, "%f", &(signal[k]));
+                            sscanf(buffer, "%f", &(signal[k]));
 #endif
-                            }
                             buffer = strtok(NULL, reader->_tokenizer);
-
                             ++k;
                         }
 
-                        if (reader->_format == Format_InputFirst && reader->_is_labelled)
+                        if (reader->_format == Format_InputFirst &&
+                            reader->_is_labelled)
                         {
                             // copy the buffer into the label
                             buffer[length - 1] = '\0';
