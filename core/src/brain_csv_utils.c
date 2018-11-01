@@ -92,22 +92,19 @@ csv_reader_load(BrainCsvReader reader,
                     if (BRAIN_ALLOCATED(buffer))
                     {
                         BrainChar* label = NULL;
-                        const BrainUint length = strlen(buffer);
+                        BrainUint length = strlen(buffer);
 
-                        if (reader->_is_labelled)
+                        if (reader->_is_labelled && reader->_format == Format_OutputFirst)
                         {
                             BRAIN_NEW(label, BrainChar, length);
 
-                            if (reader->_format == Format_OutputFirst)
-                            {
-                                buffer[length - 1] = '\0';
-                                label = strcpy(label, buffer);
-
-                                // go to the next item
-                                buffer = strtok(NULL, reader->_tokenizer);
-                            }
+                            buffer[length - 1] = '\0';
+                            label = strcpy(label, buffer);
+                            // go to the next item
+                            buffer = strtok(NULL, reader->_tokenizer);
                         }
 
+                        printf("\n");
                         while(k < reader->_number_of_fields)
                         {
 #if BRAIN_ENABLE_DOUBLE_PRECISION
@@ -123,6 +120,8 @@ csv_reader_load(BrainCsvReader reader,
                             reader->_is_labelled)
                         {
                             // copy the buffer into the label
+                            length = strlen(buffer);
+                            BRAIN_NEW(label, BrainChar, length);
                             buffer[length - 1] = '\0';
                             label = strcpy(label, buffer);
                         }
@@ -131,6 +130,10 @@ csv_reader_load(BrainCsvReader reader,
                         cbk(data, label, signal);
 
                         BRAIN_DELETE(signal);
+                        if (BRAIN_ALLOCATED(label))
+                        {
+                            BRAIN_DELETE(label)
+                        }
                     }
                 }
             }

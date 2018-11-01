@@ -339,6 +339,7 @@ brain_trainer_run(BrainTrainer* trainer)
                     priv->_error = train_network_step(priv->_plugin, priv->_network, priv->_data);
                     priv->_progress = get_training_progress(priv->_plugin, priv->_network);
                     g_signal_emit(trainer, trainer_signals[TRAINER_SIGNAL_ITERATION], 0);
+                    BRAIN_DEBUG("Error:%f, progress:%f\n", priv->_error, priv->_progress);
                 }
                 else
                 {

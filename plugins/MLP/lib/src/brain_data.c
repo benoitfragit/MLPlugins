@@ -76,7 +76,6 @@ static void
 csv_line_callback(void* data, BrainString label, const BrainReal* signal)
 {
     if (BRAIN_ALLOCATED(data) &&
-        BRAIN_ALLOCATED(label) &&
         BRAIN_ALLOCATED(signal))
     {
         BrainData pData = (BrainData)data;
@@ -103,31 +102,34 @@ csv_line_callback(void* data, BrainString label, const BrainReal* signal)
         /****************************************************************/
         if (pData->_is_labelled)
         {
-            BrainUint i = 0;
-            BrainBool found = BRAIN_FALSE;
-
-            for (i = 0; i < pData->_labels_length; ++i)
+            if (BRAIN_ALLOCATED(label))
             {
-                if (BRAIN_ALLOCATED(pData->_labels[i])
-                &&  !strcmp(pData->_labels[i], label))
+                BrainUint i = 0;
+                BrainBool found = BRAIN_FALSE;
+
+                for (i = 0; i < pData->_labels_length; ++i)
                 {
-                    found = BRAIN_TRUE;
-                    dataset->_output[dataset->_children - 1][i] = 1.;
-                    break;
+                    if (BRAIN_ALLOCATED(pData->_labels[i])
+                    &&  !strcmp(pData->_labels[i], label))
+                    {
+                        found = BRAIN_TRUE;
+                        dataset->_output[dataset->_children - 1][i] = 1.;
+                        break;
+                    }
                 }
-            }
 
-            if (!found)
-            {
-                const BrainUint length = strlen(label);
-                ++pData->_labels_length;
-                BRAIN_RESIZE(pData->_labels, BrainChar*, pData->_labels_length);
-                BRAIN_NEW(pData->_labels[pData->_labels_length - 1], BrainChar, length);
-                pData->_labels[pData->_labels_length - 1] = strcpy(pData->_labels[pData->_labels_length - 1], label);
-                dataset->_output[dataset->_children - 1][pData->_labels_length - 1] = 1.;
-            }
+                if (!found)
+                {
+                    const BrainUint length = strlen(label);
+                    ++pData->_labels_length;
+                    BRAIN_RESIZE(pData->_labels, BrainChar*, pData->_labels_length);
+                    BRAIN_NEW(pData->_labels[pData->_labels_length - 1], BrainChar, length);
+                    pData->_labels[pData->_labels_length - 1] = strcpy(pData->_labels[pData->_labels_length - 1], label);
+                    dataset->_output[dataset->_children - 1][pData->_labels_length - 1] = 1.;
+                }
 
-            memcpy(dataset->_input[dataset->_children - 1], signal, input_length);
+                BRAIN_COPY(signal, dataset->_input[dataset->_children - 1],BrainReal,input_length);
+            }
         }
         else
         {
@@ -206,6 +208,9 @@ new_data(BrainString repository_path,
         _data->_labels_length   = 0;
         _data->_is_labelled     = is_labedelled;
         _data->_format          = format;
+
+        printf("Format: %d", format);
+
 
         switch (parser)
         {

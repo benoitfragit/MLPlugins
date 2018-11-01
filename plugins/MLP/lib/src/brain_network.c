@@ -447,7 +447,7 @@ compute_network_total_error(BrainNetwork network, const BrainData data)
 
         network->_error /= (BrainReal)(number_of_evaluating_sample);
     }
-    BRAIN_INPUT(compute_network_total_error);
+    BRAIN_OUTPUT(compute_network_total_error);
 }
 
 BrainBool __BRAIN_VISIBLE__
