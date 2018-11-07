@@ -17,6 +17,7 @@
     <xs:simpleType name="PrerocessingType">
         <xs:restriction base="xs:token">
             <xs:enumeration value="GaussianNormalization"/>
+            <xs:enumeration value="MinMaxNormalization"/>
         </xs:restriction>
     </xs:simpleType>
 

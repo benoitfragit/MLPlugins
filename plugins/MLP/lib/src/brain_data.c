@@ -2,7 +2,7 @@
 #include "brain_config.h"
 #include "brain_logging_utils.h"
 #include "brain_random_utils.h"
-#include "brain_math_utils.h"
+#include "brain_signal_utils.h"
 #include "brain_memory_utils.h"
 #include "brain_xml_utils.h"
 #include "brain_enum_utils.h"
@@ -24,6 +24,7 @@ typedef enum DataParser
 typedef enum DataPreprocessing
 {
     Preprocessing_GaussianNormalization,
+    Preprocessing_MinMaxNormalization,
     Preprocessing_Invalide,
     Preprocessing_First = Preprocessing_GaussianNormalization,
     Preprocessing_Last  = Preprocessing_Invalide
@@ -37,7 +38,8 @@ static BrainString _formats[] = {
     "OutputFirst"
 };
 static BrainString _preprocessings[] = {
-    "GaussianNormalization"
+    "GaussianNormalization",
+    "MinMaxNormalization"
 };
 
 /**
@@ -52,6 +54,24 @@ typedef struct Dataset
     BrainSignal* _output;   /*!< The output signal      */
     BrainUint    _children; /*!< The number of children */
 } Dataset;
+
+typedef struct GaussianModel
+{
+    BrainSignal _means;
+    BrainSignal _sigmas;
+} GaussianModel;
+
+typedef struct MinMaxModel
+{
+    BrainSignal _min;
+    BrainSignal _max;
+} MinMaxModel;
+
+typedef union DataModel
+{
+    MinMaxModel     _minMaxModel;
+    GaussianModel   _gaussianModel;
+} BrainDataModel;
 /**
  * \struct Data
  * \brief  Internal model for a BrainData
@@ -68,6 +88,7 @@ typedef struct Data
     BrainChar** _labels;           /*!< output label if needed        */
     BrainSignal _means;            /*!< The means signal              */
     BrainSignal _sigmas;           /*!< Ths variance signal           */
+    BrainDataModel _model;         /*!< The brain data model          */
     BrainBool   _is_labelled;      /*!< Data are labelled             */
     BrainDataFormat _format;           /*!< Data format                   */
 } Data;
@@ -239,22 +260,48 @@ new_data(BrainString repository_path,
             {
                 case Preprocessing_GaussianNormalization:
                 {
-                    BRAIN_NEW(_data->_means, BrainReal, _data->_input_length);
-                    BRAIN_NEW(_data->_sigmas, BrainReal, _data->_input_length);
+                    GaussianModel* model = &(_data->_model._gaussianModel);
+
+                    BRAIN_NEW(model->_means, BrainReal,  _data->_input_length);
+                    BRAIN_NEW(model->_sigmas, BrainReal, _data->_input_length);
 
                     FindGaussianModel(_data->_training._input,
-                                      _data->_means,
-                                      _data->_sigmas,
+                                      model->_means,
+                                      model->_sigmas,
                                       _data->_training._children,
                                       _data->_input_length);
                     ApplyGaussianModel(_data->_training._input,
-                                       _data->_means,
-                                       _data->_sigmas,
+                                       model->_means,
+                                       model->_sigmas,
                                        _data->_training._children,
                                        _data->_input_length);
                     ApplyGaussianModel(_data->_evaluating._input,
-                                       _data->_means,
-                                       _data->_sigmas,
+                                       model->_means,
+                                       model->_sigmas,
+                                       _data->_evaluating._children,
+                                       _data->_input_length);
+                }
+                    break;
+                case Preprocessing_MinMaxNormalization:
+                {
+                    MinMaxModel* model = &(_data->_model._minMaxModel);
+
+                    BRAIN_NEW(model->_min, BrainReal, _data->_input_length);
+                    BRAIN_NEW(model->_max, BrainReal, _data->_input_length);
+
+                    FindMinMaxModel(_data->_training._input,
+                                    model->_min,
+                                    model->_max,
+                                    _data->_training._children,
+                                    _data->_input_length);
+                    ApplyMinMaxModel(_data->_training._input,
+                                       model->_min,
+                                       model->_max,
+                                       _data->_training._children,
+                                       _data->_input_length);
+                    ApplyMinMaxModel(_data->_evaluating._input,
+                                       model->_min,
+                                       model->_max,
                                        _data->_evaluating._children,
                                        _data->_input_length);
                 }

@@ -2,12 +2,31 @@
 #define BRAIN_MATH_UTILS_H
 #include "brain_core_types.h"
 #include <math.h>
+/**
+ * \def MIN(a,b)
+ */
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
+/**
+ * \def MAX(a,b)
+ */
 #define MAX(a, b) ((a) < (b) ? (b) : (a))
+/**
+ * \def EPSILON
+ */
 #define EPSILON 1e-6
+/**
+ * \def BRAIN_POSITIVE_SGN
+ */
 #define BRAIN_POSITIVE_SGN 1
+/**
+ * \def BRAIN_NEGATIVE_SGN
+ */
 #define BRAIN_NEGATIVE_SGN -1
+/**
+ * \def BRAIN_SGN(val)
+ */
 #define BRAIN_SGN(val) ((val>0)?BRAIN_POSITIVE_SGN:((val<0)?BRAIN_NEGATIVE_SGN:0))
+
 /**********************************************************************/
 /**                        ACTIVATION FUNCTIONS                      **/
 /**********************************************************************/
@@ -38,14 +57,4 @@ BrainReal crossentropy_cost(const BrainReal output, const BrainReal desired);
 /**********************************************************************/
 BrainReal quadratic_cost_derivative(const BrainReal output, const BrainReal desired);
 BrainReal crossentropy_cost_derivative(const BrainReal output, const BrainReal desired);
-/**********************************************************************/
-/**                         VECTOR FUNCTIONS                         **/
-/**********************************************************************/
-BrainReal dot(const BrainReal* a, const BrainReal* b, const BrainUint size);
-BrainReal distance(const BrainReal* a, const BrainReal* b, const BrainUint size);
-BrainReal norm2(const BrainReal* a, const BrainUint size);
-void FindGaussianModel(BrainReal** signals, BrainReal* means, BrainReal* sigmas, const BrainUint number_of_signals, const BrainUint size);
-void ApplyGaussianModel(BrainReal** signals, BrainReal* means, BrainReal* sigmas, const BrainUint number_of_signals, const BrainUint size);
-void MinMaxNormalization(BrainReal** signals, const BrainUint number_of_signals, const BrainUint size);
-void kmeans(BrainReal** signals, BrainReal** centers, BrainUint* labels, const BrainUint number_of_class, const BrainUint number_of_signals, const BrainUint size);
 #endif /* BRAIN_MATH_UTILS_H */

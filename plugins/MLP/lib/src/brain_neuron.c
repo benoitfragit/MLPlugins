@@ -6,6 +6,7 @@
 #include "brain_logging_utils.h"
 #include "brain_memory_utils.h"
 #include "brain_enum_utils.h"
+#include "brain_signal_utils.h"
 /**
  * \enum BrainActivationType
  * \brief enumeration to choose neurons activation function
