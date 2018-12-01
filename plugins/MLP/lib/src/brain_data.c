@@ -86,8 +86,6 @@ typedef struct Data
     BrainUint   _output_length;    /*!< output signal length          */
     BrainUint   _labels_length;    /*!< output label length           */
     BrainChar** _labels;           /*!< output label if needed        */
-    BrainSignal _means;            /*!< The means signal              */
-    BrainSignal _sigmas;           /*!< Ths variance signal           */
     BrainDataModel _model;         /*!< The brain data model          */
     BrainBool   _is_labelled;      /*!< Data are labelled             */
     BrainDataFormat _format;           /*!< Data format                   */
@@ -427,12 +425,12 @@ delete_data(BrainData data)
         }
 
         BRAIN_DELETE(data->_labels);
-        BRAIN_DELETE(data->_means);
-        BRAIN_DELETE(data->_sigmas);
         BRAIN_DELETE(data->_evaluating._input);
         BRAIN_DELETE(data->_evaluating._output);
         BRAIN_DELETE(data->_training._input);
         BRAIN_DELETE(data->_training._output);
+        BRAIN_DELETE(data->_model._minMaxModel._min);
+        BRAIN_DELETE(data->_model._minMaxModel._max);
         BRAIN_DELETE(data);
     }
 }
@@ -539,28 +537,4 @@ get_output_signal_length(const BrainData data)
     }
 
     return 0;
-}
-
-BrainSignal
-get_sigmas(const BrainData data)
-{
-    BrainSignal ret = NULL;
-    if (BRAIN_ALLOCATED(data))
-    {
-        ret = data->_sigmas;
-    }
-
-    return ret;
-}
-
-BrainSignal
-get_means(const BrainData data)
-{
-    BrainSignal ret = NULL;
-    if (BRAIN_ALLOCATED(data))
-    {
-        ret = data->_means;
-    }
-
-    return ret;
 }
