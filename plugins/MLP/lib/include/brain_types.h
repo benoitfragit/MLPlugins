@@ -44,4 +44,8 @@ typedef struct Neuron*  BrainNeuron;
  * \brief opaque pointer on Layer struct
  */
 typedef struct Layer*   BrainLayer;
+/**
+ * \brief opaque pointer to a Trainer
+ */
+ typedef struct Trainer* BrainTrainer;
 #endif /* BRAIN_TYPES_H */

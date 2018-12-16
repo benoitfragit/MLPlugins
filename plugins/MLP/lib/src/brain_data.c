@@ -152,52 +152,37 @@ csv_line_callback(void* data, BrainString label, const BrainReal* signal)
         }
         else
         {
-            const BrainUint number_of_fields    = input_length + output_length;
-            BrainUint k = 0;
             /****************************************************************/
             /**                    Use CSV data                            **/
             /****************************************************************/
-            for (;k < number_of_fields; ++k)
+            switch(pData->_format)
             {
-                BrainSignal value = NULL;
-                BrainUint kp = k;
-
-                switch(pData->_format)
+                case Format_InputFirst:
                 {
-                    case Format_InputFirst:
-                    {
-                        if (k < input_length)
-                        {
-                            value = &((dataset->_input[dataset->_children - 1])[kp]);
-                        }
-                        else
-                        {
-                            kp -= input_length;
-                            value = &((dataset->_output[dataset->_children - 1])[kp]);
-                        }
-                    }
-                        break;
-                    case Format_OutputFirst:
-                    {
-                        if (k < output_length)
-                        {
-                            value = &((dataset->_output[dataset->_children - 1])[kp]);
-                        }
-                        else
-                        {
-                            kp -= output_length;
-                            value = &((dataset->_input[dataset->_children - 1])[kp]);
-                        }
-                    }
-                        break;
-                    default:
-                        break;
+                    BRAIN_COPY(signal,
+                                dataset->_input[dataset->_children - 1],
+                                BrainReal,
+                                input_length);
+                    BRAIN_COPY(signal + input_length,
+                                dataset->_output[dataset->_children - 1],
+                                BrainReal,
+                                output_length);
                 }
-
-                if (BRAIN_ALLOCATED(value))
+                    break;
+                case Format_OutputFirst:
                 {
-                    *value = signal[k];
+                    BRAIN_COPY(signal,
+                                dataset->_output[dataset->_children - 1],
+                                BrainReal,
+                                output_length);
+                    BRAIN_COPY(signal + output_length,
+                                dataset->_input[dataset->_children - 1],
+                                BrainReal,
+                                input_length);
                 }
+                    break;
+                default:
+                    break;
             }
         }
     }
