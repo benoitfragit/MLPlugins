@@ -160,20 +160,20 @@ configure_network_with_context(BrainNetwork network, BrainString filepath)
                     free(buffer);
                 }
 
-                Context training_context = get_node_with_name_and_index(settings_context,
-                                                                        "training",
+                Context backpropagation_context = get_node_with_name_and_index(settings_context,
+                                                                        "backpropagation",
                                                                         0);
-                if (BRAIN_ALLOCATED(training_context))
+                if (BRAIN_ALLOCATED(backpropagation_context))
                 {
-                    network->_max_iter  = node_get_int(training_context, "iterations", 1000);
-                    network->_max_error = (BrainReal)node_get_double(training_context, "error", 0.001);
-                    network->_minibatch_size = node_get_int(training_context, "mini-batch-size", 32);
+                    network->_max_iter  = node_get_int(backpropagation_context, "iterations", 1000);
+                    network->_max_error = (BrainReal)node_get_double(backpropagation_context, "error", 0.001);
+                    network->_minibatch_size = node_get_int(backpropagation_context, "mini-batch-size", 32);
                     network->_error     = network->_max_error + 1.;
-                }
 
-                for (i = 0; i < number_of_layer; ++i)
-                {
-                    configure_layer_with_context(network->_layers[i], settings_context);
+                    for (i = 0; i < number_of_layer; ++i)
+                    {
+                        configure_layer_with_context(network->_layers[i], backpropagation_context);
+                    }
                 }
             }
 

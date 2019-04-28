@@ -230,7 +230,7 @@ validate_with_xsd(BrainString xml_file, BrainString xsd_file)
         }
         else if (ret > 0)
         {
-            BRAIN_DEBUG("%s fails to validate\n", xml_file);
+            BRAIN_CRITICAL("%s fails to validate\n", xml_file);
         }
         else
         {

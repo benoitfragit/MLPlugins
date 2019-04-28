@@ -20,40 +20,19 @@
         </xs:restriction>
     </xs:simpleType>
 
-    <xs:simpleType name="LearningType">
-        <xs:restriction base="xs:token">
-            <xs:enumeration value="BackPropagation"/>
-            <xs:enumeration value="Resilient"/>
-        </xs:restriction>
-    </xs:simpleType>
-
-    <xs:complexType name="RPropType">
-        <xs:attribute name="eta-plus"      type="xs:decimal" use="required"/>
-        <xs:attribute name="eta-minus"     type="xs:decimal" use="required"/>
-        <xs:attribute name="delta-min"     type="xs:decimal" use="required"/>
-        <xs:attribute name="delta-max"     type="xs:decimal" use="required"/>
-    </xs:complexType>
-
-    <xs:complexType name="BackPropType">
-        <xs:attribute name="learning-rate"  type="xs:decimal" use="required"/>
-        <xs:attribute name="momentum"       type="xs:decimal" use="optional"/>
-    </xs:complexType>
-
-    <xs:complexType name="TrainingType">
-        <xs:choice>
-            <xs:element name="backprop" type="BackPropType"/>
-            <xs:element name="rprop"    type="RPropType"/>
-        </xs:choice>
-        <xs:attribute name="iterations" type="xs:integer"   use="required"/>
-        <xs:attribute name="error"      type="xs:decimal"   use="required"/>
-        <xs:attribute name="mini-batch-size" type="xs:decimal" use="optional"/>
+    <xs:complexType name="BackPropagationType">
+        <xs:attribute name="activation-function" type="ActivationFunctionType" use="optional"/>
+        <xs:attribute name="learning-rate"      type="xs:decimal" use="required"/>
+        <xs:attribute name="momentum"           type="xs:decimal" use="optional"/>
+        <xs:attribute name="iterations"         type="xs:integer" use="required"/>
+        <xs:attribute name="error"              type="xs:decimal" use="required"/>
+        <xs:attribute name="mini-batch-size"    type="xs:decimal" use="optional"/>
     </xs:complexType>
 
     <xs:complexType name="SettingsType">
         <xs:all>
-            <xs:element name="training" type="TrainingType"/>
+            <xs:element name="backpropagation" type="BackPropagationType"/>
         </xs:all>
-        <xs:attribute name="activation-function" type="ActivationFunctionType" use="optional"/>
         <xs:attribute name="cost-function"       type="CostFunctionType"       use="optional"/>
     </xs:complexType>
 

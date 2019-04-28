@@ -1,7 +1,4 @@
 <?xml version="1.0"?>
-<settings cost-function="Quadratic" activation-function="Sigmoid">
-    <training error="0.001" iterations="16000" mini-batch-size="30">
-        <backprop learning-rate="2.5" momentum="0.5"/>
-        <!--rprop eta-plus="1.5" eta-minus="0.55" delta-min="0.000001" delta-max="50.0"/-->
-    </training>
+<settings cost-function="Quadratic">
+    <backpropagation activation-function="Sigmoid" error="0.001" iterations="10000" mini-batch-size="30" learning-rate="1.2" momentum="0.05"/>
 </settings>
