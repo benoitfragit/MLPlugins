@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="libbrain">
+<enum id="org.libbrain.config.enum">
+    <value nick="option1" value="0"/>
+    <value nick="option2" value="1"/>
+    <value nick="option3" value="2"/>
+</enum>
+<schema id="org.libbrain.config" path="/org/libbrain/config/">
+    <key name="datasets" type="a(siibsssss)">
+    <default>[]</default>
+    <summary>The application list</summary>
+    <description>List of applications</description>
+    </key>
+</schema>
+</schemalist>
