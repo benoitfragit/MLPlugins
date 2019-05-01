@@ -75,7 +75,11 @@ typedef struct RandomMask* BrainRandomMask;
 /**
  * \brief Define a CsvReader
  */
- typedef struct CsvReader* BrainCsvReader;
+typedef struct CsvReader* BrainCsvReader;
+/**
+* \brief Define a BrainSignal using single or double precision
+*/
+typedef BrainReal* BrainSignal;
 /**
  * \brief Define a BrainNetwork
  */

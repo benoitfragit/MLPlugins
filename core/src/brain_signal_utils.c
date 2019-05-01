@@ -193,7 +193,7 @@ ApplyMinMaxModel(BrainReal** signals,
         {
             for (j = 0; j < size; ++j)
             {
-                signals[i][j] = signals[i][j] - min[j];
+                signals[i][j] = signals[i][j] - (max[j] + min[j]) / 2.0;
                 if (min[j] < max[j])
                 {
                     signals[i][j] /= (max[j] - min[j]);

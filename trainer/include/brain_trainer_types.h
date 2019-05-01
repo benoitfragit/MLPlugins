@@ -14,7 +14,6 @@
 #ifndef BRAIN_TRAINER_TYPES_H
 #define BRAIN_TRAINER_TYPES_H
 
-typedef void*  BrainSignal;
 typedef struct Plugin*  BrainPlugin;
 
 #endif /* BRAIN_TRAINER_TYPES_H */

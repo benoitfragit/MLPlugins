@@ -29,10 +29,6 @@ typedef enum BrainFunctionType
 } BrainFunctionType;
 
 /**
- * \brief Define a BrainSignal using single or double precision
- */
-typedef BrainReal* BrainSignal;
-/**
  * \brief opaque pointer on Data struct
  */
 typedef struct Data*    BrainData;

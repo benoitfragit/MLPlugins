@@ -9,7 +9,7 @@
 
 #include "brain_layer.h"
 #include "brain_neuron.h"
-#include "brain_data.h"
+#include "brain_data_utils.h"
 #include "brain_config.h"
 #include "brain_probe.h"
 
