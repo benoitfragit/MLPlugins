@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema'>
+
+    <xs:simpleType name="ParserType">
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="csv"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="FormatType">
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="InputFirst"/>
+            <xs:enumeration value="OutputFirst"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="PrerocessingType">
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="GaussianNormalization"/>
+            <xs:enumeration value="MinMaxNormalization"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="PreprocessType">
+        <xs:attribute name="type" type="PrerocessingType" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="DataType">
+        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="preprocess" type="PreprocessType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="repository"     type="xs:string"  use="required"/>
+        <xs:attribute name="tokenizer"      type="xs:string"  use="optional"/>
+        <xs:attribute name="input-length"   type="xs:integer" use="required"/>
+        <xs:attribute name="output-length"  type="xs:integer" use="required"/>
+        <xs:attribute name="parser"         type="ParserType" use="required"/>
+        <xs:attribute name="format"         type="FormatType" use="required"/>
+        <xs:attribute name="labels"         type="xs:string"  use="required"/>
+    </xs:complexType>
+
+    <xs:element name="data" type="DataType"/>
+</xs:schema>

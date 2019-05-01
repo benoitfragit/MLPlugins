@@ -1,0 +1,6 @@
+#ifndef BRAIN_CORE_CONFIG_H
+#define BRAIN_CORE_CONFIG_H
+
+#define DATA_XSD_FILE     "${CMAKE_INSTALL_PREFIX}/schemas/data.xsd"
+
+#endif /* BRAIN_CORE_CONFIG_H */
