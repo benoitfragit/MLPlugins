@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.8.9)
 project(BrainTrainer)
 
+include (${CMAKE_CURRENT_SOURCE_DIR}/../scripts/cmake/Modules/GSettings.cmake)
+
 set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-o2 -g3 -Wextra -Wshadow")
 
 find_package(GTK3 REQUIRED)
@@ -21,7 +23,9 @@ set(BRAINTRAINER_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 file(GLOB_RECURSE SOURCES ${BRAINTRAINER_SOURCE_DIR}/*.c)
 
-add_executable(BrainTrainer ${SOURCES})
+add_schema(org.libbrain.gschema.xml GSCHEMA_LIBBRAIN)
+
+add_executable(BrainTrainer ${SOURCES} ${GSCHEMA_LIBBRAIN})
 
 link_directories(${CMAKE_INSTALL_PREFIX}/lib)
 target_link_libraries(BrainTrainer BrainCore ${CMAKE_DL_LIBS} ${GTK3_LIBRARIES})
