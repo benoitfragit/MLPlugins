@@ -19,6 +19,13 @@
  */
 BrainData new_data_from_context(BrainString filepath);
 /**
+ * \fn BrainData new_data_with_parameters(const BrainDataParameters parameters)
+ * \brief creata a data from parameters
+ * \param a list of parameters
+ * \return a BrainData
+ */
+BrainData new_data_with_parameters(const BrainDataParameters parameters);
+/**
  * \fn BrainUint get_number_of_evaluating_sample(const BrainData data);
  * \brief get the number of trainng sample
  *

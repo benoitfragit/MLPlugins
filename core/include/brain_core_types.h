@@ -39,7 +39,27 @@ typedef BrainDouble BrainReal;
 #else
 typedef BrainFloat BrainReal;
 #endif
-
+/**
+ * \brief Define a Data parser
+ */
+typedef enum DataParser
+{
+    Parser_CSV,
+    Parser_Invalide,
+    Parser_First = Parser_CSV,
+    Parser_Last  = Parser_Invalide
+} DataParser;
+/**
+ * \brief Define a Data preprocessing
+ */
+typedef enum DataPreprocessing
+{
+    Preprocessing_GaussianNormalization,
+    Preprocessing_MinMaxNormalization,
+    Preprocessing_Invalide,
+    Preprocessing_First = Preprocessing_GaussianNormalization,
+    Preprocessing_Last  = Preprocessing_Invalide
+} DataPreprocessing;
 /**
  * \brief define a DataFormat
  */
@@ -51,7 +71,25 @@ typedef enum BrainDataFormat
     Format_First = Format_InputFirst,
     Format_Last  = Format_Invalide
 } BrainDataFormat;
-
+/**
+ * \brief Define how to build a BrainData
+ */
+typedef struct DataParameters
+{
+    BrainString         repository_path;
+    BrainString         tokenizer;
+    BrainUint           input_length;
+    BrainUint           output_length;
+    DataParser          parser;
+    BrainBool           is_labedelled;
+    BrainDataFormat     format;
+    BrainUint           number_of_preprocessing;
+    DataPreprocessing*  preprocessings;
+} DataParameters;
+/**
+ * \brief Define a pointer to a Data Parameters struct
+ */
+typedef DataParameters* BrainDataParameters;
 /**
  * \brief define a XML Context
  */

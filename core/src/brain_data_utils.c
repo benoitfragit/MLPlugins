@@ -13,23 +13,6 @@
 
 #define TRAINING_DATASET_RATIO 0.80
 
-typedef enum DataParser
-{
-    Parser_CSV,
-    Parser_Invalide,
-    Parser_First = Parser_CSV,
-    Parser_Last  = Parser_Invalide
-} DataParser;
-
-typedef enum DataPreprocessing
-{
-    Preprocessing_GaussianNormalization,
-    Preprocessing_MinMaxNormalization,
-    Preprocessing_Invalide,
-    Preprocessing_First = Preprocessing_GaussianNormalization,
-    Preprocessing_Last  = Preprocessing_Invalide
-} DataPreprocessing;
-
 static BrainString _parsers[] = {
     "csv"
 };
@@ -370,6 +353,31 @@ new_data_from_context(BrainString filepath)
     }
 
     BRAIN_OUTPUT(new_data_from_context);
+
+    return data;
+}
+
+BrainData
+new_data_with_parameters(const BrainDataParameters parameters)
+{
+    BRAIN_INPUT(new_data_with_parameters)
+
+    BrainData data = NULL;
+
+    if (BRAIN_ALLOCATED(parameters))
+    {
+        data = new_data(parameters->repository_path,
+                        parameters->tokenizer,
+                        parameters->input_length,
+                        parameters->output_length,
+                        parameters->parser,
+                        parameters->is_labedelled,
+                        parameters->format,
+                        parameters->number_of_preprocessing,
+                        parameters->preprocessings);
+    }
+
+    BRAIN_OUTPUT(new_data_with_parameters)
 
     return data;
 }
