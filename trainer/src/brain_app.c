@@ -1,9 +1,11 @@
 #include "brain_memory_utils.h"
 #include "brain_logging_utils.h"
+#include "brain_data_manager.h"
 #include "brain_core_types.h"
 #include "trainer_config.h"
 #include "brain_trainer.h"
 #include <gtk/gtk.h>
+#include <gio/gio.h>
 #include <glib.h>
 /**********************************************************************/
 /**                            ACTION CALLBACK                       **/
@@ -280,8 +282,19 @@ main(BrainInt argc, BrainChar** argv)
 {
     GtkApplication *app = NULL;
     BrainTrainer *trainer = NULL;
+    GSettings* settings = NULL;
     BrainInt status;
 
+    /******************************************************************/
+    /**                     LOADING THE SETTINGS                     **/
+    /******************************************************************/
+    settings = g_settings_new("org.libbrain.config");
+    GVariant* child = NULL;
+    if (settings != NULL)
+    {
+        child = g_settings_get_value(settings, "datasets");
+        printf("OK ON A OUVERT le settings\n");
+    }
     /******************************************************************/
     /**                         ENABLE LOGGING                       **/
     /******************************************************************/

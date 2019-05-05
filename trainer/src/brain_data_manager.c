@@ -268,3 +268,17 @@ brain_data_manager_get_activated_data(BrainDataManager* manager)
 
     return data;
 }
+
+GVariant*
+brain_data_manager_get_variant(BrainDataManager* manager)
+{
+    GVariantBuilder* builder = NULL;
+    GVariant* value = NULL;
+
+    if (BRAIN_ALLOCATED(manager))
+    {
+
+    }
+
+    return value;
+}

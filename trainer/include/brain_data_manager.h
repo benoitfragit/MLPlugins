@@ -2,6 +2,7 @@
 #define BRAIN_DATA_MANAGER_H
 
 #include <glib.h>
+#include <gio/gio.h>
 #include <glib-object.h>
 
 #include "brain_trainer_types.h"
@@ -41,6 +42,7 @@ BrainDataManager* brain_data_manager_new                ();
 BrainData         brain_data_manager_get_activated_data (BrainDataManager* manager);
 void              brain_data_manager_add_new_data       (BrainDataManager* manager, gchar* name, BrainDataParameters parameters);
 void              brain_data_manager_deactivate_data    (BrainDataManager* manager);
+GVariant*         brain_data_manager_get_variant        (BrainDataManager* manager);
 
 G_END_DECLS
 
