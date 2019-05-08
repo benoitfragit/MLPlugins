@@ -249,7 +249,14 @@ brain_data_manager_add_new_data(BrainDataManager* manager, gchar* name, BrainDat
 
         if (BRAIN_ALLOCATED(priv))
         {
-            g_hash_table_insert(priv->_datas, name, parameters);
+            if (!g_hash_table_contains(priv->_datas, name))
+            {
+                g_hash_table_insert(priv->_datas, name, parameters);
+            }
+            else
+            {
+                g_hash_table_replace(priv->_datas, name, parameters);
+            }
         }
     }
 }
@@ -272,6 +279,27 @@ brain_data_manager_get_activated_data(BrainDataManager* manager)
     return data;
 }
 
+BrainDataParameters
+brain_data_manager_get_parameters(BrainDataManager* manager, BrainString name)
+{
+    BrainDataParameters parameters = NULL;
+
+    if (BRAIN_ALLOCATED(manager) &&
+        BRAIN_ALLOCATED(name))
+    {
+        ACCESS_PRIVATE_MEMBERS(manager)
+
+        if (BRAIN_ALLOCATED(priv))
+        {
+            if (g_hash_table_contains(priv->_datas, name))
+            {
+                parameters = (BrainDataParameters)g_hash_table_lookup(priv->_datas, name);
+            }
+        }
+    }
+
+    return parameters;
+}
 
 void
 brain_data_manager_from_variant(BrainDataManager* manager, GVariant* list)
