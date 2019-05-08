@@ -39,10 +39,12 @@ struct _BrainDataManagerClass
 GType brain_data_manager_get_type (void) G_GNUC_CONST;
 
 BrainDataManager* brain_data_manager_new                ();
+void              brain_data_manager_from_variant       (BrainDataManager* manager, GVariant* list);
 BrainData         brain_data_manager_get_activated_data (BrainDataManager* manager);
 void              brain_data_manager_add_new_data       (BrainDataManager* manager, gchar* name, BrainDataParameters parameters);
 void              brain_data_manager_deactivate_data    (BrainDataManager* manager);
-GVariant*         brain_data_manager_get_variant        (BrainDataManager* manager);
+GVariant*         brain_data_manager_to_variant         (BrainDataManager* manager);
+
 
 G_END_DECLS
 

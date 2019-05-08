@@ -55,6 +55,7 @@ typedef union DataModel
     MinMaxModel     _minMaxModel;
     GaussianModel   _gaussianModel;
 } BrainDataModel;
+
 /**
  * \struct Data
  * \brief  Internal model for a BrainData
@@ -366,15 +367,22 @@ new_data_with_parameters(const BrainDataParameters parameters)
 
     if (BRAIN_ALLOCATED(parameters))
     {
+        const BrainDataFormat format = get_enum_values(_formats, Format_First, Format_Last, parameters->format);
+        const DataParser parser = get_enum_values(_parsers, Parser_First, Parser_Last, parameters->parser);
+        DataPreprocessing* preprocessings =  NULL;
+
+        BRAIN_NEW(preprocessings, DataPreprocessing, 1);
+        *preprocessings = get_enum_values(_preprocessings, Preprocessing_First, Preprocessing_Last, parameters->preprocessing);
+
         data = new_data(parameters->repository_path,
                         parameters->tokenizer,
                         parameters->input_length,
                         parameters->output_length,
-                        parameters->parser,
+                        parser,
                         parameters->is_labedelled,
-                        parameters->format,
-                        parameters->number_of_preprocessing,
-                        parameters->preprocessings);
+                        format,
+                        1,
+                        preprocessings);
     }
 
     BRAIN_OUTPUT(new_data_with_parameters)

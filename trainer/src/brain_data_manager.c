@@ -6,6 +6,9 @@
 #include "brain_core_types.h"
 #include "trainer_config.h"
 
+#define BRAIN_DATA_FORMAT "siiysssss"
+#define BRAIN_DATASET_FORMAT "a(siiysssss)"
+
 #define ACCESS_PRIVATE_MEMBERS(manager) manager->priv = G_TYPE_INSTANCE_GET_PRIVATE (manager, TYPE_BRAIN_DATA_MANAGER, BrainDataManagerPrivate);\
                                         BrainDataManagerPrivate *priv = manager->priv;
 
@@ -269,15 +272,90 @@ brain_data_manager_get_activated_data(BrainDataManager* manager)
     return data;
 }
 
-GVariant*
-brain_data_manager_get_variant(BrainDataManager* manager)
+
+void
+brain_data_manager_from_variant(BrainDataManager* manager, GVariant* list)
 {
-    GVariantBuilder* builder = NULL;
+    GVariantIter* iter = NULL;
+
+    if (BRAIN_ALLOCATED(list) &&
+        BRAIN_ALLOCATED(manager))
+    {
+        ACCESS_PRIVATE_MEMBERS(manager)
+
+        if (BRAIN_ALLOCATED(priv))
+        {
+            BrainDataParameters parameters = g_malloc0(1*sizeof(DataParameters));
+            gchar*          name       = NULL;
+
+            //get the content of the GVariant
+            g_variant_get(list, BRAIN_DATASET_FORMAT, &iter);
+
+            while(g_variant_iter_loop(  iter,
+                                        BRAIN_DATA_FORMAT,
+                                        &name,
+                                        &(parameters->input_length),
+                                        &(parameters->output_length),
+                                        &(parameters->is_labedelled),
+                                        &(parameters->format),
+                                        &(parameters->parser),
+                                        &(parameters->tokenizer),
+                                        &(parameters->repository_path),
+                                        &(parameters->preprocessing)))
+            {
+                brain_data_manager_add_new_data(manager, name, parameters);
+            }
+
+            g_variant_iter_free(iter);
+        }
+    }
+}
+
+static void
+brain_data_manager_dataset_to_variant(gpointer key, gpointer value, gpointer user_data)
+{
+    if (BRAIN_ALLOCATED(key) &&
+        BRAIN_ALLOCATED(value) &&
+        BRAIN_ALLOCATED(user_data))
+    {
+        gchar* name = (gchar *)key;
+        BrainDataParameters parameters = (BrainDataParameters)value;
+        GVariantBuilder* builder = (GVariantBuilder *)user_data;
+
+        g_variant_builder_add(builder,
+                              BRAIN_DATA_FORMAT,
+                              name,
+                              parameters->input_length,
+                              parameters->output_length,
+                              parameters->is_labedelled,
+                              parameters->format,
+                              parameters->parser,
+                              parameters->tokenizer,
+                              parameters->repository_path,
+                              parameters->preprocessing);
+    }
+}
+
+GVariant*
+brain_data_manager_to_variant(BrainDataManager* manager)
+{
     GVariant* value = NULL;
 
     if (BRAIN_ALLOCATED(manager))
     {
+        ACCESS_PRIVATE_MEMBERS(manager)
 
+        if (BRAIN_ALLOCATED(priv))
+        {
+            GVariantBuilder* builder = g_variant_builder_new(G_VARIANT_TYPE(BRAIN_DATASET_FORMAT));
+
+            g_hash_table_foreach(priv->_datas,
+                                 brain_data_manager_dataset_to_variant,
+                                 builder);
+
+            value = g_variant_new(BRAIN_DATASET_FORMAT, builder);
+            g_variant_builder_unref(builder);
+        }
     }
 
     return value;

@@ -76,15 +76,14 @@ typedef enum BrainDataFormat
  */
 typedef struct DataParameters
 {
-    BrainString         repository_path;
-    BrainString         tokenizer;
-    BrainUint           input_length;
-    BrainUint           output_length;
-    DataParser          parser;
-    BrainBool           is_labedelled;
-    BrainDataFormat     format;
-    BrainUint           number_of_preprocessing;
-    DataPreprocessing*  preprocessings;
+    BrainBool       is_labedelled;
+    BrainUint       input_length;
+    BrainUint       output_length;
+    BrainChar*      repository_path;
+    BrainChar*      tokenizer;
+    BrainChar*      parser;
+    BrainChar*      format;
+    BrainChar*      preprocessing;
 } DataParameters;
 /**
  * \brief Define a pointer to a Data Parameters struct
