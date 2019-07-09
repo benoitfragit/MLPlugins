@@ -52,14 +52,6 @@ void activate_neuron(BrainNeuron neuron, const BrainBool is_activated);
  */
 BrainUint get_neuron_number_of_input(const BrainNeuron neuron);
 /**
- * \fn BrainReal get_neuron_bias(const BrainNeuron neuron)
- * \brief retrieve neuron bias
- *
- * \param neuron the Neuron
- * \return the neuron bias
- */
-BrainReal get_neuron_bias(const BrainNeuron neuron);
-/**
  * \fn BrainReal get_neuron_weight(const BrainNeuron neuron, const BrainUint index)
  * \brief retrieve a neuron weight
  *

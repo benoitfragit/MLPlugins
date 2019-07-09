@@ -6,8 +6,8 @@
 #include "brain_core_types.h"
 #include "trainer_config.h"
 
-#define BRAIN_DATA_FORMAT "siiysssss"
-#define BRAIN_DATASET_FORMAT "a(siiysssss)"
+#define BRAIN_DATA_FORMAT       "siiysssss"
+#define BRAIN_DATASET_FORMAT    "a(siiysssss)"
 
 #define ACCESS_PRIVATE_MEMBERS(manager) manager->priv = G_TYPE_INSTANCE_GET_PRIVATE (manager, TYPE_BRAIN_DATA_MANAGER, BrainDataManagerPrivate);\
                                         BrainDataManagerPrivate *priv = manager->priv;

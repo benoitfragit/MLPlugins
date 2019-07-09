@@ -72,7 +72,7 @@ typedef struct Data
     BrainChar** _labels;           /*!< output label if needed        */
     BrainDataModel _model;         /*!< The brain data model          */
     BrainBool   _is_labelled;      /*!< Data are labelled             */
-    BrainDataFormat _format;           /*!< Data format                   */
+    BrainDataFormat _format;       /*!< Data format                   */
 } Data;
 
 static void
