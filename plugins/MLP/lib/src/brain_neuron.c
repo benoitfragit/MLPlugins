@@ -30,24 +30,19 @@ typedef struct Neuron
     BrainSignal       _errors;                /*!< error to correct in the layer                        */
     BrainSignal       _out;                   /*!< An output value pointer owned by the BrainLayer      */
     BrainReal         _sum;                   /*!< Summation of all input time weight                   */
-    /******************************************************************/
-    /**                        TRAINING PARAMETERS                   **/
-    /******************************************************************/
-    BrainReal         _learning_rate;         /*!< BackProp learning rate                               */
-    BrainReal         _momemtum;              /*!< BackProp momentum value                              */
     BrainUint         _number_of_input;       /*!< Number of inputs                                     */
 } Neuron;
 
 void
-update_neuron(BrainNeuron neuron, const BrainReal minibatch_size)
+update_neuron(BrainNeuron neuron,
+              BrainReal learning_rate,
+              BrainReal momentum)
 {
     BRAIN_INPUT(update_neuron_using_backpropagation)
 
     if (BRAIN_ALLOCATED(neuron))
     {
         const BrainUint number_of_inputs      = neuron->_number_of_input;
-        const BrainReal learning_rate         = neuron->_learning_rate / (BrainReal)minibatch_size;
-        const BrainReal momentum              = neuron->_momemtum;
         BrainReal delta = 0.;
         BrainUint i = 0;
         /******************************************************/
@@ -67,25 +62,18 @@ update_neuron(BrainNeuron neuron, const BrainReal minibatch_size)
 }
 
 void
-configure_neuron_with_context(BrainNeuron neuron, Context context)
+set_neuron_activation(BrainNeuron neuron, BrainString name)
 {
-    BRAIN_INPUT(configure_neuron_with_context)
+    BRAIN_INPUT(set_neuron_activation)
 
     if (BRAIN_ALLOCATED(neuron)
-    &&  BRAIN_ALLOCATED(context))
+    &&  BRAIN_ALLOCATED(name))
     {
-        BrainChar* buffer = NULL;
-
-        neuron->_learning_rate       = (BrainReal)node_get_double(context, "learning-rate", 0.005);
-        neuron->_momemtum            = (BrainReal)node_get_double(context, "momentum", 0.001);
-
-        buffer                       = (BrainChar *)node_get_prop(context, "activation-function");
-        neuron->_activation_function = brain_activation_function(buffer);
-        neuron->_derivative_function = brain_derivative_function(buffer);
-        BRAIN_DELETE(buffer);
+        neuron->_activation_function = brain_activation_function(name);
+        neuron->_derivative_function = brain_derivative_function(name);
     }
 
-    BRAIN_OUTPUT(configure_neuron_with_context)
+    BRAIN_OUTPUT(set_neuron_activation)
 }
 
 void
@@ -156,8 +144,6 @@ new_neuron(BrainSignal     in,
         _neuron->_number_of_input        = number_of_inputs;
         _neuron->_in                     = in;
         _neuron->_sum                    = 0.;
-        _neuron->_learning_rate          = 1.12;
-        _neuron->_momemtum               = 0.0;
         _neuron->_activation_function    = brain_activation_function("Sigmoid");
         _neuron->_derivative_function    = brain_derivative_function("Sigmoid");
         _neuron->_errors                 = errors;

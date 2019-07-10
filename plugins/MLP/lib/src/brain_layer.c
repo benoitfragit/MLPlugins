@@ -24,12 +24,12 @@ struct Layer
 } Layer;
 
 void
-configure_layer_with_context(BrainLayer layer, Context context)
+set_layer_activation(BrainLayer layer, BrainString name)
 {
     BRAIN_INPUT(configure_layer_with_context)
 
     if (BRAIN_ALLOCATED(layer)
-    &&  BRAIN_ALLOCATED(context))
+    &&  BRAIN_ALLOCATED(name))
     {
         const BrainUint number_of_neurons = layer->_number_of_neuron;
         BrainUint i = 0;
@@ -38,7 +38,7 @@ configure_layer_with_context(BrainLayer layer, Context context)
         {
             BrainNeuron neuron = layer->_neurons[i];
 
-            configure_neuron_with_context(neuron, context);
+            set_neuron_activation(neuron, name);
         }
     }
 
@@ -388,7 +388,9 @@ deserialize_layer(BrainLayer layer, Context context)
 }
 
 void
-update_layer(BrainLayer layer, const BrainReal minibatch_size)
+update_layer(BrainLayer layer,
+             BrainReal learning_rate,
+             BrainReal momentum)
 {
     BRAIN_INPUT(update_layer)
 
@@ -400,7 +402,9 @@ update_layer(BrainLayer layer, const BrainReal minibatch_size)
             /**********************************************************/
             /**                    UPDATE ALL NEURONS                **/
             /**********************************************************/
-            update_neuron(layer->_neurons[i], minibatch_size);
+            update_neuron(layer->_neurons[i],
+                          learning_rate,
+                          momentum);
         }
     }
 

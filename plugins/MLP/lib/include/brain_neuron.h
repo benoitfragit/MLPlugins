@@ -61,21 +61,26 @@ BrainUint get_neuron_number_of_input(const BrainNeuron neuron);
  */
 BrainReal get_neuron_weight(const BrainNeuron neuron, const BrainUint index);
 /**
- * \fn void configure_neuron_with_context( BrainNeuron neuron, Context context);
+ * \fn void set_neuron_activation( BrainNeuron neuron, BrainString name);
  * \brief customize neural network parameters
  *
  * \param neuron    The BrainNeuron to train
- * \param context   The context
+ * \param name      The function name
  */
-void configure_neuron_with_context(BrainNeuron neuron, Context context);
+void set_neuron_activation(BrainNeuron neuron, BrainString name);
 /**
- * \fn void update_neuron(BrainNeuron reuron, const BrainReal minibatch_size)
+ * \fn void update_neuron(BrainNeuron reuron,
+ *                        BrainReal minibatch_size,
+ *                        BrainReal learning_rate,
+ *                        BrainReal momemtum )
  * \brief apply correction to a neuron to reduce the total error
  *
  * \param neuron a BrainNeuron
  * \param minibatch_size size of the mini batch
  */
-void update_neuron(BrainNeuron neuron, const BrainReal minibatch_size);
+void update_neuron(BrainNeuron neuron,
+                    BrainReal learning_rate,
+                    BrainReal momentum);
 /**
  * \fn void deserialize_neuron(BrainNeuron neuron, Context context)
  * \brief deserialize a neuron from a context

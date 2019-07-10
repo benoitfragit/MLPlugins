@@ -97,13 +97,13 @@ BrainSignal get_layer_errors(const BrainLayer layer);
  */
 void activate_layer(const BrainLayer layer, const BrainBool hidden_layer);
 /**
- * \fn void configure_layer_with_context( BrainLayer layer, Context context)
+ * \fn void set_layer_activation( BrainLayer layer, BrainString name)
  * \brief customize neural network parameters
  *
  * \param layer     The BrainLayer to train
- * \param context   The XML context
+ * \param name      The function name
  */
-void configure_layer_with_context(BrainLayer, Context context);
+void set_layer_activation(BrainLayer layer, BrainString name);
 /**
  * \fn void serialize_layer(BrainLayer layer, Writer writer)
  * \brief serialize a layer
@@ -121,11 +121,16 @@ void serialize_layer(BrainLayer layer, Writer writer);
  */
 void deserialize_layer(BrainLayer layer, Context context);
 /**
- * \fn void update_layer(BrainLayer layer, const BrainReal minibatch_size)
+ * \fn void update_layer(BrainLayer layer,
+ *                       BrainReal learning_rate,
+ *                       BrainReal momentum)
+ *
  * \brief apply correction to a neuron to reduce the total error
  *
  * \param layer a BrainLayer
  * \param minibatch_size size of the mini batch
  */
-void update_layer(BrainLayer layer, const BrainReal minibatch_size);
+void update_layer(BrainLayer layer,
+                  BrainReal learning_rate,
+                  BrainReal momentum);
 #endif /* BRAIN_LAYER_H */
