@@ -5,36 +5,8 @@
 #include "brain_xml_utils.h"
 #include "brain_logging_utils.h"
 #include "brain_memory_utils.h"
-#include "brain_enum_utils.h"
 #include "brain_signal_utils.h"
-/**
- * \enum BrainActivationType
- * \brief enumeration to choose neurons activation function
- */
-typedef enum BrainActivationType
-{
-    Identity,           /*!< Identity activation */
-    Sigmoid,            /*!< sigmoid activation  */
-    TanH,               /*!< tanh activation     */
-    ArcTan,             /*!< arctan activation   */
-    SoftPlus,           /*!< softplus activation */
-    Sinusoid,           /*!< sinusoid activation */
-    ReLu,               /*!< relu activation     */
-    Invalid_Activation, /*!< Invalid activation  */
-
-    First_Activation = Identity,
-    Last_Activation = Invalid_Activation
-} BrainActivationType;
-/**
- * \brief function pointer on an activation function
- *
- * It let neurons use several activation function and
- * automatically compute the activation an it's derivation
- *
- * \param value dot product of input vector and weight vector of a neuron
- * \return the value of the activation
- */
-typedef BrainReal (*ActivationPtrFunc)(const BrainReal value);
+#include "brain_function_utils.h"
 /**
  * \struct Neuron
  * \brief  Internal model for a BrainNeuron
@@ -46,8 +18,8 @@ typedef struct Neuron
     /******************************************************************/
     /**                      FUNCTIONAL PARAMETERS                   **/
     /******************************************************************/
-    ActivationPtrFunc _activation_function;   /*!< Activation function                                  */
-    ActivationPtrFunc _derivative_function;   /*!< Derivative function                                  */
+    BrainActivationFunction _activation_function;   /*!< Activation function                                  */
+    BrainActivationFunction _derivative_function;   /*!< Derivative function                                  */
     /******************************************************************/
     /**                      STRUCTURAL PARAMETERS                   **/
     /******************************************************************/
@@ -65,24 +37,6 @@ typedef struct Neuron
     BrainReal         _momemtum;              /*!< BackProp momentum value                              */
     BrainUint         _number_of_input;       /*!< Number of inputs                                     */
 } Neuron;
-
-static BrainString activation_name[] = {
-    "Identity",
-    "Sigmoid",
-    "TanH",
-    "ArcTan",
-    "SoftPlus",
-    "Sinus",
-    "ReLu"
-};
-
-static ActivationPtrFunc _activation_functions[][2] = {{identity,           identity_derivative},
-                                                       {sigmoid,            sigmoid_derivative},
-                                                       {tangeant_hyperbolic,tangeant_hyperbolic_derivative},
-                                                       {co_tangeant,        co_tangeant_derivative},
-                                                       {softplus,           softplus_derivative},
-                                                       {sinusoid,           sinusoid_derivative},
-                                                       {relu,               relu_derivative}};
 
 void
 update_neuron(BrainNeuron neuron, const BrainReal minibatch_size)
@@ -121,15 +75,13 @@ configure_neuron_with_context(BrainNeuron neuron, Context context)
     &&  BRAIN_ALLOCATED(context))
     {
         BrainChar* buffer = NULL;
-        BrainActivationType activation_type = Sigmoid;
 
         neuron->_learning_rate       = (BrainReal)node_get_double(context, "learning-rate", 0.005);
         neuron->_momemtum            = (BrainReal)node_get_double(context, "momentum", 0.001);
-        buffer                       = (BrainChar *)node_get_prop(context, "activation-function");
-        activation_type              = get_enum_values(activation_name, First_Activation, Last_Activation, buffer);
-        neuron->_activation_function = _activation_functions[activation_type][Function];
-        neuron->_derivative_function = _activation_functions[activation_type][Derivative];
 
+        buffer                       = (BrainChar *)node_get_prop(context, "activation-function");
+        neuron->_activation_function = brain_activation_function(buffer);
+        neuron->_derivative_function = brain_derivative_function(buffer);
         BRAIN_DELETE(buffer);
     }
 
@@ -143,7 +95,7 @@ activate_neuron(BrainNeuron neuron, const BrainBool is_activated)
 
     if (BRAIN_ALLOCATED(neuron))
     {
-        ActivationPtrFunc activation_function = neuron->_activation_function;
+        BrainActivationFunction activation_function = neuron->_activation_function;
 
         *(neuron->_out) = 0.;
         neuron->_sum    = 0.;
@@ -206,8 +158,8 @@ new_neuron(BrainSignal     in,
         _neuron->_sum                    = 0.;
         _neuron->_learning_rate          = 1.12;
         _neuron->_momemtum               = 0.0;
-        _neuron->_activation_function    = _activation_functions[Sigmoid][Function];
-        _neuron->_derivative_function    = _activation_functions[Sigmoid][Derivative];
+        _neuron->_activation_function    = brain_activation_function("Sigmoid");
+        _neuron->_derivative_function    = brain_derivative_function("Sigmoid");
         _neuron->_errors                 = errors;
 
         for (index = 0; index < _neuron->_number_of_input; ++index)
@@ -215,6 +167,7 @@ new_neuron(BrainSignal     in,
             _neuron->_w[index] = (BrainReal)BRAIN_RAND_RANGE(-random_value_limit, random_value_limit);
             _neuron->_deltas[index] = 0.;
         }
+        _neuron->_w[index] = (BrainReal)BRAIN_RAND_RANGE(-random_value_limit, random_value_limit);
     }
 
     BRAIN_OUTPUT(new_neuron)
@@ -315,8 +268,8 @@ backpropagate_neuron_gradient(BrainNeuron neuron, const BrainReal loss)
 
     if (BRAIN_ALLOCATED(neuron))
     {
-        const BrainUint number_of_inputs      = neuron->_number_of_input;
-        ActivationPtrFunc derivative_function = neuron->_derivative_function;
+        const BrainUint number_of_inputs            = neuron->_number_of_input;
+        BrainActivationFunction derivative_function = neuron->_derivative_function;
 
         if (BRAIN_ALLOCATED(derivative_function))
         {

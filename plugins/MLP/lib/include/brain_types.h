@@ -19,16 +19,6 @@
 #define __BRAIN_VISIBLE__ __attribute__((visibility("default")))
 
 /**
- * \enum BrainFunctionEnum
- * \brief Define if the function is a derivative or not
- */
-typedef enum BrainFunctionType
-{
-    Function = 0,
-    Derivative = 1
-} BrainFunctionType;
-
-/**
  * \brief opaque pointer on Data struct
  */
 typedef struct Data*    BrainData;

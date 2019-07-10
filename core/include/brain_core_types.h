@@ -125,4 +125,12 @@ typedef struct Network* BrainNetwork;
  * \brief Define a BrainData
  */
 typedef struct Data* BrainData;
+/**
+ * \brief function pointer on an activation function
+ */
+typedef BrainReal (*BrainActivationFunction)(const BrainReal value);
+/**
+ * \brief function pointer on an cost function
+ */
+typedef BrainReal (*BrainCostFunction)(const BrainReal output, const BrainReal desired);
 #endif /* BRAIN_CORE_TYPES_H */

@@ -5,7 +5,7 @@
 #include "brain_logging_utils.h"
 #include "brain_math_utils.h"
 #include "brain_memory_utils.h"
-#include "brain_enum_utils.h"
+#include "brain_function_utils.h"
 
 #include "brain_layer.h"
 #include "brain_neuron.h"
@@ -13,36 +13,6 @@
 #include "brain_config.h"
 #include "brain_probe.h"
 
-/**
- * \enum BrainCostFunctionType
- * \brief enumeration to choose network cost function
- */
-typedef enum BrainCostFunctionType
-{
-    Quadratic,            /*!< Quadratic cost function    */
-    CrossEntropy,         /*!< CrossEntropy cost function */
-    Invalid_CostFunction, /*!< invalid cost function      */
-
-    First_CostFunction = Quadratic,
-    Last_CostFunction  = Invalid_CostFunction
-} BrainCostFunctionType;
-/**
- * \brief function pointer on an cost function
- *
- * it let the network use several cost function and automatically compute
- * the derivative
- *
- * \param output the output of a neuron
- * \param desired the desired output of a neuron
- * \return the value of the cost function
- */
-typedef BrainReal (*CostPtrFunc)(const BrainReal output, const BrainReal desired);
-
-static BrainString costfunction_names[] =
-{
-    "Quadratic",
-    "CrossEntropy"
-};
 /**
  * \struct Network
  * \brief  Internal model for a BrainNetwork
@@ -73,12 +43,9 @@ typedef struct Network
     /*********************************************************************/
     /**                      FUNCTIONAL PARAMETERS                      **/
     /*********************************************************************/
-    CostPtrFunc   _cost_function;    /*!< Cost function                  */
-    CostPtrFunc   _cost_function_derivative; /*!< Cost function derivative */
+    BrainCostFunction _cost_function;    /*!< Cost function                  */
+    BrainCostFunction _cost_function_derivative; /*!< Cost function derivative */
 } Network;
-
-static CostPtrFunc _cost_functions[][2] = {{quadratic_cost,     quadratic_cost_derivative},
-                                           {crossentropy_cost,  crossentropy_cost_derivative}};
 
 static void
 feedforward(BrainNetwork      network,
@@ -151,9 +118,8 @@ configure_network_with_context(BrainNetwork network, BrainString filepath)
                 BrainUint i = 0;
 
                 BrainChar* buffer                        = (BrainChar *)node_get_prop(settings_context, "cost-function");
-                BrainCostFunctionType cost_function_type = get_enum_values(costfunction_names, First_CostFunction, Last_CostFunction, buffer);
-                network->_cost_function                  = _cost_functions[cost_function_type][Function];
-                network->_cost_function_derivative       = _cost_functions[cost_function_type][Derivative];
+                network->_cost_function                  = brain_cost_function(buffer);
+                network->_cost_function_derivative       = brain_derivative_cost_function(buffer);
 
                 if (BRAIN_ALLOCATED(buffer))
                 {
@@ -235,7 +201,7 @@ backpropagate(BrainNetwork network,
         BRAIN_ALLOCATED(desired))
     {
         const BrainSignal output = get_network_output(network);
-        const CostPtrFunc cost_function_derivative = network->_cost_function_derivative;
+        const BrainCostFunction cost_function_derivative = network->_cost_function_derivative;
         BrainUint i = 0;
         BrainSignal loss = NULL;
 
@@ -323,8 +289,8 @@ new_network(const BrainUint signal_input_length,
         _network->_error            = _network->_max_error + 1.;
         _network->_iterations       = 0;
         _network->_minibatch_size  = 32;
-        _network->_cost_function    = _cost_functions[Quadratic][Function];
-        _network->_cost_function_derivative = _cost_functions[Quadratic][Derivative];
+        _network->_cost_function    = brain_cost_function("Quadratic");
+        _network->_cost_function_derivative = brain_derivative_cost_function("Quadratic");
         /**************************************************************/
         /**                INITIALE THE RANDOM GENERATOR             **/
         /**************************************************************/
@@ -404,7 +370,7 @@ compute_network_error(const BrainNetwork network, const BrainData data, const Br
         const BrainSignal   input           = get_evaluating_input_signal(data, index);
         const BrainSignal   target          = get_evaluating_output_signal(data, index);
 
-        CostPtrFunc cost_function = network->_cost_function;
+        BrainCostFunction cost_function = network->_cost_function;
         BrainSignal output = NULL;
         BrainUint j = 0;
 
