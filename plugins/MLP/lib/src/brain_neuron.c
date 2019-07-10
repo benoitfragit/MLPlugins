@@ -7,6 +7,7 @@
 #include "brain_memory_utils.h"
 #include "brain_signal_utils.h"
 #include "brain_function_utils.h"
+#include "brain_weight_utils.h"
 /**
  * \struct Neuron
  * \brief  Internal model for a BrainNeuron
@@ -23,10 +24,8 @@ typedef struct Neuron
     /******************************************************************/
     /**                      STRUCTURAL PARAMETERS                   **/
     /******************************************************************/
+    BrainWeight*      _w;                     /*!< An array of weight                                   */
     BrainSignal       _in;                    /*!< Input signal of an BrainNeuron                       */
-    BrainSignal       _w;                     /*!< An array of weight without the bias                  */
-    BrainSignal       _gradients;             /*!< weights gradient values                              */
-    BrainSignal       _deltas;                /*!< weights delta values                                 */
     BrainSignal       _errors;                /*!< error to correct in the layer                        */
     BrainSignal       _out;                   /*!< An output value pointer owned by the BrainLayer      */
     BrainReal         _sum;                   /*!< Summation of all input time weight                   */
@@ -42,19 +41,14 @@ update_neuron(BrainNeuron neuron,
 
     if (BRAIN_ALLOCATED(neuron))
     {
-        const BrainUint number_of_inputs      = neuron->_number_of_input;
-        BrainReal delta = 0.;
+        const BrainUint number_of_inputs  = neuron->_number_of_input;
         BrainUint i = 0;
         /******************************************************/
         /**      UPDATE ALL WEIGHT USING GRADIENTS MEANS     **/
         /******************************************************/
-        // the bias is the last weight
         for (i = 0; i < number_of_inputs + 1; ++i)
         {
-            delta = learning_rate * neuron->_gradients[i] - momentum * neuron->_deltas[i];
-            neuron->_w[i] -= delta;
-            neuron->_gradients[i] = 0.;
-            neuron->_deltas[i] = delta;
+            update_weight(neuron->_w[i], learning_rate, momentum);
         }
     }
 
@@ -94,8 +88,17 @@ activate_neuron(BrainNeuron neuron, const BrainBool is_activated)
         if ((activation_function != NULL)
         &&  is_activated)
         {
-            // Bias si simulated using a dummy 1 input
-            neuron->_sum = dot(neuron->_in, neuron->_w, neuron->_number_of_input) + neuron->_w[neuron->_number_of_input];
+            BrainUint i = 0;
+            BrainReal w = 0.;
+
+            for (i = 0; i < neuron->_number_of_input; ++i)
+            {
+                w = get_weight(neuron->_w[i]);
+                neuron->_sum += w * neuron->_in[i];
+            }
+            w = get_weight(neuron->_w[i]);
+            neuron->_sum += w * 1.0;
+
             *(neuron->_out) = activation_function(neuron->_sum);
         }
     }
@@ -110,9 +113,12 @@ delete_neuron(BrainNeuron neuron)
 
     if (BRAIN_ALLOCATED(neuron))
     {
+        BrainUint i = 0;
+        for (i = 0; i < neuron->_number_of_input + 1; ++i)
+        {
+            BRAIN_DELETE(neuron->_w[i]);
+        }
         BRAIN_DELETE(neuron->_w);
-        BRAIN_DELETE(neuron->_gradients);
-        BRAIN_DELETE(neuron->_deltas);
         BRAIN_DELETE(neuron);
     }
 
@@ -136,9 +142,7 @@ new_neuron(BrainSignal     in,
 
         BRAIN_NEW(_neuron,                  Neuron,    1);
         // Note: You should not forget the bias associated to a dummy 1 input
-        BRAIN_NEW(_neuron->_w,              BrainReal, number_of_inputs + 1);
-        BRAIN_NEW(_neuron->_deltas,         BrainReal, number_of_inputs + 1);
-        BRAIN_NEW(_neuron->_gradients,      BrainReal, number_of_inputs + 1);
+        BRAIN_NEW(_neuron->_w,              BrainWeight, number_of_inputs + 1);
 
         _neuron->_out                    = out;
         _neuron->_number_of_input        = number_of_inputs;
@@ -148,12 +152,10 @@ new_neuron(BrainSignal     in,
         _neuron->_derivative_function    = brain_derivative_function("Sigmoid");
         _neuron->_errors                 = errors;
 
-        for (index = 0; index < _neuron->_number_of_input; ++index)
+        for (index = 0; index < _neuron->_number_of_input + 1; ++index)
         {
-            _neuron->_w[index] = (BrainReal)BRAIN_RAND_RANGE(-random_value_limit, random_value_limit);
-            _neuron->_deltas[index] = 0.;
+            _neuron->_w[index] = new_weight(random_value_limit);
         }
-        _neuron->_w[index] = (BrainReal)BRAIN_RAND_RANGE(-random_value_limit, random_value_limit);
     }
 
     BRAIN_OUTPUT(new_neuron)
@@ -181,7 +183,7 @@ get_neuron_weight(const BrainNeuron neuron, const BrainUint index)
     if (BRAIN_ALLOCATED(neuron) &&
         (index < neuron->_number_of_input))
     {
-        ret = neuron->_w[index];
+        ret = get_weight(neuron->_w[index]);
     }
 
     return ret;
@@ -197,15 +199,16 @@ deserialize_neuron(BrainNeuron neuron, Context context)
     {
         const BrainUint number_of_weights = get_number_of_node_with_name(context, "weight");
         BrainUint index = 0;
+        BrainReal value = 0.;
 
         for (index = 0; index < number_of_weights; ++index)
         {
             Context subcontext = get_node_with_name_and_index(context, "weight", index);
-
-            neuron->_w[index] = (BrainReal)node_get_content_as_double(subcontext);
+            value = (BrainReal)node_get_content_as_double(subcontext);
+            set_weight(neuron->_w[index], value);
         }
-
-        neuron->_w[index] = (BrainReal)node_get_double(context, "bias", 0.0);
+        value = (BrainReal)node_get_double(context, "bias", 0.0);
+        set_weight(neuron->_w[index], value);
     }
 
     BRAIN_OUTPUT(deserialize_neuron)
@@ -227,16 +230,19 @@ serialize_neuron(BrainNeuron neuron, Writer writer)
             {
                 BrainUint index_input = 0;
                 BrainChar buffer[50];
+                BrainReal w = 0.;
 
                 for (index_input = 0;
                      index_input < number_of_inputs;
                      ++index_input)
                 {
-                    sprintf(buffer, "%lf", neuron->_w[index_input]);
+                    w = get_weight(neuron->_w[index_input]);
+                    sprintf(buffer, "%lf",w);
                     write_element(writer, "weight", buffer);
                 }
 
-                sprintf(buffer, "%lf", neuron->_w[index_input]);
+                w = get_weight(neuron->_w[index_input]);
+                sprintf(buffer, "%lf", w);
                 add_attribute(writer, "bias", buffer);
 
                 stop_element(writer);
@@ -261,6 +267,7 @@ backpropagate_neuron_gradient(BrainNeuron neuron, const BrainReal loss)
         {
             const BrainReal neuron_gradient   = loss * derivative_function(neuron->_sum);
             BrainUint i = 0;
+
             /******************************************************/
             /**               BACKPROPAGATE $_i                  **/
             /******************************************************/
@@ -268,14 +275,15 @@ backpropagate_neuron_gradient(BrainNeuron neuron, const BrainReal loss)
             {
                 if (BRAIN_ALLOCATED(neuron->_errors))
                 {
-                    neuron->_errors[i] += neuron_gradient * neuron->_w[i];
+                    BrainReal w = get_weight(neuron->_w[i]);
+                    neuron->_errors[i] += neuron_gradient * w;
                 }
 
-                neuron->_gradients[i] += neuron_gradient * neuron->_in[i];
+                accumulate_gradient(neuron->_w[i], neuron_gradient, neuron->_in[i]);
             }
 
             // Bias is modelized with a dummy 1 input
-            neuron->_gradients[i] += neuron_gradient;
+            accumulate_gradient(neuron->_w[i], neuron_gradient, 1.);
         }
     }
 

@@ -122,6 +122,10 @@ typedef BrainReal* BrainSignal;
  */
 typedef struct Network* BrainNetwork;
 /**
+ * \brief Define a BrainWeight
+ */
+typedef struct Weight* BrainWeight;
+/**
  * \brief Define a BrainData
  */
 typedef struct Data* BrainData;
