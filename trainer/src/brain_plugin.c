@@ -339,14 +339,14 @@ brain_plugin_new(BrainString plugin_name)
                 if (BRAIN_ALLOCATED(priv)
                 && !priv->_loaded)
                 {
+                    priv->_handle = handle;
+                    priv->_loaded  = BRAIN_TRUE;
+
                     for (i = PLUGIN_API_FIRST; i <= PLUGIN_API_LAST; ++i)
                     {
                         load_plugin_function(plugin, i);
                     }
                 }
-
-                priv->_handle = handle;
-                priv->_loaded  = BRAIN_TRUE;
 
                 if (!is_plugin_valid(plugin))
                 {
