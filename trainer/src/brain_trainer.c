@@ -59,7 +59,7 @@ typedef struct _BrainTrainerPrivate
     /******************************************************************/
     /**                         CORE STRUCTURE                       **/
     /******************************************************************/
-    BrainPlugin  _plugin;
+    BrainPlugin*  _plugin;
     BrainNetwork _network;
     BrainData    _data;
     /******************************************************************/
@@ -98,9 +98,13 @@ brain_trainer_finalize(GObject *object)
     //unref all objects
     if (BRAIN_ALLOCATED(priv))
     {
-        delete_plugin_data(priv->_plugin, priv->_data);
-        delete_plugin_network(priv->_plugin, priv->_network);
-        delete_plugin(priv->_plugin);
+        BrainPluginClass* klass = BRAIN_PLUGIN_CLASS(priv->_plugin);
+
+        klass->delete_data(priv->_data);
+        klass->delete_network(priv->_network);
+
+        g_object_unref(priv->_plugin);
+
         BRAIN_DELETE(priv->_plugin_name);
         BRAIN_DELETE(priv->_network_path);
         BRAIN_DELETE(priv->_settings_path);
@@ -331,20 +335,25 @@ brain_trainer_run(BrainTrainer* trainer)
 
             if (BRAIN_ALLOCATED(priv))
             {
-                if (is_training_required(priv->_plugin, priv->_network))
-                {
-                    BRAIN_DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>>>> STARTING");
+                BrainPluginClass* klass = BRAIN_PLUGIN_CLASS(priv->_plugin);
 
-                    priv->_error = train_network_step(priv->_plugin, priv->_network, priv->_data);
-                    priv->_progress = get_training_progress(priv->_plugin, priv->_network);
-                    g_signal_emit(trainer, trainer_signals[TRAINER_SIGNAL_ITERATION], 0);
-                    BRAIN_DEBUG("Error:%f, progress:%f\n", priv->_error, priv->_progress);
-                }
-                else
+                if (BRAIN_ALLOCATED(klass))
                 {
-                    BRAIN_DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>>>> STOPPING");
-                    g_object_set(trainer, "is-running", FALSE, NULL);
-                    ret = FALSE;
+                    if (klass->is_training_required(priv->_network))
+                    {
+                        BRAIN_DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>>>> STARTING");
+
+                        priv->_error = klass->train(priv->_network, priv->_data);
+                        priv->_progress = klass->get_progress(priv->_network);
+                        g_signal_emit(trainer, trainer_signals[TRAINER_SIGNAL_ITERATION], 0);
+                        BRAIN_DEBUG("Error:%f, progress:%f\n", priv->_error, priv->_progress);
+                    }
+                    else
+                    {
+                        BRAIN_DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>>>> STOPPING");
+                        g_object_set(trainer, "is-running", FALSE, NULL);
+                        ret = FALSE;
+                    }
                 }
             }
         }
@@ -364,9 +373,14 @@ brain_trainer_restart(BrainTrainer* trainer)
 
         if (BRAIN_ALLOCATED(priv))
         {
-            delete_plugin_network(priv->_plugin, priv->_network);
-            priv->_network = new_plugin_network(priv->_plugin, priv->_network_path);
-            configure_network(priv->_plugin, priv->_network, priv->_settings_path);
+            BrainPluginClass* klass = BRAIN_PLUGIN_CLASS(priv->_plugin);
+
+            if (BRAIN_ALLOCATED(klass))
+            {
+                klass->delete_network(priv->_network);
+                priv->_network = klass->load_network(priv->_network_path);
+                klass->configure(priv->_network, priv->_settings_path);
+            }
         }
     }
 }
@@ -419,23 +433,28 @@ brain_trainer_new(BrainInt argc, BrainChar** argv)
         /**********************************************************/
         /**                   CREATE A PLUGIN                    **/
         /**********************************************************/
-        priv->_plugin  = new_plugin(priv->_plugin_name);
+        priv->_plugin  = brain_plugin_new(priv->_plugin_name);
         /**********************************************************/
         /**                  LOADING THE NETWORK                 **/
         /**********************************************************/
-        priv->_network = new_plugin_network(priv->_plugin,  priv->_network_path);
-        /*********************************************************/
-        /**                      LOAD THE DATA                  **/
-        /*********************************************************/
-        priv->_data    = new_plugin_data(priv->_plugin, priv->_data_path);
-
-        if (BRAIN_ALLOCATED(priv->_network)
-        &&  BRAIN_ALLOCATED(priv->_data))
+        if (BRAIN_ALLOCATED(priv->_plugin))
         {
-            /******************************************************/
-            /**                   TWEAKING THE NETWORK           **/
-            /******************************************************/
-            configure_network(priv->_plugin, priv->_network, priv->_settings_path);
+            BrainPluginClass* klass = BRAIN_PLUGIN_CLASS(priv->_plugin);
+
+            priv->_network = klass->load_network(priv->_network_path);
+            /*********************************************************/
+            /**                      LOAD THE DATA                  **/
+            /*********************************************************/
+            priv->_data    = klass->load_data(priv->_data_path);
+
+            if (BRAIN_ALLOCATED(priv->_network)
+            &&  BRAIN_ALLOCATED(priv->_data))
+            {
+                /******************************************************/
+                /**                   TWEAKING THE NETWORK           **/
+                /******************************************************/
+                klass->configure(priv->_network, priv->_settings_path);
+            }
         }
     }
 
@@ -455,29 +474,34 @@ cmd_line_training(BrainTrainer* trainer)
 
         if (BRAIN_ALLOCATED(priv))
         {
-            /**********************************************************/
-            /**                      LOADING THE NETWORK             **/
-            /**********************************************************/
-            priv->_network = new_plugin_network(priv->_plugin, priv->_network_path);
+            BrainPluginClass klass = BRAIN_PLUGIN_GET_CLASS(priv->_plugin);
 
-            if (BRAIN_ALLOCATED(priv->_network))
+            if (BRAIN_ALLOCATED(klass))
             {
-                /******************************************************/
-                /**                   TWEAKING THE NETWORK           **/
-                /******************************************************/
-                configure_network(priv->_plugin, priv->_network, priv->_settings_path);
-                /**********************************/
-                /**       TRAIN THE NETWORK      **/
-                /**********************************/
-                train_network_from_file(priv->_plugin, priv->_network, priv->_data_path);
-                /******************************************************/
-                /**                     SAVE THE NETWORK             **/
-                /******************************************************/
-                serialize_network(priv->_plugin, priv->_network, priv->_record_path);
-                /******************************************************/
-                /**                   CLEANING THE NETWORK           **/
-                /******************************************************/
-                delete_plugin_network(priv->_plugin, priv->_network);
+                /**********************************************************/
+                /**                      LOADING THE NETWORK             **/
+                /**********************************************************/
+                priv->_network = klass->load_network(priv->_network_path);
+
+                if (BRAIN_ALLOCATED(priv->_network))
+                {
+                    /******************************************************/
+                    /**                   TWEAKING THE NETWORK           **/
+                    /******************************************************/
+                    klass->configure(priv->_network, priv->_settings_path);
+                    /**********************************/
+                    /**       TRAIN THE NETWORK      **/
+                    /**********************************/
+                    klass->train_from_file(priv->_network, priv->_data_path);
+                    /******************************************************/
+                    /**                     SAVE THE NETWORK             **/
+                    /******************************************************/
+                    klass->serialize(priv->_network, priv->_record_path);
+                    /******************************************************/
+                    /**                   CLEANING THE NETWORK           **/
+                    /******************************************************/
+                    klass->delete_network(priv->_network);
+                }
             }
         }
     }

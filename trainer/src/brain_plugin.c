@@ -5,19 +5,8 @@
 #include "brain_core_types.h"
 #include <dlfcn.h>
 
-#define LOAD_NETWORK        plugin->_load_network
-#define CONFIGURE           plugin->_configure
-#define SERIALIZE           plugin->_serialize
-#define DESERIALIZE         plugin->_deserialize
-#define PREDICT             plugin->_predict
-#define TRAIN_FROM_FILE     plugin->_train_from_file
-#define TRAIN_STEP          plugin->_train_step
-#define DELETE_NETWORK      plugin->_delete_network
-#define TRAINING_REQUIRED   plugin->_is_training_required
-#define LOAD_DATA           plugin->_load_data
-#define DELETE_DATA         plugin->_delete_data
-#define GET_PROGRESS        plugin->_get_progress
-#define HANDLE              plugin->_handle
+#define ACCESS_PRIVATE_MEMBERS(plugin) plugin->priv = G_TYPE_INSTANCE_GET_PRIVATE (plugin, TYPE_BRAIN_PLUGIN, BrainPluginPrivate);\
+                                        BrainPluginPrivate *priv = plugin->priv;
 
 static BrainChar* _plugin_functions[] =
 {
@@ -55,54 +44,153 @@ typedef enum PluginApiEnum
     PLUGIN_API_LAST  = PLUGIN_API_GET_PROGRESS
 } PluginApiEnum;
 
-typedef BrainNetwork (*BrainLoadNetworkPtrFunc)     (BrainString);
-typedef void         (*BrainConfigurePtrFunc)       (BrainNetwork,       BrainString);
-typedef void         (*BrainSerializePtrFunc)       (const BrainNetwork, BrainString);
-typedef void         (*BrainDeserializePtrFunc)     (BrainNetwork,       BrainString);
-typedef void         (*BrainTrainFromFilePtrFunc)   (BrainNetwork,       BrainString);
-typedef BrainReal    (*BrainTrainStepPtrFunc)       (BrainNetwork,       const BrainData);
-typedef void         (*BrainPredictPtrFunc)         (BrainNetwork,       const BrainUint, const BrainSignal);
-typedef void         (*BrainDeleteNetworkPtrFunc)   (BrainNetwork);
-typedef BrainBool    (*BrainTrainingRequiredPtrFunc)(const BrainNetwork);
-typedef BrainData    (*BrainLoadDataPtrFunc)        (BrainString);
-typedef void         (*BrainDeleteDataPtrFunc)      (BrainData);
-typedef BrainReal    (*BrainGetProgressPtrFunc)     (const BrainNetwork);
+
 typedef void* BrainHandle;
 
-typedef struct Plugin
+typedef struct _BrainPluginPrivate
 {
-    /******************************************************************/
-    /**                     INTERNAL PARAMETERS                      **/
-    /******************************************************************/
-    BrainHandle                  _handle;
-    /******************************************************************/
-    /**                   FUNCTIONAL PARAMETERS                      **/
-    /******************************************************************/
-    BrainLoadNetworkPtrFunc      _load_network;
-    BrainConfigurePtrFunc        _configure;
-    BrainSerializePtrFunc        _serialize;
-    BrainDeserializePtrFunc      _deserialize;
-    BrainTrainFromFilePtrFunc    _train_from_file;
-    BrainTrainStepPtrFunc        _train_step;
-    BrainPredictPtrFunc          _predict;
-    BrainDeleteNetworkPtrFunc    _delete_network;
-    BrainTrainingRequiredPtrFunc _is_training_required;
-    BrainLoadDataPtrFunc         _load_data;
-    BrainDeleteDataPtrFunc       _delete_data;
-    BrainGetProgressPtrFunc      _get_progress;
-} Plugin;
+    BrainHandle _handle;
+} _BrainPluginPrivate;
+
+G_DEFINE_TYPE (BrainPlugin, brain_plugin, G_TYPE_OBJECT);
 
 static void
-load_plugin_function(BrainPlugin plugin, const PluginApiEnum function)
+brain_plugin_dispose(GObject *object)
+{
+    G_OBJECT_CLASS (brain_plugin_parent_class)->dispose (object);
+}
+
+
+static void
+brain_plugin_finalize(GObject *object)
+{
+    BrainPlugin *plugin = BRAIN_PLUGIN(object);
+
+    ACCESS_PRIVATE_MEMBERS(plugin)
+
+    //unref all objects
+    if (BRAIN_ALLOCATED(priv))
+    {
+        // Closing the handle
+        if (BRAIN_ALLOCATED(priv->_handle))
+        {
+            dlclose(priv->_handle);
+        }
+
+        G_OBJECT_CLASS (brain_plugin_parent_class)->finalize (object);
+    }
+}
+
+static void
+brain_plugin_set_property (GObject      *gobject,
+                            guint         prop_id,
+                            const GValue *value,
+                            GParamSpec   *pspec)
+{
+    BrainPlugin* plugin = BRAIN_PLUGIN(gobject);
+
+    if (BRAIN_ALLOCATED(plugin))
+    {
+        ACCESS_PRIVATE_MEMBERS(plugin);
+
+        if (BRAIN_ALLOCATED(priv))
+        {
+            switch (prop_id)
+            {
+                default:
+                    G_OBJECT_WARN_INVALID_PROPERTY_ID (gobject, prop_id, pspec);
+                    break;
+            }
+        }
+    }
+}
+
+static void
+brain_plugin_get_property (GObject    *gobject,
+                            guint       prop_id,
+                            GValue     *value,
+                            GParamSpec *pspec)
+{
+    BrainPlugin* plugin = BRAIN_PLUGIN(gobject);
+
+    if (BRAIN_ALLOCATED(plugin))
+    {
+        ACCESS_PRIVATE_MEMBERS(plugin);
+
+        if (BRAIN_ALLOCATED(priv))
+        {
+            switch (prop_id)
+            {
+                default:
+                    G_OBJECT_WARN_INVALID_PROPERTY_ID (gobject, prop_id, pspec);
+                    break;
+            }
+        }
+    }
+}
+
+static void
+brain_plugin_class_init(BrainPluginClass *klass)
+{
+    if (BRAIN_ALLOCATED(klass))
+    {
+        g_type_class_add_private (klass, sizeof (BrainPluginPrivate));
+        /******************************************************************/
+        /**             PASSING ALL REQUIRED FUNCTION POINTERS           **/
+        /******************************************************************/
+        GObjectClass *gklass = G_OBJECT_CLASS(klass);
+        gklass->get_property = brain_plugin_get_property;
+        gklass->set_property = brain_plugin_set_property;
+        gklass->dispose      = brain_plugin_dispose;
+        gklass->finalize     = brain_plugin_finalize;
+
+        klass->load_network         = NULL;
+        klass->configure            = NULL;
+        klass->serialize            = NULL;
+        klass->deserialize          = NULL;
+        klass->train_from_file      = NULL;
+        klass->train                = NULL;
+        klass->predict              = NULL;
+        klass->delete_network       = NULL;
+        klass->is_training_required = NULL;
+        klass->load_data            = NULL;
+        klass->delete_data          = NULL;
+        klass->get_progress         = NULL;
+
+        klass->loaded               = BRAIN_FALSE;
+    }
+}
+
+static void
+brain_plugin_init(BrainPlugin* plugin)
 {
     if (BRAIN_ALLOCATED(plugin))
+    {
+        ACCESS_PRIVATE_MEMBERS(plugin)
+
+        if (BRAIN_ALLOCATED(priv))
+        {
+            priv->_handle = NULL;
+        }
+    }
+}
+
+static void
+load_plugin_function(BrainPlugin* plugin, const PluginApiEnum function)
+{
+    BrainPluginClass* klass = BRAIN_PLUGIN_CLASS(plugin);
+
+    ACCESS_PRIVATE_MEMBERS(plugin)
+
+    if (BRAIN_ALLOCATED(priv)
+    &&  BRAIN_ALLOCATED(klass))
     {
         switch(function)
         {
             case PLUGIN_API_LOAD_NETWORK:
             {
-                LOAD_NETWORK = dlsym(HANDLE, _plugin_functions[function]);
-                if (!BRAIN_ALLOCATED(LOAD_NETWORK))
+                klass->load_network = dlsym(priv->_handle, _plugin_functions[function]);
+                if (!BRAIN_ALLOCATED(klass->load_network))
                 {
                     BRAIN_DEBUG("Function: %s has not been loaded", _plugin_functions[function]);
                 }
@@ -110,8 +198,8 @@ load_plugin_function(BrainPlugin plugin, const PluginApiEnum function)
                 break;
             case PLUGIN_API_CONFIGURE:
             {
-                CONFIGURE = dlsym(HANDLE, _plugin_functions[function]);
-                if (!BRAIN_ALLOCATED(CONFIGURE))
+                klass->configure = dlsym(priv->_handle, _plugin_functions[function]);
+                if (!BRAIN_ALLOCATED(klass->configure))
                 {
                     BRAIN_DEBUG("Function: %s has not been loaded", _plugin_functions[function]);
                 }
@@ -119,8 +207,8 @@ load_plugin_function(BrainPlugin plugin, const PluginApiEnum function)
                 break;
             case PLUGIN_API_SERIALIZE:
             {
-                SERIALIZE = dlsym(HANDLE, _plugin_functions[function]);
-                if (!BRAIN_ALLOCATED(SERIALIZE))
+                klass->serialize = dlsym(priv->_handle, _plugin_functions[function]);
+                if (!BRAIN_ALLOCATED(klass->serialize))
                 {
                     BRAIN_DEBUG("Function: %s has not been loaded", _plugin_functions[function]);
                 }
@@ -128,8 +216,8 @@ load_plugin_function(BrainPlugin plugin, const PluginApiEnum function)
                 break;
             case PLUGIN_API_DESERIALIZE:
             {
-                DESERIALIZE = dlsym(HANDLE, _plugin_functions[function]);
-                if (!BRAIN_ALLOCATED(DESERIALIZE))
+                klass->deserialize = dlsym(priv->_handle, _plugin_functions[function]);
+                if (!BRAIN_ALLOCATED(klass->deserialize))
                 {
                     BRAIN_DEBUG("Function: %s has not been loaded", _plugin_functions[function]);
                 }
@@ -137,8 +225,8 @@ load_plugin_function(BrainPlugin plugin, const PluginApiEnum function)
                 break;
             case PLUGIN_API_PREDICT:
             {
-                PREDICT = dlsym(HANDLE, _plugin_functions[function]);
-                if (!BRAIN_ALLOCATED(PREDICT))
+                klass->predict = dlsym(priv->_handle, _plugin_functions[function]);
+                if (!BRAIN_ALLOCATED(klass->predict))
                 {
                     BRAIN_DEBUG("Function: %s has not been loaded", _plugin_functions[function]);
                 }
@@ -146,8 +234,8 @@ load_plugin_function(BrainPlugin plugin, const PluginApiEnum function)
                 break;
             case PLUGIN_API_TRAIN_FROM_FILE:
             {
-                TRAIN_FROM_FILE = dlsym(HANDLE, _plugin_functions[function]);
-                if (!BRAIN_ALLOCATED(TRAIN_FROM_FILE))
+                klass->train_from_file = dlsym(priv->_handle, _plugin_functions[function]);
+                if (!BRAIN_ALLOCATED(klass->train_from_file))
                 {
                     BRAIN_DEBUG("Function: %s has not been loaded", _plugin_functions[function]);
                 }
@@ -155,8 +243,8 @@ load_plugin_function(BrainPlugin plugin, const PluginApiEnum function)
                 break;
             case PLUGIN_API_TRAIN_STEP:
             {
-                TRAIN_STEP = dlsym(HANDLE, _plugin_functions[function]);
-                if (!BRAIN_ALLOCATED(TRAIN_STEP))
+                klass->train = dlsym(priv->_handle, _plugin_functions[function]);
+                if (!BRAIN_ALLOCATED(klass->train))
                 {
                     BRAIN_DEBUG("Function: %s has not been loaded", _plugin_functions[function]);
                 }
@@ -164,8 +252,8 @@ load_plugin_function(BrainPlugin plugin, const PluginApiEnum function)
                 break;
             case PLUGIN_API_DELETE_NETWORK:
             {
-                DELETE_NETWORK = dlsym(HANDLE, _plugin_functions[function]);
-                if (!BRAIN_ALLOCATED(DELETE_NETWORK))
+                klass->delete_network = dlsym(priv->_handle, _plugin_functions[function]);
+                if (!BRAIN_ALLOCATED(klass->delete_network))
                 {
                     BRAIN_DEBUG("Function: %s has not been loaded", _plugin_functions[function]);
                 }
@@ -173,8 +261,8 @@ load_plugin_function(BrainPlugin plugin, const PluginApiEnum function)
                 break;
             case PLUGIN_API_TRAINING_REQUIRED:
             {
-                TRAINING_REQUIRED = dlsym(HANDLE, _plugin_functions[function]);
-                if (!BRAIN_ALLOCATED(TRAINING_REQUIRED))
+                klass->is_training_required = dlsym(priv->_handle, _plugin_functions[function]);
+                if (!BRAIN_ALLOCATED(klass->is_training_required))
                 {
                     BRAIN_DEBUG("Function: %s has not been loaded", _plugin_functions[function]);
                 }
@@ -182,8 +270,8 @@ load_plugin_function(BrainPlugin plugin, const PluginApiEnum function)
                 break;
             case PLUGIN_API_LOAD_DATA:
             {
-                LOAD_DATA = dlsym(HANDLE, _plugin_functions[function]);
-                if (!BRAIN_ALLOCATED(LOAD_DATA))
+                klass->load_data = dlsym(priv->_handle, _plugin_functions[function]);
+                if (!BRAIN_ALLOCATED(klass->load_data))
                 {
                     BRAIN_DEBUG("Function: %s has not been loaded", _plugin_functions[function]);
                 }
@@ -191,8 +279,8 @@ load_plugin_function(BrainPlugin plugin, const PluginApiEnum function)
                 break;
             case PLUGIN_API_DELETE_DATA:
             {
-                DELETE_DATA = dlsym(HANDLE, _plugin_functions[function]);
-                if (!BRAIN_ALLOCATED(DELETE_DATA))
+                klass->delete_data = dlsym(priv->_handle, _plugin_functions[function]);
+                if (!BRAIN_ALLOCATED(klass->delete_data))
                 {
                     BRAIN_DEBUG("Function: %s has not been loaded", _plugin_functions[function]);
                 }
@@ -200,8 +288,8 @@ load_plugin_function(BrainPlugin plugin, const PluginApiEnum function)
                 break;
             case PLUGIN_API_GET_PROGRESS:
             {
-                GET_PROGRESS = dlsym(HANDLE, _plugin_functions[function]);
-                if (!BRAIN_ALLOCATED(GET_PROGRESS))
+                klass->get_progress = dlsym(priv->_handle, _plugin_functions[function]);
+                if (!BRAIN_ALLOCATED(klass->get_progress))
                 {
                     BRAIN_DEBUG("Function: %s has not been loaded", _plugin_functions[function]);
                 }
@@ -214,27 +302,29 @@ load_plugin_function(BrainPlugin plugin, const PluginApiEnum function)
 }
 
 static BrainBool
-isPluginValid(const BrainPlugin plugin)
+is_plugin_valid(const BrainPlugin* plugin)
 {
-    return plugin
-        && LOAD_NETWORK
-        && CONFIGURE
-        && SERIALIZE
-        && DESERIALIZE
-        && TRAIN_FROM_FILE
-        && TRAIN_STEP
-        && PREDICT
-        && DELETE_NETWORK
-        && TRAINING_REQUIRED
-        && LOAD_DATA
-        && DELETE_DATA
-        && GET_PROGRESS;
+    BrainPluginClass* klass = BRAIN_PLUGIN_CLASS(plugin);
+
+    return klass
+            && klass->load_network
+            && klass->configure
+            && klass->serialize
+            && klass->deserialize
+            && klass->train_from_file
+            && klass->train
+            && klass->predict
+            && klass->delete_network
+            && klass->is_training_required
+            && klass->load_data
+            && klass->delete_data
+            && klass->get_progress;
 }
 
-BrainPlugin
-new_plugin(BrainString plugin_name)
+BrainPlugin*
+brain_plugin_new(BrainString plugin_name)
 {
-    BrainPlugin plugin = NULL;
+    BrainPlugin* plugin = NULL;
 
     if (BRAIN_ALLOCATED(plugin_name))
     {
@@ -245,11 +335,23 @@ new_plugin(BrainString plugin_name)
         if (BRAIN_ALLOCATED(handle))
         {
             BrainUint i = 0;
-            BRAIN_NEW(plugin, Plugin, 1);
-            HANDLE = handle;
-            for (i = PLUGIN_API_FIRST; i <= PLUGIN_API_LAST; ++i)
+            plugin = (BrainPlugin*)g_object_new(TYPE_BRAIN_PLUGIN, NULL);
+
+            if (BRAIN_ALLOCATED(plugin))
             {
-                load_plugin_function(plugin, i);
+                BrainPluginClass* klass = BRAIN_PLUGIN_CLASS(plugin);
+
+                if (BRAIN_ALLOCATED(klass)
+                && klass->loaded)
+                {
+                    for (i = PLUGIN_API_FIRST; i <= PLUGIN_API_LAST; ++i)
+                    {
+                        load_plugin_function(plugin, i);
+                    }
+                }
+
+                ACCESS_PRIVATE_MEMBERS(plugin);
+                priv->_handle = handle;
             }
         }
         else
@@ -257,172 +359,13 @@ new_plugin(BrainString plugin_name)
             BRAIN_CRITICAL("Unable to open plugin handle:%s\n", buf);
         }
 
-        if (!isPluginValid(plugin))
+        if (!is_plugin_valid(plugin))
         {
-            delete_plugin(plugin);
+            brain_plugin_finalize(G_OBJECT(plugin));
+            plugin = NULL;
             BRAIN_CRITICAL("Unable to create a plugin:%s\n", plugin_name);
         }
     }
 
     return plugin;
-}
-
-void
-delete_plugin(BrainPlugin plugin)
-{
-    if (BRAIN_ALLOCATED(plugin))
-    {
-        // Closing the handle
-        if (BRAIN_ALLOCATED(HANDLE))
-        {
-            dlclose(HANDLE);
-        }
-        // finally free the plugin itself
-        BRAIN_DELETE(plugin);
-    }
-}
-
-BrainNetwork
-new_plugin_network(const BrainPlugin plugin, BrainString filename)
-{
-    BrainNetwork network = NULL;
-
-    if (BRAIN_ALLOCATED(plugin))
-    {
-        network = LOAD_NETWORK(filename);
-    }
-
-    return network;
-}
-
-BrainData
-new_plugin_data(const BrainPlugin plugin, BrainString filename)
-{
-    BrainData data = NULL;
-
-    if (BRAIN_ALLOCATED(plugin))
-    {
-        data = LOAD_DATA(filename);
-    }
-
-    return data;
-}
-
-void
-delete_plugin_network(const BrainPlugin plugin, BrainNetwork network)
-{
-    if (BRAIN_ALLOCATED(plugin)
-    &&  BRAIN_ALLOCATED(network))
-    {
-        DELETE_NETWORK(network);
-    }
-}
-
-void
-delete_plugin_data(const BrainPlugin plugin, BrainData data)
-{
-    if (BRAIN_ALLOCATED(plugin)
-    &&  BRAIN_ALLOCATED(data))
-    {
-        DELETE_DATA(data);
-    }
-}
-
-void
-configure_network(const BrainPlugin plugin, BrainNetwork network, BrainString filename)
-{
-
-    if (BRAIN_ALLOCATED(plugin)
-    &&  BRAIN_ALLOCATED(network)
-    &&  BRAIN_ALLOCATED(filename))
-    {
-        CONFIGURE(network, filename);
-    }
-}
-
-void
-get_network_prediction(const BrainPlugin plugin, BrainNetwork network, const BrainUint length, const BrainSignal signal)
-{
-    if (BRAIN_ALLOCATED(plugin)
-    &&  BRAIN_ALLOCATED(network)
-    &&  BRAIN_ALLOCATED(signal))
-    {
-        PREDICT(network, length, signal);
-    }
-}
-
-void
-train_network_from_file(const BrainPlugin plugin, BrainNetwork network, BrainString datapath)
-{
-    if (BRAIN_ALLOCATED(plugin)
-    &&  BRAIN_ALLOCATED(network)
-    &&  BRAIN_ALLOCATED(datapath))
-    {
-        TRAIN_FROM_FILE(network, datapath);
-    }
-}
-
-BrainReal
-train_network_step(const BrainPlugin plugin, BrainNetwork network, const BrainData data)
-{
-    BrainReal error = 0.;
-
-    if (BRAIN_ALLOCATED(network)
-    &&  BRAIN_ALLOCATED(data)
-    &&  BRAIN_ALLOCATED(plugin))
-    {
-        error = TRAIN_STEP(network, data);
-    }
-
-    return error;
-}
-
-BrainBool
-is_training_required(const BrainPlugin plugin, const BrainNetwork network)
-{
-    BrainBool ret = BRAIN_FALSE;
-
-    if (BRAIN_ALLOCATED(network)
-    &&  BRAIN_ALLOCATED(plugin))
-    {
-        ret = TRAINING_REQUIRED(network);
-    }
-
-    return ret;
-}
-
-void
-serialize_network(const BrainPlugin plugin, BrainNetwork network, BrainString filename)
-{
-    if (BRAIN_ALLOCATED(plugin)
-    &&  BRAIN_ALLOCATED(network)
-    &&  BRAIN_ALLOCATED(filename))
-    {
-        SERIALIZE(network, filename);
-    }
-}
-
-void
-deserialize_network(const BrainPlugin plugin, BrainNetwork network, BrainString filename)
-{
-    if (BRAIN_ALLOCATED(plugin)
-    &&  BRAIN_ALLOCATED(network)
-    &&  BRAIN_ALLOCATED(filename))
-    {
-        DESERIALIZE(network, filename);
-    }
-}
-
-BrainReal
-get_training_progress(const BrainPlugin plugin, const BrainNetwork network)
-{
-    BrainReal ret = 0.;
-
-    if (BRAIN_ALLOCATED(plugin)
-    &&  BRAIN_ALLOCATED(network))
-    {
-        ret = GET_PROGRESS(network);
-    }
-
-    return ret;
 }
