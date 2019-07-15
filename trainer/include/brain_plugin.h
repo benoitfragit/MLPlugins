@@ -39,18 +39,10 @@ typedef BrainReal    (*BrainGetProgressPtrFunc)     (const BrainNetwork);
 
 struct _BrainPlugin
 {
-  /*< private >*/
-  GInitiallyUnowned parent_instance;
-
-  BrainPluginPrivate* priv;
-};
-
-struct _BrainPluginClass
-{
     /*< private >*/
-    GInitiallyUnownedClass parent_class;
+    GInitiallyUnowned parent_instance;
 
-    BrainBool loaded;
+    BrainPluginPrivate* priv;
 
     /* public funcs and data here */
     BrainLoadNetworkPtrFunc      load_network;
@@ -65,6 +57,12 @@ struct _BrainPluginClass
     BrainLoadDataPtrFunc         load_data;
     BrainDeleteDataPtrFunc       delete_data;
     BrainGetProgressPtrFunc      get_progress;
+};
+
+struct _BrainPluginClass
+{
+    /*< private >*/
+    GInitiallyUnownedClass parent_class;
 };
 
 GType brain_plugin_get_type (void) G_GNUC_CONST;

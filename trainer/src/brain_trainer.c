@@ -96,12 +96,12 @@ brain_trainer_finalize(GObject *object)
     ACCESS_PRIVATE_MEMBERS(trainer)
 
     //unref all objects
-    if (BRAIN_ALLOCATED(priv))
+    if (BRAIN_ALLOCATED(priv)
+    &&  BRAIN_ALLOCATED(priv->_plugin))
     {
-        BrainPluginClass* klass = BRAIN_PLUGIN_CLASS(priv->_plugin);
 
-        klass->delete_data(priv->_data);
-        klass->delete_network(priv->_network);
+        priv->_plugin->delete_data(priv->_data);
+        priv->_plugin->delete_network(priv->_network);
 
         g_object_unref(priv->_plugin);
 
@@ -333,27 +333,23 @@ brain_trainer_run(BrainTrainer* trainer)
         {
             ACCESS_PRIVATE_MEMBERS(trainer)
 
-            if (BRAIN_ALLOCATED(priv))
+            if (BRAIN_ALLOCATED(priv)
+            &&  BRAIN_ALLOCATED(priv->_plugin))
             {
-                BrainPluginClass* klass = BRAIN_PLUGIN_CLASS(priv->_plugin);
-
-                if (BRAIN_ALLOCATED(klass))
+                if (priv->_plugin->is_training_required(priv->_network))
                 {
-                    if (klass->is_training_required(priv->_network))
-                    {
-                        BRAIN_DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>>>> STARTING");
+                    BRAIN_DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>>>> STARTING");
 
-                        priv->_error = klass->train(priv->_network, priv->_data);
-                        priv->_progress = klass->get_progress(priv->_network);
-                        g_signal_emit(trainer, trainer_signals[TRAINER_SIGNAL_ITERATION], 0);
-                        BRAIN_DEBUG("Error:%f, progress:%f\n", priv->_error, priv->_progress);
-                    }
-                    else
-                    {
-                        BRAIN_DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>>>> STOPPING");
-                        g_object_set(trainer, "is-running", FALSE, NULL);
-                        ret = FALSE;
-                    }
+                    priv->_error = priv->_plugin->train(priv->_network, priv->_data);
+                    priv->_progress = priv->_plugin->get_progress(priv->_network);
+                    g_signal_emit(trainer, trainer_signals[TRAINER_SIGNAL_ITERATION], 0);
+                    BRAIN_DEBUG("Error:%f, progress:%f\n", priv->_error, priv->_progress);
+                }
+                else
+                {
+                    BRAIN_DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>>>> STOPPING");
+                    g_object_set(trainer, "is-running", FALSE, NULL);
+                    ret = FALSE;
                 }
             }
         }
@@ -371,16 +367,12 @@ brain_trainer_restart(BrainTrainer* trainer)
     {
         ACCESS_PRIVATE_MEMBERS(trainer)
 
-        if (BRAIN_ALLOCATED(priv))
+        if (BRAIN_ALLOCATED(priv)
+        && BRAIN_ALLOCATED(priv->_plugin))
         {
-            BrainPluginClass* klass = BRAIN_PLUGIN_CLASS(priv->_plugin);
-
-            if (BRAIN_ALLOCATED(klass))
-            {
-                klass->delete_network(priv->_network);
-                priv->_network = klass->load_network(priv->_network_path);
-                klass->configure(priv->_network, priv->_settings_path);
-            }
+            priv->_plugin->delete_network(priv->_network);
+            priv->_network = priv->_plugin->load_network(priv->_network_path);
+            priv->_plugin->configure(priv->_network, priv->_settings_path);
         }
     }
 }
@@ -439,13 +431,11 @@ brain_trainer_new(BrainInt argc, BrainChar** argv)
         /**********************************************************/
         if (BRAIN_ALLOCATED(priv->_plugin))
         {
-            BrainPluginClass* klass = BRAIN_PLUGIN_CLASS(priv->_plugin);
-
-            priv->_network = klass->load_network(priv->_network_path);
+            priv->_network = priv->_plugin->load_network(priv->_network_path);
             /*********************************************************/
             /**                      LOAD THE DATA                  **/
             /*********************************************************/
-            priv->_data    = klass->load_data(priv->_data_path);
+            priv->_data    = priv->_plugin->load_data(priv->_data_path);
 
             if (BRAIN_ALLOCATED(priv->_network)
             &&  BRAIN_ALLOCATED(priv->_data))
@@ -453,7 +443,7 @@ brain_trainer_new(BrainInt argc, BrainChar** argv)
                 /******************************************************/
                 /**                   TWEAKING THE NETWORK           **/
                 /******************************************************/
-                klass->configure(priv->_network, priv->_settings_path);
+                priv->_plugin->configure(priv->_network, priv->_settings_path);
             }
         }
     }
