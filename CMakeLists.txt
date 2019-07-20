@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 2.8.9)
 
 add_subdirectory(core)
 add_subdirectory(multi-layer-perceptron)
+add_subdirectory(iface)
 if(CMAKE_BUILD_TRAINER)
     add_subdirectory(trainer)
 endif(CMAKE_BUILD_TRAINER)

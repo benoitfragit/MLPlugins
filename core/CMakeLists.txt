@@ -1,9 +1,14 @@
 cmake_minimum_required(VERSION 2.8.9)
 project(BrainCore)
 
-set(CMAKE_C_FLAGS
-    ${CMAKE_C_FLAGS}
-    "-o2 -g3 -Wall -Wextra -Wshadow -Wunused -Wunused-parameter")
+add_compile_options(-O2
+                    -g3
+                    -Wall
+                    -Wextra
+                    -Wshadow
+                    -Wunused
+                    -Wunused-parameter
+                    -lm)
 
 find_package(LIBXML2 REQUIRED)
 
@@ -34,7 +39,7 @@ endif(${CMAKE_ENABLE_LOGGING})
 #Generate the shared library from the sources
 add_library(BrainCore SHARED ${SOURCES} ${HEADERS})
 
-target_link_libraries(BrainCore ${LIBXML2_LIBRARIES} "-lm")
+target_link_libraries(BrainCore ${LIBXML2_LIBRARIES})
 target_include_directories(BrainCore PUBLIC ${LIBBRAINCORE_INCLUDE_DIRS})
 
 install(TARGETS BrainCore
