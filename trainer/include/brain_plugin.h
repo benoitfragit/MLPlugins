@@ -7,6 +7,7 @@
  * All public methods to create and use a plugin
  */
 #ifndef BRAIN_PLUGIN_H
+#define BRAIN_PLUGIN_H
 #include <glib.h>
 #include <glib-object.h>
 #include "brain_trainer_types.h"

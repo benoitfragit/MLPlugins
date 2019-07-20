@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PLUGIN_NAME=MLP
-XML_FOLDER=./plugins/MLP/example
+XML_FOLDER=./multi-layer-perceptron/example
 TRAINER=./install/debug/libbrain-1.0.0/bin/BrainTrainer
 
 export LD_LIBRARY_PATH=./install/debug/libbrain-1.0.0/lib/

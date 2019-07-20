@@ -1,6 +1,0 @@
-<?xml version="1.0"?>
-<settings cost-function="Quadratic" activation-function="Sigmoid">
-    <training error="0.00001" iterations="1000">
-        <backprop learning-rate="0.5" momentum="0.0"/>
-    </training>
-</settings>

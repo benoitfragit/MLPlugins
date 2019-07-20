@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<network inputs="5">
-    <layers>
-        <layer neurons="3"/>
-        <layer neurons="6"/>
-        <layer neurons="2"/>
-    </layers>
-</network>

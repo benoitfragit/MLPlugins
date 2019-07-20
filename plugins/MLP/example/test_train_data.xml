@@ -1,4 +1,0 @@
-<?xml version="1.0"?>
-<data input-length="4" output-length="3" labels="true" format="InputFirst" parser="csv" tokenizer="," repository="/home/benoit/Documents/projets/C/libBrain/plugins/MLP/example/test_train_iris.csv">
-    <preprocess type="MinMaxNormalization"/>
-</data>
