@@ -462,36 +462,31 @@ cmd_line_training(BrainTrainer* trainer)
     {
         ACCESS_PRIVATE_MEMBERS(trainer);
 
-        if (BRAIN_ALLOCATED(priv))
+        if (BRAIN_ALLOCATED(priv) && BRAIN_ALLOCATED(priv->_plugin))
         {
-            BrainPluginClass klass = BRAIN_PLUGIN_GET_CLASS(priv->_plugin);
+            /**********************************************************/
+            /**                      LOADING THE NETWORK             **/
+            /**********************************************************/
+            priv->_network = priv->_plugin->load_network(priv->_network_path);
 
-            if (BRAIN_ALLOCATED(klass))
+            if (BRAIN_ALLOCATED(priv->_network))
             {
-                /**********************************************************/
-                /**                      LOADING THE NETWORK             **/
-                /**********************************************************/
-                priv->_network = klass->load_network(priv->_network_path);
-
-                if (BRAIN_ALLOCATED(priv->_network))
-                {
-                    /******************************************************/
-                    /**                   TWEAKING THE NETWORK           **/
-                    /******************************************************/
-                    klass->configure(priv->_network, priv->_settings_path);
-                    /**********************************/
-                    /**       TRAIN THE NETWORK      **/
-                    /**********************************/
-                    klass->train_from_file(priv->_network, priv->_data_path);
-                    /******************************************************/
-                    /**                     SAVE THE NETWORK             **/
-                    /******************************************************/
-                    klass->serialize(priv->_network, priv->_record_path);
-                    /******************************************************/
-                    /**                   CLEANING THE NETWORK           **/
-                    /******************************************************/
-                    klass->delete_network(priv->_network);
-                }
+                /******************************************************/
+                /**                   TWEAKING THE NETWORK           **/
+                /******************************************************/
+                priv->_plugin->configure(priv->_network, priv->_settings_path);
+                /**********************************/
+                /**       TRAIN THE NETWORK      **/
+                /**********************************/
+                priv->_plugin->train_from_file(priv->_network, priv->_data_path);
+                /******************************************************/
+                /**                     SAVE THE NETWORK             **/
+                /******************************************************/
+                priv->_plugin->serialize(priv->_network, priv->_record_path);
+                /******************************************************/
+                /**                   CLEANING THE NETWORK           **/
+                /******************************************************/
+                priv->_plugin->delete_network(priv->_network);
             }
         }
     }

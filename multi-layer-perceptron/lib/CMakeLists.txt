@@ -1,9 +1,14 @@
 cmake_minimum_required(VERSION 2.8.9)
 project(MLP)
 
-set(CMAKE_C_FLAGS
-    ${CMAKE_C_FLAGS}
-    "-O2 -g3 -Wall -Wextra -Wshadow -Wunused -Wunused-parameter")
+add_compile_options(-O2
+                    -g3
+                    -Wall
+                    -Wextra
+                    -Wshadow
+                    -Wunused
+                    -Wunused-parameter
+                    -lm)
 
 if (LIBBRAIN_DOUBLE_PRECISION)
     add_definitions(-DBRAIN_ENABLE_DOUBLE_PRECISION=1)
@@ -35,7 +40,7 @@ file(GLOB_RECURSE HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h)
 #Generate the shared library from the sources
 add_library(MLP SHARED ${SOURCES} ${HEADERS})
 
-target_link_libraries(MLP ${LIBXML2_LIBRARIES} BrainCore "-lm")
+target_link_libraries(MLP ${LIBXML2_LIBRARIES} BrainCore)
 target_include_directories(MLP PUBLIC ${LIBBRAINMLP_INCLUDE_DIRS})
 
 install(TARGETS MLP
