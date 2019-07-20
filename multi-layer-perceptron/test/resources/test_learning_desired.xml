@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<network>
+    <layer>
+        <neuron bias="0.34561">
+            <weight>0.149780716</weight>
+            <weight>0.19956143</weight>
+        </neuron>
+        <neuron bias="0.34502">
+            <weight>0.24975114</weight>
+            <weight>0.29950229</weight>
+        </neuron>
+    </layer>
+    <layer>
+        <neuron bias="0.53075">
+            <weight>0.35891648</weight>
+            <weight>0.408666186</weight>
+        </neuron>
+        <neuron bias="0.61905">
+            <weight>0.511301270</weight>
+            <weight>0.561370121</weight>
+        </neuron>
+    </layer>
+</network>

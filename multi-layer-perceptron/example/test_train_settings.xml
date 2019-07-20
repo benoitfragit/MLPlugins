@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<settings cost-function="Quadratic">
+    <backpropagation activation-function="Sigmoid" error="0.001" iterations="10000" mini-batch-size="30" learning-rate="1.2" momentum="0.05"/>
+</settings>

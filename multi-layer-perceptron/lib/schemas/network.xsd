@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema'>
+    <xs:complexType name="LayerType">
+        <xs:attribute name="neurons" type="xs:integer" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="LayersType">
+        <xs:sequence minOccurs="1" maxOccurs="unbounded">
+            <xs:element name="layer"   type="LayerType" minOccurs="2" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="NetworkType">
+        <xs:all>
+            <xs:element name="layers"   type="LayersType"/>
+        </xs:all>
+
+        <xs:attribute name="inputs"   type="xs:integer" use="required"/>
+    </xs:complexType>
+
+    <xs:element name="network" type="NetworkType"/>
+</xs:schema>
