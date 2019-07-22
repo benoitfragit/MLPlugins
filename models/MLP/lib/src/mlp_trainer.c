@@ -281,7 +281,7 @@ step(MLPTrainer trainer)
                 loss[i] = cost_function_derivative(output[i], target[i]);
             }
 
-            backpropagate(network, output_length, target);
+            backpropagate(network, output_length, loss);
 
             ++minibatch_size;
         } while (minibatch_size < trainer->_minibatch_size);

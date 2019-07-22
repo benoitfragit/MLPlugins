@@ -67,37 +67,6 @@ void backpropagate(MLPNetwork network, const BrainUint number_of_output, const B
  */
 void update_network(MLPNetwork network, BrainReal learning_rate, BrainReal momentum);
 /**
- * \fn void get_network_training_progress(MLPNetwork network)
- * \brief Get training progress
- * \param network the network
- * \return Current iteration level
- */
-BrainReal get_network_training_progress(const MLPNetwork network);
-/**
- * \fn BrainBool is_network_training_required(const MLPNetwork network)
- * \brief check if the network should be trained
- * \param network the Network
- * \return true is this network should be trained
- */
-BrainBool is_network_training_required(const MLPNetwork network);
-/**
- * \fn BrainReal train_network_iteration(MLPNetwork network, const MLPData data)
- * \brief launch a training step for the neural network using data
- *
- * \param network  the MLPNetwork to train
- * \param data data to train the network
- * \return the error for this training step
- */
-BrainReal train_network_iteration(MLPNetwork network, const MLPData data);
-/**
- * \fn void train_network_from_file(MLPNetwork network, BrainString datapath)
- * \brief launch the training process for the neural network
- *
- * \param network  the MLPNetwork to train
- * \param datapath     the datapath to train the network
- */
-void train_network_from_file(MLPNetwork network, BrainString datapath);
-/**
  * \fn void configure_network_with_context(MLPNetwork network, BrBrainString filepath)
  * \brief Load settings from an XML context
  *
