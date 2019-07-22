@@ -1,13 +1,13 @@
 /**
- * \file brain_types.h
+ * \file mlp_types.h
  * \brief Define all types
  * \author Benoit F.
  * \date 11 decembre 2016
  *
  * This file contains all predefines types used in this library
  */
-#ifndef BRAIN_TYPES_H
-#define BRAIN_TYPES_H
+#ifndef MLP_TYPES_H
+#define MLP_TYPES_H
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -21,17 +21,22 @@
 /**
  * \brief opaque pointer on Data struct
  */
-typedef struct Data*    BrainData;
+typedef struct Data*    MLPData;
 /**
  * \brief opaque pointer on Neuron struct
  */
-typedef struct Neuron*  BrainNeuron;
+typedef struct Neuron*  MLPNeuron;
 /**
  * \brief opaque pointer on Layer struct
  */
-typedef struct Layer*   BrainLayer;
+typedef struct Layer*   MLPLayer;
+/**
+ * \brief opaque pointer on Network struct
+ */
+typedef struct Network* MLPNetwork;
 /**
  * \brief opaque pointer to a Trainer
  */
- typedef struct Trainer* BrainTrainer;
-#endif /* BRAIN_TYPES_H */
+typedef struct Trainer* MLPTrainer;
+
+#endif /* MLP_TYPES_H */

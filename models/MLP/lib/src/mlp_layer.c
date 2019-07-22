@@ -1,5 +1,6 @@
-#include "brain_layer.h"
-#include "brain_neuron.h"
+#include "mlp_layer.h"
+#include "mlp_neuron.h"
+
 #include "brain_xml_utils.h"
 #include "brain_logging_utils.h"
 #include "brain_random_utils.h"
@@ -7,24 +8,24 @@
 
 /**
  * \struct Layer
- * \brief  Internal model for a BrainLayer
+ * \brief  Internal model for a MLPLayer
  *
- * All protected fields for a BrainLayer
+ * All protected fields for a MLPLayer
  */
 struct Layer
 {
     /******************************************************************/
     /**                      STRUCTURAL PARAMETERS                   **/
     /******************************************************************/
-    BrainUint       _number_of_neuron; /*!< The number of BrainNeuron    */
-    BrainNeuron*    _neurons;          /*!< An array of BrainNeuron      */
+    BrainUint       _number_of_neuron; /*!< The number of MLPNeuron    */
+    MLPNeuron*      _neurons;          /*!< An array of MLPNeuron      */
     BrainSignal     _in_errors;        /*!< Input vector errors          */
     BrainSignal     _out;              /*!< Output vector of the Layer   */
     BrainRandomMask _mask;             /*!< Dropout activation mask      */
 } Layer;
 
 void
-set_layer_activation(BrainLayer layer, BrainString name)
+set_layer_activation(MLPLayer layer, BrainString name)
 {
     BRAIN_INPUT(configure_layer_with_context)
 
@@ -36,7 +37,7 @@ set_layer_activation(BrainLayer layer, BrainString name)
 
         for (i = 0; i < number_of_neurons; ++i)
         {
-            BrainNeuron neuron = layer->_neurons[i];
+            MLPNeuron neuron = layer->_neurons[i];
 
             set_neuron_activation(neuron, name);
         }
@@ -45,8 +46,8 @@ set_layer_activation(BrainLayer layer, BrainString name)
     BRAIN_OUTPUT(configure_layer_with_context)
 }
 
-BrainNeuron
-get_layer_neuron(const BrainLayer layer, const BrainUint index)
+MLPNeuron
+get_layer_neuron(const MLPLayer layer, const BrainUint index)
 {
     if (BRAIN_ALLOCATED(layer)
     &&  (index < layer->_number_of_neuron))
@@ -58,7 +59,7 @@ get_layer_neuron(const BrainLayer layer, const BrainUint index)
 }
 
 void
-delete_layer(BrainLayer layer)
+delete_layer(MLPLayer layer)
 {
     BRAIN_INPUT(delete_layer)
 
@@ -86,7 +87,7 @@ delete_layer(BrainLayer layer)
     BRAIN_OUTPUT(delete_layer)
 }
 
-BrainLayer
+MLPLayer
 new_layer(const BrainUint     number_of_neurons,
           const BrainUint     number_of_inputs,
           const BrainSignal   in,
@@ -96,20 +97,20 @@ new_layer(const BrainUint     number_of_neurons,
     /******************************************************************/
     /**                       CREATE A NEW LAYER                     **/
     /******************************************************************/
-    BrainLayer _layer = NULL;
+    MLPLayer _layer = NULL;
 
     if ((number_of_inputs  != 0)
     &&  (number_of_neurons != 0)
     &&  BRAIN_ALLOCATED(in))
     {
-        _layer                    = (BrainLayer)calloc(1, sizeof(Layer));
+        _layer                    = (MLPLayer)calloc(1, sizeof(Layer));
         _layer->_number_of_neuron = number_of_neurons;
 
         if (0 != _layer->_number_of_neuron)
         {
             BrainUint index = 0;
 
-            BRAIN_NEW(_layer->_neurons, BrainNeuron,_layer->_number_of_neuron);
+            BRAIN_NEW(_layer->_neurons, MLPNeuron,_layer->_number_of_neuron);
             BRAIN_NEW(_layer->_out, BrainReal, _layer->_number_of_neuron);
             BRAIN_NEW(_layer->_in_errors, BrainReal, _layer->_number_of_neuron);
 
@@ -145,7 +146,7 @@ new_layer(const BrainUint     number_of_neurons,
 }
 
 BrainSignal
-get_layer_output(const BrainLayer layer)
+get_layer_output(const MLPLayer layer)
 {
     BrainSignal ret = NULL;
 
@@ -158,7 +159,7 @@ get_layer_output(const BrainLayer layer)
 }
 
 BrainUint
-get_layer_number_of_neuron(const BrainLayer layer)
+get_layer_number_of_neuron(const MLPLayer layer)
 {
     BrainUint ret = 0;
 
@@ -171,7 +172,7 @@ get_layer_number_of_neuron(const BrainLayer layer)
 }
 
 BrainSignal
-get_layer_errors(const BrainLayer layer)
+get_layer_errors(const MLPLayer layer)
 {
     BrainSignal ret = NULL;
 
@@ -184,7 +185,7 @@ get_layer_errors(const BrainLayer layer)
 }
 
 void
-backpropagate_output_layer(BrainLayer output_layer,
+backpropagate_output_layer(MLPLayer output_layer,
                            const BrainUint number_of_output,
                            const BrainSignal loss)
 {
@@ -250,7 +251,7 @@ backpropagate_output_layer(BrainLayer output_layer,
 }
 
 void
-backpropagate_hidden_layer(BrainLayer hidden_layer)
+backpropagate_hidden_layer(MLPLayer hidden_layer)
 {
     /******************************************************************/
     /**     BACKPROPAGATE THE ERROR ON THE HIDDEN LAYER              **/
@@ -303,7 +304,7 @@ backpropagate_hidden_layer(BrainLayer hidden_layer)
 }
 
 void
-activate_layer(BrainLayer layer, const BrainBool hidden_layer)
+activate_layer(MLPLayer layer, const BrainBool hidden_layer)
 {
     BRAIN_INPUT(activate_layer)
     if (BRAIN_ALLOCATED(layer))
@@ -337,7 +338,7 @@ activate_layer(BrainLayer layer, const BrainBool hidden_layer)
 }
 
 void
-serialize_layer(BrainLayer layer, Writer writer)
+serialize_layer(MLPLayer layer, Writer writer)
 {
     BRAIN_INPUT(serialize_layer)
     if (BRAIN_ALLOCATED(writer)
@@ -350,7 +351,7 @@ serialize_layer(BrainLayer layer, Writer writer)
 
             for (i = 0; i < number_of_neurons; ++i)
             {
-                const BrainNeuron neuron = layer->_neurons[i];
+                const MLPNeuron neuron = layer->_neurons[i];
 
                 serialize_neuron(neuron, writer);
             }
@@ -362,7 +363,7 @@ serialize_layer(BrainLayer layer, Writer writer)
 }
 
 void
-deserialize_layer(BrainLayer layer, Context context)
+deserialize_layer(MLPLayer layer, Context context)
 {
     BRAIN_INPUT(deserialize_layer)
     if (BRAIN_ALLOCATED(layer) &&
@@ -378,7 +379,7 @@ deserialize_layer(BrainLayer layer, Context context)
             for (i = 0; i < number_of_neurons; ++i)
             {
                 Context neuron_context = get_node_with_name_and_index(context, "neuron", i);
-                BrainNeuron neuron = layer->_neurons[i];
+                MLPNeuron neuron = layer->_neurons[i];
 
                 deserialize_neuron(neuron, neuron_context);
             }
@@ -388,7 +389,7 @@ deserialize_layer(BrainLayer layer, Context context)
 }
 
 void
-update_layer(BrainLayer layer,
+update_layer(MLPLayer layer,
              BrainReal learning_rate,
              BrainReal momentum)
 {

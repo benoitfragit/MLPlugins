@@ -21,8 +21,8 @@ endif(NOT CMAKE_ENABLE_TESTING)
 
 find_package(LIBXML2 REQUIRED)
 
-configure_file ("${PROJECT_SOURCE_DIR}/include/brain_config.h.in"
-                "${PROJECT_BINARY_DIR}/include/brain_config.h")
+configure_file ("${PROJECT_SOURCE_DIR}/include/mlp_config.h.in"
+                "${PROJECT_BINARY_DIR}/include/mlp_config.h")
 
 set(LIBBRAINMLP_SOURCE_DIR
     ${CMAKE_CURRENT_SOURCE_DIR}/src)

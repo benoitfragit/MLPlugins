@@ -1,4 +1,7 @@
-#include "brain_network.h"
+#include "mlp_network.h"
+#include "mlp_layer.h"
+#include "mlp_neuron.h"
+#include "mlp_config.h"
 
 #include "brain_random_utils.h"
 #include "brain_xml_utils.h"
@@ -7,50 +10,28 @@
 #include "brain_memory_utils.h"
 #include "brain_function_utils.h"
 
-#include "brain_layer.h"
-#include "brain_neuron.h"
-#include "brain_data_utils.h"
-#include "brain_config.h"
 #include "brain_probe.h"
 
 /**
  * \struct Network
- * \brief  Internal model for a BrainNetwork
+ * \brief  Internal model for a MLPNetwork
  *
- * All protected fields for a BrainNetwork
+ * All protected fields for a MLPNetwork
  */
 typedef struct Network
 {
     /*********************************************************************/
     /**                      STRUCTURAL PARAMETERS                      **/
     /*********************************************************************/
-    BrainLayer*   _layers;           /*!< layers                         */
+    MLPLayer*     _layers;           /*!< layers                         */
     BrainSignal   _output;           /*!< Output signal of the network   */
     BrainSignal   _input;            /*!< Input signal of the network    */
     BrainUint     _number_of_inputs; /*!< Number of inputs               */
     BrainUint     _number_of_layers; /*!< Number of layers               */
-    /*********************************************************************/
-    /**                      TRAINING PARAMETERS                        **/
-    /*********************************************************************/
-    BrainReal     _max_error;        /*!< Maximum error threshold        */
-    BrainUint     _max_iter;         /*!< Maximum iteration              */
-    BrainUint     _minibatch_size;   /*!< Minibatch size                 */
-    BrainReal     _learning_rate;    /*!< BackProp learning rate         */
-    BrainReal     _momemtum;         /*!< BackProp momentum value        */
-    /*********************************************************************/
-    /**                        TRAINING CONTEXT                         **/
-    /*********************************************************************/
-    BrainReal     _error;            /*!< Current training error level   */
-    BrainUint     _iterations;       /*!< Current training iterrations   */
-    /*********************************************************************/
-    /**                      FUNCTIONAL PARAMETERS                      **/
-    /*********************************************************************/
-    BrainCostFunction _cost_function;    /*!< Cost function                  */
-    BrainCostFunction _cost_function_derivative; /*!< Cost function derivative */
 } Network;
 
-static void
-feedforward(BrainNetwork      network,
+void
+feedforward(MLPNetwork      network,
             const BrainUint   number_of_input,
             const BrainSignal in,
             const BrainBool   use_dropout)
@@ -79,21 +60,20 @@ feedforward(BrainNetwork      network,
 }
 
 void
-update_network(BrainNetwork network)
+update_network(MLPNetwork network, BrainReal learning_rate, BrainReal momentum)
 {
     BRAIN_INPUT(update_network)
 
     if (BRAIN_ALLOCATED(network))
     {
         BrainUint i = 0;
-        BrainReal learning_rate = network->_learning_rate / network->_minibatch_size;
 
         for (i = 0; i < network->_number_of_layers; ++i)
         {
             /**********************************************************/
             /**                    UPDATE ALL LAYERS               **/
             /**********************************************************/
-            update_layer(network->_layers[i], learning_rate, network->_momemtum);
+            update_layer(network->_layers[i], learning_rate, momentum);
         }
     }
 
@@ -101,7 +81,7 @@ update_network(BrainNetwork network)
 }
 
 void __BRAIN_VISIBLE__
-configure_network_with_context(BrainNetwork network, BrainString filepath)
+configure_network_with_context(MLPNetwork network, BrainString filepath)
 {
     BRAIN_INPUT(configure_network_with_context)
 
@@ -120,30 +100,14 @@ configure_network_with_context(BrainNetwork network, BrainString filepath)
             {
                 const BrainUint number_of_layer = network->_number_of_layers;
                 BrainUint i = 0;
-
-                BrainChar* buffer                        = (BrainChar *)node_get_prop(settings_context, "cost-function");
-                network->_cost_function                  = brain_cost_function(buffer);
-                network->_cost_function_derivative       = brain_derivative_cost_function(buffer);
-
-                if (BRAIN_ALLOCATED(buffer))
-                {
-                    free(buffer);
-                }
+                BrainChar* buffer = NULL;
 
                 Context backpropagation_context = get_node_with_name_and_index(settings_context,
                                                                         "backpropagation",
                                                                         0);
                 if (BRAIN_ALLOCATED(backpropagation_context))
                 {
-                    network->_max_iter       = node_get_int(backpropagation_context, "iterations", 1000);
-                    network->_max_error      = (BrainReal)node_get_double(backpropagation_context, "error", 0.001);
-                    network->_minibatch_size = node_get_int(backpropagation_context, "mini-batch-size", 32);
-                    network->_learning_rate  = (BrainReal)node_get_double(backpropagation_context, "learning-rate", 0.005);
-                    network->_momemtum       = (BrainReal)node_get_double(backpropagation_context, "momentum", 0.001);
-
-                    buffer                   = (BrainChar *)node_get_prop(backpropagation_context, "activation-function");
-
-                    network->_error          = network->_max_error + 1.;
+                    buffer = (BrainChar *)node_get_prop(backpropagation_context, "activation-function");
 
                     for (i = 0; i < number_of_layer; ++i)
                     {
@@ -164,10 +128,10 @@ configure_network_with_context(BrainNetwork network, BrainString filepath)
     BRAIN_OUTPUT(configure_network_with_context)
 }
 
-BrainLayer
-get_network_layer(const BrainNetwork network, const BrainUint index)
+MLPLayer
+get_network_layer(const MLPNetwork network, const BrainUint index)
 {
-    BrainLayer ret = NULL;
+    MLPLayer ret = NULL;
 
     if (BRAIN_ALLOCATED(network)
     &&  BRAIN_ALLOCATED(network->_layers)
@@ -180,9 +144,9 @@ get_network_layer(const BrainNetwork network, const BrainUint index)
 }
 
 void
-backpropagate(BrainNetwork network,
+backpropagate(MLPNetwork network,
               const BrainUint number_of_output,
-              const BrainSignal desired)
+              const BrainSignal loss)
 {
     /******************************************************************/
     /**                      BACKPROP ALGORITHM                      **/
@@ -212,21 +176,10 @@ backpropagate(BrainNetwork network,
     if (BRAIN_ALLOCATED(network) &&
         BRAIN_ALLOCATED(network->_layers) &&
         (0 < network->_number_of_layers)    &&
-        BRAIN_ALLOCATED(desired))
+        BRAIN_ALLOCATED(loss))
     {
-        const BrainSignal output = get_network_output(network);
-        const BrainCostFunction cost_function_derivative = network->_cost_function_derivative;
         BrainUint i = 0;
-        BrainSignal loss = NULL;
 
-        BRAIN_NEW(loss, BrainReal, number_of_output);
-        /**************************************************************/
-        /**               COMPUTE OUTPUT ERROR DERIVATIVE            **/
-        /**************************************************************/
-        for (i = 0; i < number_of_output; ++i)
-        {
-            loss[i] = cost_function_derivative(output[i], desired[i]);
-        }
         /**************************************************************/
         /**                         BACKPROPAGATE THE LOSS           **/
         /**************************************************************/
@@ -236,15 +189,13 @@ backpropagate(BrainNetwork network,
         {
             backpropagate_hidden_layer(network->_layers[network->_number_of_layers - i - 1]);
         }
-
-        BRAIN_DELETE(loss);
     }
 
     BRAIN_OUTPUT(backpropagate)
 }
 
 BrainSignal
-get_network_output(const BrainNetwork network)
+get_network_output(const MLPNetwork network)
 {
     if (BRAIN_ALLOCATED(network))
     {
@@ -255,7 +206,7 @@ get_network_output(const BrainNetwork network)
 }
 
 void __BRAIN_VISIBLE__
-delete_network(BrainNetwork network)
+delete_network(MLPNetwork network)
 {
     BRAIN_INPUT(delete_network)
 
@@ -278,7 +229,7 @@ delete_network(BrainNetwork network)
     BRAIN_OUTPUT(delete_network)
 }
 
-static BrainNetwork
+static MLPNetwork
 new_network(const BrainUint signal_input_length,
             const BrainUint number_of_layers,
             const BrainUint *neuron_per_layers)
@@ -288,7 +239,7 @@ new_network(const BrainUint signal_input_length,
     // initialize the random number generator
     BRAIN_RANDOM_INITIALIZATION
 
-    BrainNetwork _network = NULL;
+    MLPNetwork _network = NULL;
 
     if (BRAIN_ALLOCATED(neuron_per_layers))
     {
@@ -296,17 +247,8 @@ new_network(const BrainUint signal_input_length,
         BRAIN_NEW(_network, Network, 1);
         _network->_number_of_inputs = signal_input_length;
         BRAIN_NEW(_network->_input, BrainReal, signal_input_length);
-        BRAIN_NEW(_network->_layers, BrainLayer, number_of_layers);
+        BRAIN_NEW(_network->_layers, MLPLayer, number_of_layers);
         _network->_number_of_layers = number_of_layers;
-        _network->_max_iter         = 1000;
-        _network->_max_error        = 0.0001;
-        _network->_error            = _network->_max_error + 1.;
-        _network->_iterations       = 0;
-        _network->_minibatch_size   = 32;
-        _network->_learning_rate    = 1.12;
-        _network->_momemtum         = 0.0;
-        _network->_cost_function    = brain_cost_function("Quadratic");
-        _network->_cost_function_derivative = brain_derivative_cost_function("Quadratic");
         /**************************************************************/
         /**                INITIALE THE RANDOM GENERATOR             **/
         /**************************************************************/
@@ -362,7 +304,7 @@ new_network(const BrainUint signal_input_length,
 }
 
 void __BRAIN_VISIBLE__
-predict(BrainNetwork      network,
+predict(MLPNetwork        network,
         const BrainUint   number_of_input,
         const BrainSignal in)
 {
@@ -371,196 +313,8 @@ predict(BrainNetwork      network,
     BRAIN_OUTPUT(predict)
 }
 
-static BrainReal
-compute_network_error(const BrainNetwork network, const BrainData data, const BrainUint index)
-{
-    BRAIN_INPUT(compute_network_error);
-    BrainReal error = 0.0;
-
-    if (BRAIN_ALLOCATED(network)
-    &&  BRAIN_ALLOCATED(data)
-    &&  (index < get_number_of_evaluating_sample(data)))
-    {
-        const BrainUint     input_length    = get_input_signal_length(data);
-        const BrainUint     output_length   = get_output_signal_length(data);
-        const BrainSignal   input           = get_evaluating_input_signal(data, index);
-        const BrainSignal   target          = get_evaluating_output_signal(data, index);
-
-        BrainCostFunction cost_function = network->_cost_function;
-        BrainSignal output = NULL;
-        BrainUint j = 0;
-
-        // only propagate the signal threw all layers
-        predict(network, input_length, input);
-
-        // grab the network output and compute the error
-        // between the target and the real output
-        output = get_network_output(network);
-
-        for (j = 0; j < output_length; ++j)
-        {
-            error += cost_function(target[j], output[j]);
-        }
-    }
-
-    BRAIN_OUTPUT(compute_network_error);
-
-    return error;
-}
-
-static void
-compute_network_total_error(BrainNetwork network, const BrainData data)
-{
-    BRAIN_INPUT(compute_network_total_error);
-    /********************************************************/
-    /**       Check if we need to train this network       **/
-    /********************************************************/
-    if (BRAIN_ALLOCATED(network) &&
-        BRAIN_ALLOCATED(data))
-    {
-        const BrainUint number_of_evaluating_sample = get_number_of_evaluating_sample(data);
-        BrainUint i = 0;
-
-        network->_error = 0.;
-        for (i = 0; i < number_of_evaluating_sample; ++i)
-        {
-            network->_error += compute_network_error(network, data, i);
-        }
-
-        network->_error /= (BrainReal)(number_of_evaluating_sample);
-    }
-    BRAIN_OUTPUT(compute_network_total_error);
-}
-
-BrainBool __BRAIN_VISIBLE__
-is_network_training_required(const BrainNetwork network)
-{
-    BRAIN_INPUT(is_network_training_required);
-    BrainBool ret = BRAIN_FALSE;
-
-    if (BRAIN_ALLOCATED(network))
-    {
-        ret = (network->_iterations < network->_max_iter)
-          &&  (network->_max_error < network->_error);
-    }
-
-    BRAIN_OUTPUT(is_network_training_required);
-
-    return ret;
-}
-
-BrainReal __BRAIN_VISIBLE__
-get_network_training_progress(const BrainNetwork network)
-{
-    BrainReal ret = 0.;
-
-    if (BRAIN_ALLOCATED(network))
-    {
-        ret = (BrainReal)network->_iterations / (BrainReal)network->_max_iter;
-    }
-
-    return ret;
-}
-
-BrainReal __BRAIN_VISIBLE__
-train_network_iteration(BrainNetwork network, const BrainData data)
-{
-    BRAIN_INPUT(train_network_iteration);
-
-    if (BRAIN_ALLOCATED(data)
-    &&  BRAIN_ALLOCATED(network))
-    {
-        const BrainUint input_length  = network->_number_of_inputs;
-        const BrainUint output_length = get_layer_number_of_neuron(network->_layers[network->_number_of_layers - 1]);
-        const BrainUint number_of_training_sample = get_number_of_training_sample(data);
-
-        BrainSignal input = NULL;
-        BrainSignal target = NULL;
-
-        BrainUint minibatch_size = 0;
-        /******************************************************/
-        /**         ACCUMULATE WITH RANDOM MINI-BATCH        **/
-        /******************************************************/
-        do
-        {
-            const BrainUint index = (BrainUint)BRAIN_RAND_RANGE(0, number_of_training_sample);
-            input  = get_training_input_signal(data, index);
-            target = get_training_output_signal(data, index);
-        /**************************************************/
-        /**       FORWARD PROPAGATION OF THE SIGNAL      **/
-        /**************************************************/
-            feedforward(network, input_length, input, BRAIN_TRUE);
-        /**************************************************/
-        /**     BACKPROPAGATION USING THE TARGET SIGNAL  **/
-        /**************************************************/
-            backpropagate(network, output_length, target);
-            ++minibatch_size;
-        } while (minibatch_size < network->_minibatch_size);
-        /**************************************************/
-        /**             UPDATE NETWORK WEIGHTS           **/
-        /**************************************************/
-        update_network(network);
-        /**************************************************/
-        /**                 UPDATE ERROR LEVEL           **/
-        /**************************************************/
-        compute_network_total_error(network, data);
-        /**************************************************/
-        /**            INCREASE NUMBER OF EPOCH          **/
-        /**************************************************/
-        ++network->_iterations;
-    }
-
-    BRAIN_OUTPUT(train_network_iteration);
-
-    return network->_error;
-}
-
 void __BRAIN_VISIBLE__
-train_network_from_file(BrainNetwork network, BrainString datapath)
-{
-    BRAIN_INPUT(train_network_from_file)
-    /********************************************************/
-    /**   Train the neural network using the training set  **/
-    /********************************************************/
-    if (BRAIN_ALLOCATED(network))
-    {
-        const BrainData data = new_data_from_context(datapath);
-
-        if (BRAIN_ALLOCATED(data))
-        {
-            /**************************************************************/
-            /**              TRAIN OVER ALL TRAINING EXAMPLES            **/
-            /**************************************************************/
-            while (is_network_training_required(network))
-            {
-                /**************************************************/
-                /**               APPLY ONE TRAINING EPOCH       **/
-                /**************************************************/
-                train_network_iteration(network, data);
-                /**************************************************/
-                /**               UPDATE NETWORK ERROR           **/
-                /**************************************************/
-                compute_network_total_error(network, data);
-
-                if (network->_iterations % (network->_max_iter / 10) == 0)
-                {
-#if BRAIN_ENABLE_DOUBLE_PRECISION
-                    BRAIN_INFO("%d,%lf", network->_iterations, network->_error);
-#else
-                    BRAIN_INFO("%d,%f",  network->_iterations, network->_error);
-#endif
-                }
-            }
-
-            delete_data(data);
-        }
-    }
-
-    BRAIN_OUTPUT(train_network_from_file)
-}
-
-void __BRAIN_VISIBLE__
-deserialize_network(BrainNetwork network, BrainString filepath)
+deserialize_network(MLPNetwork network, BrainString filepath)
 {
     BRAIN_INPUT(deserialize_network)
 
@@ -604,7 +358,7 @@ deserialize_network(BrainNetwork network, BrainString filepath)
 }
 
 void __BRAIN_VISIBLE__
-serialize_network(const BrainNetwork network, BrainString filepath)
+serialize_network(const MLPNetwork network, BrainString filepath)
 {
     BRAIN_INPUT(serialize_network)
 
@@ -651,12 +405,12 @@ serialize_network(const BrainNetwork network, BrainString filepath)
     BRAIN_OUTPUT(serialize_network)
 }
 
-BrainNetwork __BRAIN_VISIBLE__
+MLPNetwork __BRAIN_VISIBLE__
 new_network_from_context(BrainString filepath)
 {
     BRAIN_INPUT(new_network_from_context)
 
-    BrainNetwork  network  = NULL;
+    MLPNetwork  network  = NULL;
 
     if (BRAIN_ALLOCATED(filepath) &&
         validate_with_xsd(filepath, NETWORK_XSD_FILE))

@@ -1,5 +1,5 @@
+#include "mlp_neuron.h"
 
-#include "brain_neuron.h"
 #include "brain_math_utils.h"
 #include "brain_random_utils.h"
 #include "brain_xml_utils.h"
@@ -10,9 +10,9 @@
 #include "brain_weight_utils.h"
 /**
  * \struct Neuron
- * \brief  Internal model for a BrainNeuron
+ * \brief  Internal model for a MLPNeuron
  *
- * All protected fields for a BrainNeuron
+ * All protected fields for a MLPNeuron
  */
 typedef struct Neuron
 {
@@ -25,15 +25,15 @@ typedef struct Neuron
     /**                      STRUCTURAL PARAMETERS                   **/
     /******************************************************************/
     BrainWeight*      _w;                     /*!< An array of weight                                   */
-    BrainSignal       _in;                    /*!< Input signal of an BrainNeuron                       */
+    BrainSignal       _in;                    /*!< Input signal of an MLPNeuron                       */
     BrainSignal       _errors;                /*!< error to correct in the layer                        */
-    BrainSignal       _out;                   /*!< An output value pointer owned by the BrainLayer      */
+    BrainSignal       _out;                   /*!< An output value pointer owned by the MLPLayer      */
     BrainReal         _sum;                   /*!< Summation of all input time weight                   */
     BrainUint         _number_of_input;       /*!< Number of inputs                                     */
 } Neuron;
 
 void
-update_neuron(BrainNeuron neuron,
+update_neuron(MLPNeuron neuron,
               BrainReal learning_rate,
               BrainReal momentum)
 {
@@ -56,7 +56,7 @@ update_neuron(BrainNeuron neuron,
 }
 
 void
-set_neuron_activation(BrainNeuron neuron, BrainString name)
+set_neuron_activation(MLPNeuron neuron, BrainString name)
 {
     BRAIN_INPUT(set_neuron_activation)
 
@@ -71,7 +71,7 @@ set_neuron_activation(BrainNeuron neuron, BrainString name)
 }
 
 void
-activate_neuron(BrainNeuron neuron, const BrainBool is_activated)
+activate_neuron(MLPNeuron neuron, const BrainBool is_activated)
 {
     BRAIN_INPUT(activate_neuron)
 
@@ -107,7 +107,7 @@ activate_neuron(BrainNeuron neuron, const BrainBool is_activated)
 }
 
 void
-delete_neuron(BrainNeuron neuron)
+delete_neuron(MLPNeuron neuron)
 {
     BRAIN_INPUT(delete_neuron)
 
@@ -125,14 +125,14 @@ delete_neuron(BrainNeuron neuron)
     BRAIN_OUTPUT(delete_neuron)
 }
 
-BrainNeuron
+MLPNeuron
 new_neuron(BrainSignal     in,
            const BrainUint number_of_inputs,
            BrainSignal     out,
            BrainSignal     errors)
 {
     BRAIN_INPUT(new_neuron)
-    BrainNeuron _neuron = NULL;
+    MLPNeuron _neuron = NULL;
 
     if (BRAIN_ALLOCATED(out)
     &&  (0 < number_of_inputs))
@@ -164,7 +164,7 @@ new_neuron(BrainSignal     in,
 }
 
 BrainUint
-get_neuron_number_of_input(const BrainNeuron neuron)
+get_neuron_number_of_input(const MLPNeuron neuron)
 {
     BrainUint ret = 0;
     if (BRAIN_ALLOCATED(neuron))
@@ -176,7 +176,7 @@ get_neuron_number_of_input(const BrainNeuron neuron)
 }
 
 BrainReal
-get_neuron_weight(const BrainNeuron neuron, const BrainUint index)
+get_neuron_weight(const MLPNeuron neuron, const BrainUint index)
 {
     BrainReal ret = 0.0;
 
@@ -190,7 +190,7 @@ get_neuron_weight(const BrainNeuron neuron, const BrainUint index)
 }
 
 void
-deserialize_neuron(BrainNeuron neuron, Context context)
+deserialize_neuron(MLPNeuron neuron, Context context)
 {
     BRAIN_INPUT(deserialize_neuron)
 
@@ -215,7 +215,7 @@ deserialize_neuron(BrainNeuron neuron, Context context)
 }
 
 void
-serialize_neuron(BrainNeuron neuron, Writer writer)
+serialize_neuron(MLPNeuron neuron, Writer writer)
 {
     BRAIN_INPUT(serialize_neuron)
 
@@ -254,7 +254,7 @@ serialize_neuron(BrainNeuron neuron, Writer writer)
 }
 
 void
-backpropagate_neuron_gradient(BrainNeuron neuron, const BrainReal loss)
+backpropagate_neuron_gradient(MLPNeuron neuron, const BrainReal loss)
 {
     BRAIN_INPUT(backpropagate_neuron_gradient)
 
