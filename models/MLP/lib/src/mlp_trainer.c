@@ -55,6 +55,15 @@ new_trainer(MLPNetwork network, MLPData data)
 }
 
 void __BRAIN_VISIBLE__
+delete_trainer(MLPTrainer trainer)
+{
+    if (BRAIN_ALLOCATED(trainer))
+    {
+        BRAIN_DELETE(trainer);
+    }
+}
+
+void __BRAIN_VISIBLE__
 configure_trainer_with_context(MLPTrainer trainer, BrainString filepath)
 {
     BRAIN_INPUT(configure_trainer_with_context)
@@ -67,31 +76,25 @@ configure_trainer_with_context(MLPTrainer trainer, BrainString filepath)
 
         if (BRAIN_ALLOCATED(settings_document))
         {
-            Context settings_context = get_root_node(settings_document);
+            Context backpropagation_context = get_root_node(settings_document);
 
-            if (BRAIN_ALLOCATED(settings_context) &&
-                is_node_with_name(settings_context, "settings"))
+            if (BRAIN_ALLOCATED(backpropagation_context) &&
+                is_node_with_name(backpropagation_context, "backpropagation"))
             {
-                BrainChar* buffer                        = (BrainChar *)node_get_prop(settings_context, "cost-function");
-                trainer->_cost_function                  = brain_cost_function(buffer);
-                trainer->_cost_function_derivative       = brain_derivative_cost_function(buffer);
+                BrainChar* buffer                   = (BrainChar *)node_get_prop(backpropagation_context, "cost-function");
+
+                trainer->_cost_function             = brain_cost_function(buffer);
+                trainer->_cost_function_derivative  = brain_derivative_cost_function(buffer);
+                trainer->_max_iter                  = node_get_int(backpropagation_context, "iterations", 1000);
+                trainer->_max_error                 = (BrainReal)node_get_double(backpropagation_context, "error", 0.001);
+                trainer->_minibatch_size            = node_get_int(backpropagation_context, "mini-batch-size", 32);
+                trainer->_learning_rate             = (BrainReal)node_get_double(backpropagation_context, "learning-rate", 0.005);
+                trainer->_momemtum                  = (BrainReal)node_get_double(backpropagation_context, "momentum", 0.001);
+                trainer->_error                     = trainer->_max_error + 1.;
 
                 if (BRAIN_ALLOCATED(buffer))
                 {
                     free(buffer);
-                }
-
-                Context backpropagation_context = get_node_with_name_and_index(settings_context,
-                                                                        "backpropagation",
-                                                                        0);
-                if (BRAIN_ALLOCATED(backpropagation_context))
-                {
-                    trainer->_max_iter       = node_get_int(backpropagation_context, "iterations", 1000);
-                    trainer->_max_error      = (BrainReal)node_get_double(backpropagation_context, "error", 0.001);
-                    trainer->_minibatch_size = node_get_int(backpropagation_context, "mini-batch-size", 32);
-                    trainer->_learning_rate  = (BrainReal)node_get_double(backpropagation_context, "learning-rate", 0.005);
-                    trainer->_momemtum       = (BrainReal)node_get_double(backpropagation_context, "momentum", 0.001);
-                    trainer->_error          = trainer->_max_error + 1.;
                 }
             }
 

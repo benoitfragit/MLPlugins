@@ -8,33 +8,14 @@
         </xs:restriction>
     </xs:simpleType>
 
-    <xs:simpleType name="ActivationFunctionType">
-        <xs:restriction base="xs:token">
-            <xs:enumeration value="Identity"/>
-            <xs:enumeration value="Sigmoid"/>
-            <xs:enumeration value="TanH"/>
-            <xs:enumeration value="ArcTan"/>
-            <xs:enumeration value="SoftPlus"/>
-            <xs:enumeration value="Sinus"/>
-            <xs:enumeration value="ReLu"/>
-        </xs:restriction>
-    </xs:simpleType>
-
     <xs:complexType name="BackPropagationType">
-        <xs:attribute name="activation-function" type="ActivationFunctionType" use="optional"/>
-        <xs:attribute name="learning-rate"      type="xs:decimal" use="required"/>
-        <xs:attribute name="momentum"           type="xs:decimal" use="optional"/>
-        <xs:attribute name="iterations"         type="xs:integer" use="required"/>
-        <xs:attribute name="error"              type="xs:decimal" use="required"/>
-        <xs:attribute name="mini-batch-size"    type="xs:decimal" use="optional"/>
+        <xs:attribute name="cost-function"      type="CostFunctionType" use="optional"/>
+        <xs:attribute name="learning-rate"      type="xs:decimal"       use="required"/>
+        <xs:attribute name="momentum"           type="xs:decimal"       use="optional"/>
+        <xs:attribute name="iterations"         type="xs:integer"       use="required"/>
+        <xs:attribute name="error"              type="xs:decimal"       use="required"/>
+        <xs:attribute name="mini-batch-size"    type="xs:decimal"       use="optional"/>
     </xs:complexType>
 
-    <xs:complexType name="SettingsType">
-        <xs:all>
-            <xs:element name="backpropagation" type="BackPropagationType"/>
-        </xs:all>
-        <xs:attribute name="cost-function"       type="CostFunctionType"       use="optional"/>
-    </xs:complexType>
-
-    <xs:element name="settings" type="SettingsType"/>
+    <xs:element name="backpropagation" type="BackPropagationType"/>
 </xs:schema>

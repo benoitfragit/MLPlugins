@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <network inputs="4">
     <layers>
-        <layer neurons="8"/>
-        <layer neurons="3"/>
+        <layer neurons="8" activation-function="Sigmoid"/>
+        <layer neurons="3" activation-function="Sigmoid"/>
     </layers>
 </network>

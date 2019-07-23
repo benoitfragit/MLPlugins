@@ -56,21 +56,6 @@ update_neuron(MLPNeuron neuron,
 }
 
 void
-set_neuron_activation(MLPNeuron neuron, BrainString name)
-{
-    BRAIN_INPUT(set_neuron_activation)
-
-    if (BRAIN_ALLOCATED(neuron)
-    &&  BRAIN_ALLOCATED(name))
-    {
-        neuron->_activation_function = brain_activation_function(name);
-        neuron->_derivative_function = brain_derivative_function(name);
-    }
-
-    BRAIN_OUTPUT(set_neuron_activation)
-}
-
-void
 activate_neuron(MLPNeuron neuron, const BrainBool is_activated)
 {
     BRAIN_INPUT(activate_neuron)
@@ -126,7 +111,9 @@ delete_neuron(MLPNeuron neuron)
 }
 
 MLPNeuron
-new_neuron(BrainSignal     in,
+new_neuron(BrainActivationFunction activation_function,
+           BrainActivationFunction derivative_function,
+           BrainSignal     in,
            const BrainUint number_of_inputs,
            BrainSignal     out,
            BrainSignal     errors)
@@ -148,8 +135,8 @@ new_neuron(BrainSignal     in,
         _neuron->_number_of_input        = number_of_inputs;
         _neuron->_in                     = in;
         _neuron->_sum                    = 0.;
-        _neuron->_activation_function    = brain_activation_function("Sigmoid");
-        _neuron->_derivative_function    = brain_derivative_function("Sigmoid");
+        _neuron->_activation_function    = activation_function;
+        _neuron->_derivative_function    = derivative_function;
         _neuron->_errors                 = errors;
 
         for (index = 0; index < _neuron->_number_of_input + 1; ++index)

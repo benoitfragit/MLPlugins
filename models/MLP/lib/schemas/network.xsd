@@ -1,7 +1,20 @@
 <?xml version="1.0"?>
 <xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema'>
+    <xs:simpleType name="ActivationFunctionType">
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="Identity"/>
+            <xs:enumeration value="Sigmoid"/>
+            <xs:enumeration value="TanH"/>
+            <xs:enumeration value="ArcTan"/>
+            <xs:enumeration value="SoftPlus"/>
+            <xs:enumeration value="Sinus"/>
+            <xs:enumeration value="ReLu"/>
+        </xs:restriction>
+    </xs:simpleType>
+
     <xs:complexType name="LayerType">
         <xs:attribute name="neurons" type="xs:integer" use="required"/>
+        <xs:attribute name="activation-function" type="ActivationFunctionType" use="optional"/>
     </xs:complexType>
 
     <xs:complexType name="LayersType">

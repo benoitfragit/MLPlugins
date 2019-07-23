@@ -13,11 +13,15 @@
 
 /**
  * \fn MLPLayer new_layer(const BrainUint number_of_neurons,
+ *                        const BrainActivationFunction activation_function,
+ *                        const BrainActivationFunction derivative_function,
  *                          const BrainUint number_of_inputs,
  *                          const BrainSignal in,
  *                          BrainSignal previous_errors)
  * \brief Fonction to create a MLPLayer from an XML context
  *
+ * \param activation_function a BrainActivationFunction
+ * \param derivative_function a BrainDerivativeFunction
  * \param number_of_neurons Number of neurons in this layer
  * \param number_of_inputs size of the input signal
  * \param in input signal
@@ -26,9 +30,11 @@
  * \return a new allocated MLPLayer or NULL if it failed
  */
 MLPLayer  new_layer                 (const BrainUint   number_of_neurons,
-                                       const BrainUint   number_of_inputs,
-                                       const BrainSignal in,
-                                       BrainSignal       previous_errors);
+                                     const BrainActivationFunction activation_function,
+                                     const BrainActivationFunction derivative_function,
+                                     const BrainUint   number_of_inputs,
+                                     const BrainSignal in,
+                                     BrainSignal       previous_errors);
 /**
  * \fn MLPNeuron get_layer_neuron(const MLPLayer layer, const BrainUint index)
  * \brief get a Neuron from the layer
@@ -96,14 +102,6 @@ BrainSignal get_layer_errors(const MLPLayer layer);
  * \param hidden_layer is this layer an hidden layer
  */
 void activate_layer(const MLPLayer layer, const BrainBool hidden_layer);
-/**
- * \fn void set_layer_activation( MLPLayer layer, BrainString name)
- * \brief customize neural network parameters
- *
- * \param layer     The MLPLayer to train
- * \param name      The function name
- */
-void set_layer_activation(MLPLayer layer, BrainString name);
 /**
  * \fn void serialize_layer(MLPLayer layer, Writer writer)
  * \brief serialize a layer

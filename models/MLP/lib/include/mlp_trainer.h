@@ -4,7 +4,8 @@
 #include "mlp_types.h"
 
 MLPTrainer  new_trainer                     (MLPNetwork, MLPData);
-void        configure_trainer_with_context  (MLPTrainer trainer, BrainString filepath);
+void        delete_trainer                  (MLPTrainer);
+void        configure_trainer_with_context  (MLPTrainer, BrainString);
 void        set_trained_data                (MLPTrainer, MLPData);
 void        set_trained_network             (MLPTrainer, MLPNetwork);
 BrainBool   is_training_required            (const MLPTrainer);

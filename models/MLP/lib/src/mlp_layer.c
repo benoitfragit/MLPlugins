@@ -24,28 +24,6 @@ struct Layer
     BrainRandomMask _mask;             /*!< Dropout activation mask      */
 } Layer;
 
-void
-set_layer_activation(MLPLayer layer, BrainString name)
-{
-    BRAIN_INPUT(configure_layer_with_context)
-
-    if (BRAIN_ALLOCATED(layer)
-    &&  BRAIN_ALLOCATED(name))
-    {
-        const BrainUint number_of_neurons = layer->_number_of_neuron;
-        BrainUint i = 0;
-
-        for (i = 0; i < number_of_neurons; ++i)
-        {
-            MLPNeuron neuron = layer->_neurons[i];
-
-            set_neuron_activation(neuron, name);
-        }
-    }
-
-    BRAIN_OUTPUT(configure_layer_with_context)
-}
-
 MLPNeuron
 get_layer_neuron(const MLPLayer layer, const BrainUint index)
 {
@@ -89,6 +67,8 @@ delete_layer(MLPLayer layer)
 
 MLPLayer
 new_layer(const BrainUint     number_of_neurons,
+          const BrainActivationFunction activation_function,
+          const BrainActivationFunction derivative_function,
           const BrainUint     number_of_inputs,
           const BrainSignal   in,
           BrainSignal         out_errors)
@@ -132,7 +112,9 @@ new_layer(const BrainUint     number_of_neurons,
                 /**                <--------      <-------           **/
                 /**                out_error      in_error           **/
                 /******************************************************/
-                _layer->_neurons[index] = new_neuron(in,
+                _layer->_neurons[index] = new_neuron(activation_function,
+                                                     derivative_function,
+                                                     in,
                                                      number_of_inputs,
                                                      &(_layer->_out[index]),
                                                      out_errors);

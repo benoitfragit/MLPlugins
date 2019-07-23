@@ -80,54 +80,6 @@ update_network(MLPNetwork network, BrainReal learning_rate, BrainReal momentum)
     BRAIN_OUTPUT(update_network)
 }
 
-void __BRAIN_VISIBLE__
-configure_network_with_context(MLPNetwork network, BrainString filepath)
-{
-    BRAIN_INPUT(configure_network_with_context)
-
-    if (BRAIN_ALLOCATED(network) &&
-        BRAIN_ALLOCATED(filepath) &&
-        validate_with_xsd(filepath, SETTINGS_XSD_FILE))
-    {
-        Document settings_document = open_document(filepath);
-
-        if (BRAIN_ALLOCATED(settings_document))
-        {
-            Context settings_context = get_root_node(settings_document);
-
-            if (BRAIN_ALLOCATED(settings_context) &&
-                is_node_with_name(settings_context, "settings"))
-            {
-                const BrainUint number_of_layer = network->_number_of_layers;
-                BrainUint i = 0;
-                BrainChar* buffer = NULL;
-
-                Context backpropagation_context = get_node_with_name_and_index(settings_context,
-                                                                        "backpropagation",
-                                                                        0);
-                if (BRAIN_ALLOCATED(backpropagation_context))
-                {
-                    buffer = (BrainChar *)node_get_prop(backpropagation_context, "activation-function");
-
-                    for (i = 0; i < number_of_layer; ++i)
-                    {
-                        set_layer_activation(network->_layers[i], buffer);
-                    }
-
-                    if (BRAIN_ALLOCATED(buffer))
-                    {
-                        BRAIN_DELETE(buffer);
-                    }
-                }
-            }
-
-            close_document(settings_document);
-        }
-    }
-
-    BRAIN_OUTPUT(configure_network_with_context)
-}
-
 MLPLayer
 get_network_layer(const MLPNetwork network, const BrainUint index)
 {
@@ -232,7 +184,9 @@ delete_network(MLPNetwork network)
 static MLPNetwork
 new_network(const BrainUint signal_input_length,
             const BrainUint number_of_layers,
-            const BrainUint *neuron_per_layers)
+            const BrainUint *neuron_per_layers,
+            const BrainActivationFunction *activation_functions,
+            const BrainActivationFunction *derivative_functions)
 {
     BRAIN_INPUT(new_network)
 
@@ -241,7 +195,9 @@ new_network(const BrainUint signal_input_length,
 
     MLPNetwork _network = NULL;
 
-    if (BRAIN_ALLOCATED(neuron_per_layers))
+    if (BRAIN_ALLOCATED(neuron_per_layers)
+    &&  BRAIN_ALLOCATED(activation_functions)
+    &&  BRAIN_ALLOCATED(derivative_functions))
     {
         BrainUint number_of_inputs = signal_input_length;
         BRAIN_NEW(_network, Network, 1);
@@ -286,6 +242,8 @@ new_network(const BrainUint signal_input_length,
                 /**                    error vector                  **/
                 /******************************************************/
                 _network->_layers[index] = new_layer(number_of_neurons,
+                                                     activation_functions[index],
+                                                     derivative_functions[index],
                                                      number_of_inputs,
                                                      in,
                                                      previous_errors);
@@ -432,18 +390,44 @@ new_network_from_context(BrainString filepath)
                 {
                     const BrainUint  number_of_layers = get_number_of_node_with_name(layers_context, "layer");
                     BrainUint* neuron_per_layers =  NULL;
+                    BrainChar* buffer = NULL;
+                    BrainActivationFunction* activation_functions = NULL;
+                    BrainActivationFunction* derivative_functions = NULL;
 
                     BRAIN_NEW(neuron_per_layers, BrainUint, number_of_layers);
+                    BRAIN_NEW(activation_functions, BrainActivationFunction, number_of_layers);
+                    BRAIN_NEW(derivative_functions, BrainActivationFunction, number_of_layers);
                     BrainUint  index = 0;
 
                     for (index = 0; index < number_of_layers; ++index)
                     {
-                        Context subcontext = get_node_with_name_and_index(layers_context, "layer", index);
+                        Context subcontext       = get_node_with_name_and_index(layers_context, "layer", index);
                         neuron_per_layers[index] = node_get_int(subcontext, "neurons", 1);
+                        buffer                   = (BrainChar *)node_get_prop(subcontext, "activation-function");
+
+                        if (BRAIN_ALLOCATED(buffer))
+                        {
+                            activation_functions[index] = brain_activation_function(buffer);
+                            derivative_functions[index] = brain_derivative_function(buffer);
+
+                            BRAIN_DELETE(buffer);
+                        }
+                        else
+                        {
+                            activation_functions[index] = brain_activation_function("Sigmoid");
+                            derivative_functions[index] = brain_derivative_function("Sigmoid");
+                        }
                     }
 
-                    network = new_network(number_of_inputs, number_of_layers, neuron_per_layers);
+                    network = new_network(number_of_inputs,
+                                          number_of_layers,
+                                          neuron_per_layers,
+                                          activation_functions,
+                                          derivative_functions);
+
                     BRAIN_DELETE(neuron_per_layers);
+                    BRAIN_DELETE(activation_functions);
+                    BRAIN_DELETE(derivative_functions);
                 }
             }
 

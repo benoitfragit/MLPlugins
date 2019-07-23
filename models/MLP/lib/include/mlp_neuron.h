@@ -12,22 +12,28 @@
 #include "mlp_types.h"
 
 /**
- * \fn MLPNeuron new_neuron(BrainSignal in,
- *                            const BrainUint number_of_inputs,
- *                            BrainSignal out,
- *                            BrainSignal errors)
+ * \fn MLPNeuron new_neuron(    BrainActivationFunction activation_function,
+ *                              BrainActivationFunction derivative_function,
+ *                              BrainSignal in,
+ *                              const BrainUint number_of_inputs,
+ *                              BrainSignal out,
+ *                              BrainSignal errors)
  * \brief method to build a neuron
  *
+ * \param activation_function a BrainActivationFunction
+ * \param derivative_function a BrainDerivativeFunction
  * \param in               a input BrainSignal
  * \param number_of_inputs input_signal_size
  * \param out            a pointer to a BrainReal owned by the MLPLayer
  * \param errors an array owned by the MLPLayer to update weights
  * \return a MLPNeuron or NULL if it failed
  */
-MLPNeuron new_neuron(BrainSignal in,
-                       const BrainUint     number_of_inputs,
-                       BrainSignal         out,
-                       BrainSignal         errors);
+MLPNeuron new_neuron(  BrainActivationFunction  activation_function,
+                       BrainActivationFunction  derivative_function,
+                       BrainSignal              in,
+                       const BrainUint          number_of_inputs,
+                       BrainSignal              out,
+                       BrainSignal              errors);
 /**
  * \fn void delete_neuron(MLPNeuron neuron)
  * \brief free all MLPNeuron memory
@@ -60,14 +66,6 @@ BrainUint get_neuron_number_of_input(const MLPNeuron neuron);
  * \return the neuron weight
  */
 BrainReal get_neuron_weight(const MLPNeuron neuron, const BrainUint index);
-/**
- * \fn void set_neuron_activation( MLPNeuron neuron, BrainString name);
- * \brief customize neural network parameters
- *
- * \param neuron    The MLPNeuron to train
- * \param name      The function name
- */
-void set_neuron_activation(MLPNeuron neuron, BrainString name);
 /**
  * \fn void update_neuron(MLPNeuron reuron,
  *                        BrainReal minibatch_size,

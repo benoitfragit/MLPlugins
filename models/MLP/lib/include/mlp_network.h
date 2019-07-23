@@ -67,14 +67,6 @@ void backpropagate(MLPNetwork network, const BrainUint number_of_output, const B
  */
 void update_network(MLPNetwork network, BrainReal learning_rate, BrainReal momentum);
 /**
- * \fn void configure_network_with_context(MLPNetwork network, BrBrainString filepath)
- * \brief Load settings from an XML context
- *
- * \param network  the MLPNetwork to configure
- * \param filepath the XML context to use
- */
-void configure_network_with_context(MLPNetwork network, BrainString filepath);
-/**
  * \fn void deserialize_network(MLPNetwork network, BrainString filepath)
  * \brief load previously trained neural network's weight
  *
