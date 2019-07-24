@@ -1,12 +1,12 @@
-#ifndef BRAIN_PLUGIN_TYPES_H
-#define BRAIN_PLUGIN_TYPES_H
+#ifndef BRAIN_TRAINABLE_TYPES_H
+#define BRAIN_TRAINABLE_TYPES_H
 
 #include "brain_core_types.h"
 
-typedef struct _BrainPlugin                 BrainPlugin;
+typedef struct _BrainTrainable                 BrainTrainable;
 
-typedef void         (*BrainPluginActivatePtrFunc)  (void);
-typedef void         (*BrainPluginDeactivatePtrFunc)(void);
+typedef void         (*BrainTrainableActivatePtrFunc)  (void);
+typedef void         (*BrainTrainableDeactivatePtrFunc)(void);
 typedef BrainNetwork (*BrainLoadNetworkPtrFunc)     (BrainString);
 typedef void         (*BrainConfigurePtrFunc)       (BrainNetwork,       BrainString);
 typedef void         (*BrainSerializePtrFunc)       (const BrainNetwork, BrainString);
@@ -20,4 +20,4 @@ typedef BrainData    (*BrainLoadDataPtrFunc)        (BrainString);
 typedef void         (*BrainDeleteDataPtrFunc)      (BrainData);
 typedef BrainReal    (*BrainGetProgressPtrFunc)     (const BrainNetwork);
 
-#endif /* BRAIN_PLUGIN_TYPES_H */
+#endif /* BRAIN_TRAINABLE_TYPES_H */

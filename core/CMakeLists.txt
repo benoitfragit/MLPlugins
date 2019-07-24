@@ -1,20 +1,7 @@
 cmake_minimum_required(VERSION 2.8.9)
 project(BrainCore)
 
-add_compile_options(-O2
-                    -g3
-                    -Wall
-                    -Wextra
-                    -Wshadow
-                    -Wunused
-                    -Wunused-parameter
-                    -lm)
-
 find_package(LIBXML2 REQUIRED)
-
-if (LIBBRAIN_DOUBLE_PRECISION)
-    add_definitions(-DBRAIN_ENABLE_DOUBLE_PRECISION=1)
-endif(LIBBRAIN_DOUBLE_PRECISION)
 
 set(LIBBRAINCORE_SOURCE_DIR
     ${CMAKE_CURRENT_SOURCE_DIR}/src)
@@ -32,14 +19,10 @@ file(GLOB_RECURSE HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h)
 configure_file ("${PROJECT_SOURCE_DIR}/include/brain_core_config.h.in"
                 "${PROJECT_BINARY_DIR}/include/brain_core_config.h")
 
-if (${CMAKE_ENABLE_LOGGING})
-    add_definitions(-DBRAIN_ENABLE_LOGGING=1)
-endif(${CMAKE_ENABLE_LOGGING})
-
 #Generate the shared library from the sources
 add_library(BrainCore SHARED ${SOURCES} ${HEADERS})
 
-target_link_libraries(BrainCore ${LIBXML2_LIBRARIES})
+target_link_libraries(BrainCore PUBLIC ${LIBXML2_LIBRARIES})
 target_include_directories(BrainCore PUBLIC ${LIBBRAINCORE_INCLUDE_DIRS})
 
 install(TARGETS BrainCore

@@ -1,23 +1,10 @@
 cmake_minimum_required(VERSION 2.8.9)
 project(MLP)
 
-add_compile_options(-O2
-                    -g3
-                    -Wall
-                    -Wextra
-                    -Wshadow
-                    -Wunused
-                    -Wunused-parameter
-                    -lm)
-
-if (LIBBRAIN_DOUBLE_PRECISION)
-    add_definitions(-DBRAIN_ENABLE_DOUBLE_PRECISION=1)
-endif(LIBBRAIN_DOUBLE_PRECISION)
-
-if (NOT CMAKE_ENABLE_TESTING)
+if (NOT BRAIN_ENABLE_TESTING)
     set(CMAKE_C_VISIBILITY_PRESET hidden)
     set(CMAKE_CXX_VISIBILITY_PRESET hidden)
-endif(NOT CMAKE_ENABLE_TESTING)
+endif(NOT BRAIN_ENABLE_TESTING)
 
 find_package(LIBXML2 REQUIRED)
 
@@ -40,7 +27,7 @@ file(GLOB_RECURSE HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h)
 #Generate the shared library from the sources
 add_library(MLP SHARED ${SOURCES} ${HEADERS})
 
-target_link_libraries(MLP ${LIBXML2_LIBRARIES} BrainCore)
+target_link_libraries(MLP PUBLIC ${LIBXML2_LIBRARIES} BrainCore)
 target_include_directories(MLP PUBLIC ${LIBBRAINMLP_INCLUDE_DIRS})
 
 install(TARGETS MLP

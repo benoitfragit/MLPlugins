@@ -10,10 +10,6 @@ find_package(GTK3 REQUIRED)
 configure_file ("${PROJECT_SOURCE_DIR}/include/trainer_config.h.in"
                 "${PROJECT_BINARY_DIR}/include/trainer_config.h")
 
-if (LIBBRAIN_DOUBLE_PRECISION)
-    add_definitions(-DBRAIN_ENABLE_DOUBLE_PRECISION=1)
-endif(LIBBRAIN_DOUBLE_PRECISION)
-
 set(BRAINTRAINER_INCLUDE_DIR
     ${PROJECT_BINARY_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/include
