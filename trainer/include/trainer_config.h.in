@@ -1,6 +1,0 @@
-#ifndef TRAINER_CONFIG_H_IN
-#define TRAINER_CONFIG_H_IN
-
-#define BRAIN_TRAINER_VIEW_FILE "${CMAKE_INSTALL_PREFIX}/resources/view.glade"
-
-#endif /* TRAINER_CONFIG_H_IN */
