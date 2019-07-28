@@ -16,8 +16,6 @@
 
 #include "brain_core_types.h"
 
-#define __BRAIN_VISIBLE__ __attribute__((visibility("default")))
-
 /**
  * \brief opaque pointer on Data struct
  */

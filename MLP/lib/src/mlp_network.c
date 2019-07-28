@@ -157,7 +157,7 @@ get_network_output(const MLPNetwork network)
     return NULL;
 }
 
-void __BRAIN_VISIBLE__
+void
 delete_network(MLPNetwork network)
 {
     BRAIN_INPUT(delete_network)
@@ -261,7 +261,7 @@ new_network(const BrainUint signal_input_length,
     return _network;
 }
 
-void __BRAIN_VISIBLE__
+void
 predict(MLPNetwork        network,
         const BrainUint   number_of_input,
         const BrainSignal in)
@@ -271,7 +271,7 @@ predict(MLPNetwork        network,
     BRAIN_OUTPUT(predict)
 }
 
-void __BRAIN_VISIBLE__
+void
 deserialize_network(MLPNetwork network, BrainString filepath)
 {
     BRAIN_INPUT(deserialize_network)
@@ -315,7 +315,7 @@ deserialize_network(MLPNetwork network, BrainString filepath)
     BRAIN_OUTPUT(deserialize_network)
 }
 
-void __BRAIN_VISIBLE__
+void
 serialize_network(const MLPNetwork network, BrainString filepath)
 {
     BRAIN_INPUT(serialize_network)
@@ -363,7 +363,7 @@ serialize_network(const MLPNetwork network, BrainString filepath)
     BRAIN_OUTPUT(serialize_network)
 }
 
-MLPNetwork __BRAIN_VISIBLE__
+MLPNetwork
 new_network_from_context(BrainString filepath)
 {
     BRAIN_INPUT(new_network_from_context)
@@ -438,4 +438,19 @@ new_network_from_context(BrainString filepath)
     BRAIN_OUTPUT(new_network_from_context)
 
     return network;
+}
+
+BrainUint
+get_network_output_length(const MLPNetwork network)
+{
+    BrainUint length = 0;
+
+    if (BRAIN_ALLOCATED(network))
+    {
+        MLPLayer layer = network->_layers[network->_number_of_layers - 1];
+
+        length = get_layer_number_of_neuron(layer);
+    }
+
+    return length;
 }

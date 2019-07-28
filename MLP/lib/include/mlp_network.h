@@ -39,6 +39,14 @@ void predict(MLPNetwork      network,
  */
 BrainSignal get_network_output(const MLPNetwork network);
 /**
+ * BrainUint get_network_output_length(const MLPNetwork network)
+ * \brief get network output length
+ *
+ * \param the network
+ * \return number of neuron in the output layer
+ */
+BrainUint get_network_output_length(const MLPNetwork network);
+/**
  * \fn MLPLayer get_network_layer(const MLPNetwork network, const BrainUint index)
  * \brief retrieve the input layer
  *

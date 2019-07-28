@@ -6,10 +6,8 @@
 MLPTrainer  new_trainer                     (MLPNetwork, MLPData);
 void        delete_trainer                  (MLPTrainer);
 void        configure_trainer_with_context  (MLPTrainer, BrainString);
-void        set_trained_data                (MLPTrainer, MLPData);
-void        set_trained_network             (MLPTrainer, MLPNetwork);
 BrainBool   is_training_required            (const MLPTrainer);
 BrainReal   get_training_progress           (const MLPTrainer);
-BrainReal   step                            (MLPTrainer);
-
+void        step                            (MLPTrainer);
+BrainReal   get_trainer_error               (const MLPTrainer);
 #endif /* MLP_TRAINER_H */

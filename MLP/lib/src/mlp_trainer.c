@@ -31,7 +31,7 @@ typedef struct Trainer
     BrainCostFunction _cost_function_derivative;    /*!< Cost function derivative       */
 } Trainer;
 
-MLPTrainer __BRAIN_VISIBLE__
+MLPTrainer
 new_trainer(MLPNetwork network, MLPData data)
 {
     MLPTrainer trainer = NULL;
@@ -54,16 +54,19 @@ new_trainer(MLPNetwork network, MLPData data)
     return trainer;
 }
 
-void __BRAIN_VISIBLE__
+void
 delete_trainer(MLPTrainer trainer)
 {
     if (BRAIN_ALLOCATED(trainer))
     {
+        delete_data(trainer->_data);
+        delete_network(trainer->_network);
+
         BRAIN_DELETE(trainer);
     }
 }
 
-void __BRAIN_VISIBLE__
+void
 configure_trainer_with_context(MLPTrainer trainer, BrainString filepath)
 {
     BRAIN_INPUT(configure_trainer_with_context)
@@ -103,24 +106,6 @@ configure_trainer_with_context(MLPTrainer trainer, BrainString filepath)
     }
 
     BRAIN_OUTPUT(configure_trainer_with_context)
-}
-
-void __BRAIN_VISIBLE__
-set_trained_network(MLPTrainer trainer, MLPNetwork network)
-{
-    if (BRAIN_ALLOCATED(trainer))
-    {
-        trainer->_network = network;
-    }
-}
-
-void __BRAIN_VISIBLE__
-set_trained_data(MLPTrainer trainer, MLPData data)
-{
-    if (BRAIN_ALLOCATED(trainer))
-    {
-        trainer->_data = data;
-    }
 }
 
 static BrainReal
@@ -193,7 +178,7 @@ compute_total_error(MLPTrainer trainer)
     BRAIN_OUTPUT(compute_total_error);
 }
 
-BrainBool __BRAIN_VISIBLE__
+BrainBool
 is_training_required(const MLPTrainer trainer)
 {
     BRAIN_INPUT(is_training_required);
@@ -211,7 +196,7 @@ is_training_required(const MLPTrainer trainer)
     return ret;
 }
 
-BrainReal __BRAIN_VISIBLE__
+BrainReal
 get_training_progress(const MLPTrainer trainer)
 {
     BRAIN_INPUT(get_training_progress)
@@ -228,11 +213,9 @@ get_training_progress(const MLPTrainer trainer)
     return ret;
 }
 
-BrainReal __BRAIN_VISIBLE__
+void
 step(MLPTrainer trainer)
 {
-    BrainReal error = 1.;
-
     BRAIN_INPUT(step);
 
     if (BRAIN_ALLOCATED(trainer)
@@ -303,8 +286,6 @@ step(MLPTrainer trainer)
         /**************************************************/
         ++trainer->_iterations;
 
-        error = trainer->_error;
-
         if (BRAIN_ALLOCATED(loss))
         {
             BRAIN_DELETE(loss);
@@ -312,6 +293,17 @@ step(MLPTrainer trainer)
     }
 
     BRAIN_OUTPUT(step);
+}
+
+BrainReal
+get_trainer_error(const MLPTrainer trainer)
+{
+    BrainReal error = 1.0;
+
+    if (BRAIN_ALLOCATED(trainer))
+    {
+        error = trainer->_error;
+    }
 
     return error;
 }
