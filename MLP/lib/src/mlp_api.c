@@ -26,77 +26,77 @@ mlp_trainer_new(BrainString network_path, BrainString data_path)
 }
 
 void __MLP_VISIBLE__
-mlp_trainer_delete(void* trainer)
+mlp_trainer_delete(MLPTrainer trainer)
 {
     if (BRAIN_ALLOCATED(trainer))
     {
-        delete_trainer((MLPTrainer)trainer);
+        delete_trainer(trainer);
     }
 }
 
 void __MLP_VISIBLE__
-mlp_trainer_configure(void* trainer, BrainString path)
+mlp_trainer_configure(MLPTrainer trainer, BrainString path)
 {
     if (BRAIN_ALLOCATED(trainer))
     {
-        configure_trainer_with_context((MLPTrainer)trainer, path);
+        configure_trainer_with_context(trainer, path);
     }
 }
 
 BrainBool __MLP_VISIBLE__
-mlp_trainer_is_running(void* trainer)
+mlp_trainer_is_running(MLPTrainer trainer)
 {
     BrainBool running = BRAIN_FALSE;
 
     if (BRAIN_ALLOCATED(trainer))
     {
-        running = is_training_required((const MLPTrainer)trainer);
+        running = is_training_required(trainer);
     }
 
     return running;
 }
 
 BrainFloat __MLP_VISIBLE__
-mlp_trainer_get_progress(void* trainer)
+mlp_trainer_get_progress(MLPTrainer trainer)
 {
     BrainFloat progress = 0.f;
 
     if (BRAIN_ALLOCATED(trainer))
     {
-        progress = (BrainFloat)get_training_progress((const MLPTrainer)trainer);
+        progress = (BrainFloat)get_training_progress(trainer);
     }
 
     return progress;
 }
 
 void __MLP_VISIBLE__
-mlp_trainer_run(void* trainer)
+mlp_trainer_run(MLPTrainer trainer)
 {
     if (BRAIN_ALLOCATED(trainer))
     {
-        step((MLPTrainer)trainer);
+        step(trainer);
     }
 }
 
 BrainFloat __MLP_VISIBLE__
-mlp_trainer_error(void* trainer)
+mlp_trainer_error(MLPTrainer trainer)
 {
     BrainFloat error = 1.f;
 
     if (BRAIN_ALLOCATED(trainer))
     {
-        error = (BrainFloat)get_trainer_error((const MLPTrainer)trainer);
+        error = (BrainFloat)get_trainer_error(trainer);
     }
 
     return error;
 }
 
 void __MLP_VISIBLE__
-mlp_network_delete(void* network)
+mlp_network_delete(MLPNetwork network)
 {
     if (BRAIN_ALLOCATED(network))
     {
-        delete_network((MLPNetwork)network);
+        delete_network(network);
     }
 }
 
@@ -111,31 +111,31 @@ mlp_network_new(BrainString path)
 }
 
 void __MLP_VISIBLE__
-mlp_network_serialize(void* network, BrainString path)
+mlp_network_serialize(MLPNetwork network, BrainString path)
 {
-    serialize_network((const MLPNetwork)network, path);
+    serialize_network(network, path);
 }
 
 void __MLP_VISIBLE__
-mlp_network_deserialize(void* network, BrainString path)
+mlp_network_deserialize(MLPNetwork network, BrainString path)
 {
-    deserialize_network((MLPNetwork)network, path);
+    deserialize_network(network, path);
 }
 
 void __MLP_VISIBLE__
-mlp_network_predict(void* network, BrainUint number_of_inputs, void* signal)
+mlp_network_predict(MLPNetwork network, BrainUint number_of_inputs, void* signal)
 {
-    predict((MLPNetwork)network, number_of_inputs, (BrainSignal)signal);
+    predict(network, number_of_inputs, (BrainSignal)signal);
 }
 
 BrainSignal __MLP_VISIBLE__
-mlp_network_get_output(void* network)
+mlp_network_get_output(MLPNetwork network)
 {
     BrainSignal output = NULL;
 
     if (BRAIN_ALLOCATED(network))
     {
-        output = get_network_output((const MLPNetwork)network);
+        output = get_network_output(network);
     }
 
     return output;
@@ -143,7 +143,7 @@ mlp_network_get_output(void* network)
 
 
 BrainUint __MLP_VISIBLE__
-mlp_network_get_output_length(void* network)
+mlp_network_get_output_length(MLPNetwork network)
 {
-    return get_network_output_length((const MLPNetwork)network);
+    return get_network_output_length(network);
 }

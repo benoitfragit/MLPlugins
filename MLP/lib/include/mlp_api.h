@@ -4,18 +4,18 @@
 #include "mlp_types.h"
 
 MLPTrainer  mlp_trainer_new                 (BrainString, BrainString);
-void        mlp_trainer_delete              (void*);
-void        mlp_trainer_configure           (void*, BrainString);
-BrainBool   mlp_trainer_is_running          (void*);
-BrainFloat  mlp_trainer_get_progress        (void*);
-void        mlp_trainer_run                 (void*);
-BrainFloat  mlp_trainer_error               (void*);
+void        mlp_trainer_delete              (MLPTrainer);
+void        mlp_trainer_configure           (MLPTrainer, BrainString);
+BrainBool   mlp_trainer_is_running          (MLPTrainer);
+BrainFloat  mlp_trainer_get_progress        (MLPTrainer);
+void        mlp_trainer_run                 (MLPTrainer);
+BrainFloat  mlp_trainer_error               (MLPTrainer);
 MLPNetwork  mlp_network_new                 (BrainString);
-void        mlp_network_delete              (void*);
-void        mlp_network_serialize           (void*, BrainString);
-void        mlp_network_deserialize         (void*, BrainString);
-void        mlp_network_predict             (void*, BrainUint, void*);
-BrainSignal mlp_network_get_output          (void*);
-BrainUint   mlp_network_get_output_length   (void*);
+void        mlp_network_delete              (MLPNetwork);
+void        mlp_network_serialize           (MLPNetwork, BrainString);
+void        mlp_network_deserialize         (MLPNetwork, BrainString);
+void        mlp_network_predict             (MLPNetwork, BrainUint, void*);
+BrainSignal mlp_network_get_output          (MLPNetwork);
+BrainUint   mlp_network_get_output_length   (MLPNetwork);
 
 #endif /* MLP_API_H */
