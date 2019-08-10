@@ -5,8 +5,15 @@
 
 #include "brain_data_utils.h"
 #include "brain_memory_utils.h"
+#include "brain_logging_utils.h"
 
 #define __MLP_VISIBLE__ __attribute__((visibility("default")))
+
+void __MLP_VISIBLE__
+mlp_init()
+{
+    brain_logging_init();
+}
 
 MLPTrainer __MLP_VISIBLE__
 mlp_trainer_new(BrainString network_path, BrainString data_path)

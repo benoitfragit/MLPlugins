@@ -179,7 +179,7 @@ compute_total_error(MLPTrainer trainer)
 }
 
 BrainBool
-is_training_required(const MLPTrainer trainer)
+is_training_required(MLPTrainer trainer)
 {
     BRAIN_INPUT(is_training_required);
 
@@ -197,7 +197,7 @@ is_training_required(const MLPTrainer trainer)
 }
 
 BrainReal
-get_training_progress(const MLPTrainer trainer)
+get_training_progress(MLPTrainer trainer)
 {
     BRAIN_INPUT(get_training_progress)
 
@@ -296,7 +296,7 @@ step(MLPTrainer trainer)
 }
 
 BrainReal
-get_trainer_error(const MLPTrainer trainer)
+get_trainer_error(MLPTrainer trainer)
 {
     BrainReal error = 1.0;
 
