@@ -7,12 +7,20 @@
 #include "brain_memory_utils.h"
 #include "brain_logging_utils.h"
 
+#include "mlp_config.h"
+
 #define __MLP_VISIBLE__ __attribute__((visibility("default")))
 
 void __MLP_VISIBLE__
-mlp_init()
+mlp_plugin_init()
 {
     brain_logging_init();
+}
+
+MLPMetaData __MLP_VISIBLE__
+mlp_plugin_metadata()
+{
+    return &mlpInfos;
 }
 
 MLPTrainer __MLP_VISIBLE__

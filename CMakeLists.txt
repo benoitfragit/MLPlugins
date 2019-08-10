@@ -15,6 +15,11 @@ if (BRAIN_ENABLE_LOGGING)
     add_definitions(-DBRAIN_ENABLE_LOGGING)
 endif(BRAIN_ENABLE_LOGGING)
 
+add_definitions(-DBRAIN_VERSION)
+add_definitions(-DBRAIN_NAME)
+add_definitions(-DBRAIN_AUTHOR)
+add_definitions(-DBRAIN_DESCRIPTION)
+
 add_compile_options(-O2
                     -g3
                     -Wall

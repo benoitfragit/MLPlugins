@@ -3,7 +3,8 @@
 
 #include "mlp_types.h"
 
-void        mlp_init                        ();
+void        mlp_plugin_init                 ();
+MLPMetaData mlp_plugin_metadata             ();
 MLPTrainer  mlp_trainer_new                 (BrainString, BrainString);
 void        mlp_trainer_delete              (MLPTrainer);
 void        mlp_trainer_configure           (MLPTrainer, BrainString);

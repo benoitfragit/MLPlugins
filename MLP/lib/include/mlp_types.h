@@ -36,5 +36,18 @@ typedef struct Network* MLPNetwork;
  * \brief opaque pointer to a Trainer
  */
 typedef struct Trainer* MLPTrainer;
-
+/**
+ * \brief Struct MLPMetaData
+ */
+typedef struct MetaData
+{
+    BrainString name;
+    BrainString author;
+    BrainString version;
+    BrainString description;
+} MetaData;
+/**
+* \brief Pointer on a MetaData struct
+*/
+typedef struct MetaData* MLPMetaData;
 #endif /* MLP_TYPES_H */
