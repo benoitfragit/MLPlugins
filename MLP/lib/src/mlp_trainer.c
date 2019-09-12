@@ -307,3 +307,12 @@ get_trainer_error(MLPTrainer trainer)
 
     return error;
 }
+
+void
+save_trainer_progression(MLPTrainer trainer, BrainString path)
+{
+    if (BRAIN_ALLOCATED(trainer) && BRAIN_ALLOCATED(path) && BRAIN_ALLOCATED(trainer->_network))
+    {
+        serialize_network(trainer->_network, path);
+    }
+}

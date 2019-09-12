@@ -107,6 +107,15 @@ mlp_trainer_error(MLPTrainer trainer)
 }
 
 void __MLP_VISIBLE__
+mlp_save_trainer_progression(MLPTrainer trainer, BrainString path)
+{
+    if (BRAIN_ALLOCATED(trainer) && BRAIN_ALLOCATED(path))
+    {
+        save_trainer_progression(trainer, path);
+    }
+}
+
+void __MLP_VISIBLE__
 mlp_network_delete(MLPNetwork network)
 {
     if (BRAIN_ALLOCATED(network))

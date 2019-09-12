@@ -12,6 +12,6 @@
 static MetaData mlpInfos = {"${BRAIN_NAME}",
                             "${BRAIN_AUTHOR}",
                             "${BRAIN_VERSION}",
-                            "${BRAIN_DESCRITION}"} ;
+                            "${BRAIN_DESCRIPTION}"} ;
 
 #endif /* MLP_CONFIG_H */

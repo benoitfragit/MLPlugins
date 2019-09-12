@@ -10,4 +10,6 @@ BrainBool   is_training_required            (const MLPTrainer);
 BrainReal   get_training_progress           (const MLPTrainer);
 void        step                            (MLPTrainer);
 BrainReal   get_trainer_error               (const MLPTrainer);
+void        save_trainer_progression        (MLPTrainer trainer, BrainString path);
+
 #endif /* MLP_TRAINER_H */
