@@ -194,8 +194,9 @@ deserialize_neuron(MLPNeuron neuron, Context context)
             value = (BrainReal)node_get_content_as_double(subcontext);
             set_weight(neuron->_w[index], value);
         }
+
         value = (BrainReal)node_get_double(context, "bias", 0.0);
-        set_weight(neuron->_w[index], value);
+        set_weight(neuron->_w[neuron->_number_of_input], value);
     }
 
     BRAIN_OUTPUT(deserialize_neuron)
@@ -219,18 +220,18 @@ serialize_neuron(MLPNeuron neuron, Writer writer)
                 BrainChar buffer[50];
                 BrainReal w = 0.;
 
+                w = get_weight(neuron->_w[number_of_inputs]);
+                sprintf(buffer, "%lf", w);
+                add_attribute(writer, "bias", buffer);
+
                 for (index_input = 0;
                      index_input < number_of_inputs;
                      ++index_input)
                 {
                     w = get_weight(neuron->_w[index_input]);
-                    sprintf(buffer, "%lf",w);
+                    sprintf(buffer, "%lf", w);
                     write_element(writer, "weight", buffer);
                 }
-
-                w = get_weight(neuron->_w[index_input]);
-                sprintf(buffer, "%lf", w);
-                add_attribute(writer, "bias", buffer);
 
                 stop_element(writer);
             }

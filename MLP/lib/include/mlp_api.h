@@ -5,6 +5,7 @@
 
 void        mlp_plugin_init                 ();
 MLPMetaData mlp_plugin_metadata             ();
+
 MLPTrainer  mlp_trainer_new                 (BrainString, BrainString);
 void        mlp_trainer_delete              (MLPTrainer);
 void        mlp_trainer_configure           (MLPTrainer, BrainString);
@@ -12,7 +13,9 @@ BrainBool   mlp_trainer_is_running          (MLPTrainer);
 BrainFloat  mlp_trainer_get_progress        (MLPTrainer);
 void        mlp_trainer_run                 (MLPTrainer);
 BrainFloat  mlp_trainer_error               (MLPTrainer);
-void        mlp_save_trainer_progression    (MLPTrainer, BrainString);
+void        mlp_trainer_save_progression    (MLPTrainer, BrainString);
+void        mlp_trainer_restore_progression (MLPTrainer, BrainString, BrainReal, BrainReal);
+
 MLPNetwork  mlp_network_new                 (BrainString);
 void        mlp_network_delete              (MLPNetwork);
 void        mlp_network_serialize           (MLPNetwork, BrainString);

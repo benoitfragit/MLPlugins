@@ -316,3 +316,22 @@ save_trainer_progression(MLPTrainer trainer, BrainString path)
         serialize_network(trainer->_network, path);
     }
 }
+
+void
+restore_trainer_progression(MLPTrainer trainer,
+                            BrainString serialized_network,
+                            BrainReal progress,
+                            BrainReal error)
+{
+    if (BRAIN_ALLOCATED(trainer))
+    {
+        trainer->_iterations = (BrainUint)(trainer->_max_iter * progress);
+        trainer->_error = error;
+
+        if (BRAIN_ALLOCATED(trainer->_network) &&
+            BRAIN_ALLOCATED(serialized_network))
+        {
+            deserialize_network(trainer->_network, serialized_network);
+        }
+    }
+}

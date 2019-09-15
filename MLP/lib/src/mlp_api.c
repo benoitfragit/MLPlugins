@@ -107,11 +107,24 @@ mlp_trainer_error(MLPTrainer trainer)
 }
 
 void __MLP_VISIBLE__
-mlp_save_trainer_progression(MLPTrainer trainer, BrainString path)
+mlp_trainer_save_progression(MLPTrainer trainer, BrainString path)
 {
     if (BRAIN_ALLOCATED(trainer) && BRAIN_ALLOCATED(path))
     {
         save_trainer_progression(trainer, path);
+    }
+}
+
+void __MLP_VISIBLE__
+mlp_trainer_restore_progression(MLPTrainer trainer,
+                                BrainString serialized_network,
+                                BrainReal progress,
+                                BrainReal error)
+{
+    if (BRAIN_ALLOCATED(trainer) &&
+        BRAIN_ALLOCATED(serialized_network) )
+    {
+        restore_trainer_progression(trainer, serialized_network, progress, error);
     }
 }
 
