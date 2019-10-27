@@ -335,3 +335,16 @@ restore_trainer_progression(MLPTrainer trainer,
         }
     }
 }
+
+MLPNetwork
+get_trainer_network(MLPTrainer trainer)
+{
+    MLPNetwork network = NULL;
+
+    if (BRAIN_ALLOCATED(trainer))
+    {
+        network = trainer->_network;
+    }
+
+    return network;
+}

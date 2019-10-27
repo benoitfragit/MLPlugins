@@ -15,6 +15,7 @@ void        mlp_trainer_run                 (MLPTrainer);
 BrainFloat  mlp_trainer_error               (MLPTrainer);
 void        mlp_trainer_save_progression    (MLPTrainer, BrainString);
 void        mlp_trainer_restore_progression (MLPTrainer, BrainString, BrainReal, BrainReal);
+MLPNetwork  mlp_trainer_get_network         (MLPTrainer);
 
 MLPNetwork  mlp_network_new                 (BrainString);
 void        mlp_network_delete              (MLPNetwork);

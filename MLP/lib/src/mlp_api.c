@@ -128,6 +128,19 @@ mlp_trainer_restore_progression(MLPTrainer trainer,
     }
 }
 
+MLPNetwork __MLP_VISIBLE__
+mlp_trainer_get_network(MLPTrainer trainer)
+{
+    MLPNetwork ret = NULL;
+
+    if (BRAIN_ALLOCATED(trainer))
+    {
+        ret = get_trainer_network(trainer);
+    }
+
+    return ret;
+}
+
 void __MLP_VISIBLE__
 mlp_network_delete(MLPNetwork network)
 {
