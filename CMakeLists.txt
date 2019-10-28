@@ -28,5 +28,8 @@ add_compile_options(-O2
                     -Wunused
                     -lm)
 
+configure_file ("${CMAKE_CURRENT_SOURCE_DIR}/scripts/python/__init__.py.in"
+                "${CMAKE_INSTALL_PREFIX}/plugins/__init__.py")
+
 add_subdirectory(core)
 add_subdirectory(MLP)
