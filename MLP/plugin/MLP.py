@@ -19,7 +19,7 @@ class MLPlugin(MLPluginBase, MLPLoader):
 
         self._trainerloaderui = MLPTrainerLoaderUI(self)
         self._trainereditorui = MLPTrainerEditorUI(self)
-        self._networkdrawerui = MLPNetworkDrawerUI(self)
+        self._networkdrawerui = MLPNetworkDrawerUI()
 
     def load(self):
         MLPLoader.load(self)
