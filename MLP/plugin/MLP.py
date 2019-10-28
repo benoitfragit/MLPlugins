@@ -10,6 +10,7 @@ from core  import MLPluginBase
 
 from ui import MLPTrainerLoaderUI
 from ui import MLPTrainerEditorUI
+from ui import MLPNetworkDrawerUI
 
 class MLPlugin(MLPluginBase, MLPLoader):
     def __init__(self):
@@ -18,6 +19,7 @@ class MLPlugin(MLPluginBase, MLPLoader):
 
         self._trainerloaderui = MLPTrainerLoaderUI(self)
         self._trainereditorui = MLPTrainerEditorUI(self)
+        self._networkdrawerui = MLPNetworkDrawerUI(self)
 
     def load(self):
         MLPLoader.load(self)
