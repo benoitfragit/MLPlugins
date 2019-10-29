@@ -19,7 +19,7 @@ class MLPlugin(MLPluginBase, MLPLoader):
 
         self._trainerloaderui = MLPTrainerLoaderUI(self)
         self._trainereditorui = MLPTrainerEditorUI(self)
-        self._networkdrawerui = MLPNetworkDrawerUI()
+        self._networkdrawerui = MLPNetworkDrawerUI(self)
 
     def load(self):
         MLPLoader.load(self)
@@ -187,6 +187,15 @@ class MLPlugin(MLPluginBase, MLPLoader):
 
     def mlGetNetworkPrediction(self, network):
         return self._funcs[self._funcnames.NETWORK_GET_OUTPUT](network)
+
+    def mlGetNetworkNumberOfLayer(self, network):
+        return self._funcs[self._funcnames.NETWORK_GET_NUMBER_OF_LAYER](network)
+
+    def mlGetNetworkNumberOfInput(self, network):
+        return self._funcs[self._funcnames.NETWORK_GET_NUMBER_OF_INPUT](network)
+
+    def mlGetLayerNumberOfNeuron(self, network, i):
+        return self._funcs[self._funcnames.NETWORK_LAYER_GET_NUMBER_OF_NEURON](network, i)
 
 if __name__ == '__main__':
     l = MLPlugin()

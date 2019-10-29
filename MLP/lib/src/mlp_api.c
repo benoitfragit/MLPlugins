@@ -2,6 +2,7 @@
 
 #include "mlp_trainer.h"
 #include "mlp_network.h"
+#include "mlp_layer.h"
 
 #include "brain_data_utils.h"
 #include "brain_memory_utils.h"
@@ -191,9 +192,34 @@ mlp_network_get_output(MLPNetwork network)
     return output;
 }
 
-
 BrainUint __MLP_VISIBLE__
 mlp_network_get_output_length(MLPNetwork network)
 {
     return get_network_output_length(network);
+}
+
+BrainUint __MLP_VISIBLE__
+mlp_network_get_number_of_layer(MLPNetwork network)
+{
+    return get_network_number_of_layer(network);
+}
+
+BrainUint __MLP_VISIBLE__
+mlp_network_get_number_of_input(MLPNetwork network)
+{
+    return get_network_number_of_input(network);
+}
+
+BrainUint __MLP_VISIBLE__
+mlp_network_get_layer_number_of_neuron(MLPNetwork network, BrainUint layer_index)
+{
+    BrainUint ret = 0;
+
+    const MLPLayer layer = get_network_layer(network, layer_index);
+    if (BRAIN_ALLOCATED(layer))
+    {
+        ret = get_layer_number_of_neuron(layer);
+    }
+
+    return ret;
 }

@@ -35,9 +35,12 @@ class MLPLoader(MLLoader):
                                   'NETWORK_DESERIALIZE',
                                   'NETWORK_PREDICT',
                                   'NETWORK_GET_OUTPUT',
-                                  'NETWORK_GET_OUTPUT_LENGTH')
+                                  'NETWORK_GET_OUTPUT_LENGTH',
+                                  'NETWORK_LAYER_GET_NUMBER_OF_NEURON',
+                                  'NETWORK_GET_NUMBER_OF_LAYER',
+                                  'NETWORK_GET_NUMBER_OF_INPUT')
 
-        self._number_of_functions = (self._funcnames.NETWORK_GET_OUTPUT_LENGTH - self._funcnames.INIT + 1)
+        self._number_of_functions = (self._funcnames.NETWORK_GET_NUMBER_OF_INPUT - self._funcnames.INIT + 1)
 
         self._api = [   ['mlp_plugin_init',                 None,                           []],
                         ['mlp_plugin_metadata',             ctypes.POINTER(MLPMetaData),    []],
@@ -57,7 +60,10 @@ class MLPLoader(MLLoader):
                         ['mlp_network_deserialize',         None,                           [ctypes.POINTER(MLPNetwork), ctypes.c_char_p]],
                         ['mlp_network_predict',             None,                           [ctypes.POINTER(MLPNetwork), ctypes.c_uint, ctypes.c_void_p]],
                         ['mlp_network_get_output',          ctypes.c_void_p,                [ctypes.POINTER(MLPNetwork)]],
-                        ['mlp_network_get_output_length',   ctypes.c_uint,                  [ctypes.POINTER(MLPNetwork)]]]
+                        ['mlp_network_get_output_length',   ctypes.c_uint,                  [ctypes.POINTER(MLPNetwork)]],
+                        ['mlp_network_get_layer_number_of_neuron', ctypes.c_uint,           [ctypes.POINTER(MLPNetwork), ctypes.c_uint]],
+                        ['mlp_network_get_number_of_layer', ctypes.c_uint,                  [ctypes.POINTER(MLPNetwork)]],
+                        ['mlp_network_get_number_of_input', ctypes.c_uint,                  [ctypes.POINTER(MLPNetwork)]]]
 
         self._funcs = {}
 

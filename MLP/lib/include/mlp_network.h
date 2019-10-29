@@ -57,6 +57,14 @@ BrainUint get_network_output_length(const MLPNetwork network);
  */
 MLPLayer get_network_layer(const MLPNetwork network, const BrainUint index);
 /**
+ * \fn BrainUint get_network_number_of_layer(const MLPNetwork network);
+ * \brief retrieve the number of layer
+ *
+ * \param the network
+ * \return the number of layer into this network
+ */
+BrainUint get_network_number_of_layer(const MLPNetwork network);
+/**
  * \fn void backpropagate(MLPNetwork network, const BrainUint number_of_output, const BrainSignal desired)
  * \brief compute one backpropagation
  *
@@ -111,4 +119,12 @@ void feedforward(MLPNetwork,
                  const BrainUint,
                  const BrainSignal,
                  const BrainBool);
+/**
+ * \fn BrainUint get_network_number_of_input(const MLPNetwork)
+ * \brief Get the number of input for this network
+ *
+ * \param the network
+ * \return the number of input
+ */
+BrainUint get_network_number_of_input(const MLPNetwork);
 #endif /* MLP_NETWORK_H */

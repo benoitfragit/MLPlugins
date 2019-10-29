@@ -95,6 +95,19 @@ get_network_layer(const MLPNetwork network, const BrainUint index)
     return ret;
 }
 
+BrainUint
+get_network_number_of_layer(const MLPNetwork network)
+{
+    BrainUint ret = 0;
+
+    if (BRAIN_ALLOCATED(network))
+    {
+        ret = network->_number_of_layers;
+    }
+
+    return ret;
+}
+
 void
 backpropagate(MLPNetwork network,
               const BrainUint number_of_output,
@@ -453,4 +466,17 @@ get_network_output_length(const MLPNetwork network)
     }
 
     return length;
+}
+
+BrainUint
+get_network_number_of_input(const MLPNetwork network)
+{
+    BrainUint ret = 0;
+
+    if (BRAIN_ALLOCATED(network))
+    {
+        ret = network->_number_of_inputs;
+    }
+
+    return ret;
 }

@@ -24,5 +24,8 @@ void        mlp_network_deserialize         (MLPNetwork, BrainString);
 void        mlp_network_predict             (MLPNetwork, BrainUint, void*);
 BrainSignal mlp_network_get_output          (MLPNetwork);
 BrainUint   mlp_network_get_output_length   (MLPNetwork);
+BrainUint   mlp_network_get_number_of_layer (MLPNetwork);
+BrainUint   mlp_network_get_number_of_input (MLPNetwork);
+BrainUint   mlp_network_get_layer_number_of_neuron(MLPNetwork, BrainUint);
 
 #endif /* MLP_API_H */
