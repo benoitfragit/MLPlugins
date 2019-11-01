@@ -480,3 +480,16 @@ get_network_number_of_input(const MLPNetwork network)
 
     return ret;
 }
+
+BrainSignal
+get_network_input_signal(const MLPNetwork network)
+{
+    BrainSignal ret = NULL;
+
+    if (BRAIN_ALLOCATED(network))
+    {
+        ret = network->_input;
+    }
+
+    return ret;
+}

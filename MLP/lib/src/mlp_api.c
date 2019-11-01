@@ -223,3 +223,25 @@ mlp_network_get_layer_number_of_neuron(MLPNetwork network, BrainUint layer_index
 
     return ret;
 }
+
+__MLP_VISIBLE__
+BrainSignal
+mlp_network_get_layer_output_signal(MLPNetwork network, BrainUint layer_index)
+{
+    double* ret = NULL;
+
+    const MLPLayer layer = get_network_layer(network, layer_index);
+    if (BRAIN_ALLOCATED(layer))
+    {
+        ret = get_layer_output(layer);
+    }
+
+    return ret;
+}
+
+__MLP_VISIBLE__
+BrainSignal
+mlp_network_get_input_signal(MLPNetwork network)
+{
+    return get_network_input_signal(network);
+}

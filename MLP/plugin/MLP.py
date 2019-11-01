@@ -3,7 +3,9 @@
 
 import sys
 import os
+import ctypes
 
+from exchange  import MLPNetwork
 from mlploader import MLPLoader
 
 from core  import MLPluginBase
@@ -19,7 +21,7 @@ class MLPlugin(MLPluginBase, MLPLoader):
 
         self._trainerloaderui = MLPTrainerLoaderUI(self)
         self._trainereditorui = MLPTrainerEditorUI(self)
-        self._networkdrawerui = MLPNetworkDrawerUI(self)
+        self._networkdrawerui = MLPNetworkDrawerUI()
 
     def load(self):
         MLPLoader.load(self)
@@ -154,12 +156,12 @@ class MLPlugin(MLPluginBase, MLPLoader):
         return internal
 
     def mlTrainerGetManagedNetwork(self, trainer):
-        ret = None
+        internal = {}
 
         if 'model' in trainer.keys():
-            ret = self._funcs[self._funcnames.TRAINER_GET_MANAGED_NETWORK](trainer['model'])
+            internal['model'] = self._funcs[self._funcnames.TRAINER_GET_MANAGED_NETWORK](trainer['model'])
 
-        return ret
+        return internal
 
     """
     ....................................................................
@@ -167,35 +169,82 @@ class MLPlugin(MLPluginBase, MLPLoader):
     ....................................................................
     """
     def mlGetNetwork(self, path):
-        internal = self._funcs[self._funcnames.NETWORK_NEW](path)
+        internal['model'] = self._funcs[self._funcnames.NETWORK_NEW](path)
+
         return internal
 
     def mlDeleteNetwork(self, network):
-        self._funcs[self._funcnames.NETWORK_DELETE](network)
+        if 'model' in network.keys():
+            self._funcs[self._funcnames.NETWORK_DELETE](network['model'])
 
     def mlSaveNetwork(self, network, path):
-        self._funcs[self._funcnames.NETWORK_SERIALIZE](network, path)
+        if 'model' in network.keys():
+            self._funcs[self._funcnames.NETWORK_SERIALIZE](network['model'], path)
 
     def mlLoadNetwork(self, network, path):
-        self._funcs[self._funcnames.NETWORK_DESERIALIZE](network, path)
+        if 'model' in network.keys():
+            self._funcs[self._funcnames.NETWORK_DESERIALIZE](network['model'], path)
 
     def mlPredict(self, network, num, sig):
-        self._funcs[self._funcnames.NETWORK_PREDICT](network, num, sig)
+        if 'model' in network.keys():
+            self._funcs[self._funcnames.NETWORK_PREDICT](network['model'], num, sig)
 
     def mlGetNetworkOutputLength(self, network):
-        return self._funcs[self._funcnames.NETWORK_GET_OUTPUT_LENGTH](network)
+        ret = 0
+        if 'model' in network.keys():
+            ret = self._funcs[self._funcnames.NETWORK_GET_OUTPUT_LENGTH](network['model'])
+        return ret
 
     def mlGetNetworkPrediction(self, network):
-        return self._funcs[self._funcnames.NETWORK_GET_OUTPUT](network)
+        ret = None
+        if 'model' in network.keys():
+            ret = self._funcs[self._funcnames.NETWORK_GET_OUTPUT](network['model'])
+        return ret
 
     def mlGetNetworkNumberOfLayer(self, network):
-        return self._funcs[self._funcnames.NETWORK_GET_NUMBER_OF_LAYER](network)
+        ret = 0
+        if 'model' in network.keys():
+            ret = self._funcs[self._funcnames.NETWORK_GET_NUMBER_OF_LAYER](network['model'])
+        return ret
 
     def mlGetNetworkNumberOfInput(self, network):
-        return self._funcs[self._funcnames.NETWORK_GET_NUMBER_OF_INPUT](network)
+        ret = 0
+        if 'model' in network.keys():
+            ret = self._funcs[self._funcnames.NETWORK_GET_NUMBER_OF_INPUT](network['model'])
+        return ret
 
     def mlGetLayerNumberOfNeuron(self, network, i):
-        return self._funcs[self._funcnames.NETWORK_LAYER_GET_NUMBER_OF_NEURON](network, i)
+        ret = 0
+        if 'model' in network.keys():
+            ret = self._funcs[self._funcnames.NETWORK_LAYER_GET_NUMBER_OF_NEURON](network['model'], i)
+        return ret
+
+    def mlGetNetworkLayerOutputSignal(self, network, i):
+        res = None
+
+        if 'model' in network.keys():
+            numberOfNeuron = self.mlGetLayerNumberOfNeuron(network, i)
+
+            if numberOfNeuron > 0:
+                func = self.wrap('mlp_network_get_layer_output_signal', \
+                                 ctypes.POINTER(ctypes.c_double * numberOfNeuron), \
+                                 [ctypes.POINTER(MLPNetwork), ctypes.c_uint])
+                res = func(network['model'], i).contents
+
+        return res
+
+    def mlGetNetworkInputSignal(self, network):
+        res = None
+        if 'model' in network.keys():
+            numberOfInput = self.mlGetNetworkNumberOfInput(network)
+
+            if numberOfInput > 0:
+                func = self.wrap('mlp_network_get_input_signal', \
+                                ctypes.POINTER(ctypes.c_double*numberOfInput), \
+                                [ctypes.POINTER(MLPNetwork)])
+                res = func(network['model']).contents
+
+        return res
 
 if __name__ == '__main__':
     l = MLPlugin()

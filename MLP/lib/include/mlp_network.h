@@ -123,8 +123,17 @@ void feedforward(MLPNetwork,
  * \fn BrainUint get_network_number_of_input(const MLPNetwork)
  * \brief Get the number of input for this network
  *
- * \param the network
+ * \param network
  * \return the number of input
  */
 BrainUint get_network_number_of_input(const MLPNetwork);
+/**
+ * \fn BrainSignal get_network_input_signal(const MLPNetwork network)
+ * \brief Get the network input signal
+ *
+ * \param network
+ * \return the input signal
+ */
+BrainSignal get_network_input_signal(const MLPNetwork network);
+
 #endif /* MLP_NETWORK_H */

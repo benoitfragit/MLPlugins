@@ -26,6 +26,9 @@ BrainSignal mlp_network_get_output          (MLPNetwork);
 BrainUint   mlp_network_get_output_length   (MLPNetwork);
 BrainUint   mlp_network_get_number_of_layer (MLPNetwork);
 BrainUint   mlp_network_get_number_of_input (MLPNetwork);
-BrainUint   mlp_network_get_layer_number_of_neuron(MLPNetwork, BrainUint);
+BrainUint   mlp_network_get_layer_number_of_neuron  (MLPNetwork, BrainUint);
+BrainSignal mlp_network_get_layer_output_signal     (MLPNetwork, BrainUint);
+BrainSignal mlp_network_get_input_signal            (MLPNetwork);
+
 
 #endif /* MLP_API_H */
