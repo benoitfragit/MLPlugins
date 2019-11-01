@@ -169,8 +169,8 @@ class MLPlugin(MLPluginBase, MLPLoader):
     ....................................................................
     """
     def mlGetNetwork(self, path):
+        internal = {}
         internal['model'] = self._funcs[self._funcnames.NETWORK_NEW](path)
-
         return internal
 
     def mlDeleteNetwork(self, network):
