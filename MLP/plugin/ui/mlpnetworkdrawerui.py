@@ -4,6 +4,7 @@
 from PyQt5.QtGui     import QBrush
 from PyQt5.QtGui     import QColor
 from ui.network      import MLNetworkDrawerBaseUI
+from PyQt5.QtWidgets import QGraphicsItem
 
 class MLPNetworkDrawerUI(MLNetworkDrawerBaseUI):
     def __init__(self, radius = 80, sw = 300, sh = 20):
@@ -28,6 +29,7 @@ class MLPNetworkDrawerUI(MLNetworkDrawerBaseUI):
 
         # Display the text above the signal
         text = self.addSimpleText(title)
+        text.setFlag(QGraphicsItem.ItemIgnoresTransformations)
         rect = text.boundingRect()
         text.setPos(xj, (1 - M) * (2 * self._radius + self._sh) / 2 - self._radius)
 
@@ -46,15 +48,15 @@ class MLPNetworkDrawerUI(MLNetworkDrawerBaseUI):
             self._items[j].append((xj, yi, item))
 
     def mlOnUpdateSignalRepresentation(self, j, s):
-        # Color normalization
-        maxS = max(s)
-        minS = min(s)
+        if len(s) > 0:
+            # Color normalization
+            maxS = max(s)
+            minS = min(s)
 
-        amplitude = abs(minS - maxS)
-
-        for i in range(len(s)):
-            if i < len(self._items[j]) and self._items[j][i] is not None:
-                if amplitude > 0:
-                    c =  255 * (maxS - s[i]) / amplitude
-                    brush = QBrush(QColor(c, c, c))
-                    self._items[j][i][2].setBrush(brush)
+            amplitude = abs(minS - maxS)
+            for i in range(len(s)):
+                if i < len(self._items[j]) and self._items[j][i] is not None:
+                    if amplitude > 0:
+                        c =  255 * (maxS - s[i]) / amplitude
+                        brush = QBrush(QColor(c, c, c))
+                        self._items[j][i][2].setBrush(brush)
