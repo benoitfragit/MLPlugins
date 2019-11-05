@@ -306,6 +306,9 @@ activate_layer(MLPLayer layer, const BrainBool hidden_layer)
             generate_unit_mask(layer->_mask);
         }
 
+#if defined(__GNUC__)
+        #pragma GCC ivdep
+#endif
         for (i = 0; i < layer->_number_of_neuron; ++i)
         {
             const BrainBool activation = get_random_state(layer->_mask, i);

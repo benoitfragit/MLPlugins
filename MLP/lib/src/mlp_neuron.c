@@ -76,6 +76,9 @@ activate_neuron(MLPNeuron neuron, const BrainBool is_activated)
             BrainUint i = 0;
             BrainReal w = 0.;
 
+#if defined(__GNUC__)
+            #pragma GCC ivdep
+#endif
             for (i = 0; i < neuron->_number_of_input; ++i)
             {
                 w = get_weight(neuron->_w[i]);

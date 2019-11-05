@@ -47,6 +47,9 @@ feedforward(MLPNetwork      network,
         /**           FEED THE NETWORK WITH INPUT VECTOR             **/
         /**************************************************************/
         memcpy(network->_input, in, number_of_input*sizeof(BrainReal));
+#if defined(__GNUC__)
+        #pragma GCC ivdep
+#endif
         for (i = 0; i < network->_number_of_layers; ++i)
         {
             /**********************************************************/
