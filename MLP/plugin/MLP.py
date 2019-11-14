@@ -7,6 +7,7 @@ import ctypes
 
 from exchange  import MLPNetwork
 from mlploader import MLPLoader
+from mlploader import MLPFunction
 
 from core  import MLPluginBase
 
@@ -21,19 +22,18 @@ class MLPlugin(MLPluginBase, MLPLoader):
 
         self._trainerloaderui = MLPTrainerLoaderUI(self)
         self._trainereditorui = MLPTrainerEditorUI(self)
-        self._networkdrawerui = MLPNetworkDrawerUI()
 
     def load(self):
         MLPLoader.load(self)
 
         # Call plugin init method
-        if self._funcs[self._funcnames.INIT] is not None:
-           self._funcs[self._funcnames.INIT]()
+        if self._funcs[MLPFunction.INIT] is not None:
+           self._funcs[MLPFunction.INIT]()
            self._activated = True
 
         # Get all metadata
-        if  self._funcs[self._funcnames.METADATA] is not None:
-            metadata = self._funcs[self._funcnames.METADATA]().contents
+        if  self._funcs[MLPFunction.METADATA] is not None:
+            metadata = self._funcs[MLPFunction.METADATA]().contents
             self._name      = metadata.name
             self._version   = metadata.version
             self._author    = metadata.author
@@ -45,51 +45,51 @@ class MLPlugin(MLPluginBase, MLPLoader):
     ....................................................................
     """
     def mlGetTrainer(self, net, data):
-        model = self._funcs[self._funcnames.TRAINER_NEW](net, data)
+        model = self._funcs[MLPFunction.TRAINER_NEW](net, data)
         return model
 
     def mlDeleteTrainer(self, trainer):
         if trainer is not None and 'model' in trainer.keys():
-            self._funcs[self._funcnames.TRAINER_DELETE](trainer['model'])
+            self._funcs[MLPFunction.TRAINER_DELETE](trainer['model'])
 
     def mlConfigureTrainer(self, trainer, path):
         if trainer is not None :
             if 'model' in trainer.keys():
-                self._funcs[self._funcnames.TRAINER_CONFIGURE](trainer['model'], path)
+                self._funcs[MLPFunction.TRAINER_CONFIGURE](trainer['model'], path)
             if 'settings' in trainer.keys():
                 trainer['settings'] = path
 
     def mlIsTrainerRunning(self, trainer):
         ret = False
         if trainer is not None and 'model' in trainer.keys():
-            ret = self._funcs[self._funcnames.TRAINER_IS_RUNNING](trainer['model'])
+            ret = self._funcs[MLPFunction.TRAINER_IS_RUNNING](trainer['model'])
         return ret
 
     def mlGetTrainerProgress(self, trainer):
         ret = 0.0
         if trainer is not None and 'model' in trainer.keys():
-            ret = self._funcs[self._funcnames.TRAINER_GET_PROGRESS](trainer['model'])
+            ret = self._funcs[MLPFunction.TRAINER_GET_PROGRESS](trainer['model'])
         return ret
 
     def mlTrainerRun(self, trainer):
         if trainer is not None and 'model' in trainer.keys():
-            self._funcs[self._funcnames.TRAINER_RUN](trainer['model'])
+            self._funcs[MLPFunction.TRAINER_RUN](trainer['model'])
 
     def mlGetTrainerError(self, trainer):
         ret = 100.0
         if trainer is not None and 'model' in trainer.keys():
-            ret = self._funcs[self._funcnames.TRAINER_ERROR](trainer['model'])
+            ret = self._funcs[MLPFunction.TRAINER_ERROR](trainer['model'])
         return ret
 
     def mlSaveTrainerProgression(self, trainer, path):
         if trainer is not None and 'model' in trainer.keys():
             real_path = path + '.xml'
-            self._funcs[self._funcnames.TRAINER_SAVE_PROGRESSION](trainer['model'], real_path)
+            self._funcs[MLPFunction.TRAINER_SAVE_PROGRESSION](trainer['model'], real_path)
 
     def mlRestoreTrainerProgression(self, trainer, path, progress, error):
         if trainer is not None and 'model' in trainer.keys():
             real_path =  path + '.xml'
-            self._funcs[self._funcnames.TRAINER_RESTORE_PROGRESSION](trainer['model'], real_path, progress, error)
+            self._funcs[MLPFunction.TRAINER_RESTORE_PROGRESSION](trainer['model'], real_path, progress, error)
 
     def mlGetLoadedTrainer(self):
         ret = None
@@ -159,7 +159,7 @@ class MLPlugin(MLPluginBase, MLPLoader):
         internal = {}
 
         if 'model' in trainer.keys():
-            internal['model'] = self._funcs[self._funcnames.TRAINER_GET_MANAGED_NETWORK](trainer['model'])
+            internal['model'] = self._funcs[MLPFunction.TRAINER_GET_MANAGED_NETWORK](trainer['model'])
 
         return internal
 
@@ -170,53 +170,53 @@ class MLPlugin(MLPluginBase, MLPLoader):
     """
     def mlGetNetwork(self, path):
         internal = {}
-        internal['model'] = self._funcs[self._funcnames.NETWORK_NEW](path)
+        internal['model'] = self._funcs[MLPFunction.NETWORK_NEW](path)
         return internal
 
     def mlDeleteNetwork(self, network):
         if 'model' in network.keys():
-            self._funcs[self._funcnames.NETWORK_DELETE](network['model'])
+            self._funcs[MLPFunction.NETWORK_DELETE](network['model'])
 
     def mlSaveNetwork(self, network, path):
         if 'model' in network.keys():
-            self._funcs[self._funcnames.NETWORK_SERIALIZE](network['model'], path)
+            self._funcs[MLPFunction.NETWORK_SERIALIZE](network['model'], path)
 
     def mlLoadNetwork(self, network, path):
         if 'model' in network.keys():
-            self._funcs[self._funcnames.NETWORK_DESERIALIZE](network['model'], path)
+            self._funcs[MLPFunction.NETWORK_DESERIALIZE](network['model'], path)
 
     def mlPredict(self, network, num, sig):
         if 'model' in network.keys():
-            self._funcs[self._funcnames.NETWORK_PREDICT](network['model'], num, sig)
+            self._funcs[MLPFunction.NETWORK_PREDICT](network['model'], num, sig)
 
     def mlGetNetworkOutputLength(self, network):
         ret = 0
         if 'model' in network.keys():
-            ret = self._funcs[self._funcnames.NETWORK_GET_OUTPUT_LENGTH](network['model'])
+            ret = self._funcs[MLPFunction.NETWORK_GET_OUTPUT_LENGTH](network['model'])
         return ret
 
     def mlGetNetworkPrediction(self, network):
         ret = None
         if 'model' in network.keys():
-            ret = self._funcs[self._funcnames.NETWORK_GET_OUTPUT](network['model'])
+            ret = self._funcs[MLPFunction.NETWORK_GET_OUTPUT](network['model'])
         return ret
 
     def mlGetNetworkNumberOfLayer(self, network):
         ret = 0
         if 'model' in network.keys():
-            ret = self._funcs[self._funcnames.NETWORK_GET_NUMBER_OF_LAYER](network['model'])
+            ret = self._funcs[MLPFunction.NETWORK_GET_NUMBER_OF_LAYER](network['model'])
         return ret
 
     def mlGetNetworkNumberOfInput(self, network):
         ret = 0
         if 'model' in network.keys():
-            ret = self._funcs[self._funcnames.NETWORK_GET_NUMBER_OF_INPUT](network['model'])
+            ret = self._funcs[MLPFunction.NETWORK_GET_NUMBER_OF_INPUT](network['model'])
         return ret
 
     def mlGetLayerNumberOfNeuron(self, network, i):
         ret = 0
         if 'model' in network.keys():
-            ret = self._funcs[self._funcnames.NETWORK_LAYER_GET_NUMBER_OF_NEURON](network['model'], i)
+            ret = self._funcs[MLPFunction.NETWORK_LAYER_GET_NUMBER_OF_NEURON](network['model'], i)
         return ret
 
     def mlGetNetworkLayerOutputSignal(self, network, i):
@@ -245,6 +245,9 @@ class MLPlugin(MLPluginBase, MLPLoader):
                 res = func(network['model']).contents
 
         return res
+
+    def mlGetNetworkDrawerUI(self):
+        return MLPNetworkDrawerUI()
 
 if __name__ == '__main__':
     l = MLPlugin()
