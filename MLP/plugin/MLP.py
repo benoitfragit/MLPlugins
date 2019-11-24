@@ -31,6 +31,25 @@ class MLPModelManager:
     def __exit__(self, exc_type, exc_val, traceback):
         return True
 
+def mlptrainerwrapper(f):
+    wrapfunc = None
+
+    if f is not None:
+        print f
+        def wrapfunc(self, trainer, *args):
+            ret = None
+            with MLPModelManager(trainer, 'model') as model:
+                if len(args) > 0:
+                    ret = f(self, trainer['model'], *args)
+                else:
+                    ret = f(self, trainer['model'])
+            return ret
+    else:
+        def wrapfunc(self, trainer, *args):
+            pass
+
+    return wrapfunc
+
 class MLPlugin(MLPluginBase, MLPLoader):
     def __init__(self):
         MLPluginBase.__init__(self)
@@ -54,25 +73,6 @@ class MLPlugin(MLPluginBase, MLPLoader):
             self._version   = meta.version
             self._author    = meta.author
             self._description = meta.description
-
-    def mlptrainerwrapper(f):
-        wrapfunc = None
-
-        if f is not None:
-            print f
-            def wrapfunc(trainer, *args):
-                ret = None
-                with MLPModelManager(trainer, 'model') as model:
-                    if len(args) > 0:
-                        ret = f(trainer['model'], *args)
-                    else:
-                        ret = f(trainer['model'])
-                return ret
-        else:
-            def wrapfunc(trainer, *args):
-                pass
-
-        return wrapfunc
     """
     ....................................................................
     .......................... Plugin TRINER api........................
