@@ -31,25 +31,6 @@ class MLPModelManager:
     def __exit__(self, exc_type, exc_val, traceback):
         return True
 
-def mlptrainerwrapper(f):
-    wrapfunc = None
-
-    if f is not None:
-        print f
-        def wrapfunc(self, trainer, *args):
-            ret = None
-            with MLPModelManager(trainer, 'model') as model:
-                if len(args) > 0:
-                    ret = f(self, trainer['model'], *args)
-                else:
-                    ret = f(self, trainer['model'])
-            return ret
-    else:
-        def wrapfunc(self, trainer, *args):
-            pass
-
-    return wrapfunc
-
 class MLPlugin(MLPluginBase, MLPLoader):
     def __init__(self):
         MLPluginBase.__init__(self)
@@ -110,7 +91,6 @@ class MLPlugin(MLPluginBase, MLPLoader):
                 ret = self.mlp_trainer_get_progress(trainer['model'])
         return ret
 
-    #@mlptrainerwrapper(lambda x : x.mlp_trainer_run)
     def mlTrainerRun(self, trainer):
         with MLPModelManager(trainer, 'model') as model:
             if self.mlp_trainer_run is not None:
