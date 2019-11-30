@@ -196,7 +196,6 @@ class MLPlugin(MLPluginBase, MLPLoader):
                 self.mlp_trainer_get_layer_output_signal.restype = ctypes.POINTER(ctypes.c_double * sizeOfSignal)
                 self.mlp_trainer_get_layer_output_signal.load(self)
                 res = self.mlp_trainer_get_layer_output_signal(trainer['model'], i).contents
-                print res
 
         return res
 
