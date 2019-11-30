@@ -30,6 +30,9 @@ class MLPLoader(MLLoader):
         self.mlp_trainer_save_progression          = MLFunction(self, 'mlp_trainer_save_progression',            None,                       [ctypes.POINTER(MLPTrainer), ctypes.c_char_p])
         self.mlp_trainer_restore_progression       = MLFunction(self, 'mlp_trainer_restore_progression',         None,                       [ctypes.POINTER(MLPTrainer), ctypes.c_char_p, ctypes.c_double, ctypes.c_double])
         self.mlp_trainer_get_network               = MLFunction(self, 'mlp_trainer_get_network',                 ctypes.POINTER(MLPNetwork), [ctypes.POINTER(MLPTrainer)])
+        self.mlp_trainer_get_layer_output_signal   = MLFunction(self, 'mlp_trainer_get_layer_output_signal',     None,                       [ctypes.POINTER(MLPTrainer), ctypes.c_uint], True)
+        self.mlp_trainer_get_input_signal          = MLFunction(self, 'mlp_trainer_get_input_signal',            None,                       [ctypes.POINTER(MLPTrainer)], True)
+
         self.mlp_network_new                       = MLFunction(self, 'mlp_network_new',                         ctypes.POINTER(MLPNetwork), [ctypes.c_char_p])
         self.mlp_network_delete                    = MLFunction(self, 'mlp_network_delete',                      None,                       [ctypes.POINTER(MLPNetwork)])
         self.mlp_network_serialize                 = MLFunction(self, 'mlp_network_serialize',                   None,                       [ctypes.POINTER(MLPNetwork), ctypes.c_char_p])

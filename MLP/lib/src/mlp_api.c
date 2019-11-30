@@ -142,6 +142,30 @@ mlp_trainer_get_network(MLPTrainer trainer)
     return ret;
 }
 
+
+BrainSignal __MLP_VISIBLE__
+mlp_trainer_get_layer_output_signal(MLPTrainer trainer, BrainUint layer_index)
+{
+    BrainSignal ret = NULL;
+
+    const MLPNetwork network = get_trainer_network(trainer);
+    if (BRAIN_ALLOCATED(network))
+    {
+        const MLPLayer layer = get_network_layer(network, layer_index);
+        ret = get_layer_output(layer);
+    }
+
+    return ret;
+}
+
+
+BrainSignal __MLP_VISIBLE__
+mlp_trainer_get_input_signal(MLPTrainer trainer)
+{
+    const MLPNetwork network = get_trainer_network(trainer);
+    return get_network_input_signal(network);
+}
+
 void __MLP_VISIBLE__
 mlp_network_delete(MLPNetwork network)
 {

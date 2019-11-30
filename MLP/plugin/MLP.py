@@ -188,6 +188,28 @@ class MLPlugin(MLPluginBase, MLPLoader):
 
         return internal
 
+    def mlGetTrainerLayerOutputSignal(self, trainer, i, sizeOfSignal):
+        res = None
+
+        with MLPModelManager(trainer, 'model') as model:
+            if sizeOfSignal > 0:
+                self.mlp_trainer_get_layer_output_signal.restype = ctypes.POINTER(ctypes.c_double * sizeOfSignal)
+                self.mlp_trainer_get_layer_output_signal.load(self)
+                res = self.mlp_trainer_get_layer_output_signal(trainer['model'], i).contents
+                print res
+
+        return res
+
+    def mlGetTrainerInputSignal(self, trainer, sizeOfSignal):
+        res = None
+        with MLPModelManager(trainer, 'model') as model:
+            if sizeOfSignal > 0:
+                self.mlp_trainer_get_input_signal.restype = ctypes.POINTER(ctypes.c_double*sizeOfSignal)
+                self.mlp_trainer_get_input_signal.load(self)
+                res = self.mlp_trainer_get_input_signal(network['model']).contents
+
+        return res
+
     """
     ....................................................................
     .......................... Plugin NETWORK api.......................
