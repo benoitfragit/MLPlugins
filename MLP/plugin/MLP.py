@@ -189,25 +189,26 @@ class MLPlugin(MLPluginBase, MLPLoader):
         return internal
 
     def mlGetTrainerLayerOutputSignal(self, trainer, i, sizeOfSignal):
-        res = None
+        ret = None
 
         with MLPModelManager(trainer, 'model') as model:
             if sizeOfSignal > 0:
-                self.mlp_trainer_get_layer_output_signal.restype = ctypes.POINTER(ctypes.c_double * sizeOfSignal)
+                self.mlp_trainer_get_layer_output_signal.setResType(ctypes.POINTER(ctypes.c_double * sizeOfSignal))
                 self.mlp_trainer_get_layer_output_signal.load(self)
-                res = self.mlp_trainer_get_layer_output_signal(trainer['model'], i).contents
+                ret = self.mlp_trainer_get_layer_output_signal(trainer['model'], i).contents
 
-        return res
+        return ret
 
     def mlGetTrainerInputSignal(self, trainer, sizeOfSignal):
-        res = None
+        ret = None
+
         with MLPModelManager(trainer, 'model') as model:
             if sizeOfSignal > 0:
-                self.mlp_trainer_get_input_signal.restype = ctypes.POINTER(ctypes.c_double*sizeOfSignal)
+                self.mlp_trainer_get_input_signal.setResType(ctypes.POINTER(ctypes.c_double*sizeOfSignal))
                 self.mlp_trainer_get_input_signal.load(self)
-                res = self.mlp_trainer_get_input_signal(network['model']).contents
+                ret = self.mlp_trainer_get_input_signal(trainer['model']).contents
 
-        return res
+        return ret
 
     """
     ....................................................................

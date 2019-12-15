@@ -14,7 +14,7 @@ class MLPNetworkDrawerUI(MLNetworkDrawerBaseUI):
         self._sw     = sw
         self._sh     = sh
 
-        self._items   = {}
+        self._items    = {}
 
     def clear(self):
         MLNetworkDrawerBaseUI.clear(self)
@@ -45,18 +45,27 @@ class MLPNetworkDrawerUI(MLNetworkDrawerBaseUI):
                     x, y = self._items[j-1][k][0], self._items[j-1][k][1]
                     self.addLine(x + self._radius, y + 0.5 * self._radius, xj, yi + 0.5 * self._radius, self._pen)
 
-            self._items[j].append((xj, yi, item))
+            self._items[j].append([xj, yi, item, 0.0, 0.0, True])
 
     def mlOnUpdateSignalRepresentation(self, j, s):
         if len(s) > 0:
-            # Color normalization
-            maxS = max(s)
-            minS = min(s)
-
-            amplitude = abs(minS - maxS)
             for i in range(len(s)):
                 if i < len(self._items[j]) and self._items[j][i] is not None:
+                    if self._items[j][i][5] == True:
+                        self._items[j][i][5] = False
+                        self._items[j][i][3] = s[i]
+                        self._items[j][i][4] = s[i]
+
+                    if s[i] < self._items[j][i][3]:
+                        self._items[j][i][3] = s[i]
+
+                    if s[i] > self._items[j][i][4]:
+                        self._items[j][i][4] = s[i]
+
+                    # Color normalization
+                    amplitude = abs(self._items[j][i][4] - self._items[j][i][3])
+
                     if amplitude > 0:
-                        c =  255 * (maxS - s[i]) / amplitude
+                        c =  255 * (s[i] - self._items[j][i][3]) / amplitude
                         brush = QBrush(QColor(c, c, c))
                         self._items[j][i][2].setBrush(brush)
