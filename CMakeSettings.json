@@ -1,0 +1,32 @@
+﻿{
+  "configurations": [
+    {
+      "name": "x86-Debug",
+      "generator": "Ninja",
+      "configurationType": "Debug",
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "-v",
+      "ctestCommandArgs": "",
+      "inheritEnvironments": [ "msvc_x86" ],
+      "variables": [
+        {
+          "name": "BRAIN_ENABLE_DOUBLE_PRECISION",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "CMAKE_C_FLAGS_DEBUG",
+          "value": "/MDd /Zi /Ob0 /Od",
+          "type": "STRING"
+        },
+        {
+          "name": "CMAKE_PREFIX_PATH",
+          "value": "C:\\Users\\33761\\Documents\\Projets\\Package\\libxml2-2.7.7.win32",
+          "type": "STRING"
+        }
+      ]
+    }
+  ]
+}

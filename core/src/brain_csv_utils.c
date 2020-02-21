@@ -68,8 +68,8 @@ csv_reader_load(BrainCsvReader reader,
         BRAIN_ALLOCATED(cbk)        &&
         BRAIN_ALLOCATED(data)       )
     {
-        BrainChar* line = NULL;
-        size_t     len  = 0;
+        BrainChar line[1000];
+        size_t     len  = 1000;
 
         FILE* file = fopen(reader->_path, "r");
 
@@ -78,62 +78,58 @@ csv_reader_load(BrainCsvReader reader,
             /****************************************************************/
             /**                 Browse the repository file                 **/
             /****************************************************************/
-            while (getline(&line, &len, file) != -1)
+            while (fgets(line, len, file))
             {
-                if ((len > 0) &&
-                    (line != NULL))
+                BrainReal* signal = NULL;
+                BrainChar* buffer = strtok(line, reader->_tokenizer);
+                BrainUint k = 0;
+
+                BRAIN_NEW(signal, BrainReal, reader->_number_of_fields);
+
+                if (BRAIN_ALLOCATED(buffer))
                 {
-                    BrainReal* signal = NULL;
-                    BrainChar* buffer = strtok(line, reader->_tokenizer);
-                    BrainUint k = 0;
+                    BrainChar* label = NULL;
+                    BrainUint length = strlen(buffer);
 
-                    BRAIN_NEW(signal, BrainReal, reader->_number_of_fields);
-
-                    if (BRAIN_ALLOCATED(buffer))
+                    if (reader->_is_labelled && reader->_format == Format_OutputFirst)
                     {
-                        BrainChar* label = NULL;
-                        BrainUint length = strlen(buffer);
+                        BRAIN_NEW(label, BrainChar, length);
 
-                        if (reader->_is_labelled && reader->_format == Format_OutputFirst)
-                        {
-                            BRAIN_NEW(label, BrainChar, length);
+                        buffer[length - 1] = '\0';
+                        label = strcpy(label, buffer);
+                        // go to the next item
+                        buffer = strtok(NULL, reader->_tokenizer);
+                    }
 
-                            buffer[length - 1] = '\0';
-                            label = strcpy(label, buffer);
-                            // go to the next item
-                            buffer = strtok(NULL, reader->_tokenizer);
-                        }
-
-                        printf("\n");
-                        while(k < reader->_number_of_fields)
-                        {
+                    printf("\n");
+                    while(k < reader->_number_of_fields)
+                    {
 #if BRAIN_ENABLE_DOUBLE_PRECISION
-                            sscanf(buffer, "%lf", &(signal[k]));
+                        sscanf(buffer, "%lf", &(signal[k]));
 #else
-                            sscanf(buffer, "%f", &(signal[k]));
+                        sscanf(buffer, "%f", &(signal[k]));
 #endif
-                            buffer = strtok(NULL, reader->_tokenizer);
-                            ++k;
-                        }
+                        buffer = strtok(NULL, reader->_tokenizer);
+                        ++k;
+                    }
 
-                        if (reader->_format == Format_InputFirst &&
-                            reader->_is_labelled)
-                        {
-                            // copy the buffer into the label
-                            length = strlen(buffer);
-                            BRAIN_NEW(label, BrainChar, length);
-                            buffer[length - 1] = '\0';
-                            label = strcpy(label, buffer);
-                        }
+                    if (reader->_format == Format_InputFirst &&
+                        reader->_is_labelled)
+                    {
+                        // copy the buffer into the label
+                        length = strlen(buffer);
+                        BRAIN_NEW(label, BrainChar, length);
+                        buffer[length - 1] = '\0';
+                        label = strcpy(label, buffer);
+                    }
 
-                        // Call the callback function
-                        cbk(data, label, signal);
+                    // Call the callback function
+                    cbk(data, label, signal);
 
-                        BRAIN_DELETE(signal);
-                        if (BRAIN_ALLOCATED(label))
-                        {
-                            BRAIN_DELETE(label)
-                        }
+                    BRAIN_DELETE(signal);
+                    if (BRAIN_ALLOCATED(label))
+                    {
+                        BRAIN_DELETE(label)
                     }
                 }
             }

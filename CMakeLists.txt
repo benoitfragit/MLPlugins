@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 2.8.9)
 
+find_package(LIBXML2 REQUIRED)
+find_package(ICONV REQUIRED)
+
 option(BRAIN_ENABLE_DOUBLE_PRECISION "Enable double precision" OFF)
 option(BRAIN_ENABLE_LOGGING          "Enable logging"          OFF)
 option(BRAIN_ENABLE_TESTING          "Enable testing"          OFF)
@@ -22,14 +25,12 @@ add_definitions(-DBRAIN_DESCRIPTION)
 
 add_compile_options(-O2
                     -g3
-                    -Wall
-                    -Wextra
-                    -Wshadow
-                    -Wunused
                     -lm)
 
 configure_file ("${CMAKE_CURRENT_SOURCE_DIR}/scripts/python/__init__.py.in"
                 "${CMAKE_INSTALL_PREFIX}/plugins/__init__.py")
+
+
 
 add_subdirectory(core)
 add_subdirectory(MLP)

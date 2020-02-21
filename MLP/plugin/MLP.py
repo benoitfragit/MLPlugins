@@ -5,14 +5,14 @@ import sys
 import os
 import ctypes
 
-from exchange  import MLPNetwork
+from exchange.mlpnetwork  import MLPNetwork
 from mlploader import MLPLoader
 
-from core  import MLPluginBase
+from core.mlpluginbase  import MLPluginBase
 
-from ui import MLPTrainerLoaderUI
-from ui import MLPTrainerEditorUI
-from ui import MLPNetworkDrawerUI
+from impl.mlptrainerloaderui import MLPTrainerLoaderUI
+from impl.mlptrainereditorui import MLPTrainerEditorUI
+from impl.mlpnetworkdrawerui import MLPNetworkDrawerUI
 
 class MLPModelManager:
     def __init__(self, internal, key = None):

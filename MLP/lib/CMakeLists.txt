@@ -6,7 +6,9 @@ if (NOT BRAIN_ENABLE_TESTING)
     set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 endif(NOT BRAIN_ENABLE_TESTING)
 
-find_package(LIBXML2 REQUIRED)
+foreach(SUBPATH ${CMAKE_PREFIX_PATH})
+message (STATUS ">>>>>>>>>>>>>>" ${SUBPATH})
+endforeach(SUBPATH)
 
 configure_file ("${PROJECT_SOURCE_DIR}/include/mlp_config.h.in"
                 "${PROJECT_BINARY_DIR}/include/mlp_config.h")
@@ -15,7 +17,7 @@ set(LIBBRAINMLP_SOURCE_DIR
     ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 set(LIBBRAINMLP_INCLUDE_DIRS
-    ${LIBXML2_INCLUDE_DIR}
+    ${LIBXML2_INCLUDE_DIRS}
     ${PROJECT_BINARY_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/include)
 

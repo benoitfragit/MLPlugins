@@ -10,7 +10,11 @@
 
 #include "mlp_config.h"
 
+#ifdef _GNUC
 #define __MLP_VISIBLE__ __attribute__((visibility("default")))
+#else
+#define __MLP_VISIBLE__
+#endif 
 
 void __MLP_VISIBLE__
 mlp_plugin_init()

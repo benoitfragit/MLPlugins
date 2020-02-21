@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from PyQt5.QtGui     import QBrush
-from PyQt5.QtGui     import QColor
-from ui.network      import MLNetworkDrawerBaseUI
-from PyQt5.QtWidgets import QGraphicsItem
+from PyQt5.QtGui                        import QBrush
+from PyQt5.QtGui                        import QColor
+from ui.network.mlnetworkdrawerbaseui   import MLNetworkDrawerBaseUI
+from PyQt5.QtWidgets                    import QGraphicsItem
 
 class MLPNetworkDrawerUI(MLNetworkDrawerBaseUI):
     def __init__(self, radius = 80, sw = 300, sh = 20):

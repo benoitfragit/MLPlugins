@@ -1,3 +1,3 @@
-from mlptrainer import MLPTrainer
-from mlpnetwork import MLPNetwork
-from mlpmetada  import MLPMetaData
+from exchange.mlptrainer import *
+from exchange.mlpnetwork import *
+from exchange.mlpmetada  import *

@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from core import MLLoader
-from core import MLFunction
+from core.mlloader import MLLoader
+from core.mlfunction import MLFunction
 
-from exchange import MLPTrainer
-from exchange import MLPNetwork
-from exchange import MLPMetaData
+from exchange.mlptrainer import MLPTrainer
+from exchange.mlpnetwork import MLPNetwork
+from exchange.mlpmetada import MLPMetaData
 
 import ctypes
 
@@ -16,7 +16,7 @@ def enum(*args):
 
 class MLPLoader(MLLoader):
     def __init__(self):
-        MLLoader.__init__(self, 'libMLP.so')
+        MLLoader.__init__(self, 'MLP')
 
         self.mlp_plugin_init                       = MLFunction(self, 'mlp_plugin_init',                         None,                       [])
         self.mlp_plugin_metadata                   = MLFunction(self, 'mlp_plugin_metadata',                     ctypes.POINTER(MLPMetaData),[])

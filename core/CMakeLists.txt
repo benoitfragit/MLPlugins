@@ -1,13 +1,11 @@
 cmake_minimum_required(VERSION 2.8.9)
 project(BrainCore)
 
-find_package(LIBXML2 REQUIRED)
-
 set(LIBBRAINCORE_SOURCE_DIR
     ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 set(LIBBRAINCORE_INCLUDE_DIRS
-    ${LIBXML2_INCLUDE_DIR}
+    ${LIBXML2_INCLUDE_DIRS}
     ${PROJECT_BINARY_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
@@ -20,7 +18,7 @@ configure_file ("${PROJECT_SOURCE_DIR}/include/brain_core_config.h.in"
                 "${PROJECT_BINARY_DIR}/include/brain_core_config.h")
 
 #Generate the shared library from the sources
-add_library(BrainCore SHARED ${SOURCES} ${HEADERS})
+add_library(BrainCore STATIC ${SOURCES} ${HEADERS})
 
 target_link_libraries(BrainCore PUBLIC ${LIBXML2_LIBRARIES})
 target_include_directories(BrainCore PUBLIC ${LIBBRAINCORE_INCLUDE_DIRS})

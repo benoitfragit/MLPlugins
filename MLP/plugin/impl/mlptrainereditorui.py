@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ui.trainer import MLTrainerEditorBaseUI
+from ui.trainer.mltrainereditorbaseui import MLTrainerEditorBaseUI
 
 from PyQt5.QtWidgets import QComboBox
 from PyQt5.QtWidgets import QLabel
