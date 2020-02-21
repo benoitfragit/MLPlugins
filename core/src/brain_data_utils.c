@@ -311,10 +311,10 @@ new_data_from_context(BrainString filepath)
                 const BrainUint output_length   = node_get_int(context, "output-length", 1);
                 buffer = (BrainChar *)node_get_prop(context, "format");
                 const BrainDataFormat format = get_enum_values(_formats, Format_First, Format_Last, buffer);
-                BRAIN_DELETE(buffer);
+                //BRAIN_DELETE(buffer);
                 buffer = (BrainChar *)node_get_prop(context, "parser");
                 const DataParser parser = get_enum_values(_parsers, Parser_First, Parser_Last, buffer);
-                BRAIN_DELETE(buffer);
+                //BRAIN_DELETE(buffer);
                 if (parser == Parser_CSV)
                 {
                     tokenizer = (BrainChar *)node_get_prop(context, "tokenizer");
@@ -329,7 +329,6 @@ new_data_from_context(BrainString filepath)
                     Context preprocessings_context = get_node_with_name_and_index(context, "preprocess", i);
                     buffer = (BrainChar*)node_get_prop(preprocessings_context, "type");
                     preprocessings[i] = get_enum_values(_preprocessings, Preprocessing_First, Preprocessing_Last, buffer);
-                    BRAIN_DELETE(buffer);
                 }
 
                 data = new_data(repository,
@@ -343,8 +342,8 @@ new_data_from_context(BrainString filepath)
                                 preprocessings);
 
                 BRAIN_DELETE(preprocessings);
-                BRAIN_DELETE(tokenizer);
-                BRAIN_DELETE(repository);
+                //BRAIN_DELETE(tokenizer);
+                //BRAIN_DELETE(repository);
             }
         }
     }

@@ -48,12 +48,13 @@ class MLPlugin(MLPluginBase, MLPLoader):
            self._activated = True
 
         # Get all metadata
-        if  self.mlp_plugin_metadata is not None:
+        if self.mlp_plugin_metadata is not None:
             meta = self.mlp_plugin_metadata().contents
-            self._name      = meta.name
-            self._version   = meta.version
-            self._author    = meta.author
-            self._description = meta.description
+
+            self._name          = str(meta.name,        'ascii')
+            self._version       = str(meta.version,     'ascii')
+            self._author        = str(meta.author,      'ascii')
+            self._description   = str(meta.description, 'ascii')
     """
     ....................................................................
     .......................... Plugin TRINER api........................
@@ -62,7 +63,7 @@ class MLPlugin(MLPluginBase, MLPLoader):
     def mlGetTrainer(self, net, data):
         model = None
         if self.mlp_trainer_new is not None:
-            model = self.mlp_trainer_new(net, data)
+            model = self.mlp_trainer_new(str(net).encode('ascii'), str(data).encode('ascii'))
         return model
 
     def mlDeleteTrainer(self, trainer):
@@ -73,7 +74,7 @@ class MLPlugin(MLPluginBase, MLPLoader):
     def mlConfigureTrainer(self, trainer, path):
         with MLPModelManager(trainer, 'model') as model:
             if self.mlp_trainer_configure is not None:
-                self.mlp_trainer_configure(trainer['model'], path)
+                self.mlp_trainer_configure(trainer['model'], str(path).encode('ascii'))
         with MLPModelManager(trainer, 'settings') as settings:
             trainer['settings'] = path
 
@@ -107,13 +108,13 @@ class MLPlugin(MLPluginBase, MLPLoader):
         with MLPModelManager(trainer, 'model') as model:
             if self.mlp_trainer_save_progression is not None:
                 real_path = path + '.xml'
-                self.mlp_trainer_save_progression(trainer['model'], real_path)
+                self.mlp_trainer_save_progression(trainer['model'], str(real_path).encode('ascii'))
 
     def mlRestoreTrainerProgression(self, trainer, path, progress, error):
         with MLPModelManager(trainer, 'model') as model:
             if self.mlp_trainer_restore_progression is not None:
                 real_path =  path + '.xml'
-                self.mlp_trainer_restore_progression(trainer['model'], real_path, progress, error)
+                self.mlp_trainer_restore_progression(trainer['model'], str(real_path).encode('ascii'), progress, error)
 
     def mlGetLoadedTrainer(self):
         ret = None
@@ -218,7 +219,7 @@ class MLPlugin(MLPluginBase, MLPLoader):
     def mlGetNetwork(self, path):
         internal = {}
         if self.mlp_network_new is not None:
-            internal['model'] = self.mlp_network_new(path)
+            internal['model'] = self.mlp_network_new(str(path).encode('ascii'))
         return internal
 
     def mlDeleteNetwork(self, network):
@@ -229,12 +230,12 @@ class MLPlugin(MLPluginBase, MLPLoader):
     def mlSaveNetwork(self, network, path):
         with MLPModelManager(network, 'model') as model:
             if self.mlp_network_serialize is not None:
-                self.mlp_network_serialize(network['model'], path)
+                self.mlp_network_serialize(network['model'], str(path).encode('ascii'))
 
     def mlLoadNetwork(self, network, path):
         with MLPModelManager(network, 'model') as model:
             if self.mlp_network_deserialize is not None:
-                self.mlp_network_deserialize(network['model'], path)
+                self.mlp_network_deserialize(network['model'], str(path).encode('ascii'))
 
     def mlPredict(self, network, num, sig):
         with MLPModelManager(network, 'model') as model:
@@ -302,7 +303,7 @@ class MLPlugin(MLPluginBase, MLPLoader):
                 res = func(network['model']).contents
 
         return res
-
+    
     def mlGetNetworkDrawerUI(self):
         return MLPNetworkDrawerUI()
 

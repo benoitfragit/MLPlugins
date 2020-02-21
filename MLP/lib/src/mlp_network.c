@@ -426,7 +426,7 @@ new_network_from_context(BrainString filepath)
                             activation_functions[index] = brain_activation_function(buffer);
                             derivative_functions[index] = brain_derivative_function(buffer);
 
-                            BRAIN_DELETE(buffer);
+                            //BRAIN_DELETE(buffer)
                         }
                         else
                         {

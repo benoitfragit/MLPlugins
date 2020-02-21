@@ -52,3 +52,4 @@ doxygen_sqlite3.db
 cscope.out
 ./plugins
 /.vs/*
+*.pyc

@@ -85,7 +85,6 @@ configure_trainer_with_context(MLPTrainer trainer, BrainString filepath)
                 is_node_with_name(backpropagation_context, "backpropagation"))
             {
                 BrainChar* buffer                   = (BrainChar *)node_get_prop(backpropagation_context, "cost-function");
-
                 trainer->_cost_function             = brain_cost_function(buffer);
                 trainer->_cost_function_derivative  = brain_derivative_cost_function(buffer);
                 trainer->_max_iter                  = node_get_int(backpropagation_context, "iterations", 1000);
@@ -94,11 +93,6 @@ configure_trainer_with_context(MLPTrainer trainer, BrainString filepath)
                 trainer->_learning_rate             = (BrainReal)node_get_double(backpropagation_context, "learning-rate", 0.005);
                 trainer->_momemtum                  = (BrainReal)node_get_double(backpropagation_context, "momentum", 0.001);
                 trainer->_error                     = trainer->_max_error + 1.;
-
-                if (BRAIN_ALLOCATED(buffer))
-                {
-                    free(buffer);
-                }
             }
 
             close_document(settings_document);

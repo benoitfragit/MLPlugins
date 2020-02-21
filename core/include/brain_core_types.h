@@ -34,7 +34,7 @@ typedef float         BrainFloat;
 typedef double        BrainDouble;
 typedef const char*   BrainString;
 typedef char          BrainChar;
-#if BRAIN_ENABLE_DOUBLE_PRECISION
+#ifdef BRAIN_ENABLE_DOUBLE_PRECISION
 typedef BrainDouble BrainReal;
 #else
 typedef BrainFloat BrainReal;

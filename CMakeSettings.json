@@ -25,6 +25,26 @@
           "name": "CMAKE_PREFIX_PATH",
           "value": "C:\\Users\\33761\\Documents\\Projets\\Package\\libxml2-2.7.7.win32",
           "type": "STRING"
+        },
+        {
+          "name": "BRAIN_VERSION",
+          "value": "2.0.0",
+          "type": "STRING"
+        },
+        {
+          "name": "BRAIN_AUTHOR",
+          "value": "benoitfragit",
+          "type": "STRING"
+        },
+        {
+          "name": "BRAIN_DESCRIPTION",
+          "value": "A simple Multi-Layer Perceptron plugin",
+          "type": "STRING"
+        },
+        {
+          "name": "BRAIN_NAME",
+          "value": "MLP",
+          "type": "STRING"
         }
       ]
     }

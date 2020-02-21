@@ -104,7 +104,7 @@ csv_reader_load(BrainCsvReader reader,
                     printf("\n");
                     while(k < reader->_number_of_fields)
                     {
-#if BRAIN_ENABLE_DOUBLE_PRECISION
+#ifdef BRAIN_ENABLE_DOUBLE_PRECISION
                         sscanf(buffer, "%lf", &(signal[k]));
 #else
                         sscanf(buffer, "%f", &(signal[k]));
