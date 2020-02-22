@@ -136,7 +136,7 @@ class MLPTrainerEditorUI(MLTrainerEditorBaseUI):
             self.setVisible(True)
 
             self._trainer = args[0]
-            path = self._trainer['settings']
+            path = self._trainer.mlGetSettingsFilePath()
 
             if os.path.exists(path) and os.path.isfile(path):
                 tree = ET.parse(path)
@@ -176,11 +176,13 @@ class MLPTrainerEditorUI(MLTrainerEditorBaseUI):
             backpropagation.set('cost-function'  , str(self._costfunction.currentText()))
 
             data = ET.tostring(backpropagation)
-            with open(self._trainer['settings'], 'w') as settings:
+
+            path = self._trainer.mlGetSettingsFilePath()
+            with open(path, 'w') as settings:
                 settings.write(data)
                 settings.close()
 
             # Reload the xml file
-            self._plugin.mlConfigureTrainer(self._trainer, self._trainer['settings'])
+            self._trainer.mlConfigureTrainer(path)
 
         self.close()

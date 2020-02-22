@@ -9,6 +9,7 @@ from exchange.mlpnetwork  import MLPNetwork
 from mlploader import MLPLoader
 
 from core.mlpluginbase  import MLPluginBase
+from core.mlloader      import MLLoader
 
 from impl.mlptrainerloaderui import MLPTrainerLoaderUI
 from impl.mlptrainereditorui import MLPTrainerEditorUI
@@ -35,11 +36,7 @@ class MLPlugin(MLPluginBase, MLPLoader):
     def __init__(self):
         MLPluginBase.__init__(self)
         MLPLoader.__init__(self)
-
         self.load()
-
-        self._trainerloaderui = MLPTrainerLoaderUI(self)
-        self._trainereditorui = MLPTrainerEditorUI(self)
 
     def load(self):
         # Call plugin init method
@@ -116,40 +113,8 @@ class MLPlugin(MLPluginBase, MLPLoader):
                 real_path =  path + '.xml'
                 self.mlp_trainer_restore_progression(trainer['model'], str(real_path).encode('ascii'), progress, error)
 
-    def mlGetLoadedTrainer(self):
-        ret = None
-
-        if self._trainerloaderui is not None:
-
-            network_filepath    = self._trainerloaderui.mlGetNetworkFilePath()
-            data_filepath       = self._trainerloaderui.mlGetDataFilePath()
-            trainer_filepath    = self._trainerloaderui.mlGetTrainerFilePath()
-
-            ret = self.mlGetTrainerInternal(network_filepath, data_filepath, trainer_filepath)
-
-        return ret
-
-    def mlTrainerJSONEncoding(self, trainer, d):
-        with MLPModelManager(trainer, 'network') as network:
-            d['network']  = trainer['network']
-        with MLPModelManager(trainer, 'data') as data:
-            d['data']     = trainer['data']
-        with MLPModelManager(trainer, 'settings') as settings:
-            d['settings'] = trainer['settings']
-
-    def mlTrainerJSONDecoding(self, buf):
-        ret = None
-        if buf is not None:
-            if  'network'   in buf.keys() and \
-                'settings'  in buf.keys() and \
-                'data'      in buf.keys():
-
-                network_filepath = buf['network']
-                trainer_filepath = buf['settings']
-                data_filepath    = buf['data']
-
-                ret = self.mlGetTrainerInternal(network_filepath, data_filepath, trainer_filepath)
-
+    def mlGetLoadedTrainer(self, network_filepath, data_filepath, trainer_filepath):
+        ret = self.mlGetTrainerInternal(network_filepath, data_filepath, trainer_filepath)
         return ret
 
     def mlGetTrainerInternal(self,\
@@ -284,7 +249,8 @@ class MLPlugin(MLPluginBase, MLPLoader):
             numberOfNeuron = self.mlGetLayerNumberOfNeuron(network, i)
 
             if numberOfNeuron > 0:
-                func = self.wrap('mlp_network_get_layer_output_signal', \
+                loader = MLLoader('MLP')
+                func = loader.wrap('mlp_network_get_layer_output_signal', \
                                  ctypes.POINTER(ctypes.c_double * numberOfNeuron), \
                                  [ctypes.POINTER(MLPNetwork), ctypes.c_uint])
                 res = func(network['model'], i).contents
@@ -297,7 +263,8 @@ class MLPlugin(MLPluginBase, MLPLoader):
             numberOfInput = self.mlGetNetworkNumberOfInput(network)
 
             if numberOfInput > 0:
-                func = self.wrap('mlp_network_get_input_signal', \
+                loader = MLLoader('MLP')
+                func = loader.wrap('mlp_network_get_input_signal', \
                                 ctypes.POINTER(ctypes.c_double*numberOfInput), \
                                 [ctypes.POINTER(MLPNetwork)])
                 res = func(network['model']).contents
@@ -306,6 +273,13 @@ class MLPlugin(MLPluginBase, MLPLoader):
     
     def mlGetNetworkDrawerUI(self):
         return MLPNetworkDrawerUI()
+
+    def mlGetTrainerUI(self):
+        loader = MLPTrainerLoaderUI(self)
+        editor = MLPTrainerEditorUI(self)
+        loader.setExclusiveUI(editor)
+        editor.setExclusiveUI(loader)
+        return loader, editor
 
 if __name__ == '__main__':
     l = MLPlugin()
