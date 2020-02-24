@@ -271,15 +271,14 @@ class MLPlugin(MLPluginBase, MLPLoader):
 
         return res
     
-    def mlGetNetworkDrawerUI(self):
-        return MLPNetworkDrawerUI()
-
     def mlGetTrainerUI(self):
         loader = MLPTrainerLoaderUI(self)
         editor = MLPTrainerEditorUI(self)
+        scene  = MLPNetworkDrawerUI()
+
         loader.setExclusiveUI(editor)
         editor.setExclusiveUI(loader)
-        return loader, editor
+        return loader, editor, scene
 
 if __name__ == '__main__':
     l = MLPlugin()
