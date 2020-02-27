@@ -37,13 +37,9 @@ class MLPlugin(MLPluginBase, MLPLoader):
         MLPluginBase.__init__(self)
         MLPLoader.__init__(self)
         self.load()
+        self._editui = None
+        self._loadui = None
 
-        self._loadui = MLPTrainerLoaderUI(self)
-        self._editui = MLPTrainerEditorUI(self)
-
-        self._loadui.setExclusiveUI(self._editui)
-        self._editui.setExclusiveUI(self._loadui)
-        
     def load(self):
         # Call plugin init method
         if self.mlp_plugin_init is not None:
@@ -278,6 +274,12 @@ class MLPlugin(MLPluginBase, MLPLoader):
         return res
     
     def mlGetTrainerUI(self):
+        if self._editui is None or self._loadui:
+            self._loadui = MLPTrainerLoaderUI(self)
+            self._editui = MLPTrainerEditorUI(self)
+            self._loadui.setExclusiveUI(self._editui)
+            self._editui.setExclusiveUI(self._loadui)
+        
         return self._loadui, self._editui, MLPNetworkDrawerUI()
 
 if __name__ == '__main__':
