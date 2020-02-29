@@ -161,8 +161,9 @@ class MLPlugin(MLPluginBase, MLPLoader):
 
         with MLPModelManager(trainer, 'model') as model:
             if sizeOfSignal > 0:
-                self.mlp_trainer_get_layer_output_signal.setResType(ctypes.POINTER(ctypes.c_double * sizeOfSignal))
-                self.mlp_trainer_get_layer_output_signal.load(self)
+                loader = MLLoader('MLP')
+                self.mlp_trainer_get_layer_output_signal.restype = ctypes.POINTER(ctypes.c_double * sizeOfSignal)
+                self.mlp_trainer_get_layer_output_signal.load(loader)
                 ret = self.mlp_trainer_get_layer_output_signal(trainer['model'], i).contents
 
         return ret
@@ -172,8 +173,9 @@ class MLPlugin(MLPluginBase, MLPLoader):
 
         with MLPModelManager(trainer, 'model') as model:
             if sizeOfSignal > 0:
-                self.mlp_trainer_get_input_signal.setResType(ctypes.POINTER(ctypes.c_double*sizeOfSignal))
-                self.mlp_trainer_get_input_signal.load(self)
+                loader = MLLoader('MLP')
+                self.mlp_trainer_get_input_signal.restype = ctypes.POINTER(ctypes.c_double*sizeOfSignal)
+                self.mlp_trainer_get_input_signal.load(loader)
                 ret = self.mlp_trainer_get_input_signal(trainer['model']).contents
 
         return ret

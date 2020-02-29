@@ -45,6 +45,11 @@
           "name": "BRAIN_NAME",
           "value": "MLP",
           "type": "STRING"
+        },
+        {
+          "name": "BRAIN_ENABLE_LOGGING",
+          "value": "False",
+          "type": "BOOL"
         }
       ]
     }
