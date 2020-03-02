@@ -16,6 +16,9 @@ from impl.mlptrainereditorui import MLPTrainerEditorUI
 from impl.mlpnetworkdrawerui import MLPNetworkDrawerUI
 
 class MLPModelManager:
+    """
+
+    """
     def __init__(self, internal, key = None):
         self._internal  = internal
         self._key       = None
@@ -33,6 +36,9 @@ class MLPModelManager:
         return True
 
 class MLPlugin(MLPluginBase, MLPLoader):
+    """
+
+    """
     def __init__(self):
         MLPluginBase.__init__(self)
         MLPLoader.__init__(self)
@@ -41,6 +47,9 @@ class MLPlugin(MLPluginBase, MLPLoader):
         self._loadui = None
 
     def load(self):
+        """
+
+        """
         # Call plugin init method
         if self.mlp_plugin_init is not None:
            self.mlp_plugin_init()
@@ -60,17 +69,32 @@ class MLPlugin(MLPluginBase, MLPLoader):
     ....................................................................
     """
     def mlGetTrainer(self, net, data):
+        """
+
+        :param net:
+        :param data:
+        :return:
+        """
         model = None
         if self.mlp_trainer_new is not None:
             model = self.mlp_trainer_new(str(net).encode('ascii'), str(data).encode('ascii'))
         return model
 
     def mlDeleteTrainer(self, trainer):
+        """
+
+        :param trainer:
+        """
         with MLPModelManager(trainer, 'model') as model:
             if self.mlp_trainer_delete is not None:
                 self.mlp_trainer_delete(trainer['model'])
 
     def mlConfigureTrainer(self, trainer, path):
+        """
+
+        :param trainer:
+        :param path:
+        """
         with MLPModelManager(trainer, 'model') as model:
             if self.mlp_trainer_configure is not None:
                 self.mlp_trainer_configure(trainer['model'], str(path).encode('ascii'))
@@ -78,6 +102,11 @@ class MLPlugin(MLPluginBase, MLPLoader):
             trainer['settings'] = path
 
     def mlIsTrainerRunning(self, trainer):
+        """
+
+        :param trainer:
+        :return:
+        """
         ret = False
         with MLPModelManager(trainer, 'model') as model:
             if self.mlp_trainer_is_running is not None:
@@ -85,6 +114,11 @@ class MLPlugin(MLPluginBase, MLPLoader):
         return ret
 
     def mlGetTrainerProgress(self, trainer):
+        """
+
+        :param trainer:
+        :return:
+        """
         ret = 0.0
         with MLPModelManager(trainer, 'model') as model:
             if self.mlp_trainer_get_progress is not None:
@@ -92,11 +126,20 @@ class MLPlugin(MLPluginBase, MLPLoader):
         return ret
 
     def mlTrainerRun(self, trainer):
+        """
+
+        :param trainer:
+        """
         with MLPModelManager(trainer, 'model') as model:
             if self.mlp_trainer_run is not None:
                 self.mlp_trainer_run(trainer['model'])
 
     def mlGetTrainerError(self, trainer):
+        """
+
+        :param trainer:
+        :return:
+        """
         ret = 100.0
         with MLPModelManager(trainer, 'model') as model:
             if self.mlp_trainer_error is not None:
@@ -104,18 +147,37 @@ class MLPlugin(MLPluginBase, MLPLoader):
         return ret
 
     def mlSaveTrainerProgression(self, trainer, path):
+        """
+
+        :param trainer:
+        :param path:
+        """
         with MLPModelManager(trainer, 'model') as model:
             if self.mlp_trainer_save_progression is not None:
                 real_path = path + '.xml'
                 self.mlp_trainer_save_progression(trainer['model'], str(real_path).encode('ascii'))
 
     def mlRestoreTrainerProgression(self, trainer, path, progress, error):
+        """
+
+        :param trainer:
+        :param path:
+        :param progress:
+        :param error:
+        """
         with MLPModelManager(trainer, 'model') as model:
             if self.mlp_trainer_restore_progression is not None:
                 real_path =  path + '.xml'
                 self.mlp_trainer_restore_progression(trainer['model'], str(real_path).encode('ascii'), progress, error)
 
     def mlGetLoadedTrainer(self, network_filepath, data_filepath, trainer_filepath):
+        """
+
+        :param network_filepath:
+        :param data_filepath:
+        :param trainer_filepath:
+        :return:
+        """
         ret = self.mlGetTrainerInternal(network_filepath, data_filepath, trainer_filepath)
         return ret
 
@@ -123,6 +185,13 @@ class MLPlugin(MLPluginBase, MLPLoader):
                              network_filepath, \
                              data_filepath, \
                              trainer_filepath):
+        """
+
+        :param network_filepath:
+        :param data_filepath:
+        :param trainer_filepath:
+        :return:
+        """
         internal = None
 
         if network_filepath is not None      and \
@@ -148,6 +217,11 @@ class MLPlugin(MLPluginBase, MLPLoader):
         return internal
 
     def mlTrainerGetManagedNetwork(self, trainer):
+        """
+
+        :param trainer:
+        :return:
+        """
         internal = {}
 
         with MLPModelManager(trainer, 'model') as model:
@@ -157,6 +231,13 @@ class MLPlugin(MLPluginBase, MLPLoader):
         return internal
 
     def mlGetTrainerLayerOutputSignal(self, trainer, i, sizeOfSignal):
+        """
+
+        :param trainer:
+        :param i:
+        :param sizeOfSignal:
+        :return:
+        """
         ret = None
 
         with MLPModelManager(trainer, 'model') as model:
@@ -169,6 +250,12 @@ class MLPlugin(MLPluginBase, MLPLoader):
         return ret
 
     def mlGetTrainerInputSignal(self, trainer, sizeOfSignal):
+        """
+
+        :param trainer:
+        :param sizeOfSignal:
+        :return:
+        """
         ret = None
 
         with MLPModelManager(trainer, 'model') as model:
@@ -186,32 +273,62 @@ class MLPlugin(MLPluginBase, MLPLoader):
     ....................................................................
     """
     def mlGetNetwork(self, path):
+        """
+
+        :param path:
+        :return:
+        """
         internal = {}
         if self.mlp_network_new is not None:
             internal['model'] = self.mlp_network_new(str(path).encode('ascii'))
         return internal
 
     def mlDeleteNetwork(self, network):
+        """
+
+        :param network:
+        """
         with MLPModelManager(network, 'model') as model:
             if self.mlp_network_delete is not None:
                 self.mlp_network_delete(network['model'])
 
     def mlSaveNetwork(self, network, path):
+        """
+
+        :param network:
+        :param path:
+        """
         with MLPModelManager(network, 'model') as model:
             if self.mlp_network_serialize is not None:
                 self.mlp_network_serialize(network['model'], str(path).encode('ascii'))
 
     def mlLoadNetwork(self, network, path):
+        """
+
+        :param network:
+        :param path:
+        """
         with MLPModelManager(network, 'model') as model:
             if self.mlp_network_deserialize is not None:
                 self.mlp_network_deserialize(network['model'], str(path).encode('ascii'))
 
     def mlPredict(self, network, num, sig):
+        """
+
+        :param network:
+        :param num:
+        :param sig:
+        """
         with MLPModelManager(network, 'model') as model:
             if self.mlp_network_predict is not None:
                 self.mlp_network_predict(network['model'], num, sig)
 
     def mlGetNetworkOutputLength(self, network):
+        """
+
+        :param network:
+        :return:
+        """
         ret = 0
         with MLPModelManager(network, 'model') as model:
             if self.mlp_network_get_output_length is not None:
@@ -219,6 +336,11 @@ class MLPlugin(MLPluginBase, MLPLoader):
         return ret
 
     def mlGetNetworkPrediction(self, network):
+        """
+
+        :param network:
+        :return:
+        """
         ret = None
         with MLPModelManager(network, 'model') as model:
             if self.mlp_network_get_output is not None:
@@ -226,6 +348,11 @@ class MLPlugin(MLPluginBase, MLPLoader):
         return ret
 
     def mlGetNetworkNumberOfLayer(self, network):
+        """
+
+        :param network:
+        :return:
+        """
         ret = 0
         with MLPModelManager(network, 'model') as model:
             if self.mlp_network_get_number_of_layer is not None:
@@ -233,6 +360,11 @@ class MLPlugin(MLPluginBase, MLPLoader):
         return ret
 
     def mlGetNetworkNumberOfInput(self, network):
+        """
+
+        :param network:
+        :return:
+        """
         ret = 0
         with MLPModelManager(network, 'model') as model:
             if self.mlp_network_get_number_of_input is not None:
@@ -240,6 +372,12 @@ class MLPlugin(MLPluginBase, MLPLoader):
         return ret
 
     def mlGetLayerNumberOfNeuron(self, network, i):
+        """
+
+        :param network:
+        :param i:
+        :return:
+        """
         ret = 0
         with MLPModelManager(network, 'model') as model:
             if self.mlp_network_get_layer_number_of_neuron is not None:
@@ -247,6 +385,12 @@ class MLPlugin(MLPluginBase, MLPLoader):
         return ret
 
     def mlGetNetworkLayerOutputSignal(self, network, i):
+        """
+
+        :param network:
+        :param i:
+        :return:
+        """
         res = None
 
         with MLPModelManager(network, 'model') as model:
@@ -262,6 +406,11 @@ class MLPlugin(MLPluginBase, MLPLoader):
         return res
 
     def mlGetNetworkInputSignal(self, network):
+        """
+
+        :param network:
+        :return:
+        """
         res = None
         with MLPModelManager(network, 'model') as model:
             numberOfInput = self.mlGetNetworkNumberOfInput(network)
@@ -276,6 +425,10 @@ class MLPlugin(MLPluginBase, MLPLoader):
         return res
     
     def mlGetTrainerUI(self):
+        """
+
+        :return:
+        """
         if self._editui is None or self._loadui:
             self._loadui = MLPTrainerLoaderUI(self)
             self._editui = MLPTrainerEditorUI(self)

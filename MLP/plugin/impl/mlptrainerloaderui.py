@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from ui.trainer.mltrainerloaderbaseui import MLTrainerLoaderBaseUI
+from impl import data
 
 from PyQt5.QtWidgets    import QLineEdit
 from PyQt5.QtWidgets    import QLabel
@@ -11,13 +12,21 @@ from PyQt5.QtWidgets    import QVBoxLayout
 from PyQt5.QtWidgets    import QFileDialog
 from PyQt5.QtGui        import QIcon
 
+from importlib          import resources
+
 import os
 
 class MLPTrainerLoaderUI(MLTrainerLoaderBaseUI):
+    """
+
+    """
     def __init__(self, plugin, parent = None):
         MLTrainerLoaderBaseUI.__init__(self, plugin, parent = None)
 
     def mlBuildTrainerLoaderMainWidget(self):
+        """
+
+        """
         label0 = QLabel('Choose the trainer name')
         label1 = QLabel('Open a network settings file')
         label2 = QLabel('Open a trainer settings file')
@@ -33,13 +42,16 @@ class MLPTrainerLoaderUI(MLTrainerLoaderBaseUI):
         self._entry = QLineEdit()
         button1 = QPushButton()
         button1.setFlat(True)
-        button1.setIcon(QIcon.fromTheme('system-search'))
+        with resources.path(data, 'openfile.png') as p:
+            button1.setIcon(QIcon(str(p)))
         button2 = QPushButton()
         button2.setFlat(True)
-        button2.setIcon(QIcon.fromTheme('system-search'))
+        with resources.path(data, 'openfile.png') as p:
+            button2.setIcon(QIcon(str(p)))
         button3 = QPushButton()
         button3.setFlat(True)
-        button3.setIcon(QIcon.fromTheme('system-search'))
+        with resources.path(data, 'openfile.png') as p:
+            button3.setIcon(QIcon(str(p)))
         cancel  = QPushButton('Cancel')
         cancel.setIcon(QIcon.fromTheme('edit-undo'))
         cancel.setFlat(True)
@@ -90,9 +102,16 @@ class MLPTrainerLoaderUI(MLTrainerLoaderBaseUI):
         self._mainWidget.setLayout(vbox)
 
     def mlOnTrainerNameChanged(self, text):
+        """
+
+        :param text:
+        """
         self._trainer_name = text
 
     def mlOpenNetworkFile(self):
+        """
+
+        """
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
         self._network_filepath, _ = QFileDialog.getOpenFileName(self, "Select a network file", "", "All files (*);;Xml files (*.xml)", options=options)
@@ -100,6 +119,9 @@ class MLPTrainerLoaderUI(MLTrainerLoaderBaseUI):
         self._label4.setVisible(True)
 
     def mlOpenTrainerFile(self):
+        """
+
+        """
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
         self._trainer_filepath, _ = QFileDialog.getOpenFileName(self, "Select a network file", "", "All files (*);;Xml files (*.xml)", options=options)
@@ -107,6 +129,9 @@ class MLPTrainerLoaderUI(MLTrainerLoaderBaseUI):
         self._label5.setVisible(True)
 
     def mlOpenDataFile(self):
+        """
+
+        """
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
         self._data_filepath, _ = QFileDialog.getOpenFileName(self, "Select a network file", "", "All files (*);;Xml files (*.xml)", options=options)
@@ -114,14 +139,23 @@ class MLPTrainerLoaderUI(MLTrainerLoaderBaseUI):
         self._label6.setVisible(True)
 
     def mlCancel(self):
+        """
+
+        """
         self.mlResetUI()
         self.close()
 
     def mlValidate(self):
+        """
+
+        """
         self.mlValidateTrainerSignal.emit()
         self.close()
 
     def mlResetUI(self):
+        """
+
+        """
         MLTrainerLoaderBaseUI.mlResetUI(self)
         self._entry.clear()
         self._label4.setText('')

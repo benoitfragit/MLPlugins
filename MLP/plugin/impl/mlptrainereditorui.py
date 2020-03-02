@@ -19,6 +19,9 @@ import os
 import xml.etree.ElementTree as ET
 
 class MLPTrainerEditorUI(MLTrainerEditorBaseUI):
+    """
+
+    """
     def __init__(self, plugin, parent = None):
         self._trainer = None
 
@@ -71,6 +74,9 @@ class MLPTrainerEditorUI(MLTrainerEditorBaseUI):
         MLTrainerEditorBaseUI.__init__(self, plugin, parent)
 
     def mlBuildTrainerEditorMainWidget(self):
+        """
+
+        """
         label1       = QLabel('Cost-Function')
         label2       = QLabel('Error')
         label3       = QLabel('Max-iterations')
@@ -128,10 +134,18 @@ class MLPTrainerEditorUI(MLTrainerEditorBaseUI):
         self._mainWidget.setLayout(vbox)
 
     def mlResetUI(self):
+        """
+
+        """
         MLTrainerEditorBaseUI.mlResetUI(self)
         self._trainer = None
 
     def fromTrainer(self, *args, **kwargs):
+        """
+
+        :param args:
+        :param kwargs:
+        """
         if args[0] is not None:
             self.setVisible(True)
 
@@ -160,10 +174,16 @@ class MLPTrainerEditorUI(MLTrainerEditorBaseUI):
                         self._costfunction.setCurrentIndex(idx)
 
     def mlCancel(self):
+        """
+
+        """
         self.mlResetUI()
         self.close()
 
     def mlValidate(self):
+        """
+
+        """
         if self._trainer is not None:
             backpropagation = ET.Element('backpropagation')
 

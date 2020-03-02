@@ -11,10 +11,18 @@ from exchange.mlpmetada import MLPMetaData
 import ctypes
 
 def enum(*args):
+    """
+
+    :param args:
+    :return:
+    """
     values = dict(zip(args, range(len(args))))
     return type('Enum', (), values)
 
 class MLPLoader:
+    """
+
+    """
     def __init__(self):
         loader = MLLoader('MLP')
 

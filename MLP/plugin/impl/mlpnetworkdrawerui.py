@@ -7,6 +7,9 @@ from ui.network.mlnetworkdrawerbaseui   import MLNetworkDrawerBaseUI
 from PyQt5.QtWidgets                    import QGraphicsItem
 
 class MLPNetworkDrawerUI(MLNetworkDrawerBaseUI):
+    """
+
+    """
     def __init__(self, radius = 80, sw = 300, sh = 20):
         MLNetworkDrawerBaseUI.__init__(self)
 
@@ -17,10 +20,20 @@ class MLPNetworkDrawerUI(MLNetworkDrawerBaseUI):
         self._items    = {}
 
     def clear(self):
+        """
+
+        """
         MLNetworkDrawerBaseUI.clear(self)
         self._items.clear()
 
     def mlAddSignalRepresentation(self, ncols, j, M, title=''):
+        """
+
+        :param ncols:
+        :param j:
+        :param M:
+        :param title:
+        """
         # X coordinate for this signal
         xj = (2 * j + 1 - ncols) * (2 * self._radius + self._sw) / 2
 
@@ -48,10 +61,15 @@ class MLPNetworkDrawerUI(MLNetworkDrawerBaseUI):
             self._items[j].append([xj, yi, item, 0.0, 0.0, True])
 
     def mlOnUpdateSignalRepresentation(self, j, s):
+        """
+
+        :param j:
+        :param s:
+        """
         if len(s) > 0:
             for i in range(len(s)):
                 if i < len(self._items[j]) and self._items[j][i] is not None:
-                    if self._items[j][i][5] == True:
+                    if self._items[j][i][5]:
                         self._items[j][i][5] = False
                         self._items[j][i][3] = s[i]
                         self._items[j][i][4] = s[i]
