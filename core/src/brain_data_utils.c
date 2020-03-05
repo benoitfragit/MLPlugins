@@ -50,12 +50,6 @@ typedef struct MinMaxModel
     BrainSignal _max;
 } MinMaxModel;
 
-typedef union DataModel
-{
-    MinMaxModel     _minMaxModel;
-    GaussianModel   _gaussianModel;
-} BrainDataModel;
-
 /**
  * \struct Data
  * \brief  Internal model for a BrainData
@@ -70,7 +64,6 @@ typedef struct Data
     BrainUint   _output_length;    /*!< output signal length          */
     BrainUint   _labels_length;    /*!< output label length           */
     BrainChar** _labels;           /*!< output label if needed        */
-    BrainDataModel _model;         /*!< The brain data model          */
     BrainBool   _is_labelled;      /*!< Data are labelled             */
     BrainDataFormat _format;       /*!< Data format                   */
 } Data;
@@ -227,48 +220,48 @@ new_data(BrainString repository_path,
             {
                 case Preprocessing_GaussianNormalization:
                 {
-                    GaussianModel* model = &(_data->_model._gaussianModel);
+                    GaussianModel model;
 
-                    BRAIN_NEW(model->_means, BrainReal,  _data->_input_length);
-                    BRAIN_NEW(model->_sigmas, BrainReal, _data->_input_length);
+                    BRAIN_NEW(model._means, BrainReal,  _data->_input_length);
+                    BRAIN_NEW(model._sigmas, BrainReal, _data->_input_length);
 
                     FindGaussianModel(_data->_training._input,
-                                      model->_means,
-                                      model->_sigmas,
+                                      model._means,
+                                      model._sigmas,
                                       _data->_training._children,
                                       _data->_input_length);
                     ApplyGaussianModel(_data->_training._input,
-                                       model->_means,
-                                       model->_sigmas,
+                                       model._means,
+                                       model._sigmas,
                                        _data->_training._children,
                                        _data->_input_length);
                     ApplyGaussianModel(_data->_evaluating._input,
-                                       model->_means,
-                                       model->_sigmas,
+                                       model._means,
+                                       model._sigmas,
                                        _data->_evaluating._children,
                                        _data->_input_length);
                 }
                     break;
                 case Preprocessing_MinMaxNormalization:
                 {
-                    MinMaxModel* model = &(_data->_model._minMaxModel);
+                    MinMaxModel model;
 
-                    BRAIN_NEW(model->_min, BrainReal, _data->_input_length);
-                    BRAIN_NEW(model->_max, BrainReal, _data->_input_length);
+                    BRAIN_NEW(model._min, BrainReal, _data->_input_length);
+                    BRAIN_NEW(model._max, BrainReal, _data->_input_length);
 
                     FindMinMaxModel(_data->_training._input,
-                                    model->_min,
-                                    model->_max,
+                                    model._min,
+                                    model._max,
                                     _data->_training._children,
                                     _data->_input_length);
                     ApplyMinMaxModel(_data->_training._input,
-                                       model->_min,
-                                       model->_max,
+                                       model._min,
+                                       model._max,
                                        _data->_training._children,
                                        _data->_input_length);
                     ApplyMinMaxModel(_data->_evaluating._input,
-                                       model->_min,
-                                       model->_max,
+                                       model._min,
+                                       model._max,
                                        _data->_evaluating._children,
                                        _data->_input_length);
                 }
@@ -429,8 +422,6 @@ delete_data(BrainData data)
         BRAIN_DELETE(data->_evaluating._output);
         BRAIN_DELETE(data->_training._input);
         BRAIN_DELETE(data->_training._output);
-        BRAIN_DELETE(data->_model._minMaxModel._min);
-        BRAIN_DELETE(data->_model._minMaxModel._max);
         BRAIN_DELETE(data);
     }
 }

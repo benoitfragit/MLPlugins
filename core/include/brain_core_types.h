@@ -65,7 +65,7 @@ typedef enum DataPreprocessing
  */
 typedef enum BrainDataFormat
 {
-    Format_InputFirst,
+    Format_InputFirst = 0,
     Format_OutputFirst,
     Format_Invalide,
     Format_First = Format_InputFirst,

@@ -181,9 +181,9 @@ class MLPlugin(MLPluginBase, MLPLoader):
         ret = self.mlGetTrainerInternal(network_filepath, data_filepath, trainer_filepath)
         return ret
 
-    def mlGetTrainerInternal(self,\
-                             network_filepath, \
-                             data_filepath, \
+    def mlGetTrainerInternal(self,
+                             network_filepath,
+                             data_filepath,
                              trainer_filepath):
         """
 
@@ -242,9 +242,8 @@ class MLPlugin(MLPluginBase, MLPLoader):
 
         with MLPModelManager(trainer, 'model') as model:
             if sizeOfSignal > 0:
-                loader = MLLoader('MLP')
                 self.mlp_trainer_get_layer_output_signal.restype = ctypes.POINTER(ctypes.c_double * sizeOfSignal)
-                self.mlp_trainer_get_layer_output_signal.load(loader)
+                self.mlp_trainer_get_layer_output_signal.load(self)
                 ret = self.mlp_trainer_get_layer_output_signal(trainer['model'], i).contents
 
         return ret
@@ -260,9 +259,8 @@ class MLPlugin(MLPluginBase, MLPLoader):
 
         with MLPModelManager(trainer, 'model') as model:
             if sizeOfSignal > 0:
-                loader = MLLoader('MLP')
                 self.mlp_trainer_get_input_signal.restype = ctypes.POINTER(ctypes.c_double*sizeOfSignal)
-                self.mlp_trainer_get_input_signal.load(loader)
+                self.mlp_trainer_get_input_signal.load(self)
                 ret = self.mlp_trainer_get_input_signal(trainer['model']).contents
 
         return ret
@@ -398,8 +396,8 @@ class MLPlugin(MLPluginBase, MLPLoader):
 
             if numberOfNeuron > 0:
                 loader = MLLoader('MLP')
-                func = loader.wrap('mlp_network_get_layer_output_signal', \
-                                 ctypes.POINTER(ctypes.c_double * numberOfNeuron), \
+                func = loader.wrap('mlp_network_get_layer_output_signal',
+                                 ctypes.POINTER(ctypes.c_double * numberOfNeuron),
                                  [ctypes.POINTER(MLPNetwork), ctypes.c_uint])
                 res = func(network['model'], i).contents
 
@@ -417,8 +415,8 @@ class MLPlugin(MLPluginBase, MLPLoader):
 
             if numberOfInput > 0:
                 loader = MLLoader('MLP')
-                func = loader.wrap('mlp_network_get_input_signal', \
-                                ctypes.POINTER(ctypes.c_double*numberOfInput), \
+                func = loader.wrap('mlp_network_get_input_signal',
+                                ctypes.POINTER(ctypes.c_double*numberOfInput),
                                 [ctypes.POINTER(MLPNetwork)])
                 res = func(network['model']).contents
 
