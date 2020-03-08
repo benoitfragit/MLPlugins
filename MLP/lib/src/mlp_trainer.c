@@ -238,7 +238,7 @@ step(MLPTrainer trainer)
         /******************************************************/
         do
         {
-            const BrainUint index = (BrainUint)BRAIN_RAND_RANGE(0, number_of_training_sample);
+            const BrainUint index = (BrainUint)BRAIN_RAND_RANGE(0, number_of_training_sample-1);
 
             input  = get_training_input_signal(data, index);
             target = get_training_output_signal(data, index);

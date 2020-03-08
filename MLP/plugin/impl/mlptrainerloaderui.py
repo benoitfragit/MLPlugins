@@ -19,9 +19,10 @@ from importlib          import resources
 
 import os
 
-class MLCustomButton(QPushButton):
-    def __init__(self, text, mainicon):
+class MLLoadButton(QPushButton):
+    def __init__(self, text):
         QPushButton.__init__(self, text)
+        self._text = text
         self.setFlat(True)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         self.setStyleSheet("QPushButton {text-align:left;}")
@@ -29,7 +30,7 @@ class MLCustomButton(QPushButton):
         self._mainicon = None
         self._applyicon = None
         self._warningicon = None
-        with resources.path(data, mainicon) as p:
+        with resources.path(data, 'openfile.png') as p:
             self._mainicon = QIcon(str(p))
             self.setIcon(self._mainicon)
             self.setIconSize(QSize(100, 100))
@@ -38,10 +39,15 @@ class MLCustomButton(QPushButton):
         with resources.path(data, 'warning.png') as p:
             self._warningicon = QIcon(str(p))
 
-    def setApplyIcon(self):
+    def setDefault(self):
+        self.setText(self._text)
+        self.setIcon(self._mainicon)
+
+    def setApply(self):
         self.setIcon(self._applyicon)
 
-    def setWarningIcon(self):
+    def setWarning(self):
+        self.setText('File not found!')
         self.setIcon(self._warningicon)
 
 class MLPTrainerLoaderUI(MLTrainerLoaderBaseUI):
@@ -57,18 +63,11 @@ class MLPTrainerLoaderUI(MLTrainerLoaderBaseUI):
         """
         label0 = QLabel('Choose the trainer name')
 
-        self._label4 = QLabel()
-        self._label5 = QLabel()
-        self._label6 = QLabel()
-        self._label4.setVisible(False)
-        self._label6.setVisible(False)
-        self._label5.setVisible(False)
-
         self._entry = QLineEdit()
         
-        self._button1 = MLCustomButton('Open a network settings file', 'openfile.png')
-        self._button2 = MLCustomButton('Open a trainer settings file', 'openfile.png')
-        self._button3 = MLCustomButton('Open a data file', 'openfile.png')
+        self._button1 = MLLoadButton('Open a network settings file')
+        self._button2 = MLLoadButton('Open a trainer settings file')
+        self._button3 = MLLoadButton('Open a data file')
         
         cancel  = QPushButton('Cancel')
         cancel.setIcon(QIcon.fromTheme('edit-undo'))
@@ -98,11 +97,8 @@ class MLPTrainerLoaderUI(MLTrainerLoaderBaseUI):
 
         vbox.addLayout(hbox0)
         vbox.addWidget(self._button1)
-        vbox.addWidget(self._label4)
         vbox.addWidget(self._button2)
-        vbox.addWidget(self._label5)
         vbox.addWidget(self._button3)
-        vbox.addWidget(self._label6)
         vbox.addStretch(1)
         vbox.addLayout(hbox1)
 
@@ -122,8 +118,11 @@ class MLPTrainerLoaderUI(MLTrainerLoaderBaseUI):
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
         self._network_filepath, _ = QFileDialog.getOpenFileName(self, "Select a network file", "", "All files (*);;Xml files (*.xml)", options=options)
-        self._label4.setText(os.path.basename(self._network_filepath))
-        self._label4.setVisible(True)
+        self._button1.setText(os.path.basename(self._network_filepath))
+        if os.path.isfile(self._network_filepath):
+            self._button1.setApply()
+        else:
+            self._button1.setWarning()
 
     def mlOpenTrainerFile(self):
         """
@@ -132,8 +131,11 @@ class MLPTrainerLoaderUI(MLTrainerLoaderBaseUI):
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
         self._trainer_filepath, _ = QFileDialog.getOpenFileName(self, "Select a network file", "", "All files (*);;Xml files (*.xml)", options=options)
-        self._label5.setText(os.path.basename(self._trainer_filepath))
-        self._label5.setVisible(True)
+        self._button2.setText(os.path.basename(self._trainer_filepath))
+        if os.path.isfile(self._trainer_filepath):
+            self._button2.setApply()
+        else:
+            self._button2.setWarning()
 
     def mlOpenDataFile(self):
         """
@@ -142,8 +144,11 @@ class MLPTrainerLoaderUI(MLTrainerLoaderBaseUI):
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
         self._data_filepath, _ = QFileDialog.getOpenFileName(self, "Select a network file", "", "All files (*);;Xml files (*.xml)", options=options)
-        self._label6.setText(os.path.basename(self._data_filepath))
-        self._label6.setVisible(True)
+        self._button3.setText(os.path.basename(self._data_filepath))
+        if os.path.isfile(self._data_filepath): 
+            self._button3.setApply()
+        else:
+            self._button3.setWarning()
 
     def mlCancel(self):
         """
@@ -156,7 +161,9 @@ class MLPTrainerLoaderUI(MLTrainerLoaderBaseUI):
         """
 
         """
-        self.mlValidateTrainerSignal.emit()
+        if self._trainer_name is not None and self._trainer_name != '' and  os.path.isfile(self._network_filepath) and os.path.isfile(self._trainer_filepath) and os.path.isfile(self._data_filepath):
+            self.mlValidateTrainerSignal.emit()
+        
         self.close()
 
     def mlResetUI(self):
@@ -165,9 +172,6 @@ class MLPTrainerLoaderUI(MLTrainerLoaderBaseUI):
         """
         MLTrainerLoaderBaseUI.mlResetUI(self)
         self._entry.clear()
-        self._label4.setText('')
-        self._label5.setText('')
-        self._label6.setText('')
-        self._label4.setVisible(False)
-        self._label6.setVisible(False)
-        self._label5.setVisible(False)
+        self._button1.setDefault()
+        self._button2.setDefault()
+        self._button3.setDefault()

@@ -12,7 +12,7 @@
 #include "brain_core_types.h"
 
 #define BRAIN_RANDOM_INITIALIZATION srand(time(NULL));
-#define BRAIN_RAND_UNIT (BrainDouble)rand()/(1.0 + (BrainDouble)RAND_MAX)
+#define BRAIN_RAND_UNIT (BrainDouble)rand()/((BrainDouble)RAND_MAX)
 #define BRAIN_RAND_RANGE(min, max) BRAIN_RAND_UNIT * (BrainDouble)(max - min) + (BrainDouble)min
 
 BrainRandomMask new_random_mask     (const BrainUint number_of_elements);

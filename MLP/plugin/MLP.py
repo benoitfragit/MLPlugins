@@ -244,7 +244,7 @@ class MLPlugin(MLPluginBase, MLPLoader):
             if sizeOfSignal > 0:
                 self.mlp_trainer_get_layer_output_signal.restype = ctypes.POINTER(ctypes.c_double * sizeOfSignal)
                 self.mlp_trainer_get_layer_output_signal.load(self)
-                ret = self.mlp_trainer_get_layer_output_signal(trainer['model'], i).contents
+                ret = self.mlp_trainer_get_layer_output_signal(trainer['model'], i)
 
         return ret
 
@@ -261,7 +261,7 @@ class MLPlugin(MLPluginBase, MLPLoader):
             if sizeOfSignal > 0:
                 self.mlp_trainer_get_input_signal.restype = ctypes.POINTER(ctypes.c_double*sizeOfSignal)
                 self.mlp_trainer_get_input_signal.load(self)
-                ret = self.mlp_trainer_get_input_signal(trainer['model']).contents
+                ret = self.mlp_trainer_get_input_signal(trainer['model'])
 
         return ret
 
