@@ -5,6 +5,52 @@ from PyQt5.QtGui                        import QBrush
 from PyQt5.QtGui                        import QColor
 from ui.network.mlnetworkdrawerbaseui   import MLNetworkDrawerBaseUI
 from PyQt5.QtWidgets                    import QGraphicsItem
+from PyQt5.QtWidgets                    import QGraphicsEllipseItem
+
+class MLCircleValue(QGraphicsEllipseItem):
+    def __init__(self, x, y, w, h):
+        QGraphicsEllipseItem.__init__(self,x, y, w, h)
+
+        self._creation = True
+        self._min = 0.0
+        self._max = 0.0 
+        self._x   = x
+        self._y   = y
+        self._value  = 0.0
+        
+    def mouseDoubleClickEvent(self, event):
+        print("Item has focus")
+        QGraphicsEllipseItem.mouseDoubleClickEvent(self, event)
+
+    @property
+    def value(self):
+        return self._value
+
+    @property
+    def x(self):
+        return self._x
+
+    @property
+    def y(self):
+        return self._y
+
+    @value.setter
+    def value(self, val):
+        if self._creation or val < self._min:
+            self._min = val
+
+        if self._creation or val > self._max:
+            self._max = val
+            
+        self._creation = False
+        self._value = val
+
+        amplitude = abs(self._max - self._min)
+
+        if amplitude > 0:
+            c =  255 * (self._value - self._min) / amplitude
+            brush = QBrush(QColor(c, c, c))
+            self.setBrush(brush)
 
 class MLPNetworkDrawerUI(MLNetworkDrawerBaseUI):
     """
@@ -44,21 +90,24 @@ class MLPNetworkDrawerUI(MLNetworkDrawerBaseUI):
         text = self.addSimpleText(title)
         text.setFlag(QGraphicsItem.ItemIgnoresTransformations)
         rect = text.boundingRect()
-        text.setPos(xj, (1 - M) * (2 * self._radius + self._sh) / 2 - self._radius)
-
+        text.setPos(xj + (self._radius - rect.width())/2, (1 - M) * (2 * self._radius + self._sh) / 2 - self._radius)
+        
         # Display new signal
         self._items[j] = []
         for i in range(M):
             yi = 2 * i * p + o
 
-            item = self.addEllipse(xj, yi, self._radius, self._radius, self._pen)
+            circle = MLCircleValue(xj, yi, self._radius, self._radius)
+            circle.setPen(self._pen)
 
             if j > 0:
+                circle.setFlag(QGraphicsItem.ItemIsSelectable)
                 for k in range(len(self._items[j - 1])):
-                    x, y = self._items[j-1][k][0], self._items[j-1][k][1]
+                    x, y = self._items[j-1][k].x, self._items[j-1][k].y
                     self.addLine(x + self._radius, y + 0.5 * self._radius, xj, yi + 0.5 * self._radius, self._pen)
 
-            self._items[j].append([xj, yi, item, 0.0, 0.0, True])
+            self.addItem(circle)
+            self._items[j].append(circle)
 
     def mlOnUpdateSignalRepresentation(self, j, s):
         """
@@ -69,21 +118,4 @@ class MLPNetworkDrawerUI(MLNetworkDrawerBaseUI):
         if len(s) > 0:
             for i in range(len(s)):
                 if i < len(self._items[j]) and self._items[j][i] is not None:
-                    if self._items[j][i][5]:
-                        self._items[j][i][5] = False
-                        self._items[j][i][3] = s[i]
-                        self._items[j][i][4] = s[i]
-
-                    if s[i] < self._items[j][i][3]:
-                        self._items[j][i][3] = s[i]
-
-                    if s[i] > self._items[j][i][4]:
-                        self._items[j][i][4] = s[i]
-
-                    # Color normalization
-                    amplitude = abs(self._items[j][i][4] - self._items[j][i][3])
-
-                    if amplitude > 0:
-                        c =  255 * (s[i] - self._items[j][i][3]) / amplitude
-                        brush = QBrush(QColor(c, c, c))
-                        self._items[j][i][2].setBrush(brush)
+                    self._items[j][i].value = s[i]
