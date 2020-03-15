@@ -6,6 +6,10 @@ from PyQt5.QtGui                        import QColor
 from ui.network.mlnetworkdrawerbaseui   import MLNetworkDrawerBaseUI
 from PyQt5.QtWidgets                    import QGraphicsItem
 from PyQt5.QtWidgets                    import QGraphicsEllipseItem
+from PyQt5.QtCore                       import pyqtSignal
+from PyQt5.QtCore                       import Qt
+
+import uuid
 
 class MLCircleValue(QGraphicsEllipseItem):
     def __init__(self, x, y, w, h):
@@ -17,9 +21,19 @@ class MLCircleValue(QGraphicsEllipseItem):
         self._x   = x
         self._y   = y
         self._value  = 0.0
-        
+        self._focused = False
+
     def mouseDoubleClickEvent(self, event):
-        print("Item has focus")
+        self._focused = not self._focused
+        if self._focused:
+            self.scene().setSceneRect(self.sceneBoundingRect())
+        else:
+            self.scene().setSceneRect(self.scene().itemsBoundingRect())
+
+        if len(self.scene().views()) > 0:
+            view = self.scene().views()[0]
+            view.fitInView(self.scene().sceneRect(), Qt.KeepAspectRatio)
+
         QGraphicsEllipseItem.mouseDoubleClickEvent(self, event)
 
     @property
@@ -45,7 +59,7 @@ class MLCircleValue(QGraphicsEllipseItem):
         self._creation = False
         self._value = val
 
-        amplitude = abs(self._max - self._min)
+        amplitude = self._max - self._min
 
         if amplitude > 0:
             c =  255 * (self._value - self._min) / amplitude
@@ -96,10 +110,10 @@ class MLPNetworkDrawerUI(MLNetworkDrawerBaseUI):
         self._items[j] = []
         for i in range(M):
             yi = 2 * i * p + o
-
+            
             circle = MLCircleValue(xj, yi, self._radius, self._radius)
             circle.setPen(self._pen)
-
+            
             if j > 0:
                 circle.setFlag(QGraphicsItem.ItemIsSelectable)
                 for k in range(len(self._items[j - 1])):
@@ -119,3 +133,4 @@ class MLPNetworkDrawerUI(MLNetworkDrawerBaseUI):
             for i in range(len(s)):
                 if i < len(self._items[j]) and self._items[j][i] is not None:
                     self._items[j][i].value = s[i]
+                    
