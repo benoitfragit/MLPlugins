@@ -17,6 +17,7 @@ typedef struct Trainer
 {
     MLPNetwork        _network;
     MLPData           _data;
+    BrainSignal       _target;
     /*********************************************************************/
     /**                      TRAINING PARAMETERS                        **/
     /*********************************************************************/
@@ -41,6 +42,9 @@ new_trainer(MLPNetwork network, MLPData data)
     trainer->_network          = network;
     trainer->_data             = data;
 
+    const BrainUint output_length = get_output_signal_length(data);
+    BRAIN_NEW(trainer->_target, BrainReal, output_length);
+
     trainer->_max_iter         = 1000;
     trainer->_max_error        = 0.0001;
     trainer->_error            = trainer->_max_error + 1.;
@@ -62,6 +66,10 @@ delete_trainer(MLPTrainer trainer)
         delete_data(trainer->_data);
         delete_network(trainer->_network);
 
+        if (BRAIN_ALLOCATED(trainer->_target))
+        {
+            BRAIN_DELETE(trainer->_target);
+        }
         BRAIN_DELETE(trainer);
     }
 }
@@ -232,7 +240,6 @@ step(MLPTrainer trainer)
         BrainUint   minibatch_size = 0;
 
         BRAIN_NEW(loss, BrainReal, output_length);
-
         /******************************************************/
         /**         ACCUMULATE WITH RANDOM MINI-BATCH        **/
         /******************************************************/
@@ -242,6 +249,7 @@ step(MLPTrainer trainer)
 
             input  = get_training_input_signal(data, index);
             target = get_training_output_signal(data, index);
+            BRAIN_COPY(target, trainer->_target, BrainReal, output_length);
 
             /**************************************************/
             /**       FORWARD PROPAGATION OF THE SIGNAL      **/
@@ -341,4 +349,10 @@ get_trainer_network(MLPTrainer trainer)
     }
 
     return network;
+}
+
+BrainSignal
+get_trainer_target_signal(MLPTrainer trainer)
+{
+    return trainer->_target;
 }

@@ -23,7 +23,8 @@ WINDOWS_EXPORT void        mlp_trainer_save_progression    (MLPTrainer, BrainStr
 WINDOWS_EXPORT void        mlp_trainer_restore_progression (MLPTrainer, BrainString, BrainReal, BrainReal);
 WINDOWS_EXPORT MLPNetwork  mlp_trainer_get_network         (MLPTrainer);
 WINDOWS_EXPORT BrainSignal mlp_trainer_get_layer_output_signal(MLPTrainer, BrainUint);
-WINDOWS_EXPORT BrainSignal mlp_trainer_get_input_signal    (MLPTrainer trainer);
+WINDOWS_EXPORT BrainSignal mlp_trainer_get_input_signal    (MLPTrainer);
+WINDOWS_EXPORT BrainSignal mlp_trainer_get_target_signal   (MLPTrainer);
 
 WINDOWS_EXPORT MLPNetwork  mlp_network_new                 (BrainString);
 WINDOWS_EXPORT void        mlp_network_delete              (MLPNetwork);

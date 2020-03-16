@@ -13,5 +13,6 @@ BrainReal   get_trainer_error               (const MLPTrainer);
 void        save_trainer_progression        (MLPTrainer trainer, BrainString path);
 void        restore_trainer_progression     (MLPTrainer, BrainString, BrainReal, BrainReal);
 MLPNetwork  get_trainer_network             (MLPTrainer);
+BrainSignal get_trainer_target_signal		(MLPTrainer);
 
 #endif /* MLP_TRAINER_H */

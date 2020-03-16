@@ -265,6 +265,23 @@ class MLPlugin(MLPluginBase, MLPLoader):
 
         return ret
 
+    def mlGetTrainerTargetSignal(self, trainer, sizeOfSignal):
+        """
+
+        :param trainer:
+        :param sizeOfSignal:
+        :return:
+        """
+        ret = None
+
+        with MLPModelManager(trainer, 'model') as model:
+            if sizeOfSignal > 0:
+                self.mlp_trainer_get_target_signal.restype = ctypes.POINTER(ctypes.c_double*sizeOfSignal)
+                self.mlp_trainer_get_target_signal.load(self)
+                ret = self.mlp_trainer_get_target_signal(trainer['model'])
+
+        return ret
+
     """
     ....................................................................
     .......................... Plugin NETWORK api.......................

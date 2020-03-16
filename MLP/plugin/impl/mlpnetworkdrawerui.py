@@ -114,7 +114,7 @@ class MLPNetworkDrawerUI(MLNetworkDrawerBaseUI):
             circle = MLCircleValue(xj, yi, self._radius, self._radius)
             circle.setPen(self._pen)
             
-            if j > 0:
+            if j > 0 and j < ncols - 1:
                 circle.setFlag(QGraphicsItem.ItemIsSelectable)
                 for k in range(len(self._items[j - 1])):
                     x, y = self._items[j-1][k].x, self._items[j-1][k].y
